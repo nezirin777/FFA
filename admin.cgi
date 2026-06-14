@@ -57,6 +57,8 @@ $data_folder[7] = "./loginlog";
 $data_folder[8] = $pass_folder;
 $data_folder[9] = "./syoku";
 $data_folder[10] = $sousin_file;
+$data_folder[11] = "./chocolog";
+$data_folder[12] = "./g1";
 
 #================================================================#
 #┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓#
@@ -132,7 +134,7 @@ EOM
 		if ($pass eq $kanripass) { print "<tr bgcolor=\"#eeeeee\">"; }
 		else { print "<tr bgcolor=\"#ffaaaa\">"; }
 		print "<td align=center>$time</td><td align=center>$host</td><td align=center>$pass</td></tr>";
-		
+
 	}
 	print <<"EOM";
 </table>
@@ -232,7 +234,7 @@ sub kanri_all {
 		}
 	}
 	closedir(DIR);
-	
+
 	@tmp = ();
 	if($in{'list'} eq 'other_list') {
 		# 配列28番目でソート
@@ -559,7 +561,7 @@ sub all_data_delete{
 				$WORK =~ s/\n//gi;
 				$WORK =~ s/\r//gi;
 				push(@temp_member,"$WORK\n");
-				close(IN);		
+				close(IN);
 			}
 		}
 		closedir(DIR);
@@ -1097,7 +1099,7 @@ sub syoku_pre {
 </tr>
 <tr>
 EOM
-	
+
 	for ($i=0;$i<=15;$i++) {
 		print <<"EOM";
 <TD class=b1 align = center>
@@ -2575,4 +2577,3 @@ EOM
 	exit;
 
 }
-

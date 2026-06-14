@@ -61,7 +61,7 @@ $midi = $sts_midi;
 #　メイン処理　#
 #--------------#
 if ($mente) {
-	&error("バージョンアップ中です。２、３０秒ほどお待ち下さい。m(_ _)m"); 
+	&error("バージョンアップ中です。２、３０秒ほどお待ち下さい。m(_ _)m");
 }
 &decode;
 
@@ -150,7 +150,7 @@ EOM
 <tr><td id="td2" class="b2">防具</td><td align="right" class="b2">$item[3]</td>
 <td id="td2" class="b1">防御力</td><td align="right" class="b2">$item[4]</td></tr>
 <tr><td id="td2" class="b2">アクセサリー</td><td align="right" class="b2">$item[6]</td>
-	
+
 <td id="td2" class="b2">称号</td><td align="center" class="b2"><font color=yellow>$syou</font></td></tr>
 </table>
 
@@ -455,6 +455,11 @@ EOM
 	print <<"EOM";
 </td></form></tr>
 <tr><td colspan=2>※神々の領域と言われるこの世界に足をふみいれて、無事に帰ったものは誰一人いない・・・</td></tr>
+<form action="./chocofarm.cgi" method="post">
+<input type="hidden" name="id" value="$chara[0]">
+<input type="hidden" name=mydata value="$chara_log">
+<input type=submit class=btn value="チョコボ牧場へ">
+</form>
 </table></td></tr></table>
 EOM
 
