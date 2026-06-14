@@ -1,3 +1,13 @@
 sub hissatu{}
-sub atowaza{if($waza_ritu > int(rand(120))) {if($wsyoku > 16 or $mode eq 'isekai' or $mode eq 'boss'){$com2 .="<P><font class=\"red\" size=5>赤魔法ウオール！！！</FONT>$wname $mnameには効かなかった！！<P/>";}else{$sake1 += 999;$dmg2 = 0;$com1 .="<P><font class=\"white\" size=5>赤魔法ウオール！！！（全ての攻撃を無効）</font></P>";}}}
+sub atowaza{
+	if ($waza_ritu > int(rand(120))) {
+		if ($mode eq 'isekai' or $mode eq 'boss') {
+			$com2 .="<font class=\"red\" size=5>赤魔法ウオール！！！</FONT>$mnameには効かなかった！！<br>";
+		} else {
+			$sake1 += 999;
+			$dmg2 = 0;
+			$com1 .="<font class=\"white\" size=5>赤魔法ウオール！！！（全ての攻撃を無効）</font><br>";
+		}
+	}
+}
 1;

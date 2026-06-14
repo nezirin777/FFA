@@ -1,2 +1,6 @@
-sub wacskouka{if($whp_flg < $dmg1){$wa_kouka == 0;$com2 .="<P><font class=\"green\" size=3>$wa_nameは光らなかった。。。</FONT></P>";}}
+sub wacskouka{
+	if ($whp_flg < $dmg1) {
+		$com2 .= "<font class=\"green\" size=3>$winner[27]は光らなかった。。。</FONT><br>";
+	}
+}
 1;

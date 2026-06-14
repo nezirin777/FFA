@@ -1,3 +1,8 @@
-sub whissatu{if($wwaza_ritu > int(rand(80))){$dmg2 += ($wn_0+$wn_1+$wcllv) * int(rand(50));$com2 .="<P><font class=\"red\" size=5>ファイガ剣！！！</FONT></P>";}}
+sub whissatu{
+	if ($wwaza_ritu > int(rand(80))) {
+		$dmg2 += ($winner[6] + $winner[7] + $winner[39]) * int(rand(50));
+		$com2 .= "<font class=\"red\" size=5>ファイガ剣！！！</FONT><br>";
+	}
+}
 sub watowaza{}
 1;
