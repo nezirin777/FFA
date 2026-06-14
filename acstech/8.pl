@@ -1,2 +1,4 @@
-sub acskouka{$dmg1 += $dmg1;}
+sub acskouka{
+	$dmg1 += $dmg1;
+}
 1;
