@@ -1,0 +1,2 @@
+sub wacskouka{if(int(rand(30))==1){if($whp_flg < $dmg1){if ($wa_22lmt >= 3){$wa_kouka == 0;$com2 .="<P><font class=\"green\" size=3>$wa_nameは光らなかった。。。</FONT></P>";}else{$wa_22lmt++;$dmg2 += $dmg1;$dmg1 = 0;$com2 .="<P><font class=\"white\" size=3>$wa_nameが光を放つ！！$knameの攻撃を跳ね返した！！</FONT></P>";}}}}
+1;

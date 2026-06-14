@@ -1,0 +1,2 @@
+sub wacskouka{if(int(rand(10))==0){$com2 .="<P><font class=\"dark\" size=3>$wa_nameが光を放つ！！デジョンの効果！！</FONT></P>";if(int(rand(3)) == 0) {$sake1 -= 999999;$dmg2 = $kmaxhp;$com2 .="<p><font class=\"yellow\" size=5>時空魔法デジョン！！！</FONT></P>";}else{$com2 .="<p><font class=\"red\" size=5>時空魔法デジョン！！！失敗した。。</FONT></P>";}}}
+1;
