@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}天下一武道会 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-title">天下一武道会</div>
+
+    <!-- モーグリの司会 -->
+    <div class="host-box">
+        <div class="host-avatar">🎤</div>
+        <div class="host-message">
+            <strong>実況モーグリ：</strong><br>
+            「ようこそ！天下一武道会へクポ！<br>
+            ここは当サーバーのレベル最上位<b>{{ tenka_su }}名</b>を勝ち抜いていく、最強の実力証明の舞台クポ！<br>
+            {{ chara.name }}さん、あなたの勇気と力を見せてほしいクポ！」
+        </div>
+    </div>
+
+    <!-- リストグリッド -->
+    <div class="layout-columns">
+        
+        <!-- 左: 天下一メンバー -->
+        <div class="panel-card">
+            <div class="panel-title">🏆 武道会メンバーリスト ({{ update_time }}更新)</div>
+            <table class="list-table">
+                <thead>
+                    <tr>
+                        <th class="style-cls-299">順位</th>
+                        <th>プレイヤー名</th>
+                        <th class="style-cls-300">レベル</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in members %}
+                    <tr>
+                        <td class="style-cls-142" align="center">{{ loop.index }}</td>
+                        <td class="style-cls-5">{{ m.name }}</td>
+                        <td class="style-cls-286" align="right">Lv {{ m.level }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" align="center">登録キャラクターがいません</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 右: 最近の制覇者 -->
+        <div class="panel-card">
+            <div class="panel-title">⭐ 歴代の制覇者 (直近20名)</div>
+            <table class="list-table">
+                <thead>
+                    <tr>
+                        <th>プレイヤー名</th>
+                        <th>レベル</th>
+                        <th class="style-cls-300">制覇日時</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in logs %}
+                    <tr>
+                        <td class="style-cls-301"><a href="system.py?mode=chara_sts&id={{ l.id }}">{{ l.name }}</a></td>
+                        <td class="style-cls-286">Lv {{ l.level }}</td>
+                        <td class="style-cls-140" align="right">{{ l.time }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="style-cls-302" colspan="3" align="center">まだ制覇した猛者はいませんクポ。</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- 挑戦ボタンエリア -->
+    <div class="challenge-area">
+        {% if can_challenge %}
+            <form action="tenka.py" method="post">
+                <input type="hidden" name="mode" value="battle">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mydata" value="{{ chara_log }}">
+                <input type="hidden" name="no" value="1">
+                <button type="submit" class="btn-action">⚔️ 天下一武道会に挑戦する (第1回戦へ)</button>
+            </form>
+        {% else %}
+            <div class="challenge-error">🔒 参加条件未達成: {{ challenge_error_msg }}</div>
+            <span class="style-cls-140">通常ボスの10階を撃破し、サーバー内に3名以上のプレイヤーが必要ですクポ。</span>
+        {% endif %}
+    </div>
+
+    <div class="style-cls-67">
+        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">🏡 メイン画面へ戻る</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}パスワード変更所 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-195">🔑 パスワード変更所</h1>
+    <p class="style-cls-16">セキュリティの変更およびパスワードの再設定を行います。</p>
+    <hr class="style-cls-196" size="1" color="{{ config.color_dark }}">
+
+    <!-- パスワード変更人 (NPCメッセージ) -->
+    <div class="npc-box style-cls-197">
+        <b class="style-cls-198">パスワード変更人：</b><br>
+        {% if has_words %}
+        <span class="style-cls-199">
+            「君のパスワードを変更してあげよう。<br>
+            ただし、パスワードを変更するには登録した<b>【パスワード変更用単語】</b>が必要だぞ。<br>
+            しっかり覚えているな？間違いのないよう慎重に入力してくれ。」
+        </span>
+        {% else %}
+        <span class="style-cls-199">
+            「君のパスワードを変更するための単語を設定してあげよう。<br>
+            <b>この単語は一度設定してしまうと二度と変更できない</b>ので、注意が必要だぞ！<br>
+            忘れないよう、しっかりとした単語を入力してメモに控えておくんだ。」
+        </span>
+        {% endif %}
+    </div>
+
+    <!-- パスワード変更のメイン処理 -->
+    {% if has_words %}
+        <!-- パスワード変更フォーム -->
+        <p class="style-cls-200">
+            ℹ️ あなたのパスワード設定は、前回 <b>{{ last_time }}</b> に ホスト <b>{{ last_host }}</b> から設定されました。
+        </p>
+
+        <form action="{{ config.passchange_script }}" method="POST">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mode" value="passchan">
+            
+            <table border="1" cellspacing="0" class="form-table" bordercolor="{{ config.color_dark }}">
+                <tr bgcolor="#0a0a25">
+                    <td class="style-cls-18" colspan="2" align="center">
+                        <span class="font-size-3 color-configyellow"><b>パスワード変更フォーム</b></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" width="35%" bgcolor="#020210" align="right"><b>現在のパスワード:</b></td>
+                    <td width="65%" align="left">
+                        <input class="style-cls-44" type="password" name="pass" size="15">
+                        <span class="note-text">＆nbsp;確認のため入力</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" bgcolor="#020210" align="right"><b>パスワード変更用単語:</b></td>
+                    <td align="left">
+                        <input class="style-cls-44" type="text" name="passchange" size="25">
+                        <div class="note-text style-cls-201">登録されている変更用単語を入力してください。</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" bgcolor="#020210" align="right"><b>新しいパスワード:</b></td>
+                    <td align="left">
+                        <input class="style-cls-44" type="password" name="npass" size="15" maxlength="8">
+                        <div class="note-text style-cls-201">4〜8文字の半角英数字（※忘れないようにメモしてください）</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" bgcolor="#020210" align="right"><b>新しいパスワード確認:</b></td>
+                    <td align="left">
+                        <input class="style-cls-44" type="password" name="nkpass" size="15" maxlength="8">
+                    </td>
+                </tr>
+                <tr bgcolor="#0a0a25">
+                    <td colspan="2" align="center">
+                        <input type="submit" class="btn style-cls-202" value="パスワードを変更する">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    {% else %}
+        <!-- パスワード変更用単語の新規登録フォーム -->
+        <form action="{{ config.passchange_script }}" method="POST">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mode" value="passchange">
+            
+            <table border="1" cellspacing="0" class="form-table" bordercolor="{{ config.color_dark }}">
+                <tr bgcolor="#0a0a25">
+                    <td class="style-cls-18" colspan="2" align="center">
+                        <span class="font-size-3 color-configyellow"><b>パスワード変更用単語の設定</b></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" width="35%" bgcolor="#020210" align="right"><b>現在のパスワード:</b></td>
+                    <td width="65%" align="left">
+                        <input class="style-cls-44" type="password" name="pass" size="15">
+                        <span class="note-text">＆nbsp;確認のため入力</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style-cls-16" bgcolor="#020210" align="right"><b>パスワード変更用単語:</b></td>
+                    <td align="left">
+                        <input class="style-cls-44" type="text" name="passchange" size="25">
+                        <div class="note-text style-cls-203">※極めて重要です。一度設定すると変更できませんので必ずメモをしてください。</div>
+                    </td>
+                </tr>
+                <tr bgcolor="#0a0a25">
+                    <td colspan="2" align="center">
+                        <input type="submit" class="btn style-cls-204" value="変更用単語を登録する">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    {% endif %}
+
+    <br><br>
+    
+    <!-- ステータス画面へ戻る -->
+    <form action="{{ config.main_script }}" method="post">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="ステータス画面へ">
+    </form>
+    
+    <br><br><br>
+</div>
+{% endblock %}

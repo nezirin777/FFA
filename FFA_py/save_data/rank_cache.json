@@ -1,0 +1,97 @@
+{
+  "last_updated": 1781527951,
+  "total_players": 1,
+  "rankings": {
+    "level": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 34
+      }
+    ],
+    "hp": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 2936
+      }
+    ],
+    "str": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 59
+      }
+    ],
+    "int": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 27
+      }
+    ],
+    "mnd": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 22
+      }
+    ],
+    "vit": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 60
+      }
+    ],
+    "dex": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 30
+      }
+    ],
+    "agi": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 36
+      }
+    ],
+    "lck": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 21
+      }
+    ],
+    "lp": [
+      {
+        "id": "test",
+        "name": "testキャラ",
+        "site": "いくのＣＧＩのＨＰ",
+        "url": "http://www.eriicu.com",
+        "val": 30
+      }
+    ],
+    "win_ratio": []
+  }
+}

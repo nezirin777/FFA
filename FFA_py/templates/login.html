@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン成功 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <hr size="1" color="{{ config.color_dark }}">
+    <h1><span class="color-white"><span class="color-configred">{{ chara.name }}</span> でログインしました</span></h1>
+    
+    <!-- ゲスト冒険者の表示 -->
+    <div class="style-cls-132">
+        {{ guest_list_html | safe }}
+    </div>
+    
+    <hr size="1" color="{{ config.color_dark }}">
+    
+    <!-- ログイン履歴 -->
+    <table class="style-cls-133" border="0" width="90%">
+        <tr>
+            <td width="50%" valign="top">
+                <table class="style-cls-134" border="1" width="95%" cellspacing="0" cellpadding="4">
+                    <tr>
+                        <td colspan="2" align="center" bgcolor="#111133" class="white"><b>最近のログイン履歴</b></td>
+                    </tr>
+                    <tr bgcolor="#05051a">
+                        <td align="center" width="50%"><span class="small-text">日時</span></td>
+                        <td align="center" width="50%"><span class="small-text">ホスト</span></td>
+                    </tr>
+                    {% for log in success_logs %}
+                    <tr>
+                        <td align="center"><span class="small-text">{{ log.time }}</span></td>
+                        <td align="center"><span class="small-text">{{ log.host }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2" align="center"><span class="small-text">履歴がありません</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td width="50%" valign="top">
+                <table class="style-cls-134" border="1" width="95%" cellspacing="0" cellpadding="4">
+                    <tr>
+                        <td colspan="3" align="center" bgcolor="#111133" class="red"><b>最近のパスワードエラー履歴</b></td>
+                    </tr>
+                    <tr bgcolor="#05051a">
+                        <td align="center" width="40%"><span class="small-text">日時</span></td>
+                        <td align="center" width="30%"><span class="small-text">ホスト</span></td>
+                        <td align="center" width="30%"><span class="small-text">入力パスワード</span></td>
+                    </tr>
+                    {% for log in error_logs %}
+                    <tr>
+                        <td align="center"><span class="small-text">{{ log.time }}</span></td>
+                        <td align="center"><span class="small-text">{{ log.host }}</span></td>
+                        <td align="center" class="red"><span class="small-text">{{ log.pass }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" align="center"><span class="small-text">履歴がありません</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    <hr size="1" color="{{ config.color_dark }}">
+    
+    <!-- メッセージ表示 -->
+    <table width="90%" align="center">
+        <tr>
+            <td align="left">
+                <h3 class="yellow">【あなた宛のメッセージ】</h3>
+                <span class="small-text">（最新の {{ config.max_lines }} 件を表示）</span>
+            </td>
+        </tr>
+    </table>
+    
+    {% for msg in personal_messages %}
+    <div class="style-cls-135">
+        <span class="color-configred">
+            <span class="small-text">
+                <b>{{ msg.name }} より</b>「<b>{{ msg.message }}</b>」({{ msg.time }}) [{{ msg.host }}]
+            </span>
+        </span>
+        {% if msg.id != 'sys' %}
+        <div class="style-cls-127">
+            <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mode" value="res">
+                <input type="hidden" name="mesid" value="{{ msg.id }}">
+                <input type="hidden" name="mesname" value="{{ msg.name }}">
+                <input type="submit" class="btn style-cls-128" value="返信">
+            </form>
+            <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="bansts" value="2">
+                <input type="hidden" name="mode" value="ban_do">
+                <input type="hidden" name="mesid" value="{{ msg.id }}">
+                <input type="hidden" name="mesname" value="{{ msg.name }}">
+                <input type="submit" class="btn style-cls-128" value="友人登録">
+            </form>
+            <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="bansts" value="1">
+                <input type="hidden" name="mode" value="ban_do">
+                <input type="hidden" name="mesid" value="{{ msg.id }}">
+                <input type="hidden" name="mesname" value="{{ msg.name }}">
+                <input type="submit" class="btn style-cls-128" value="拒否">
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="style-cls-136">
+        <span class="color-configred"><span class="small-text">{{ chara.name }} さん宛てのメッセージはありません。</span></span>
+    </div>
+    {% endfor %}
+    
+    <br>
+    
+    <table width="90%" align="center">
+        <tr>
+            <td align="left">
+                <h3 class="yellow">【全体メッセージ】</h3>
+                <span class="small-text">（最新の {{ config.max_all_lines }} 件を表示）</span>
+            </td>
+        </tr>
+    </table>
+    
+    {% for msg in global_messages %}
+    <div class="style-cls-135">
+        <span class="color-configred">
+            <span class="small-text">
+                <b>{{ msg.name }} より</b>「<b>{{ msg.message }}</b>」({{ msg.time }}) [{{ msg.host }}]
+            </span>
+        </span>
+    </div>
+    {% else %}
+    <div class="style-cls-136">
+        <span class="color-configred"><span class="small-text">全体メッセージはありません。</span></span>
+    </div>
+    {% endfor %}
+    
+    <br><br>
+    
+    <!-- ステータス画面への移行ボタン -->
+    <table class="style-cls-66" border="0">
+        <tr>
+            <td class="style-cls-137" id="td2" align="center" bgcolor="#111133">
+                <span><b>ステータス画面へ進みます</b></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="style-cls-138" align="center">
+                <form action="{{ config.main_script }}" method="POST">
+                    <input type="hidden" name="mode" value="log_in">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="submit" class="btn style-cls-139" value="ステータス画面へ">
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br><br>
+</div>
+{% endblock %}

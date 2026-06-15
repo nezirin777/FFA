@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}登録確認 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-15">🛡️ 登録内容の確認</h1>
+    <p class="style-cls-16">以下の内容でキャラクターを作成してよろしいですか？</p>
+    <hr class="style-cls-49" size="1" color="{{ config.color_dark }}">
+    
+    <br>
+
+    <table border="1" cellspacing="0" class="confirm-table" bordercolor="{{ config.color_dark }}">
+        <tr bgcolor="#0a0a25">
+            <td class="style-cls-18" colspan="3" align="center">
+                <span class="font-size-3 color-configyellow"><b>確認項目</b></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <!-- 画像表示 -->
+            <td class="style-cls-50" width="30%" rowspan="6" align="center" bgcolor="#020210">
+                <img class="style-cls-51" src="{{ config.img_path }}/{{ chara_img_name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
+                <small class="style-cls-16">外見画像 (No.{{ chara }})</small>
+            </td>
+            <td class="style-cls-16" width="25%" bgcolor="#020210" align="right"><b>なまえ:</b></td>
+            <td class="style-cls-19" width="45%" align="left"><b>{{ c_name }}</b></td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><b>性別:</b></td>
+            <td class="style-cls-19" align="left">{{ sex == 1 and '男' or '女' }}</td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><b>初期職業:</b></td>
+            <td class="style-cls-19" align="left"><b>{{ config.chara_jobs[syoku] }}</b></td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><b>初期ゴールド:</b></td>
+            <td class="style-cls-20" align="left"><b>{{ intgold }}</b> Gold</td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><b>ホームページ:</b></td>
+            <td class="style-cls-19" align="left"><a class="style-cls-54" href="{{ url }}" target="_blank">{{ site }}</a></td>
+        </tr>
+
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><b>パスワード変更用単語:</b></td>
+            <td class="style-cls-55" align="left"><b>{{ passchange }}</b></td>
+        </tr>
+        
+        <tr bgcolor="#030310">
+            <td class="style-cls-56" colspan="3" align="center">
+                ⚠️ <b>「パスワード変更用単語」はパスワード紛失時に必須となります。忘れないよう必ずメモしてください！</b>
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <!-- 決定するフォーム -->
+    <form class="style-cls-57" action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="mode" value="make_end">
+        <input type="hidden" name="id" value="{{ in.id }}">
+        <input type="hidden" name="pass" value="{{ in.pass }}">
+        <input type="hidden" name="passchange" value="{{ passchange }}">
+        <input type="hidden" name="site" value="{{ site }}">
+        <input type="hidden" name="url" value="{{ url }}">
+        <input type="hidden" name="c_name" value="{{ c_name }}">
+        <input type="hidden" name="sex" value="{{ sex }}">
+        <input type="hidden" name="chara" value="{{ chara }}">
+        <input type="hidden" name="syoku" value="{{ syoku }}">
+        <input type="submit" class="btn style-cls-58" value="作成を確定する">
+    </form>
+
+    <!-- 修正（戻る）フォーム -->
+    <form class="style-cls-40" action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ in.id }}">
+        <input type="hidden" name="pass" value="{{ in.pass }}">
+        <input type="hidden" name="passchange" value="{{ passchange }}">
+        <input type="hidden" name="site" value="{{ site }}">
+        <input type="hidden" name="url" value="{{ url }}">
+        <input type="hidden" name="c_name" value="{{ c_name }}">
+        <input type="hidden" name="sex" value="{{ sex }}">
+        <input type="hidden" name="chara" value="{{ chara }}">
+        <input type="hidden" name="syoku" value="{{ syoku }}">
+        <input type="submit" class="btn style-cls-59" value="修正する (戻る)">
+    </form>
+
+    <br><br><br>
+</div>
+{% endblock %}

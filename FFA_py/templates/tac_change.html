@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}作戦会議室 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+<script type="text/javascript">
+    function selectRow(row, radioId) {
+        // ラジオボタンを選択状態にする
+        document.getElementById(radioId).checked = true;
+        
+        // 全ての行のアクティブクラスを解除
+        var rows = document.querySelectorAll('.tac-table tr');
+        rows.forEach(function(r) {
+            r.classList.remove('active');
+        });
+        
+        // 選択された行にアクティブクラスを追加
+        row.classList.add('active');
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-title">作戦会議室</div>
+    <div class="subtitle">戦闘中の立ち回り・使用する特殊戦術を設定するクポ。</div>
+
+    <!-- 現在の戦術 -->
+    <div class="current-tac-card">
+        <div class="current-label">現在の設定作戦</div>
+        <div class="current-name">{{ now_tac_name }}</div>
+        <div class="current-desc">{{ now_tac_desc }}</div>
+    </div>
+
+    <!-- 戦術変更フォーム -->
+    <form action="tac_change.py" method="post">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mydata" value="{{ chara_log }}">
+        <input type="hidden" name="mode" value="senjutu_henkou">
+
+        <table class="tac-table">
+            <thead>
+                <tr>
+                    <th class="style-cls-67">選択</th>
+                    <th>戦術名</th>
+                    <th>戦術効果・説明</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in available_tacs %}
+                <tr onclick="selectRow(this, 'tac_{{ t.no }}')" class="{% if t.no == now_tac_no %}active{% endif %}">
+                    <td class="tac-radio">
+                        <input type="radio" name="senjutu_no" value="{{ t.no }}" id="tac_{{ t.no }}" {% if t.no == now_tac_no %}checked{% endif %}>
+                    </td>
+                    <td class="tac-name-cell">
+                        {{ t.name }}
+                        {% if t.ms == 1 %}
+                        <span class="tag-master">極</span>
+                        {% endif %}
+                    </td>
+                    <td class="tac-desc-cell">{{ t.desc }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-submit">⚔️ 作戦（戦術）を変更する</button>
+            <a href="sts.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">⚙️ ステータス設定に戻る</a>
+            <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back style-cls-271">🏡 街に戻る</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

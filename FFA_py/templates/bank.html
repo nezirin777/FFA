@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}ゴールド銀行 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <table border="0" width="80%">
+        <tr>
+            <td align="center">
+                <h1 class="style-cls-15">🏦 ゴールド銀行</h1>
+                <p class="style-cls-16">ゴールドの安全な預け入れと引き出しを行うことができます。</p>
+                <hr size="1" color="{{ config.color_dark }}">
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- 口座情報テーブル -->
+    <table class="style-cls-17" border="1" cellspacing="0" cellpadding="12">
+        <tr bgcolor="#0a0a25">
+            <td class="style-cls-18" colspan="2" align="center">
+                <span class="font-size-4 color-configyellow"><b>{{ chara.name }} 様の口座状況</b></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="style-cls-16" width="50%" align="right"><b>手持ち資金:</b></td>
+            <td width="50%" align="left"><b class="style-cls-19">{{ chara.gold }}</b> <span class="style-cls-20">Gold</span></td>
+        </tr>
+        <tr bgcolor="#020210">
+            <td class="style-cls-16" align="right"><b>預金残高:</b></td>
+            <td align="left"><b class="style-cls-20">{{ chara.bank }}</b> <span class="style-cls-20">Gold</span></td>
+        </tr>
+        <tr>
+            <td class="style-cls-21" align="right"><span class="small-text">預入可能額:</span></td>
+            <td align="left"><span class="style-cls-21"><b>{{ bank_max_in }},000</b></span> <small class="style-cls-16">Gold</small></td>
+        </tr>
+        <tr bgcolor="#020210">
+            <td class="style-cls-22" align="right"><span class="small-text">引出可能額:</span></td>
+            <td align="left"><span class="style-cls-22"><b>{{ bank_max_out }},000</b></span> <small class="style-cls-16">Gold</small></td>
+        </tr>
+    </table>
+
+    <br>
+    <span class="style-cls-23"><b>※ご注意：最大貯金額 {{ bank_max }} Gold</b> を超えて預け入れされた分は、国に寄付されます。</span>
+    <br><br>
+
+    <!-- 取引フォーム -->
+    <table class="style-cls-24" border="0" width="90%" max-width="600">
+        <tr align="center">
+            <!-- 預入フォーム -->
+            <td width="50%" valign="top">
+                <div class="style-cls-25">
+                    <h3 class="style-cls-26">💰 ゴールドを預ける</h3>
+                    <p class="style-cls-16">（入力値 × 1,000 Gold を預け入れます）</p>
+                    
+                    <form class="style-cls-27" action="{{ config.bank_script }}" method="post">
+                        <input class="style-cls-28" type="text" name="azuke" value="" size="8">
+                        <span class="style-cls-16"><b>,000</b> Gold</span>
+                        <br><br>
+                        <input type="hidden" name="id" value="{{ chara.id }}">
+                        <input type="hidden" name="mode" value="bank_sell">
+                        <input type="submit" class="btn style-cls-29" value="預け入れる">
+                    </form>
+                    
+                    <form class="style-cls-30" action="{{ config.bank_script }}" method="post">
+                        <input type="hidden" name="azuke" value="{{ bank_max_in }}">
+                        <input type="hidden" name="id" value="{{ chara.id }}">
+                        <input type="hidden" name="mode" value="bank_sell">
+                        <input type="submit" class="btn style-cls-31" value="限界まで全て預ける">
+                    </form>
+                </div>
+            </td>
+
+            <!-- 引出フォーム -->
+            <td width="50%" valign="top">
+                <div class="style-cls-32">
+                    <h3 class="style-cls-33">🪙 ゴールドを引き出す</h3>
+                    <p class="style-cls-16">（入力値 × 1,000 Gold を引き出します）</p>
+                    
+                    <form class="style-cls-27" action="{{ config.bank_script }}" method="post">
+                        <input class="style-cls-28" type="text" name="dasu" value="" size="8">
+                        <span class="style-cls-16"><b>,000</b> Gold</span>
+                        <br><br>
+                        <input type="hidden" name="id" value="{{ chara.id }}">
+                        <input type="hidden" name="mode" value="bank_buy">
+                        <input type="submit" class="btn style-cls-34" value="引き出す">
+                    </form>
+                    
+                    <form class="style-cls-30" action="{{ config.bank_script }}" method="post">
+                        <input type="hidden" name="dasu" value="{{ bank_max_out }}">
+                        <input type="hidden" name="id" value="{{ chara.id }}">
+                        <input type="hidden" name="mode" value="bank_buy">
+                        <input type="submit" class="btn style-cls-31" value="限界まで全て引き出す">
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+    <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="街に戻る">
+    </form>
+    <br><br>
+</div>
+{% endblock %}

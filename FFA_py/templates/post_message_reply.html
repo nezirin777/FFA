@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}返信作成 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-211">✉️ メッセージを返信する</h1>
+    <p class="style-cls-16"><b>{{ res_name }}</b> さんへの返信を作成します。</p>
+    <hr class="style-cls-49" size="1" color="{{ config.color_dark }}">
+    
+    <br>
+
+    <div class="reply-container">
+        <form action="{{ config.post_message_script }}" method="POST">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mode" value="message">
+            <input type="hidden" name="mesid" value="{{ res_id }}">
+            <input type="hidden" name="mesname" value="{{ res_name }}">
+            
+            <table class="style-cls-16" border="0" cellpadding="8" cellspacing="0" width="100%">
+                <tr>
+                    <td align="right" width="25%"><b>宛先:</b></td>
+                    <td align="left" width="75%"><b class="style-cls-19">{{ res_name }} さん (ID: {{ res_id }})</b></td>
+                </tr>
+                <tr>
+                    <td align="right" valign="top"><b>引用/前文:</b></td>
+                    <td align="left">
+                        <div class="style-cls-256">
+                            {{ res_content }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" valign="top"><b>返信本文:</b></td>
+                    <td align="left">
+                        <textarea class="style-cls-257" name="mes" cols="40" rows="5"></textarea>
+                        <div class="style-cls-218">※最大1000文字 / 暴言等は自動的にエラーになります。</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <br>
+                        <input type="submit" class="btn style-cls-258" value="返信を送信する">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <br><br>
+    
+    <!-- 戻るボタン -->
+    <form class="style-cls-39" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="郵便局に戻る">
+    </form>
+    
+    <form class="style-cls-40" action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="ステータス画面へ">
+    </form>
+    <br><br><br>
+</div>
+{% endblock %}

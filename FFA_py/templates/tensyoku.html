@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}転職の神殿 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-304">⛪ 転職の神殿</h1>
+    <p class="style-cls-16">能力を高め、更なる高みの職業へとクラスチェンジを行います。</p>
+    <hr class="style-cls-305" size="1" color="{{ config.color_dark }}">
+
+    <!-- 神殿の説明 -->
+    <div class="shinden-box style-cls-306">
+        <b class="style-cls-307">大司教：</b><br>
+        <span class="style-cls-199">
+            「ようこそ、{{ chara.name }}。ここでは己の能力が一定以上に達した時、他の職業への道を開くことができる。<br>
+            ただし、新たな職業に慣れるまでは一時的に能力値が減少する（※転職する職業の熟練度レベルが20以上の場合は、能力値は減少しない）。<br>
+            覚悟が決まったら、新たな職業を選択するが良い。」
+        </span>
+    </div>
+
+    <!-- 転職可能な職業一覧 -->
+    <table border="0" width="85%" max-width="700">
+        <tr>
+            <td>
+                <!-- 1. 全ての転職可能職 -->
+                <h3 class="style-cls-308">📜 現在転職できる職業一覧</h3>
+                <div class="job-list">
+                    {% for job in available_jobs %}
+                    <span class="job-badge">
+                        {{ job.name }} <span class="small-text">(Lv.{{ job.master_level }})</span>
+                    </span>
+                    {% else %}
+                    <span class="empty-msg">現在、新しく転職できる条件を満たした職業はありません。</span>
+                    {% endfor %}
+                </div>
+                
+                <br>
+
+                <!-- 2. 未マスターの転職可能職 -->
+                <h3 class="style-cls-309">🌟 まだマスターしていない転職可能職</h3>
+                <p class="style-cls-310">（※マスター熟練度：レベル60未満の職業です）</p>
+                <div class="job-list style-cls-311">
+                    {% for job in available_unmastered_jobs %}
+                    <span class="job-badge style-cls-312">
+                        {{ job.name }} <span class="small-text">(Lv.{{ job.master_level }})</span>
+                    </span>
+                    {% else %}
+                    <span class="empty-msg">マスターしていない転職可能な職業はありません。</span>
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <!-- 転職フォーム -->
+    {% if available_jobs %}
+    <form class="style-cls-313" action="{{ config.tensyoku_script }}" method="post">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mode" value="tensyoku_change">
+        
+        <label class="style-cls-87">希望する新しい職業:</label>
+        <br><br>
+        <select class="style-cls-314" name="syoku">
+            <option value="no">-- 職業を選択してください --</option>
+            {% for job in available_jobs %}
+            <option value="{{ job.id }}">{{ job.name }} (熟練度: Lv.{{ job.master_level }})</option>
+            {% endfor %}
+        </select>
+        <br><br><br>
+        <input type="submit" class="btn style-cls-315" value="転職を決定する">
+    </form>
+    {% endif %}
+
+    <br><br>
+    
+    <!-- 街に戻る -->
+    <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="街に戻る">
+    </form>
+    <br><br><br>
+</div>
+{% endblock %}

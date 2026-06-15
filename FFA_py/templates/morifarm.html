@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="farm-container">
+  <!-- タイトル -->
+  <div class="farm-title">
+    <img src="{{ config.img_farm }}/cho-yl.gif" alt="Chocobo">
+    <span>チョコボの森</span>
+  </div>
+
+  <!-- モーグリのコメント -->
+  <div class="mog-box">
+    <img src="{{ config.img_farm }}/mog.gif" alt="Mog">
+    <div>
+      {% if mode == 'main' %}
+        {% if not has_choco %}
+          <strong>「ここはチョコボの森クポ。君も自分だけのチョコボを育ててみないクポ？」</strong>
+        {% else %}
+          <strong>「君のチョコボの調子はどうクポ？ ここでお見合いをさせたり、野に放したりできるクポ！」</strong>
+        {% endif %}
+      {% elif mode == 'choco_shop' %}
+        <strong>「どの子にするクポ？ 野生でも立派なチョコボクポ！」</strong>
+      {% elif mode == 'choco_shopb' %}
+        <strong>「お見合い相手を選ぶクポ！ 良い血統なら強い子が生まれるクポ！」</strong>
+      {% elif mode == 'choco_buyb' %}
+        <strong>「おめでとうクポ！ 元気な赤ちゃんが生まれたクポ！ 名前を付けてあげるクポ！」</strong>
+      {% elif mode == 'choco_sell' %}
+        <strong>「寂しくなるクポね……でもこの子はきっと野生でも元気に暮らすクポ！」</strong>
+      {% elif mode == 'yadoya' %}
+        <strong>「宿屋で休んでチョコボもプレイヤーも元気いっぱいクポ！」</strong>
+      {% else %}
+        <strong>「どうするクポ？」</strong>
+      {% endif %}
+    </div>
+  </div>
+
+  <hr class="style-cls-145">
+
+  <!-- 各モード別の表示 -->
+  
+  {% if mode == 'main' %}
+    {% if not has_choco %}
+      <div class="style-cls-146">
+        <form action="{{ config.mori_farm_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="choco_shop">
+          <input type="submit" class="btn-farm" value="チョコボを探す">
+        </form>
+      </div>
+    {% else %}
+      <!-- チョコボステータス表示 -->
+      <table class="status-table">
+        <tr>
+          <td class="style-cls-147" rowspan="4" colspan="2">
+            <img class="style-cls-63" src="{{ config.img_farm }}/{{ choco.img_file }}" alt="Chocobo Image">
+          </td>
+          <td class="lbl-header">名前</td>
+          <td>{{ choco.name or '（名無しのチョコボ）' }}</td>
+          <td class="lbl-header">性別</td>
+          <td>{{ '♂' if choco.sex == 1 else '♀' }}</td>
+          <td class="lbl-header">クラス</td>
+          <td>{{ choco.cls }}</td>
+        </tr>
+        <tr>
+          <td class="lbl-header">タイプ</td>
+          <td><span class="style-cls-64">{{ choco.waza }}</span></td>
+          <td class="lbl-header">戦績</td>
+          <td>{{ choco.run }}戦 {{ choco.win }}勝</td>
+          <td class="lbl-header">限界値</td>
+          <td>{{ choco.max }}</td>
+        </tr>
+        <tr>
+          <td class="lbl-header" colspan="2">調子</td>
+          <td colspan="3">{{ choco.csta }} (寿命: {{ choco.life }}/1000)</td>
+        </tr>
+        <tr>
+          <td class="lbl-header" colspan="2">引き取り想定額</td>
+          <td colspan="3"><span class="style-cls-65">{{ choco.money }} ギル</span></td>
+        </tr>
+      </table>
+
+      <!-- 命名フォーム (名前が無い場合のみ) -->
+      {% if not choco.name or choco.name == '名無しのチョコボ' %}
+        <div class="naming-form">
+          <h3 class="style-cls-90">名前を付けてあげるクポ！</h3>
+          <form class="style-cls-148" action="{{ config.mori_farm_script }}" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="hidden" name="mode" value="choco_name">
+            <input type="text" name="st_name" placeholder="チョコボの名前" required>
+            <input type="submit" class="btn-farm" value="決定">
+          </form>
+        </div>
+      {% endif %}
+
+      <!-- 操作ボタン -->
+      <div class="style-cls-149">
+        <form action="{{ config.mori_farm_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="choco_sell">
+          <input type="submit" class="btn-farm btn-danger" value="野に放す" onclick="return confirm('本当に野に放しますか？引き取り額のギルが手に入りますが、チョコボはいなくなります。');">
+        </form>
+        
+        <form action="{{ config.mori_farm_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="choco_shopb">
+          <input type="submit" class="btn-farm" value="お見合い相手を探す">
+        </form>
+      </div>
+    {% endif %}
+
+  {% elif mode == 'choco_shop' %}
+    <!-- 野生チョコボ購入画面 -->
+    <form action="{{ config.mori_farm_script }}" method="post">
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>選択</th>
+            <th>ブリーダー</th>
+            <th>画像</th>
+            <th>名前</th>
+            <th>価格</th>
+            <th>戦績</th>
+            <th>血統</th>
+            <th>タイプ</th>
+            <th>父親</th>
+            <th>父親血統</th>
+            <th>母親</th>
+            <th>母親血統</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cy in choco_list %}
+            <tr>
+              <td class="radio-cell"><input type="radio" name="item_no" value="{{ cy.no }}" required></td>
+              <td>{{ cy.breader }}</td>
+              <td><img class="style-cls-150" src="{{ config.img_farm }}/{{ config.choco_images[cy.e] }}"></td>
+              <td>{{ cy.name }}</td>
+              <td class="style-cls-78">{{ cy.price }}</td>
+              <td>{{ cy.run }}戦 {{ cy.win }}勝</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.blood] }}"></td>
+              <td class="style-cls-64">{{ types[cy.waza] }}</td>
+              <td>{{ cy.father }}</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.fatherrank] }}"></td>
+              <td>{{ cy.mother }}</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.motherrank] }}"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      <div class="style-cls-149">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mydata" value="{{ chara_log }}">
+        <input type="hidden" name="mode" value="choco_buy">
+        <input type="submit" class="btn-farm" value="このチョコボを購入する">
+        
+        <a href="{{ config.mori_farm_script }}?id={{ chara.id }}" class="btn-farm btn-secondary">戻る</a>
+      </div>
+    </form>
+
+  {% elif mode == 'choco_shopb' %}
+    <!-- お見合い相手選択画面 -->
+    <h3 class="style-cls-69">あなたのチョコボ</h3>
+    <table class="status-table">
+      <tr>
+        <td class="lbl-header">ブリーダー</td>
+        <td>{{ chara.name }}</td>
+        <td><img src="{{ config.img_farm }}/{{ config.choco_images[choco.no] }}"></td>
+        <td class="lbl-header">性別</td>
+        <td>{{ '♂' if choco.sex == 1 else '♀' }}</td>
+        <td class="lbl-header">名前</td>
+        <td>{{ choco.name }}</td>
+        <td class="lbl-header">想定価格</td>
+        <td class="style-cls-78">{{ choco.money }}</td>
+        <td class="lbl-header">戦績</td>
+        <td>{{ choco.run }}戦 {{ choco.win }}勝</td>
+        <td class="lbl-header">限界値</td>
+        <td>{{ choco.max }}</td>
+        <td class="lbl-header">タイプ</td>
+        <td class="style-cls-64">{{ choco.waza }}</td>
+      </tr>
+    </table>
+
+    <h3 class="style-cls-151">お相手候補のチョコボ</h3>
+    <form action="{{ config.mori_farm_script }}" method="post">
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>選択</th>
+            <th>ブリーダー</th>
+            <th>画像</th>
+            <th>性別</th>
+            <th>名前</th>
+            <th>価格</th>
+            <th>戦績</th>
+            <th>血統</th>
+            <th>タイプ</th>
+            <th>父親</th>
+            <th>父親血統</th>
+            <th>母親</th>
+            <th>母親血統</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cy in choco_list %}
+            <tr>
+              <td class="radio-cell"><input type="radio" name="item_no" value="{{ cy.no }}" required></td>
+              <td>{{ cy.breader }}</td>
+              <td><img class="style-cls-150" src="{{ config.img_farm }}/{{ config.choco_images[cy.e] }}"></td>
+              <td>{{ '♀' if choco.sex == 1 else '♂' }}</td>
+              <td>{{ cy.name }}</td>
+              <td class="style-cls-78">{{ cy.price }}</td>
+              <td>{{ cy.run }}戦 {{ cy.win }}勝</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.blood] }}"></td>
+              <td class="style-cls-64">{{ types[cy.waza] }}</td>
+              <td>{{ cy.father }}</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.fatherrank] }}"></td>
+              <td>{{ cy.mother }}</td>
+              <td><img src="{{ config.img_farm }}/{{ rank_imgs[cy.motherrank] }}"></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="style-cls-149">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mydata" value="{{ chara_log }}">
+        <input type="hidden" name="mode" value="choco_buyb">
+        <input type="submit" class="btn-farm" value="お見合いする">
+        
+        <input type="submit" class="btn-farm btn-secondary" name="mode" value="choco_shopb" value="さらに探す">
+      </div>
+    </form>
+
+  {% elif mode == 'choco_buyb' %}
+    <!-- 配合結果画面 -->
+    <h3 class="style-cls-69">生まれた赤ちゃんのステータス</h3>
+    <table class="status-table">
+      <thead>
+        <tr>
+          <th>画像</th>
+          <th>タイプ</th>
+          <th>父親</th>
+          <th>父親血統</th>
+          <th>母親</th>
+          <th>母親血統</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><img src="{{ config.img_farm }}/{{ config.choco_images[choco.no] }}"></td>
+          <td class="style-cls-64">{{ choco.waza }}</td>
+          <td>{{ choco.father }}</td>
+          <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.fblood] }}"></td>
+          <td>{{ choco.mother }}</td>
+          <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.mblood] }}"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="naming-form">
+      <h3 class="style-cls-90">名前を付けてあげるクポ！</h3>
+      <form class="style-cls-148" action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mydata" value="{{ chara_log }}">
+        <input type="hidden" name="mode" value="choco_name">
+        <input type="text" name="st_name" placeholder="チョコボの名前" value="名無しのチョコボ" required>
+        <input type="submit" class="btn-farm" value="決定">
+      </form>
+    </div>
+
+  {% elif mode == 'choco_sell' %}
+    <!-- 売却画面 -->
+    <h3 class="style-cls-69">野に放したチョコボ</h3>
+    <table class="status-table">
+      <thead>
+        <tr>
+          <th>ブリーダー</th>
+          <th>画像</th>
+          <th>名前</th>
+          <th>引き取り額</th>
+          <th>戦績</th>
+          <th>タイプ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ choco.breader }}</td>
+          <td><img src="{{ config.img_farm }}/{{ config.choco_images[choco.no] }}"></td>
+          <td>{{ choco.name }}</td>
+          <td class="style-cls-65">{{ choco.money }} ギル</td>
+          <td>{{ choco.run }}戦 {{ choco.win }}勝</td>
+          <td class="style-cls-64">{{ choco.waza }}</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="style-cls-152">
+      <span class="style-cls-153">{{ choco.money }} ギルを獲得しました！</span>
+    </div>
+
+  {% elif mode == 'yadoya' %}
+    <!-- 宿屋完了画面 -->
+    <div class="style-cls-154">
+      <h3 class="style-cls-155">宿屋での休息が完了したクポ！</h3>
+      <p>チョコボの体力が回復し、最大限界値が上昇したクポ！</p>
+      <p class="style-cls-78">所持金: -5,000 ギル</p>
+    </div>
+  {% endif %}
+
+  <!-- フッター的な戻るフォーム -->
+  {% if backform %}
+    <div class="style-cls-156">
+      {{ backform|safe }}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

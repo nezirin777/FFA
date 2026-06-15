@@ -1,0 +1,43 @@
+{
+  "last_updated": 1781477290,
+  "total_players": 1,
+  "players": [
+    {
+      "id": "test",
+      "pass": "test",
+      "site": "いくのＣＧＩのＨＰ",
+      "url": "http://www.eriicu.com",
+      "name": "testキャラ",
+      "sex": 1,
+      "img": 11,
+      "str": 59,
+      "int": 27,
+      "dex": 22,
+      "vit": 60,
+      "agi": 30,
+      "mnd": 36,
+      "lck": 21,
+      "job": 0,
+      "hp": 1622,
+      "max_hp": 2936,
+      "exp": 358,
+      "level": 34,
+      "gold": 174141,
+      "lp": 30,
+      "unused21": 55,
+      "unused22": 40,
+      "comment": "テストです！",
+      "weapon_id": 1003,
+      "battle_limit": 9998,
+      "host": "127.0.0.1",
+      "last_time": 1080106983,
+      "boss_flag": 10,
+      "armor_id": 2002,
+      "unused30": 0,
+      "accessory_id": 43,
+      "title": 0,
+      "job_level": 34,
+      "bank": 0
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}対戦相手選択 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="select-container">
+    <div class="select-header">
+        <h1>道場キャラクター戦</h1>
+    </div>
+
+    <!-- NPCメッセージ -->
+    <div class="npc-msg">
+        <strong>受付の紳士:</strong><br>
+        「ここは模擬戦を行う道場です。対戦相手のデータをロードして戦いますが、勝敗によるステータスやゴールドの増減はありません。どうぞご自由に腕試しを行ってください。」
+    </div>
+
+    {% if mode == 'log_in' %}
+    <!-- 検索フォーム & 一覧遷移 -->
+    <div class="form-group">
+        <form action="{{ config.select_battle_script }}" method="POST">
+            <input type="hidden" name="mode" value="battle">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            
+            <label for="aitename">対戦相手の名前を入力してください</label>
+            <input type="text" id="aitename" name="aitename" class="text-input" placeholder="キャラクター名を入力">
+            <button type="submit" class="btn-submit">名前で挑戦する</button>
+        </form>
+    </div>
+
+    <div class="form-group style-cls-67">
+        <form action="{{ config.select_battle_script }}" method="POST">
+            <input type="hidden" name="mode" value="sentaku">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <button type="submit" class="btn-submit">登録済みの冒険者一覧から選択する</button>
+        </form>
+    </div>
+
+    {% elif mode == 'sentaku' %}
+    <!-- 一覧選択フォーム -->
+    <form action="{{ config.select_battle_script }}" method="POST">
+        <input type="hidden" name="mode" value="battle">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+
+        <label class="style-cls-267">対戦相手を選択してください</label>
+        
+        <div class="player-grid">
+            {% for player in players %}
+            <label class="player-card">
+                <input type="radio" name="aiteid" value="{{ player.id }}" required>
+                <div>
+                    <span class="style-cls-5">{{ player.name }}</span><br>
+                    <span class="style-cls-268">Lv.{{ player.level }} ({{ config.chara_jobs[player.job] }})</span>
+                </div>
+            </label>
+            {% else %}
+            <div class="style-cls-269">
+                他のプレイヤーが登録されていません。
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if players %}
+        <button type="submit" class="btn-submit">選択した相手と対戦する</button>
+        {% endif %}
+    </form>
+    
+    <div class="style-cls-67">
+        <a href="{{ config.select_battle_script }}?id={{ chara.id }}&mode=log_in" class="back-btn">検索に戻る</a>
+    </div>
+    {% endif %}
+
+    <div class="style-cls-270">
+        <a href="{{ config.main_script }}?id={{ chara.id }}" class="back-btn style-cls-271">街に戻る</a>
+    </div>
+</div>
+{% endblock %}

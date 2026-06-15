@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}登録完了 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-48">🎉 キャラクター作成完了！</h1>
+    <p class="style-cls-16">キャラクターの作成が完了しました。さあ、冒険に出発しましょう！</p>
+    <hr class="style-cls-49" size="1" color="{{ config.color_dark }}">
+    
+    <br>
+
+    <table border="1" cellspacing="0" class="result-table" bordercolor="{{ config.color_dark }}">
+        <tr bgcolor="#0a0a25">
+            <td class="style-cls-18" colspan="5" align="center">
+                <span class="font-size-3 color-configyellow"><b>初期登録ステータス</b></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <!-- 画像表示 -->
+            <td class="style-cls-50" width="30%" rowspan="9" align="center" bgcolor="#020210">
+                <img class="style-cls-51" src="{{ config.img_path }}/{{ chara_img_name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
+                <small class="style-cls-16">Lv. 1</small><br>
+                <b class="style-cls-19">{{ chara.name }}</b>
+            </td>
+            <td class="style-cls-16" width="20%" bgcolor="#020210" align="right"><span class="small-text">性別:</span></td>
+            <td class="style-cls-19" width="30%" align="left">{{ chara.sex == 1 and '男' or '女' }}</td>
+            <td class="style-cls-16" width="20%" bgcolor="#020210" align="right"><span class="small-text">初期職業:</span></td>
+            <td class="style-cls-19" width="30%" align="left"><b>{{ chara_syoku_name }}</b></td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">最大HP:</span></td>
+            <td class="style-cls-19" align="left">{{ chara.max_hp }}</td>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">所持金:</span></td>
+            <td class="style-cls-20" align="left"><b>{{ chara.gold }}</b> G</td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">力 (STR):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.str }}</td>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">魔力 (INT):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.int }}</td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">器用さ (DEX):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.dex }}</td>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">生命力 (VIT):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.vit }}</td>
+        </tr>
+        
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">速さ (AGI):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.agi }}</td>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">信仰心 (MND):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.mnd }}</td>
+        </tr>
+
+        <tr>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">魅力 (LCK):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.lck }}</td>
+            <td class="style-cls-16" bgcolor="#020210" align="right"><span class="small-text">カルマ (LP):</span></td>
+            <td class="style-cls-19" align="left">{{ chara.lp }}</td>
+        </tr>
+
+        <tr bgcolor="#030310">
+            <td class="style-cls-52" colspan="4" align="center">
+                🔑 <b>パスワード変更用単語: {{ passchange }}</b><br>
+                （※パスワードを忘れた時に使用します。必ずこの文字列を控えておいてください）
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <!-- ステータスへログイン遷移するフォーム -->
+    <form action="{{ config.login_script }}" method="POST">
+        <input type="hidden" name="mode" value="log_in">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="pass" value="{{ chara.pass }}">
+        <input type="submit" class="btn style-cls-53" value="ステータス画面へ（ログイン）">
+    </form>
+
+    <br><br><br>
+</div>
+{% endblock %}

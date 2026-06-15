@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}街の外れ - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-157">
+        ⚔️ {{ config.main_title }} ⚔️
+    </h1>
+    <p class="style-cls-158">Final Fantasy Adventure の世界へようこそ</p>
+
+    <!-- ログイン・新規登録・テストプレイ エリア -->
+    <table class="style-cls-159" border="0" cellpadding="5" cellspacing="10">
+        <tr align="center" valign="top">
+            <!-- 既存ログイン -->
+            <td width="33%">
+                <div class="style-cls-160">
+                    <h3 class="style-cls-161">💾 冒険を再開する</h3>
+                    <form class="style-cls-66" action="{{ config.login_script }}" method="POST">
+                        <input type="hidden" name="mode" value="log_in">
+                        <table class="style-cls-38" border="0" cellpadding="3">
+                            <tr>
+                                <td class="style-cls-16">I D:</td>
+                                <td><input class="style-cls-162" type="text" size="12" name="id" value="{{ c_id }}"></td>
+                            </tr>
+                            <tr>
+                                <td class="style-cls-16">パスワード:</td>
+                                <td><input class="style-cls-162" type="password" size="12" name="pass" value="{{ c_pass }}"></td>
+                            </tr>
+                        </table>
+                        <br>
+                        <input type="submit" class="btn style-cls-163" value="ログイン">
+                    </form>
+                </div>
+            </td>
+
+            <!-- テストプレイ -->
+            <td width="33%">
+                <div class="style-cls-164">
+                    <h3 class="style-cls-165">🎮 お試しテストプレイ</h3>
+                    <p class="style-cls-166">どなたでもログインなしで挙動をテストできます。（※10分の排他時間制御あり）</p>
+                    
+                    {% if test_playable %}
+                    <form class="style-cls-167" action="{{ config.login_script }}" method="POST">
+                        <input type="hidden" name="mode" value="log_in">
+                        <input type="hidden" name="id" value="test">
+                        <input type="hidden" name="pass" value="test">
+                        <input type="submit" class="btn style-cls-168" value="テストプレイ開始">
+                    </form>
+                    {% else %}
+                    <div class="style-cls-169">
+                        現在使用中（ロック中）です<br><span class="style-cls-170">しばらくお待ちください</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+
+            <!-- 新規キャラ登録 -->
+            <td width="33%">
+                <div class="style-cls-171">
+                    <h3 class="style-cls-172">✨ 新規登録</h3>
+                    <p class="style-cls-166">新しいキャラクターを作成して冒険を始めましょう！一人につき1キャラのみ登録可能です。</p>
+                    
+                    <form class="style-cls-167" action="{{ config.chara_make_script }}" method="POST">
+                        <input type="hidden" name="mode" value="chara_make">
+                        <input type="submit" class="btn style-cls-173" value="新規キャラクター作成">
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- テロップ表示 -->
+    <table class="style-cls-66" border="0" width="95%" max-width="1000">
+        <tr>
+            <td class="style-cls-174" align="center">
+                <marquee class="style-cls-142" scrollamount="3">{{ config.telop_message|safe }}</marquee>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    
+    <!-- 現在の冒険者一覧 -->
+    <div class="style-cls-175">
+        {{ guests_html|safe }}
+    </div>
+
+    <!-- メイングリッド (チャンプステータス & 遊び方ガイド) -->
+    <div class="grid-layout">
+        <!-- 左カラム: チャンプデータ -->
+        <div>
+            <h2 class="style-cls-176">👑 現在のチャンプ（{{ winner.win_count }}連勝中）</h2>
+            <p class="style-cls-177">
+                現在の最高連勝記録は、<b>{{ winner.max_win_name }}</b> さんの <b>{{ winner.max_win_count }}</b> 連勝です。
+            </p>
+            
+            <div class="champ-card">
+                <table border="0" width="100%">
+                    <tr>
+                        <!-- チャンプの顔グラ & 基本情報 -->
+                        <td class="style-cls-178" width="35%" align="center" valign="top">
+                             <img class="style-cls-51" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
+                            <b class="style-cls-19">{{ winner.name }}</b><br>
+                            <span class="style-cls-16">{{ winner.sex == 1 and '男' or '女' }} / {{ config.chara_jobs[winner.job] }}</span><br>
+                            <span class="style-cls-20">ジョブLv: {{ winner.job_level }}</span><br>
+                            <br>
+                            <table class="style-cls-179" border="0" width="100%">
+                                <tr><td>クラス:</td><td class="yellow">{{ winner_class }}</td></tr>
+                                <tr><td>レベル:</td><td class="yellow">Lv.{{ winner.level }}</td></tr>
+                                <tr><td>HP:</td><td class="yellow">{{ winner.hp }}/{{ winner.max_hp }}</td></tr>
+                                <tr><td>賞金:</td><td class="yellow">{{ winner.gold }} G</td></tr>
+                                <tr><td>勝率:</td><td class="yellow">{{ win_ratio }}% ({{ winner.win_count }}勝)</td></tr>
+                            </table>
+                        </td>
+                        
+                        <!-- チャンプのステータス詳細 -->
+                        <td class="style-cls-180" width="65%" valign="top">
+                            <table class="style-cls-16" border="0" width="100%" cellpadding="2">
+                                <tr><td width="25%">武器:</td><td class="style-cls-19" width="75%"><b>{{ winner.equipped_item.weapon.name }}</b> (ATK:{{ winner.equipped_item.weapon.dmg }})</td></tr>
+                                <tr><td>防具:</td><td class="style-cls-19"><b>{{ winner.equipped_item.armor.name }}</b> (DEF:{{ winner.equipped_item.armor.def }})</td></tr>
+                                <tr><td>飾り:</td><td class="style-cls-19"><b>{{ winner.equipped_item.accessory.name }}</b></td></tr>
+                            </table>
+                            
+                            <hr class="style-cls-181" size="1" color="#222255">
+                            
+                            <table class="style-cls-16" border="0" width="100%" cellpadding="1">
+                                <tr>
+                                    <td width="20%">力:</td><td width="30%">{{ winner.str }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.str }}px;"></div></div></td>
+                                    <td width="20%">魔力:</td><td width="30%">{{ winner.int }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.int }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>信仰心:</td><td>{{ winner.mnd }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.mnd }}px;"></div></div></td>
+                                    <td>生命力:</td><td>{{ winner.vit }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.vit }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>器用さ:</td><td>{{ winner.dex }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.dex }}px;"></div></div></td>
+                                    <td>速さ:</td><td>{{ winner.agi }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.agi }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>魅力:</td><td>{{ winner.lp }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.lp }}px;"></div></div></td>
+                                    <td>運:</td><td>{{ winner.lck }} <div class="bar-bg style-cls-182"><div class="bar-fill" style="width:{{ bw.lck }}px;"></div></div></td>
+                                </tr>
+                            </table>
+                            
+                            <hr class="style-cls-181" size="1" color="#222255">
+                            
+                            <table class="style-cls-16" border="0" width="100%" cellpadding="1">
+                                <tr>
+                                    <td width="25%">物理命中率:</td><td width="75%">{{ hit_base }}% <div class="bar-bg style-cls-183"><div class="bar-fill style-cls-184" style="width:{{ bw.hit }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>物理回避率:</td><td>{{ kaihi_base }}% <div class="bar-bg style-cls-183"><div class="bar-fill style-cls-185" style="width:{{ bw.kaihi }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>必殺奥義率:</td><td>{{ waza_base }}% <div class="bar-bg style-cls-183"><div class="bar-fill style-cls-186" style="width:{{ bw.waza }}px;"></div></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 右カラム: 遊び方ガイド -->
+        <div>
+            <h2 class="style-cls-176">📖 遊び方・ルール</h2>
+            <div class="style-cls-187">
+                <ol class="info-list style-cls-188">
+                    <li>まず、右上の「<b>新規キャラクター作成</b>」ボタンを押して、キャラクターを作成します。</li>
+                    <li>作成後、このページの左上にあるログインフォームからIDとパスワードを入力してログインし、個人用のステータス・メイン画面に入ります。</li>
+                    <li>メイン画面から「戦闘（対人戦・モンスター修行）」、「ショップでの売買」、「倉庫整理」などの行動を選択してゲームを進めます。</li>
+                    <li>一度キャラクターを作成したら、次回以降はログインして前回の続きから遊べます。新規登録は<b>1人につき1キャラクターのみ</b>です。</li>
+                    <li>キャラクターの初期能力値振り分けは非常に重要です。レベルアップ時に能力値が上昇することは稀なため、初期の割り振りは慎重に行ってください。</li>
+                    <li><b>{{ config.delete_limit_days }}日以上</b>戦闘を行わずに放置すると、データ削除対象となり削除されることがありますのでご注意ください。</li>
+                    <li>一度戦闘を行うと、再戦闘までに <b>{{ config.battle_cooldown }}秒</b> のクールダウン時間が必要です。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共有メニューと管理者コントロール -->
+    <hr class="style-cls-189" size="1" color="{{ config.color_dark }}">
+    
+    <table class="style-cls-16" border="0" width="95%" max-width="1000">
+        <tr>
+            <td align="center">
+                <a class="style-cls-54" href="{{ config.ranking_script }}">能力別ランキング</a> | 
+                <a class="style-cls-54" href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="style-cls-190" align="center">
+                <table class="style-cls-191" border="1" cellpadding="6" cellspacing="0">
+                    <tr bgcolor="#330000"><td align="center"><b class="style-cls-192">🚨 連絡事項・禁止事項</b></td></tr>
+                    <tr><td class="style-cls-193">{{ config.admin_message|safe }}</td></tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <form class="style-cls-24" action="{{ config.admin_script }}" method="POST">
+                    <span class="style-cls-16">管理者パスワード:</span>
+                    <input class="style-cls-162" type="password" size="12" name="pass">
+                    <input type="submit" class="btn style-cls-194" value="管理者画面">
+                </form>
+            </td>
+        </tr>
+    </table>
+    
+    <br><br>
+</div>
+{% endblock %}
