@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}新規キャラクター作成 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br>
+    <h1 class="style-cls-15">🛡️ キャラクター新規登録</h1>
+    <p class="style-cls-16">FFAの世界へ旅立つためのキャラクターを作成します。</p>
+    <hr class="style-cls-41" size="1" color="{{ config.color_dark }}">
+    
+    <br>
+
+    <!-- 注意事項 -->
+    <div class="important-notice">
+        <h3 class="style-cls-42">⚠️ 登録の際のご注意</h3>
+        <ul class="style-cls-43">
+            <li>キャラクター登録は<b>お一人様１キャラクター</b>までです。重複登録が発覚した場合、<b>警告なしに全データを削除</b>します。</li>
+            <li>荒らし行為、不正プレイ、嫌がらせ、他者を不快にさせる名前などの登録は禁止します。</li>
+            <li>消失したデータの復元は原則として行えませんので、ご了承ください。</li>
+        </ul>
+    </div>
+
+    <!-- 入力フォーム -->
+    <form action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="mode" value="make_pre">
+        
+        <table border="1" cellspacing="0" class="form-table" bordercolor="{{ config.color_dark }}">
+            <tr bgcolor="#0a0a25">
+                <td class="style-cls-18" colspan="2" align="center">
+                    <span class="font-size-3 color-configyellow"><b>キャラクター設定フォーム</b></span>
+                </td>
+            </tr>
+            
+            <!-- ユーザーID -->
+            <tr>
+                <td class="style-cls-16" width="30%" bgcolor="#020210" align="right"><b>ユーザーID:</b></td>
+                <td width="70%" align="left">
+                    <input class="style-cls-44" type="text" name="id" size="15" maxlength="8">
+                    <div class="note-text">※4〜8文字の半角英数字（ログイン時に使用します）</div>
+                </td>
+            </tr>
+
+            <!-- パスワード -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>パスワード:</b></td>
+                <td align="left">
+                    <input class="style-cls-44" type="password" name="pass" size="15" maxlength="8">
+                    <div class="note-text">※4〜8文字の半角英数字（ログイン時に使用します）</div>
+                </td>
+            </tr>
+
+            <!-- パスワード変更用単語 -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>パスワード変更用単語:</b></td>
+                <td align="left">
+                    <input class="style-cls-44" type="text" name="passchange" size="20">
+                    <div class="note-text style-cls-22">※パスワードを紛失・変更する際に必要になります。必ずメモしてください。</div>
+                </td>
+            </tr>
+
+            <!-- キャラクターの名前 -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>キャラクターの名前:</b></td>
+                <td align="left">
+                    <input class="style-cls-44" type="text" name="c_name" size="25">
+                    <div class="note-text">※ゲーム内で表示されるあなたの名前です。重複はできません。</div>
+                </td>
+            </tr>
+
+            <!-- 性別 -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>性別:</b></td>
+                <td class="style-cls-16" align="left">
+                    <input type="radio" name="sex" value="1" checked> 男 ＆nbsp;＆nbsp;
+                    <input type="radio" name="sex" value="0"> 女
+                </td>
+            </tr>
+
+            <!-- 画像番号 -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>キャラクター外見 (番号):</b></td>
+                <td align="left">
+                    <input class="style-cls-45" type="text" name="chara" size="5">
+                    ＆nbsp;＆nbsp;<a class="style-cls-46" href="{{ img_all_list }}" target="_blank"><b>{{ vote_gazou }}を開く</b></a>
+                    <div class="note-text">※希望の画像番号を入力してください。空欄、または無効な番号の場合はランダムに決定します。</div>
+                </td>
+            </tr>
+
+
+
+            <!-- 初期職業 -->
+            <tr>
+                <td class="style-cls-16" bgcolor="#020210" align="right"><b>初期職業:</b></td>
+                <td align="left">
+                    <select class="style-cls-44" name="syoku">
+                        {% for syoku_name in chara_syoku_list %}
+                        <option value="{{ loop.index0 }}">{{ syoku_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="note-text">※職業ごとに初期能力値（力、魔力、信仰心など）の割り振りが異なります。</div>
+                </td>
+            </tr>
+
+            <!-- 送信ボタン -->
+            <tr bgcolor="#0a0a25">
+                <td colspan="2" align="center">
+                    <input type="submit" class="btn style-cls-47" value="入力内容を確認する">
+                </td>
+            </tr>
+        </table>
+    </form>
+    
+    <br><br>
+    <a class="style-cls-46" href="{{ config.others_script }}"><b>トップページへ戻る</b></a>
+    <br><br><br>
+</div>
+{% endblock %}

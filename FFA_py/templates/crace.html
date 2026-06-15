@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="race-container">
+  <div class="race-title">
+    {{ racename }}
+  </div>
+
+  <!-- レーストラック -->
+  <div class="race-track">
+    <div class="goal-line"></div>
+    {% for runner in runners %}
+      <div class="lane">
+        <span class="lane-num">{{ loop.index }}</span>
+        <span class="lane-name">{{ runner.name }}</span>
+        <img src="{{ config.img_farm }}/{{ config.choco_images[runner.no] }}" class="choco-runner" id="runner-{{ loop.index0 }}">
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 実況ログ -->
+  <div class="commentary-box" id="commentary">
+    <div class="commentary-line style-cls-78">ゲートが開いたクポ！一斉にスタートクポ！</div>
+  </div>
+
+  <!-- 最終結果 -->
+  <div class="result-box" id="result-box">
+    <div class="result-summary" id="result-summary">レース終了</div>
+    <div class="result-details">
+      <div class="style-cls-27" id="result-comment"></div>
+      
+      <div class="style-cls-89">
+        <h4 class="style-cls-90">上昇ステータス</h4>
+        <p id="result-agari"></p>
+        {% if senzai %}
+          <p class="style-cls-78">{{ senzai|safe }}</p>
+        {% endif %}
+        {% if genkai %}
+          <p class="style-cls-91">{{ genkai|safe }}</p>
+        {% endif %}
+        {% if rousui %}
+          <p class="style-cls-92">{{ rousui|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 戻るボタン -->
+    <form action="{{ config.chocofarm_script }}" method="post">
+      <input type="hidden" name="id" value="{{ chara.id }}">
+      <input type="hidden" name="mydata" value="{{ chara_log }}">
+      <input type="submit" class="btn-farm" value="牧場に戻る">
+    </form>
+  </div>
+</div>
+
+<script>
+  const turns = {{ turns_json|safe }};
+  const runners = {{ runners_json|safe }};
+  const totalDistance = 2400;
+  
+  // トラック幅の計算
+  const track = document.querySelector('.race-track');
+  const trackWidth = track.clientWidth;
+  const startOffset = 50; // 右端からのオフセット
+  const goalOffset = 200; // 左端のゴールライン位置
+  const runWidth = trackWidth - startOffset - goalOffset - 40; // 走る有効幅
+
+  let currentStep = 0;
+  const stepInterval = 400; // 0.4秒間隔で進行
+
+  function playNextStep() {
+    if (currentStep >= turns.length) {
+      // レース終了時の表示
+      document.getElementById("result-box").style.display = "block";
+      document.getElementById("result-comment").innerHTML = `{{ comment|safe }}`;
+      document.getElementById("result-agari").innerHTML = `{{ agari|safe }}`;
+      if ({{ win_js }}) {
+        document.getElementById("result-summary").innerText = "🏆 レース勝利！";
+        document.getElementById("result-summary").style.color = "#ffcc00";
+      } else {
+        document.getElementById("result-summary").innerText = "レース終了";
+        document.getElementById("result-summary").style.color = "#e0e0ff";
+      }
+      return;
+    }
+
+    const stepData = turns[currentStep];
+
+    // 各チョコボの位置を更新
+    // stepData.positions は各チョコボの残り距離 [p0, p1, p2, p3, p4]
+    for (let i = 0; i < runners.length; i++) {
+      const remaining = stepData.positions[i];
+      // 走った比率 (2400からどれだけ減ったか)
+      const ratio = (totalDistance - remaining) / totalDistance;
+      const rightPx = startOffset + (ratio * runWidth);
+      
+      const runnerImg = document.getElementById(`runner-${i}`);
+      runnerImg.style.right = rightPx + "px";
+      
+      // 走っている間は細かく上下に揺らす効果
+      const bounce = (currentStep % 2 === 0) ? -3 : 0;
+      runnerImg.style.transform = `translateY(${bounce}px)`;
+    }
+
+    // 実況メッセージの追加
+    if (stepData.comment) {
+      const commBox = document.getElementById("commentary");
+      const newLine = document.createElement("div");
+      newLine.className = "commentary-line";
+      
+      // プレイヤーが関わるメッセージなどは色を変える
+      if (stepData.comment.includes("{{ choco.name }}")) {
+        newLine.style.color = "#ffb3b3";
+      }
+      
+      newLine.innerHTML = stepData.comment;
+      commBox.appendChild(newLine);
+      commBox.scrollTop = commBox.scrollHeight;
+    }
+
+    currentStep++;
+    setTimeout(playNextStep, stepInterval);
+  }
+
+  // レース開始
+  window.onload = function() {
+    setTimeout(playNextStep, 1000);
+  };
+</script>
+{% endblock %}

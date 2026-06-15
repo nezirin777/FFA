@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}ステータス変更完了 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-msg">🎉 {{ chara.name }} さんのプロフィール設定を更新しましたクポ！</div>
+    
+    <div class="btn-container">
+        <form action="sts.py" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="submit" class="btn-link" value="⚙️ ステータス設定画面へ">
+        </form>
+        <form action="ffadventure.py" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="submit" class="btn-link" value="🏡 ゲームメイン画面へ">
+        </form>
+    </div>
+</div>
+{% endblock %}

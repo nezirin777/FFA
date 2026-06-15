@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}{{ chara.name }}さんの詳細ステータス・設定 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-title">{{ chara.name }}さん用ステータス変更画面</div>
+    
+    <div class="menu-bar">
+        <span class="white">メニュー / </span>
+        <a href="system.py">登録者一覧</a> | 
+        <a href="rank.py">能力別ランキング</a> | 
+        <a href="system.py?mode=img_list" target="_blank">アイコン画像一覧</a>
+    </div>
+
+    <div class="layout-grid">
+        
+        <!-- 左カラム: キャラクター情報とジョブ・コマンド -->
+        <div class="left-column">
+            
+            <!-- キャラクターデータ -->
+            <div class="section-card">
+                <div class="section-title">🛡️ 装備 & 基本情報</div>
+                <table class="style-cls-280">
+                    <tr>
+                        <td class="style-cls-281" rowspan="4" align="center">
+                            <img class="style-cls-282" src="{{ config.img_path }}/{{ config.chara_images[chara.img] }}"><br>
+                            <span class="style-cls-140">No.{{ chara.img }}</span>
+                        </td>
+                        <td class="style-cls-283">武器</td>
+                        <td class="style-cls-5" align="right">{{ item.weapon.name }}</td>
+                        <td class="style-cls-284">攻撃力</td>
+                        <td class="style-cls-144" align="right">{{ item.weapon.dmg }}</td>
+                    </tr>
+                    <tr>
+                        <td class="style-cls-285">防具</td>
+                        <td class="style-cls-5" align="right">{{ item.armor.name }}</td>
+                        <td class="style-cls-285">防御力</td>
+                        <td class="style-cls-286" align="right">{{ item.armor.def }}</td>
+                    </tr>
+                    <tr>
+                        <td class="style-cls-285">アクセサリ</td>
+                        <td class="style-cls-5" align="right" colspan="3">{{ item.accessory.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="style-cls-285">称号</td>
+                        <td class="style-cls-142" colspan="3">{{ syou_name }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- これまでのジョブ -->
+            <div class="section-card">
+                <div class="section-title">📊 ジョブ熟練状況</div>
+                <div class="jobs-grid">
+                    {% for job in all_jobs_status %}
+                    <div class="job-cell {% if job.level >= 60 %}master{% endif %}">
+                        <div class="job-name" title="{{ job.name }}">{{ job.name }}</div>
+                        <div class="job-level">Lv {{ job.level }}</div>
+                        <div class="job-mark">{{ job.mark }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- その他のコマンド -->
+            <div class="section-card">
+                <div class="section-title">⚙️ 各種コマンド</div>
+                <div class="command-list">
+                    <div class="command-row">
+                        <span class="command-label">⚔️ バトル時の戦術・作戦変更</span>
+                        <a href="tac_change.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">戦術変更</a>
+                    </div>
+                    <div class="command-row">
+                        <span class="command-label">🛡️ 通常ゲーム画面に戻る</span>
+                        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">メイン画面へ</a>
+                    </div>
+                    <div class="command-row">
+                        <span class="command-label">🔑 セキュリティパスワード変更</span>
+                        <a href="passchange.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">パスワード変更</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 右カラム: ステータス詳細と編集フォーム -->
+        <div class="right-column">
+            
+            <form action="sts.py" method="post">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mydata" value="{{ chara_log }}">
+                <input type="hidden" name="mode" value="st_buy">
+
+                <!-- 編集フォーム -->
+                <div class="section-card">
+                    <div class="section-title">📝 プロフィール・アイコン設定</div>
+                    
+
+                    
+                    <label class="style-cls-287">🖼️ アイコン画像番号 (0〜40)</label><br>
+                    <input type="number" name="chara" value="{{ chara.img }}" class="input-field style-cls-183" min="0" max="40">
+                    <a class="style-cls-288" href="system.py?mode=img_list" target="_blank">画像一覧を確認クポ</a><br><br>
+                    
+                    <label class="style-cls-287">💬 クリティカル発動時の台詞・コメント</label><br>
+                    <input type="text" name="waza" value="{{ chara.comment }}" class="input-field" maxlength="100"><br>
+                    
+                    <button type="submit" class="btn-submit">💾 設定内容を保存する</button>
+                </div>
+            </form>
+
+            <!-- ステータスパラメータ表示 -->
+            <div class="section-card">
+                <div class="section-title">📊 詳細ステータス</div>
+                <table class="stat-table">
+                    <tr>
+                        <th>レベル</th><td>{{ chara.level }}</td>
+                        <th>経験値</th><td>{{ chara.exp }} / {{ next_ex }}</td>
+                    </tr>
+                    <tr>
+                        <th>現在のジョブ</th><td>{{ config.chara_jobs[chara.job] }} (Lv {{ chara.job_level }})</td>
+                        <th>現在HP</th><td>{{ chara.hp }} / {{ chara.max_hp }}</td>
+                    </tr>
+                    <tr>
+                        <th>攻撃力</th><td>{{ item.weapon.dmg }}</td>
+                        <th>防御力</th><td>{{ item.armor.def }}</td>
+                    </tr>
+                    <tr>
+                        <th>力 (物理ダメ)</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_str }}%;"></div></div>
+                            <span class="bar-val">{{ chara.str }} <span class="style-cls-140">+ {{ item.weapon.dmg }}</span></span>
+                        </td>
+                        <th>魔力 (魔法効果)</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_int }}%;"></div></div>
+                            <span class="bar-val">{{ chara.int }} <span class="style-cls-140">+ {{ item.accessory.bonus.int }}</span></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>信仰心 (魔法防御)</th>
+                        <td>
+                            <!-- 信仰心マッピング -> dex -->
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_dex }}%;"></div></div>
+                            <span class="bar-val">{{ chara.dex }} <span class="style-cls-140">+ {{ item.accessory.bonus.dex }}</span></span>
+                        </td>
+                        <th>生命力 (被ダメ軽減)</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_vit }}%;"></div></div>
+                            <span class="bar-val">{{ chara.vit }} <span class="style-cls-140">+ {{ item.accessory.bonus.vit }}</span></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>器用さ (命中貢献)</th>
+                        <td>
+                            <!-- 器用さマッピング -> agi -->
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_agi }}%;"></div></div>
+                            <span class="bar-val">{{ chara.agi }} <span class="style-cls-140">+ {{ item.accessory.bonus.agi }}</span></span>
+                        </td>
+                        <th>速さ (回避貢献)</th>
+                        <td>
+                            <!-- 速さマッピング -> mnd -->
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_mnd }}%;"></div></div>
+                            <span class="bar-val">{{ chara.mnd }} <span class="style-cls-140">+ {{ item.accessory.bonus.mnd }}</span></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>魅力 (クリティカル)</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_lck }}%;"></div></div>
+                            <span class="bar-val">{{ chara.lck }} <span class="style-cls-140">+ {{ item.accessory.bonus.lck }}</span></span>
+                        </td>
+                        <th>カルマ (カルマ値)</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_lp }}%;"></div></div>
+                            <span class="bar-val">{{ chara.lp }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>命中率</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill style-cls-289" style="width: {{ bw_hit }}%;"></div></div>
+                            <span class="bar-val">{{ hit_ritu }}% <span class="style-cls-55">+ {{ ci_plus }}%</span></span>
+                        </td>
+                        <th>回避率</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill style-cls-290" style="width: {{ bw_kaihi }}%;"></div></div>
+                            <span class="bar-val">{{ kaihi_ritu }}% <span class="style-cls-94">+ {{ cd_plus }}%</span></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>必殺技発動率</th>
+                        <td>
+                            <div class="bar-container"><div class="bar-fill style-cls-291" style="width: {{ bw_waza }}%;"></div></div>
+                            <span class="bar-val">{{ waza_ritu }}% <span class="style-cls-20">{% if waza_plus > 0 %}+ {{ waza_plus }}%{% endif %}</span></span>
+                        </td>
+                        <th>現在の作戦名</th>
+                        <td class="style-cls-142" title="{{ tac_ex }}">{{ tac_name }}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

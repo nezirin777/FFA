@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}転職完了 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br><br><br>
+    <table class="style-cls-316" border="1" cellspacing="0" cellpadding="15" bgcolor="#030315" bordercolor="#5a3ba8">
+        <tr bgcolor="#0d0a25">
+            <td class="style-cls-317" align="center">
+                <span class="font-size-4 color-cda8ff"><b>⛪ 転職完了</b></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="style-cls-206" align="center">
+                <p class="style-cls-241">
+                    祝・{{ job_name }} に転職しました！
+                </p>
+                <p class="style-cls-16">
+                    新しいジョブとしての熟練度は <b>Lv. {{ chara.job_level }}</b> です。
+                </p>
+                
+                {% if msg_penalty %}
+                <br>
+                <div class="style-cls-318">
+                    {{ msg_penalty }}
+                </div>
+                {% endif %}
+                
+                <br>
+                <hr size="1" color="{{ config.color_dark }}">
+                <br>
+                
+                <table class="style-cls-319" border="0" cellpadding="4" cellspacing="0">
+                    <tr><td>力 (STR):</td><td class="style-cls-320"><b>{{ chara.str }}</b></td></tr>
+                    <tr><td>魔力 (INT):</td><td class="style-cls-320"><b>{{ chara.int }}</b></td></tr>
+                    <tr><td>信仰心 (MND):</td><td class="style-cls-320"><b>{{ chara.mnd }}</b></td></tr>
+                    <tr><td>生命力 (VIT):</td><td class="style-cls-320"><b>{{ chara.vit }}</b></td></tr>
+                    <tr><td>器用さ (DEX):</td><td class="style-cls-320"><b>{{ chara.dex }}</b></td></tr>
+                    <tr><td>速さ (AGI):</td><td class="style-cls-320"><b>{{ chara.agi }}</b></td></tr>
+                    <tr><td>魅力 (LCK):</td><td class="style-cls-320"><b>{{ chara.lck }}</b></td></tr>
+                    <tr><td>カルマ (LP):</td><td class="style-cls-321"><b>{{ chara.lp }}</b></td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <br><br>
+    
+    <!-- 神殿に戻る -->
+    <form class="style-cls-39" action="{{ config.tensyoku_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ user_id }}">
+        <input type="submit" class="btn" value="神殿に戻る">
+    </form>
+    
+    <!-- ステータス画面に戻る -->
+    <form class="style-cls-40" action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ user_id }}">
+        <input type="submit" class="btn" value="ステータス画面へ">
+    </form>
+    <br><br><br>
+</div>
+{% endblock %}

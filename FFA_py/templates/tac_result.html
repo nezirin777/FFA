@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}作戦変更完了 - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-msg">⚔️ 作戦（戦術）を「{{ selected_tac_name }}」に変更しましたクポ！</div>
+    
+    <div class="btn-container">
+        <form action="tac_change.py" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="submit" class="btn-link" value="⚔️ 作戦会議室に戻る">
+        </form>
+        <form action="ffadventure.py" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="submit" class="btn-link" value="🏡 メイン画面へ">
+        </form>
+    </div>
+</div>
+{% endblock %}

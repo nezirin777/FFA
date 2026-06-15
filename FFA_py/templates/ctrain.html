@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="train-container">
+  <div class="train-title">
+    トレーニング開始クポ！ ({{ subject }})
+  </div>
+
+  <!-- アニメーション再生エリア -->
+  <div class="turn-card" id="animation-card">
+    <div class="turn-num" id="turn-num-label">準備中クポ...</div>
+    <div class="choco-sprite-box">
+      <img src="{{ config.img_farm }}/{{ config.choco_images[choco.no] }}" class="choco-sprite" id="choco-img">
+    </div>
+    <div class="style-cls-93">成功/失敗: <span id="success-count">0</span> / <span id="lose-count">0</span></div>
+    <div class="turn-msg" id="turn-message"></div>
+  </div>
+
+  <!-- 進捗ゲージ -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- 最終結果表示 -->
+  <div class="result-box" id="result-box">
+    <div class="result-summary">{{ choco.name }}のトレーニング結果</div>
+    <div class="result-details">
+      <p >成功回数: <strong class="style-cls-94">{{ success }} 回</strong> / 失敗: <strong class="style-cls-55">{{ lose }} 回</strong></p>
+      <div class="style-cls-95">
+        {{ agari|safe }}
+      </div>
+      {% if senzai %}
+        <p class="style-cls-78">{{ senzai|safe }}</p>
+      {% endif %}
+      {% if genkai %}
+        <p class="style-cls-91">{{ genkai|safe }}</p>
+      {% endif %}
+      {% if rousui %}
+        <p class="style-cls-96">{{ rousui|safe }}</p>
+      {% endif %}
+    </div>
+
+    <!-- 戻るボタン -->
+    <form action="{{ config.chocofarm_script }}" method="post">
+      <input type="hidden" name="id" value="{{ chara.id }}">
+      <input type="hidden" name="mydata" value="{{ chara_log }}">
+      <input type="submit" class="btn-farm" value="牧場に戻る">
+    </form>
+  </div>
+</div>
+
+<script>
+  // サーバーから渡されたアニメーションデータをJS側で読み込む
+  const turns = {{ turns_json|safe }};
+  let currentTurn = 0;
+  let successCount = 0;
+  let loseCount = 0;
+  const intervalMs = 300; // 0.3秒間隔で進行
+
+  function playNextTurn() {
+    if (currentTurn >= turns.length) {
+      // 全ターン終了時の処理
+      document.getElementById("animation-card").style.display = "none";
+      document.getElementById("progress-fill").style.width = "100%";
+      document.getElementById("result-box").style.display = "block";
+      return;
+    }
+
+    const tData = turns[currentTurn];
+    
+    // プログレスバーの更新
+    const progressPercent = ((currentTurn + 1) / turns.length) * 100;
+    document.getElementById("progress-fill").style.width = progressPercent + "%";
+
+    // テキスト・画像表示更新
+    document.getElementById("turn-num-label").innerText = `${currentTurn + 1} 回目の挑戦`;
+    
+    if (tData.success) {
+      successCount++;
+      // 成功時は少し上下に揺らすなどのアニメーション効果を追加可能
+      document.getElementById("choco-img").style.transform = "scale(1.1)";
+    } else {
+      loseCount++;
+      // 失敗時は少し回転するなどの効果
+      document.getElementById("choco-img").style.transform = "rotate(15deg) scale(0.9)";
+    }
+    
+    // アニメーション効果を戻す
+    setTimeout(() => {
+      document.getElementById("choco-img").style.transform = "scale(1) rotate(0deg)";
+    }, 150);
+
+    document.getElementById("success-count").innerText = successCount;
+    document.getElementById("lose-count").innerText = loseCount;
+    document.getElementById("turn-message").innerHTML = tData.msg;
+
+    currentTurn++;
+    setTimeout(playNextTurn, intervalMs);
+  }
+
+  // アニメーション開始
+  window.onload = function() {
+    setTimeout(playNextTurn, 500);
+  };
+</script>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}倉庫管理 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <h1>アイテム倉庫</h1>
+    <hr size="1" color="{{ config.color_dark }}">
+
+    <div class="style-cls-272">
+        <b>倉庫管理人：</b><br>
+        <span class="yellow">「いらっしゃい、{{ chara.name }}さん。ここがあなたの貸し倉庫だよ。<br>
+        装備の付け替えや、不要になったアイテムの整理ができるよ。ゆっくり作業していってね。」</span>
+    </div>
+
+    <!-- 現在の装備一覧 -->
+    <table class="style-cls-277" border="1" cellspacing="0" cellpadding="6">
+        <tr bgcolor="#111133">
+            <td colspan="5" align="center" class="white"><b>現在の装備品</b></td>
+        </tr>
+        <tr bgcolor="#030310" align="center">
+            <td width="20%"><span class="small-text">部位</span></td>
+            <td width="40%"><span class="small-text">装備名</span></td>
+            <td width="15%"><span class="small-text">性能</span></td>
+            <td width="25%"><span class="small-text">操作</span></td>
+        </tr>
+        
+        <!-- 武器 -->
+        <tr align="center">
+            <td bgcolor="#050522"><span class="small-text">武器</span></td>
+            <td><b>{{ item.weapon.name }}</b></td>
+            <td>{{ item.weapon.dmg }}</td>
+            <td>
+                {% if chara.weapon_id and chara.weapon_id != 0 %}
+                <form class="style-cls-30" action="souko.py" method="POST">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="hidden" name="mode" value="item_hazusi">
+                    <input type="submit" class="btn style-cls-123" value="外す">
+                </form>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        
+        <!-- 防具 -->
+        <tr align="center">
+            <td bgcolor="#050522"><span class="small-text">防具</span></td>
+            <td><b>{{ item.armor.name }}</b></td>
+            <td>{{ item.armor.def }}</td>
+            <td>
+                {% if chara.armor_id and chara.armor_id != 0 %}
+                <form class="style-cls-30" action="souko.py" method="POST">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="hidden" name="mode" value="def_hazusi">
+                    <input type="submit" class="btn style-cls-123" value="外す">
+                </form>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        
+        <!-- 装飾品 -->
+        <tr align="center">
+            <td bgcolor="#050522"><span class="small-text">装飾品</span></td>
+            <td><b>{{ item.accessory.name }}</b></td>
+            <td><span class="small-text">{{ acs_bonus_str }}</span></td>
+            <td>
+                {% if chara.accessory_id and chara.accessory_id != 0 %}
+                <form class="style-cls-30" action="souko.py" method="POST">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="hidden" name="mode" value="acs_hazusi">
+                    <input type="submit" class="btn style-cls-123" value="外す">
+                </form>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- 倉庫リスト (3列構成) -->
+    <table border="0" width="95%" cellspacing="10">
+        <tr>
+            <!-- 武器倉庫 -->
+            <td valign="top" width="33%">
+                <table class="style-cls-278" border="1" width="100%" cellspacing="0" cellpadding="4">
+                    <tr bgcolor="#111133">
+                        <td colspan="4" align="center" class="white"><b>武器倉庫 (最大8)</b></td>
+                    </tr>
+                    <tr bgcolor="#030310" align="center">
+                        <td width="20%"><span class="small-text">装備</span></td>
+                        <td width="20%"><span class="small-text">破棄</span></td>
+                        <td width="40%"><span class="small-text">武器名</span></td>
+                        <td width="20%"><span class="small-text">攻撃</span></td>
+                    </tr>
+                    {% for w in souko_item %}
+                    <tr align="center">
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="item_soubi">
+                                <input type="submit" class="btn style-cls-233" value="装備">
+                            </form>
+                        </td>
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="item_delete">
+                                <input type="submit" class="btn style-cls-279" value="破棄">
+                            </form>
+                        </td>
+                        <td align="left"><span class="small-text">{{ w.name }}</span></td>
+                        <td><span class="small-text">{{ w.power }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" align="center"><span class="small-text">保管中の武器はありません</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+
+            <!-- 防具倉庫 -->
+            <td valign="top" width="33%">
+                <table class="style-cls-278" border="1" width="100%" cellspacing="0" cellpadding="4">
+                    <tr bgcolor="#111133">
+                        <td colspan="4" align="center" class="white"><b>防具倉庫 (最大8)</b></td>
+                    </tr>
+                    <tr bgcolor="#030310" align="center">
+                        <td width="20%"><span class="small-text">装備</span></td>
+                        <td width="20%"><span class="small-text">破棄</span></td>
+                        <td width="40%"><span class="small-text">防具名</span></td>
+                        <td width="20%"><span class="small-text">防御</span></td>
+                    </tr>
+                    {% for d in souko_def %}
+                    <tr align="center">
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="def_soubi">
+                                <input type="submit" class="btn style-cls-233" value="装備">
+                            </form>
+                        </td>
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="def_delete">
+                                <input type="submit" class="btn style-cls-279" value="破棄">
+                            </form>
+                        </td>
+                        <td align="left"><span class="small-text">{{ d.name }}</span></td>
+                        <td><span class="small-text">{{ d.power }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" align="center"><span class="small-text">保管中の防具はありません</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+
+            <!-- 装飾品倉庫 -->
+            <td valign="top" width="34%">
+                <table class="style-cls-278" border="1" width="100%" cellspacing="0" cellpadding="4">
+                    <tr bgcolor="#111133">
+                        <td colspan="4" align="center" class="white"><b>装飾品倉庫 (最大8)</b></td>
+                    </tr>
+                    <tr bgcolor="#030310" align="center">
+                        <td width="20%"><span class="small-text">装備</span></td>
+                        <td width="20%"><span class="small-text">破棄</span></td>
+                        <td width="35%"><span class="small-text">装飾品名</span></td>
+                        <td width="25%"><span class="small-text">効果</span></td>
+                    </tr>
+                    {% for a in souko_acs %}
+                    <tr align="center">
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="acs_soubi">
+                                <input type="submit" class="btn style-cls-233" value="装備">
+                            </form>
+                        </td>
+                        <td>
+                            <form class="style-cls-30" action="souko.py" method="POST">
+                                <input type="hidden" name="id" value="{{ chara.id }}">
+                                <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                                <input type="hidden" name="mode" value="acs_delete">
+                                <input type="submit" class="btn style-cls-279" value="破棄">
+                            </form>
+                        </td>
+                        <td align="left"><span class="small-text">{{ a.name }}</span></td>
+                        <td><span class="small-text">{{ a.bonus_str }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" align="center"><span class="small-text">保管中の装飾品はありません</span></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="submit" class="btn" value="街に戻る">
+    </form>
+    <br><br>
+</div>
+{% endblock %}

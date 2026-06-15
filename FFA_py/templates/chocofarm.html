@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="farm-wrapper">
+  <!-- 左カラム：チョコボ情報・トレーニング・出走 -->
+  <div class="main-column">
+    <!-- 歴代王者ボード -->
+    <div class="winner-board">
+      <div class="winner-img">
+        <img src="{{ config.img_farm }}/{{ config.choco_images[winner.no] }}" alt="Winner Chocobo">
+      </div>
+      <div class="winner-details">
+        <div class="winner-title">Chocobo King</div>
+        <div class="winner-name">{{ winner.name }}</div>
+        <div class="winner-record">ブリーダー: {{ winner.breader }} | {{ winner.run }}戦{{ winner.win }}勝</div>
+        <div class="style-cls-60">
+          最終王者: {{ winner.lname }} ({{ winner.lurl }}) - {{ winner.lread }} に敗れました
+        </div>
+      </div>
+      <div class="winner-streak">
+        {{ winner.ren }}<span >連勝中</span>
+      </div>
+    </div>
+
+    <!-- 自身のチョコボ情報 -->
+    <div class="farm-card">
+      <div class="card-title">
+        <img class="style-cls-61" src="{{ config.img_farm }}/cho-yl.gif">
+        <span>マイチョコボステータス</span>
+      </div>
+      
+      {% if has_choco %}
+        <table class="status-table">
+          <tr>
+            <td class="style-cls-62" rowspan="4" colspan="2">
+              <img class="style-cls-63" src="{{ config.img_farm }}/{{ config.choco_images[choco.no] }}">
+            </td>
+            <td class="lbl-header">名前</td>
+            <td class="val-cell">{{ choco.name or '（名無しのチョコボ）' }}</td>
+            <td class="lbl-header">戦績</td>
+            <td class="val-cell">{{ choco.run }}戦 {{ choco.win }}勝</td>
+          </tr>
+          <tr>
+            <td class="lbl-header">タイプ</td>
+            <td class="val-cell"><span class="style-cls-64">{{ choco.waza }}</span></td>
+            <td class="lbl-header">クラス</td>
+            <td class="val-cell">{{ choco.cls }}</td>
+          </tr>
+          <tr>
+            <td class="lbl-header">性別</td>
+            <td class="val-cell">{{ '♂' if choco.sex == 1 else '♀' }}</td>
+            <td class="lbl-header">限界値</td>
+            <td class="val-cell">{{ choco.max }}</td>
+          </tr>
+          <tr>
+            <td class="lbl-header">父親</td>
+            <td class="val-cell">{{ choco.father }}</td>
+            <td class="lbl-header">母親</td>
+            <td class="val-cell">{{ choco.mother }}</td>
+          </tr>
+          <tr>
+            <td class="lbl-header">価値</td>
+            <td colspan="3"><span class="style-cls-65">{{ choco.money }} ギル</span></td>
+            <td class="lbl-header">調子</td>
+            <td>{{ choco.csta }} (寿命: {{ choco.life }}/1000)</td>
+          </tr>
+        </table>
+
+        <!-- ステータス能力詳細(アルファベット画像) -->
+        <table class="status-table style-cls-66">
+          <tr>
+            <td class="lbl-header">瞬発力</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c0_t] }}" class="rank-img"></td>
+            <td class="lbl-header">持久力</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c1_t] }}" class="rank-img"></td>
+            <td class="lbl-header">粘り強さ</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c2_t] }}" class="rank-img"></td>
+            <td class="lbl-header">落ち着き</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c3_t] }}" class="rank-img"></td>
+          </tr>
+          <tr>
+            <td class="lbl-header">闘争心</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c4_t] }}" class="rank-img"></td>
+            <td class="lbl-header">知力</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c5_t] }}" class="rank-img"></td>
+            <td class="lbl-header">切れ味</td>
+            <td><img src="{{ config.img_farm }}/{{ rank_imgs[choco.c6_t] }}" class="rank-img"></td>
+            <td class="lbl-header">トレーニング数</td>
+            <td class="style-cls-67">{{ choco.train }}</td>
+          </tr>
+        </table>
+      {% else %}
+        <div class="style-cls-68">
+          <p class="style-cls-69">現在チョコボを飼育していません。</p>
+          <a href="{{ config.mori_farm_script }}?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-farm">チョコボの森へ探しに行く</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- アクションカード（トレーニング・出走） -->
+    {% if has_choco %}
+      <div class="farm-card">
+        <div class="card-title">
+          <img class="style-cls-61" src="{{ config.img_farm }}/cho-gl.gif">
+          <span>トレーニング ＆ レース出走</span>
+        </div>
+
+        <!-- トレーニングフォーム -->
+        <div class="action-row">
+          <div class="action-label">トレーニング</div>
+          {% if time_limits.train_ok %}
+            <form class="style-cls-70" action="ctrain.py" method="post">
+              <input type="hidden" name="id" value="{{ chara.id }}">
+              <input type="hidden" name="mydata" value="{{ chara_log }}">
+              <select name="mode" class="select-farm">
+                <option value="race0">瞬発力重視</option>
+                <option value="race1">持久力重視</option>
+                <option value="race2">粘り強さ重視</option>
+                <option value="race3">落ち着き重視</option>
+                <option value="race4">闘争心重視</option>
+                <option value="race5">知力重視</option>
+                <option value="race6">切れ味重視</option>
+              </select>
+              <input type="submit" class="btn-farm" value="トレーニング開始">
+            </form>
+          {% else %}
+            <div class="style-cls-71">
+              あと {{ time_limits.train_wait }} 秒トレーニングできません。
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- チョコボ王者戦エントリー -->
+        <div class="action-row">
+          <div class="action-label">王者決定戦</div>
+          {% if is_king %}
+            <div class="style-cls-72">現在あなたのチョコボが王者です！</div>
+          {% elif time_limits.race_ok %}
+            <form class="style-cls-70" action="farmrace.py" method="post">
+              <input type="hidden" name="id" value="{{ chara.id }}">
+              <input type="hidden" name="mydata" value="{{ chara_log }}">
+              <input type="hidden" name="mode" value="chocobattle">
+              <input type="submit" class="btn-farm style-cls-73" value="チョコボ王者戦に挑戦する">
+            </form>
+          {% else %}
+            <div class="style-cls-71">
+              あと {{ time_limits.race_wait }} 秒出走できません。
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- 一般レース出走 -->
+        <div class="action-row">
+          <div class="action-label">一般レース</div>
+          {% if time_limits.train_ok %}
+            {% if race_classes %}
+              <form class="style-cls-70" action="{{ config.crace_script }}" method="post">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mydata" value="{{ chara_log }}">
+                <select name="mode" class="select-farm">
+                  {% for r_cls in race_classes %}
+                    <option value="{{ r_cls.value }}">{{ r_cls.name }}</option>
+                  {% endfor %}
+                </select>
+                <input type="submit" class="btn-farm" value="レースに出走">
+              </form>
+            {% else %}
+              <div class="style-cls-74">現在出走可能な一般レースはありません。</div>
+            {% endif %}
+          {% else %}
+            <div class="style-cls-71">
+              あと {{ time_limits.train_wait }} 秒出走できません。
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- 重賞レース出走 -->
+        <div class="action-row">
+          <div class="action-label">重賞(G1)レース</div>
+          {% if choco.win >= 30 %}
+            {% if time_limits.train_ok %}
+              {% if g1_race %}
+                <form class="style-cls-70" action="{{ config.crace_script }}" method="post">
+                  <input type="hidden" name="id" value="{{ chara.id }}">
+                  <input type="hidden" name="mydata" value="{{ chara_log }}">
+                  <input type="hidden" name="mode" value="race7">
+                  <select name="race" class="select-farm">
+                    <option value="{{ g1_race.value }}">{{ g1_race.name }}</option>
+                  </select>
+                  <input type="submit" class="btn-farm" value="G1レースに出走">
+                </form>
+              {% else %}
+                <div class="style-cls-75">
+                  現在開催中のG1レースはありません。(次まであと {{ g1_nokori }} 回)
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="style-cls-71">
+                あと {{ time_limits.train_wait }} 秒出走できません。
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="style-cls-74">オープンクラス（30勝以上）のみ出走可能です。</div>
+          {% endif %}
+        </div>
+
+        <!-- 海外重賞レース出走 -->
+        <div class="action-row">
+          <div class="action-label">海外(G2)レース</div>
+          {% if trophies_count >= 3 %}
+            {% if time_limits.train_ok %}
+              {% if g2_race %}
+                <form class="style-cls-70" action="{{ config.crace_script }}" method="post">
+                  <input type="hidden" name="id" value="{{ chara.id }}">
+                  <input type="hidden" name="mydata" value="{{ chara_log }}">
+                  <input type="hidden" name="mode" value="race8">
+                  <select name="race" class="select-farm">
+                    <option value="{{ g2_race.value }}">{{ g2_race.name }}</option>
+                  </select>
+                  <input type="submit" class="btn-farm" value="海外G2に出走">
+                </form>
+              {% else %}
+                <div class="style-cls-75">
+                  現在開催中のG2レースはありません。(次まであと {{ g2_nokori }} 回)
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="style-cls-71">
+                あと {{ time_limits.train_wait }} 秒出走できません。
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="style-cls-74">G1タイトルを3つ以上獲得すると海外遠征可能です。</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- 獲得重賞トロフィー -->
+    {% if has_choco and trophies %}
+      <div class="farm-card">
+        <div class="card-title">
+          <img class="style-cls-61" src="{{ config.img_farm }}/cho-rl.gif">
+          <span>獲得した重賞(G1/G2)タイトル</span>
+        </div>
+        <div class="trophy-grid">
+          {% for trop in trophies %}
+            <div class="trophy-item {% if trop.is_g1 %}gold{% endif %}">
+              {{ trop.name }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- 右カラム：メニュー、アドバイス、プレイヤー情報 -->
+  <div class="side-column">
+    <!-- 各種メニュー -->
+    <div class="farm-card">
+      <div class="card-title">メニュー</div>
+      <div class="menu-grid">
+        <!-- 宿屋 (森の農場経由) -->
+        {% if has_choco %}
+          <form class="style-cls-76" action="{{ config.mori_farm_script }}" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="hidden" name="mode" value="yadoya">
+            <button type="submit" class="btn-menu style-cls-77">
+              宿屋で回復<br><span class="style-cls-78">(5000G / 寿命回復)</span>
+            </button>
+          </form>
+        {% else %}
+          <div class="btn-menu style-cls-79">宿屋（チョコボ無）</div>
+        {% endif %}
+
+        <!-- チョコボの森 (配合・購入) -->
+        <form class="style-cls-76" action="{{ config.mori_farm_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="choco">
+          <button type="submit" class="btn-menu style-cls-77">チョコボの森</button>
+        </form>
+
+        <!-- 更新 -->
+        <form class="style-cls-76" action="{{ config.chocofarm_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="log_in">
+          <button type="submit" class="btn-menu style-cls-77">情報を更新</button>
+        </form>
+
+        <!-- 街に戻る -->
+        <form class="style-cls-76" action="{{ config.main_script }}" method="post">
+          <input type="hidden" name="id" value="{{ chara.id }}">
+          <input type="hidden" name="mydata" value="{{ chara_log }}">
+          <input type="hidden" name="mode" value="log_in">
+          <button type="submit" class="btn-menu btn-secondary style-cls-77">街に戻る</button>
+        </form>
+      </div>
+
+      <!-- 殿堂登録ボタン（3タイトル以上） -->
+      {% if has_choco and trophies_count >= 3 %}
+        <div class="style-cls-66">
+          <form action="dendo.py" method="post">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
+            <input type="hidden" name="mode" value="dendo">
+            <input type="submit" class="btn-farm style-cls-80" value="殿堂入り登録">
+          </form>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- モーグリのアドバイス -->
+    <div class="mog-box">
+      <img src="{{ config.img_farm }}/mog.gif" alt="Mog">
+      <div class="mog-text">
+        {{ mog_advice }}
+      </div>
+    </div>
+
+    <!-- プレイヤーキャラクター簡易ステータス -->
+    <div class="farm-card">
+      <div class="card-title">プレイヤー情報</div>
+      <div class="style-cls-81">
+        <img class="style-cls-82" src="images/{{ config.chara_images[chara.img] }}">
+        <div>
+          <div class="style-cls-5">{{ chara.name }}</div>
+          <div class="style-cls-83">{{ chara.title or '冒険者' }}</div>
+        </div>
+      </div>
+      <table class="status-table" >
+        <tr>
+          <td class="lbl-header">職業</td>
+          <td>{{ config.chara_jobs[chara.job] }} (Lv: {{ chara.job_level }})</td>
+        </tr>
+        <tr>
+          <td class="lbl-header">HP</td>
+          <td>{{ chara.hp }} / {{ chara.max_hp }}</td>
+        </tr>
+        <tr>
+          <td class="lbl-header">所持金</td>
+          <td class="style-cls-65">{{ chara.gold }} G</td>
+        </tr>
+        <tr>
+          <td class="lbl-header">武器</td>
+          <td>{{ item.weapon.name }} (力: {{ item.weapon.dmg }})</td>
+        </tr>
+        <tr>
+          <td class="lbl-header">防具</td>
+          <td>{{ item.armor.name }} (守: {{ item.armor.def }})</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

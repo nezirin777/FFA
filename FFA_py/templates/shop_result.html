@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}取引完了 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div align="center">
+    <br><br>
+    <table border="1" cellspacing="0" cellpadding="10" bgcolor="#001122" bordercolor="{{ config.color_blue }}">
+        <tr>
+            <td align="center">
+                <span class="font-size-4 color-configblue"><b>取引が完了しました</b></span>
+                <br><br>
+                <span class="color-configtext">
+                    {{ result_msg | safe }}
+                </span>
+                <br><br>
+                <form action="{{ back_url }}" method="POST">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="submit" class="btn" value="店に戻る">
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br><br>
+</div>
+{% endblock %}
