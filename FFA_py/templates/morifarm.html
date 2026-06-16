@@ -43,6 +43,7 @@
     {% if not has_choco %}
       <div class="style-cls-146">
         <form action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
           <input type="hidden" name="id" value="{{ chara.id }}">
           <input type="hidden" name="mydata" value="{{ chara_log }}">
           <input type="hidden" name="mode" value="choco_shop">
@@ -86,6 +87,7 @@
         <div class="naming-form">
           <h3 class="style-cls-90">名前を付けてあげるクポ！</h3>
           <form class="style-cls-148" action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="hidden" name="mode" value="choco_name">
@@ -98,6 +100,7 @@
       <!-- 操作ボタン -->
       <div class="style-cls-149">
         <form action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
           <input type="hidden" name="id" value="{{ chara.id }}">
           <input type="hidden" name="mydata" value="{{ chara_log }}">
           <input type="hidden" name="mode" value="choco_sell">
@@ -105,6 +108,7 @@
         </form>
         
         <form action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
           <input type="hidden" name="id" value="{{ chara.id }}">
           <input type="hidden" name="mydata" value="{{ chara_log }}">
           <input type="hidden" name="mode" value="choco_shopb">
@@ -116,6 +120,7 @@
   {% elif mode == 'choco_shop' %}
     <!-- 野生チョコボ購入画面 -->
     <form action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
       <table class="status-table">
         <thead>
           <tr>
@@ -188,6 +193,7 @@
 
     <h3 class="style-cls-151">お相手候補のチョコボ</h3>
     <form action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
       <table class="status-table">
         <thead>
           <tr>
@@ -266,6 +272,7 @@
     <div class="naming-form">
       <h3 class="style-cls-90">名前を付けてあげるクポ！</h3>
       <form class="style-cls-148" action="{{ config.mori_farm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="mydata" value="{{ chara_log }}">
         <input type="hidden" name="mode" value="choco_name">

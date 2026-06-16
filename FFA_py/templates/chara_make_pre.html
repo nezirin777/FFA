@@ -68,6 +68,7 @@
 
     <!-- 決定するフォーム -->
     <form class="style-cls-57" action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="mode" value="make_end">
         <input type="hidden" name="id" value="{{ in.id }}">
         <input type="hidden" name="pass" value="{{ in.pass }}">
@@ -83,6 +84,7 @@
 
     <!-- 修正（戻る）フォーム -->
     <form class="style-cls-40" action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ in.id }}">
         <input type="hidden" name="pass" value="{{ in.pass }}">
         <input type="hidden" name="passchange" value="{{ passchange }}">

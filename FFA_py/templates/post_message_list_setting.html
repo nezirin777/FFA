@@ -23,6 +23,7 @@
     <div class="list-container">
         <!-- 1. 新規追加フォーム -->
         <form class="style-cls-250" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="ban_do">
             <input type="hidden" name="bansts" value="{% if mode == 'ban' %}1{% else %}2{% endif %}">
@@ -42,6 +43,7 @@
 
         <!-- 2. リスト表示 ＆ 削除フォーム -->
         <form action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="ban_do">
             <input type="hidden" name="bansts" value="0"> <!-- 0は解除 -->
@@ -69,11 +71,13 @@
     
     <!-- 戻るボタン -->
     <form class="style-cls-39" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="郵便局に戻る">
     </form>
     
     <form class="style-cls-40" action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="ステータス画面へ">
     </form>

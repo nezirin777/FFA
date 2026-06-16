@@ -14,6 +14,7 @@
   {% endif %}
 
   <form action="{{ config.crace_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
     <input type="hidden" name="id" value="{{ chara.id }}">
     <input type="hidden" name="mydata" value="{{ chara_log }}">
     <input type="hidden" name="mode" value="race_dendo">
@@ -107,6 +108,7 @@
 
   <div class="style-cls-108">
     <form action="{{ config.chocofarm_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
       <input type="hidden" name="id" value="{{ chara.id }}">
       <input type="hidden" name="mydata" value="{{ chara_log }}">
       <input type="submit" class="btn-farm btn-secondary style-cls-109" value="牧場に戻る">

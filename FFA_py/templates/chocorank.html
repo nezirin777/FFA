@@ -19,9 +19,9 @@
     {% endif %}
 
     <div class="nav-links">
-        <a href="chocorank.py" class="{% if mode != 'ranking' %}active{% endif %}">🏆 G1重賞勝利履歴</a>
-        <a href="chocorank.py?mode=ranking" class="{% if mode == 'ranking' %}active{% endif %}">📊 各部門Top 10ランキング</a>
-        <a href="morifarm.py">🏡 チョコボ牧場に戻る</a>
+        <a href="login.py?mode=chocorank" class="{% if mode != 'ranking' %}active{% endif %}">🏆 G1重賞勝利履歴</a>
+        <a href="login.py?mode=chocorank&mode=ranking" class="{% if mode == 'ranking' %}active{% endif %}">📊 各部門Top 10ランキング</a>
+        <a href="login.py?mode=morifarm">🏡 チョコボ牧場に戻る</a>
     </div>
 
     {% if mode == "ranking" %}
@@ -317,7 +317,7 @@
     {% endif %}
 
     <div class="btn-container">
-        <a href="morifarm.py" class="btn-back">🏡 チョコボ牧場へ戻る</a>
+        <a href="login.py?mode=morifarm" class="btn-back">🏡 チョコボ牧場へ戻る</a>
     </div>
 </div>
 {% endblock %}

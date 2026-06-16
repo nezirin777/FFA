@@ -34,7 +34,8 @@
     </div>
 
     <!-- 戦術変更フォーム -->
-    <form action="tac_change.py" method="post">
+    <form action="login.py?mode=tac_change" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="mydata" value="{{ chara_log }}">
         <input type="hidden" name="mode" value="senjutu_henkou">
@@ -67,8 +68,8 @@
 
         <div class="btn-container">
             <button type="submit" class="btn-submit">⚔️ 作戦（戦術）を変更する</button>
-            <a href="sts.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">⚙️ ステータス設定に戻る</a>
-            <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back style-cls-271">🏡 街に戻る</a>
+            <a href="login.py?mode=sts&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">⚙️ ステータス設定に戻る</a>
+            <a href="login.py?mode=main&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back style-cls-271">🏡 街に戻る</a>
         </div>
     </form>
 </div>

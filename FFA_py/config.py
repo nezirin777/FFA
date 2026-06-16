@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 FFA (Final Fantasy Adventure) 設定ファイル
 """
@@ -12,12 +11,13 @@ Config['save_dir'] = os.path.join(BASE_DIR, "save_data")
 Config['lock_dir'] = os.path.join(BASE_DIR, "lock")
 Config['template_dir'] = os.path.join(BASE_DIR, "templates")
 Config['admin_password'] = '1111'
+Config['secret_key'] = 'ffa_secret_key_vips_ver3'
 
 # === 2. 既存の設定 ===
 Config['acs_file'] = 'data/acs/acs.ini'
 Config['acs_folder'] = 'data/acs'
 Config['max_accessories'] = 8
-Config['shop_acs_script'] = 'shop_acs.py'
+Config['shop_acs_script'] = 'login.py?mode=shop_acs'
 Config['alink_color'] = '#ff5500'
 Config['all_data_file'] = 'alldata.json'
 Config['max_all_lines'] = 5
@@ -50,7 +50,7 @@ Config['color_dark'] = '#1e1b4b'
 Config['def_file'] = 'data/def/def.ini'
 Config['def_folder'] = 'data/def'
 Config['max_defenses'] = 8
-Config['shop_def_script'] = 'shop_def.py'
+Config['shop_def_script'] = 'login.py?mode=shop_def'
 Config['farm_back'] = 'images/farm.jpg'
 Config['farm_midi'] = ''
 Config['cookie_name'] = 'FFAPYCOOKIE'
@@ -63,7 +63,7 @@ Config['color_green'] = '#34d399'
 Config['comeback_factor'] = 100
 Config['help_text'] = 'html/ffhelp.html'
 Config['help_text_url'] = 'ヘルプ'
-Config['img_all_list'] = 'system.py?mode=img_list'
+Config['img_all_list'] = 'login.py?mode=img_list'  # login.py 経由の画像一覧ルーティングへ統一
 Config['img_farm'] = 'images/chara/choco'
 Config['img_path'] = 'images/chara'
 Config['isekai_level'] = 300
@@ -71,7 +71,7 @@ Config['isekai_file'] = 'data/isekaimons.ini'
 Config['item_file'] = 'data/item/item.ini'
 Config['item_folder'] = 'data/item'
 Config['max_items'] = 8
-Config['shop_item_script'] = 'shop_item.py'
+Config['shop_item_script'] = 'login.py?mode=shop_item'
 Config['admin_message'] = '<font color=red>\n・１人で２人以上のキャラクターの登録を禁止します。<br>\n・違法サイトのＵＲＬのキャラクターの登録は禁止します。<br>\n・ブラウザの更新ボタン等を押すことを禁止します。<br>\n・上記に該当するキャラクターは連絡等をなしに管理人の独断により削除することがあります。</font><br>'
 Config['base_exp'] = 30
 Config['base_hp'] = 500
@@ -90,31 +90,31 @@ Config['monster0_file'] = 'data/lowmons.ini'
 Config['monster1_file'] = 'data/normalmons.ini'
 Config['monster2_file'] = 'data/highmons.ini'
 Config['monster3_file'] = 'data/spmons.ini'
-Config['ranking_script'] = 'rank.py'
+Config['ranking_script'] = 'login.py?mode=rank'  # login.py 経由の能力別ランキングルーティングへ統一
 Config['color_red'] = '#f87171'
 Config['active_time'] = 120
 Config['sub_bbs_url'] = ''
 Config['sub_bbs_title'] = ''
-Config['main_script'] = 'ffadventure.py'
-Config['bank_script'] = 'bank.py'
-Config['chocofarm_script'] = 'chocofarm.py'
-Config['crace_script'] = 'crace.py'
-Config['legend_script'] = 'legend.py'
-Config['mori_farm_script'] = 'morifarm.py'
-Config['passchange_script'] = 'passchange.py'
-Config['post_message_script'] = 'post_message.py'
-Config['select_battle_script'] = 'select_battle.py'
-Config['souko_script'] = 'souko.py'
-Config['tenka_script'] = 'tenka.py'
-Config['tensyoku_script'] = 'tensyoku.py'
-Config['system_script'] = 'system.py'
-Config['battle_script'] = 'battle.py'
+Config['main_script'] = 'login.py?mode=main'
+Config['bank_script'] = 'login.py?mode=bank'
+Config['chocofarm_script'] = 'login.py?mode=chocofarm'
+Config['crace_script'] = 'login.py?mode=crace'
+Config['legend_script'] = 'login.py?mode=legend'
+Config['mori_farm_script'] = 'login.py?mode=morifarm'
+Config['passchange_script'] = 'login.py?mode=passchange'
+Config['post_message_script'] = 'login.py?mode=post_message'
+Config['select_battle_script'] = 'login.py?mode=select_battle'
+Config['souko_script'] = 'login.py?mode=souko'
+Config['tenka_script'] = 'login.py?mode=tenka'
+Config['tensyoku_script'] = 'login.py?mode=tensyoku'
+Config['system_script'] = 'login.py'  # 多重の?を防ぐため login.py に変更し、呼び出し側で ?mode=ranking 等を追加可能にする
+Config['battle_script'] = 'login.py?mode=battle'
 Config['admin_script'] = 'admin.py'
-Config['monster_script'] = 'monster.py'
+Config['monster_script'] = 'login.py?mode=monster'
 Config['others_script'] = 'others.py'
-Config['tactics_script'] = 'tac_change.py'
-Config['status_script'] = 'sts.py'
-Config['shop_script'] = 'shop.py'
+Config['tactics_script'] = 'login.py?mode=tac_change'
+Config['status_script'] = 'login.py?mode=sts'
+Config['shop_script'] = 'login.py?mode=shop'
 Config['battle_limit'] = 9999
 Config['titles'] = ['駆け出し', 'プチ', '超', '極', '超極の殿堂']
 Config['shut_hosts'] = ['999.999.999', '999.999.999', '999.999.999']

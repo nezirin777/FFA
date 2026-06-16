@@ -1,5 +1,4 @@
 #!D:\Python\Python314\python.exe
-# -*- coding: utf-8 -*-
 #------------------------------------------------------#
 #  FFA改 Vips Ver 3.00
 #  作成者: ねじりん
@@ -29,139 +28,168 @@
 #  http://www2.to/meeting/
 #  gun24@j-club.ne.jp
 #------------------------------------------------------#
-#--- [注意事項] ------------------------------------------------#
-# 1. このスクリプトはフリーソフトです。このスクリプトを使用した	#
-#    いかなる損害に対して作者は一切の責任を負いません。		#
-# 2. 設置に関する質問はサポート掲示板にお願いいたします。	#
-#    直接メールによる質問は一切お受けいたしておりません。	#
-# 3. 設置したら皆さんに楽しんでもらう為にも、Webリングへぜひ参加#
-#    してくださいm(__)m						#
-#    http://icus.s13.xrea.com/cgi-bin/cbbs/cbbs.cgi　		#
-#---------------------------------------------------------------#
 """
-FFA Python/CGI - ログイン処理スクリプト (login.py)
+FFA Python/CGI - アクションルーティング・エントリポイント (login.py)
 """
-
 import sys
+import os
+import importlib
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 if hasattr(sys.stdin, 'reconfigure'):
     sys.stdin.reconfigure(encoding='utf-8')
-import os
-import time
 
-# 共通モジュールと設定モジュールのインポート
+# モジュール検索パスにルートを追加し、cgi_py/ の中からインポート可能にする
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+if ROOT_DIR not in sys.path:
+    sys.path.append(ROOT_DIR)
+
 import config
-import common
+from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import get_session, save_session, destroy_session, token_check, token_generate, hash_password
+from sub_def.file_ops import load_user_all
+from sub_def.utils import redirect, show_error
+
+# ルーティングマッピング定義 (遅延ロード用)
+# ※サブモード(yado, geneiなど)からも直接各モジュールにルーティングできるようエイリアスを追加
+FUNCTION_MAP = {
+    "main": "cgi_py.ffadventure",
+    "sts": "cgi_py.sts",
+    "tac_change": "cgi_py.tac_change",
+    "passchange": "cgi_py.passchange",
+    "tensyoku": "cgi_py.tensyoku",
+    "shop": "cgi_py.shop",
+    "yado": "cgi_py.shop",             # (宿屋サブモード)
+    "shop_item": "cgi_py.shop_item",
+    "shop_def": "cgi_py.shop_def",
+    "shop_acs": "cgi_py.shop_acs",
+    "bank": "cgi_py.bank",
+    "souko": "cgi_py.souko",
+    "battle": "cgi_py.battle",
+    "select_battle": "cgi_py.select_battle",
+    "sentaku": "cgi_py.select_battle", # (対戦選択)
+    "monster": "cgi_py.monster",
+    "genei": "cgi_py.monster",         # (修行サブモード: 幻影の城)
+    "isekiai": "cgi_py.monster",       # (修行サブモード: 異世界)
+    "legend": "cgi_py.legend",
+    "boss": "cgi_py.legend",           # (伝説サブモード: ボス挑戦)
+    "post_message": "cgi_py.post_message",
+    "chocofarm": "cgi_py.chocofarm",
+    "morifarm": "cgi_py.morifarm",
+    "choco": "cgi_py.morifarm",         # (チョコボの森サブモード)
+    "crace": "cgi_py.crace",
+    "ctrain": "cgi_py.ctrain",
+    "dendo": "cgi_py.dendo",
+    "farmrace": "cgi_py.farmrace",
+    "system": "cgi_py.system",
+    "chara_sts": "cgi_py.system",       # (他者ステータス閲覧)
+    "img_list": "cgi_py.system",        # (画像一覧表示)
+    "ranking": "cgi_py.system",         # (登録者一覧)
+    "tenka": "cgi_py.tenka",
+    "all_tenka": "cgi_py.all_tenka",
+    "tenka_log": "cgi_py.tenka_log",
+    "rank": "cgi_py.rank",
+    "chocorank": "cgi_py.chocorank"
+}
 
 def main():
-    # 1. メンテナンスチェック
-    if config.Config['maintenance_mode']:
-        common.show_error("現在メンテナンス中です。しばらくお待ちください。")
-        
-    # 2. パラメータの取得
-    params = common.decode_params()
-    user_id = params.get("id", "").strip()
-    user_pass = params.get("pass", "").strip()
+    FORM = common.decode_params()
     
-    # 3. 入力チェック
-    if not user_id:
-        common.show_error("IDが入力されていません。")
-        
-    # 4. キャラクターデータのロード
-    chara = common.chara_load(user_id)
-    if not chara:
-        # 復元画面（hukugen.cgi）への遷移エラーを表示（元CGIに準拠）
-        err_msg = (
-            "キャラクターデータが読み込めません。<br>"
-            "データが存在しないか、破損している可能性があります。<br>"
-            f'<form action="hukugen.py" method="post">'
-            f'<input type="hidden" name="id" value="{user_id}">'
-            f'<input type="hidden" name="mode" value="log_in">'
-            f'<input type="submit" value="復元を試みる" style="margin-top:10px; padding:3px 10px;">'
-            f'</form>'
-        )
-        common.show_error(err_msg)
-        
-    # 5. アクセス制限 (ホストIPチェック)
-    remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
-    for shut_ip in config.Config['shut_hosts']:
-        # ワイルドカードを正規表現などに変換してチェックすることも可能だが、簡易的に前方一致や完全一致で判定
-        shut_prefix = shut_ip.replace("*", "")
-        if remote_addr.startswith(shut_prefix):
-            common.show_error("アクセスが制限されています。")
-            
-    # 6. ログイン履歴 (login_log.json) の処理
-    # ロックを取得してログイン履歴を記録
-    lock_name = f"login{user_id}"
-    common.get_lock(lock_name)
+    # URLクエリパラメータから直接 'mode' を優先取得 (POST優先のFORMに上書きされない、本来のルーティング先)
+    import urllib.parse
+    query_string = os.environ.get("QUERY_STRING", "")
+    query_params = urllib.parse.parse_qs(query_string)
+    route_mode = query_params.get("mode", [""])[0]
     
-    try:
-        login_logs = common.login_log_load(user_id)
+    # クエリに無い場合は、FORMのmode（POSTボディなど）を使用
+    if not route_mode:
+        route_mode = FORM.get("mode", "main")
         
-        # 履歴件数の制限 (最大15件)
-        if len(login_logs) >= 15:
-            login_logs = login_logs[:14] # 最新14件を残す
-            
-        get_time_str = common.get_time_str()
+    mode = route_mode
+    method = os.environ.get("REQUEST_METHOD", "GET").upper()
+    
+    # 1. ログイン処理 (mode=log_in)
+    if mode == "log_in" and method == "POST":
+        session = get_session()
         
-        # パスワード不一致チェック
-        if user_pass != chara["pass"]:
-            # 失敗ログを追加 (failed=1)
-            new_log = {
-                "pass": user_pass,
-                "host": remote_addr,
-                "time": get_time_str,
-                "failed": 1
-            }
-            login_logs.insert(0, new_log)
-            common.login_log_regist(user_id, login_logs)
-            common.release_lock(lock_name)
-            common.show_error("パスワードが間違っています。")
+        # CSRF トークン検証を実行
+        token_check(FORM, session)
+        
+        user_id = FORM.get("id", "").strip()
+        password = FORM.get("pass", "").strip()
+        
+        # 入力値バリデーション (セキュリティ防衛ライン)
+        from sub_def.validation import validate_username, validate_password
+        err = validate_username(user_id) or validate_password(password)
+        if err:
+            show_error(err)
             
-        # 成功ログを追加 (failed=0)
-        new_log = {
-            "pass": user_pass,
-            "host": remote_addr,
-            "time": get_time_str,
-            "failed": 0
+        user_data = load_user_all(user_id)
+        if not user_data or not user_data.get("chara"):
+            show_error("登録されていないか、データが見つかりません。")
+            
+        chara = user_data["chara"]
+        
+        # パスワード検証 (平文およびストレッチングハッシュ双方に対応)
+        hashed_pass = hash_password(password)
+        if chara.get("pass") != password and chara.get("pass") != hashed_pass:
+            show_error("パスワードが一致しません。")
+            
+        # ログイン成功、暗号化クッキーセッションデータ生成
+        session_data = {
+            "user_id": user_id,
+            "password_hash": chara.get("pass"),
+            "csrf_token": session.get("csrf_token")
         }
-        login_logs.insert(0, new_log)
-        common.login_log_regist(user_id, login_logs)
+        cookie_header = save_session(session_data)
         
-    finally:
-        # ロック解除
-        common.release_lock(lock_name)
+        # ログイン完了後、メイン画面へリダイレクト (連打・F5不正防止のためのNoReturnリダイレクト)
+        redirect(f"login.py?mode=main", extra_headers=[cookie_header])
         
-    # 7. 成功/失敗ログの整形
-    success_logs = [log for log in login_logs if log["failed"] == 0][:5] # 最新の成功5件を表示
-    error_logs = [log for log in login_logs if log["failed"] == 1][:5]   # 最新の失敗5件を表示
-    
-    # 8. クッキーの設定
-    # "id<>userid,pass<>userpass" 形式でクッキーを発行
-    cookie_value = f"id<>{user_id},pass<>{chara['pass']}"
-    cookie_header = common.set_cookie_header(config.Config['cookie_name'], cookie_value)
-    
-    # 9. 冒険者リストの更新と取得
-    guest_list_html = common.update_and_get_guests(user_id, chara["name"])
-    
-    # 10. メッセージデータのロード
-    personal_messages = common.message_load(user_id)[:config.Config['max_lines']]
-    global_messages = common.all_message_load()[:config.Config['max_all_lines']]
-    
-    # 11. Jinja2テンプレートでの画面描画
-    context = {
-        "chara": chara,
-        "success_logs": success_logs,
-        "error_logs": error_logs,
-        "guest_list_html": guest_list_html,
-        "personal_messages": personal_messages,
-        "global_messages": global_messages
-    }
-    
-    common.render_template("login.html", context, extra_headers=[cookie_header])
+    # 2. ログアウト処理 (mode=log_out)
+    elif mode == "log_out":
+        cookie_header = destroy_session()
+        redirect("others.py", extra_headers=[cookie_header])
+        
+    # 3. ログイン中および公開アクションの集中ルーティング
+    else:
+        session = get_session()
+        # ログインが不要な公開モード（ゲストでも閲覧可能）
+        public_modes = {"rank", "system", "chara_sts", "img_list", "ranking"}
+        
+        is_logged_in = False
+        user_id = session.get("user_id")
+        
+        if user_id:
+            user_data = load_user_all(user_id)
+            if user_data and user_data.get("chara"):
+                chara = user_data["chara"]
+                # セッション情報とセーブデータのパスワードハッシュを検証
+                if chara.get("pass") == session.get("password_hash"):
+                    is_logged_in = True
+                    
+        # 未ログインかつ公開モードでもない場合は、トップページへ強制リダイレクト
+        if not is_logged_in and mode not in public_modes:
+            redirect("others.py")
+            
+        # POST メソッド時のみ CSRF トークン検証を行い、不正アクセスを排除
+        if method == "POST":
+            token_check(FORM, session)
+            
+        # アクションの動的遅延インポートと実行 (CGI応答性能向上)
+        if mode not in FUNCTION_MAP:
+            show_error("無効なモード要求です。")
+            
+        module_path = FUNCTION_MAP[mode]
+        try:
+            module = importlib.import_module(module_path)
+            # 各モジュールをインポートして main() を起動
+            module.main()
+        except Exception as e:
+            # 開発デバッグ用に詳細を表示
+            show_error(f"システム実行エラーが発生しました。<pre>{e}</pre>")
 
 if __name__ == "__main__":
     main()

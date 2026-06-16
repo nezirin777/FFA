@@ -36,12 +36,14 @@
     
     <!-- 銀行のトップに戻る -->
     <form class="style-cls-39" action="{{ config.bank_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ user_id }}">
         <input type="submit" class="btn" value="銀行に戻る">
     </form>
     
     <!-- 街に戻る -->
     <form class="style-cls-40" action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ user_id }}">
         <input type="submit" class="btn" value="街に戻る">
     </form>

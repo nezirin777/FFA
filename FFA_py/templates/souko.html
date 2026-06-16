@@ -32,7 +32,8 @@
             <td>{{ item.weapon.dmg }}</td>
             <td>
                 {% if chara.weapon_id and chara.weapon_id != 0 %}
-                <form class="style-cls-30" action="souko.py" method="POST">
+                <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="item_hazusi">
                     <input type="submit" class="btn style-cls-123" value="外す">
@@ -50,7 +51,8 @@
             <td>{{ item.armor.def }}</td>
             <td>
                 {% if chara.armor_id and chara.armor_id != 0 %}
-                <form class="style-cls-30" action="souko.py" method="POST">
+                <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="def_hazusi">
                     <input type="submit" class="btn style-cls-123" value="外す">
@@ -68,7 +70,8 @@
             <td><span class="small-text">{{ acs_bonus_str }}</span></td>
             <td>
                 {% if chara.accessory_id and chara.accessory_id != 0 %}
-                <form class="style-cls-30" action="souko.py" method="POST">
+                <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="acs_hazusi">
                     <input type="submit" class="btn style-cls-123" value="外す">
@@ -100,7 +103,8 @@
                     {% for w in souko_item %}
                     <tr align="center">
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="item_soubi">
@@ -108,7 +112,8 @@
                             </form>
                         </td>
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="item_delete">
@@ -141,7 +146,8 @@
                     {% for d in souko_def %}
                     <tr align="center">
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="def_soubi">
@@ -149,7 +155,8 @@
                             </form>
                         </td>
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="def_delete">
@@ -182,7 +189,8 @@
                     {% for a in souko_acs %}
                     <tr align="center">
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="acs_soubi">
@@ -190,7 +198,8 @@
                             </form>
                         </td>
                         <td>
-                            <form class="style-cls-30" action="souko.py" method="POST">
+                            <form class="style-cls-30" action="login.py?mode=souko" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="hidden" name="item_no" value="{{ loop.index0 }}">
                                 <input type="hidden" name="mode" value="acs_delete">
@@ -212,6 +221,7 @@
 
     <br>
     <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="街に戻る">
     </form>

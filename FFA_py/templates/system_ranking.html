@@ -21,7 +21,7 @@
             
             <div class="player-img-box">
                 <img src="{{ config.img_path }}/{{ chara_img[p.chara.img] }}" class="player-img"><br>
-                <a href="system.py?mode=chara_sts&id={{ p.chara.id }}" class="player-name-link">{{ p.chara.name }}</a>
+                <a href="login.py?mode=chara_sts&id={{ p.chara.id }}" class="player-name-link">{{ p.chara.name }}</a>
             </div>
 
             <div class="player-info-grid">
@@ -147,13 +147,13 @@
     <!-- ページングナビ -->
     <div class="paging-nav">
         {% if shtm > 0 %}
-            <a href="system.py?shtm={{ shtm - 1 }}">« 前の 20 件</a>
+            <a href="login.py?mode=system&shtm={{ shtm - 1 }}">« 前の 20 件</a>
         {% else %}
             <span>« 前の 20 件</span>
         {% endif %}
 
         {% if ito < total_players %}
-            <a href="system.py?shtm={{ shtm + 1 }}">次の 20 件 »</a>
+            <a href="login.py?mode=system&shtm={{ shtm + 1 }}">次の 20 件 »</a>
         {% else %}
             <span>次の 20 件 »</span>
         {% endif %}
@@ -163,7 +163,7 @@
     <div class="paging-select-grid">
         {% for link in pages_links %}
         <div class="paging-select-cell {% if link.page == shtm %}active{% endif %}">
-            <a href="system.py?shtm={{ link.page }}">{{ link.label }}</a>
+            <a href="login.py?mode=system&shtm={{ link.page }}">{{ link.label }}</a>
         </div>
         {% endfor %}
     </div>

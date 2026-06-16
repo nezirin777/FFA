@@ -63,7 +63,7 @@
                 <tbody>
                     {% for l in logs %}
                     <tr>
-                        <td class="style-cls-301"><a href="system.py?mode=chara_sts&id={{ l.id }}">{{ l.name }}</a></td>
+                        <td class="style-cls-301"><a href="login.py?mode=chara_sts&id={{ l.id }}">{{ l.name }}</a></td>
                         <td class="style-cls-286">Lv {{ l.level }}</td>
                         <td class="style-cls-140" align="right">{{ l.time }}</td>
                     </tr>
@@ -82,6 +82,7 @@
     <div class="challenge-area">
         {% if can_challenge %}
             <form action="tenka.py" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="mode" value="battle">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mydata" value="{{ chara_log }}">
@@ -95,7 +96,7 @@
     </div>
 
     <div class="style-cls-67">
-        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">🏡 メイン画面へ戻る</a>
+        <a href="login.py?mode=main&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">🏡 メイン画面へ戻る</a>
     </div>
 
 </div>

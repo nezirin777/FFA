@@ -46,6 +46,7 @@
         {% if win == 1 and next_winner != 0 %}
             <!-- 勝って、かつまだ次の相手がいる場合 -->
             <form action="tenka.py" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="mode" value="battle">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mydata" value="{{ chara_log }}">
@@ -54,7 +55,7 @@
             </form>
         {% endif %}
         
-        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">🏡 メイン画面へ戻る</a>
+        <a href="login.py?mode=main&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-back">🏡 メイン画面へ戻る</a>
     </div>
 
 </div>
