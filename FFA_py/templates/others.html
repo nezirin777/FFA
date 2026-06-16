@@ -22,6 +22,7 @@
                 <div class="style-cls-160">
                     <h3 class="style-cls-161">💾 冒険を再開する</h3>
                     <form class="style-cls-66" action="{{ config.login_script }}" method="POST">
+                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="mode" value="log_in">
                         <table class="style-cls-38" border="0" cellpadding="3">
                             <tr>
@@ -47,6 +48,7 @@
                     
                     {% if test_playable %}
                     <form class="style-cls-167" action="{{ config.login_script }}" method="POST">
+                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="mode" value="log_in">
                         <input type="hidden" name="id" value="test">
                         <input type="hidden" name="pass" value="test">
@@ -67,6 +69,7 @@
                     <p class="style-cls-166">新しいキャラクターを作成して冒険を始めましょう！一人につき1キャラのみ登録可能です。</p>
                     
                     <form class="style-cls-167" action="{{ config.chara_make_script }}" method="POST">
+                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="mode" value="chara_make">
                         <input type="submit" class="btn style-cls-173" value="新規キャラクター作成">
                     </form>
@@ -205,6 +208,7 @@
         <tr>
             <td align="center">
                 <form class="style-cls-24" action="{{ config.admin_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <span class="style-cls-16">管理者パスワード:</span>
                     <input class="style-cls-162" type="password" size="12" name="pass">
                     <input type="submit" class="btn style-cls-194" value="管理者画面">

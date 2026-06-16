@@ -87,6 +87,7 @@
         {% if msg.id != 'sys' %}
         <div class="style-cls-127">
             <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="res">
                 <input type="hidden" name="mesid" value="{{ msg.id }}">
@@ -94,6 +95,7 @@
                 <input type="submit" class="btn style-cls-128" value="返信">
             </form>
             <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="bansts" value="2">
                 <input type="hidden" name="mode" value="ban_do">
@@ -102,6 +104,7 @@
                 <input type="submit" class="btn style-cls-128" value="友人登録">
             </form>
             <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="bansts" value="1">
                 <input type="hidden" name="mode" value="ban_do">
@@ -155,6 +158,7 @@
         <tr>
             <td class="style-cls-138" align="center">
                 <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="mode" value="log_in">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="submit" class="btn style-cls-139" value="ステータス画面へ">

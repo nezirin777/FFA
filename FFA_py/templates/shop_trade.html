@@ -33,6 +33,7 @@
             <td>
                 {% if equipped_item.id and equipped_item.id != 0 %}
                 <form class="style-cls-30" action="{{ post_url }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="sell">
                     <input type="submit" class="btn style-cls-31" value="売却">
@@ -52,6 +53,7 @@
 
     <!-- 購入可能な商品リスト -->
     <form class="style-cls-274" action="{{ post_url }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="mode" value="buy">
         
@@ -94,6 +96,7 @@
 
     <br>
     <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="街に戻る">
     </form>

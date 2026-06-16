@@ -1,5 +1,4 @@
 #!D:\Python\Python314\python.exe
-# -*- coding: utf-8 -*-
 #------------------------------------------------------#
 #  FFA改 Vips Ver 3.00
 #  作成者: ねじりん
@@ -31,7 +30,7 @@
 #------------------------------------------------------#
 #--- [注意事項] ------------------------------------------------#
 # 1. このスクリプトはフリーソフトです。このスクリプトを使用した	#
-#    いかなる損害に対して作者は一切の責任を負いません。		#
+#    いかなる損害に対して作者は一切の責任を负いません。		#
 # 2. 設置に関する質問はサポート掲示板にお願いいたします。	#
 #    直接メールによる質問は一切お受けいたしておりません。	#
 # 3. 設置したら皆さんに楽しんでもらう為にも、Webリングへぜひ参加#
@@ -43,24 +42,25 @@ FFA Python/CGI - 新規キャラクター登録スクリプト (chara_make.py)
 """
 
 import sys
+import os
+import time
+import random
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 if hasattr(sys.stdin, 'reconfigure'):
     sys.stdin.reconfigure(encoding='utf-8')
-import os
-import time
-import random
 
 # 共通モジュールと設定モジュールのインポート
 import config
-import common
+from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+Config = config.Config
 
 def get_all_players():
     """全プレイヤーデータをロードしてリストで返します"""
     players = []
-    save_dir = config.Config['save_dir']
+    save_dir = Config['save_dir']
     if not os.path.exists(save_dir):
         return players
     for user_id in os.listdir(save_dir):
@@ -80,20 +80,28 @@ def validate_input(params):
     sex_str = params.get("sex", "").strip()
     syoku_str = params.get("syoku", "").strip()
     
+    # IDのバリデーション（半角英数字、4〜8文字）
     if not user_id.isalnum():
         return "IDは半角英数字で入力してください。"
     if len(user_id) < 4 or len(user_id) > 8:
         return "IDは4文字以上8文字以下で入力してください。"
         
+    # パスワードのバリデーション（防衛的チェック＆半角英数字）
+    from sub_def.validation import validate_password
+    pass_err = validate_password(user_pass)
+    if pass_err:
+        return pass_err
     if not user_pass.isalnum():
         return "パスワードは半角英数字で入力してください。"
-    if len(user_pass) < 4 or len(user_pass) > 8:
-        return "パスワードは4文字以上8文字以下で入力してください。"
+        
+    # キャラクター名のバリデーション（予約語・制御文字・Shift-JIS互換性）
+    from sub_def.validation import validate_username
+    name_err = validate_username(c_name)
+    if name_err:
+        return name_err
         
     if not passchange:
         return "パスワード変更用単語が入力されていません。"
-    if not c_name:
-        return "キャラクターの名前が入力されていません。"
     if not sex_str:
         return "性別が選択されていません。"
     if not syoku_str:
@@ -117,55 +125,61 @@ def validate_input(params):
     if common.chara_load(user_id) is not None:
         return "そのIDはすでに使用されています。"
         
-    # 名前の重複チェック（管理者以外の通常時、config.name_banが有効なら）
-    # 通常は重複禁止のためチェックします
+    # 名前の重複チェック
     all_players = get_all_players()
     for player in all_players:
-        if player["name"] == c_name:
+        if player.get("name") == c_name:
             return "同一名のキャラクターが既に存在します。"
             
-    # 同一IPからの重複登録制限 (config.ip_banチェック。今回は簡易的に省略するか、IPのチェックを必要に応じて有効化)
-    remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
-    # テストアカウント以外で同一IPからの重複登録を禁止する場合
-    # for player in all_players:
-    #     if player.get("host") == remote_addr and player["id"] != "test":
-    #         return "同一IPから登録されたキャラクターが既に存在します。"
-
     return None
 
 def main():
     # メンテナンスチェック
-    if config.Config['maintenance_mode']:
+    if Config['maintenance_mode']:
         common.show_error("現在メンテナンス中です。しばらくお待ちください。")
 
     params = common.decode_params()
     mode = params.get("mode", "").strip()
     
     # 登録制限チェック
-    # config.chara_stop が 1 の場合は新規登録停止
     chara_stop = getattr(config, "chara_stop", 0)
     if chara_stop:
         common.show_error("現在キャラクターの新規作成は停止しています。")
 
+    # セッション/CSRF管理モジュールインポート
+    from sub_def.crypto import get_session, save_session, token_generate, token_check, hash_password
+    from sub_def.file_ops import save_user_all
+    from sub_def.utils import redirect
+    
+    session = get_session()
+
     # 1. 登録確認画面 (make_pre)
     if mode == "make_pre":
+        # POST / 画面遷移の CSRF トークン検証
+        token_check(params, session)
+        
         err = validate_input(params)
         if err:
             common.show_error(err)
             
-        site = params.get("site", "").strip() or "オススメのHP"
-        url = params.get("url", "").strip() or "http://www.eriicu.com"
+        site = params.get("site", "").strip()
+        url = params.get("url", "").strip()
         
         # 画像番号のチェック
         chara_img_idx_str = params.get("chara", "").strip()
         try:
             chara_img_idx = int(chara_img_idx_str)
-            if chara_img_idx < 0 or chara_img_idx >= len(config.Config['chara_images']):
-                chara_img_idx = random.randint(0, len(config.Config['chara_images']) - 1)
+            if chara_img_idx < 0 or chara_img_idx >= len(Config['chara_images']):
+                chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
         except ValueError:
-            chara_img_idx = random.randint(0, len(config.Config['chara_images']) - 1)
+            chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
             
+        # 次の make_end フォーム送信用の新しい CSRF トークン生成
+        csrf_token = token_generate(session)
+        cookie_header = save_session(session)
+        
         context = {
+            "csrf_token": csrf_token,
             "in": params,
             "c_name": params.get("c_name", "").strip(),
             "sex": int(params.get("sex", "1")),
@@ -175,12 +189,15 @@ def main():
             "url": url,
             "passchange": params.get("passchange", "").strip(),
             "intgold": 5000,
-            "chara_img_name": config.Config['chara_images'][chara_img_idx]
+            "chara_img_name": Config['chara_images'][chara_img_idx]
         }
-        common.render_template("chara_make_pre.html", context)
+        common.render_template("chara_make_pre.html", context, extra_headers=[cookie_header])
         
     # 2. 登録完了処理 (make_end)
     elif mode == "make_end":
+        # POST 送信の CSRF トークン検証
+        token_check(params, session)
+        
         err = validate_input(params)
         if err:
             common.show_error(err)
@@ -192,16 +209,16 @@ def main():
         sex = int(params.get("sex", "1"))
         syoku = int(params.get("syoku", "0"))
         
-        site = params.get("site", "").strip() or "オススメのHP"
-        url = params.get("url", "").strip() or "http://www.eriicu.com"
+        site = params.get("site", "").strip()
+        url = params.get("url", "").strip()
         
         chara_img_idx_str = params.get("chara", "").strip()
         try:
             chara_img_idx = int(chara_img_idx_str)
-            if chara_img_idx < 0 or chara_img_idx >= len(config.Config['chara_images']):
-                chara_img_idx = random.randint(0, len(config.Config['chara_images']) - 1)
+            if chara_img_idx < 0 or chara_img_idx >= len(Config['chara_images']):
+                chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
         except ValueError:
-            chara_img_idx = random.randint(0, len(config.Config['chara_images']) - 1)
+            chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
             
         # 職業ごとの初期ステータス割り振り
         if syoku == 1: # 戦士
@@ -220,10 +237,13 @@ def main():
         now = int(time.time())
         remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
         
-        # 1. chara.json 構築
+        # セキュリティ向上のため、パスワードを PBKDF2 ハッシュ化して保存
+        hashed_pass = hash_password(user_pass)
+        
+        # 1. chara データ構築
         new_chara = {
             "id": user_id,
-            "pass": user_pass,
+            "pass": hashed_pass,
             "site": site,
             "url": url,
             "name": c_name,
@@ -247,10 +267,10 @@ def main():
             "unused22": 0,
             "comment": "よろしくお願いします！",
             "weapon_id": 0,
-            "battle_limit": config.Config['battle_limit'],
+            "battle_limit": Config['battle_limit'],
             "host": remote_addr,
             "last_time": now,
-            "boss_flag": config.Config['boss_cooldown'],
+            "boss_flag": Config['boss_cooldown'],
             "armor_id": 0,
             "unused30": 0,
             "accessory_id": 0,
@@ -259,7 +279,7 @@ def main():
             "bank": 0
         }
         
-        # 2. item.json 構築 (初期装備)
+        # 2. item データ構築
         new_item = {
             "weapon": {
                 "name": "素手",
@@ -284,17 +304,15 @@ def main():
             }
         }
         
-        # 3. syoku.json 構築 (初期熟練度。見習い戦士など初期職業の熟練度を少し上げるなどの処理はないか。Perl版では特になし。)
+        # 3. syoku データ構築
         new_syoku = {str(i): 0 for i in range(31)}
         
-        # パスワード変更用単語（重要データ）の保存。
-        # Perlでは password フォルダに {id}.cgi として "pass<>passchange<>date<>host<>" のように保存していました。
-        # Python版では `save_data/{user_id}/pass_change.json` にまとめて保存しましょう。
-        user_dir = os.path.join(config.Config['save_dir'], user_id)
+        # 4. パスワード変更用単語の保存 (別ファイルとしてディレクトリに隔離)
+        user_dir = os.path.join(Config['save_dir'], user_id)
         os.makedirs(user_dir, exist_ok=True)
         
         pass_change_data = {
-            "pass": user_pass,
+            "pass": hashed_pass,
             "passchange": passchange,
             "created_at": now,
             "host": remote_addr
@@ -303,10 +321,22 @@ def main():
             import json
             json.dump(pass_change_data, f, ensure_ascii=False, indent=2)
             
-        # ディレクトリロックを取りながら一括保存
-        common.save_user_all(user_id, new_chara, new_item, new_syoku)
+        # user_all.json 統合データ辞書の一本化構造の組み立てとアトミック保存
+        user_data = {
+            "chara": new_chara,
+            "item": new_item,
+            "syoku": new_syoku,
+            "login_log": [],
+            "message": [],
+            "souko_item": [],
+            "souko_def": [],
+            "souko_acs": [],
+            "choco": {},
+            "choco_g1": {}
+        }
+        save_user_all(user_id, user_data)
         
-        # 4. 全体システムニュースへの登録
+        # 5. 全体システムニュースへの登録
         all_msgs = common.all_message_load()
         new_msg = {
             "id": "system",
@@ -316,27 +346,30 @@ def main():
             "host": "system"
         }
         all_msgs.insert(0, new_msg)
-        common.all_message_regist(all_msgs[:config.Config['max_all_messages']])
+        common.all_message_regist(all_msgs[:Config['max_all_messages']])
         
-        # 登録完了画面をレンダリング
-        context = {
-            "chara": new_chara,
-            "chara_img_name": config.Config['chara_images'][chara_img_idx],
-            "chara_syoku_name": config.Config['chara_jobs'][syoku],
-            "passchange": passchange
+        # 登録完了時、自動的に暗号化セッションを発行してメイン画面へダイレクトログイン (F5多重送信防止)
+        session_data = {
+            "user_id": user_id,
+            "password_hash": hashed_pass,
+            "csrf_token": session.get("csrf_token")
         }
-        common.render_template("chara_make_end.html", context)
+        cookie_header = save_session(session_data)
+        redirect("login.py?mode=main", extra_headers=[cookie_header])
         
     # 3. 初期フォーム画面 (表示)
     else:
-        # キャラクター画像の選択肢を渡すための情報
+        csrf_token = token_generate(session)
+        cookie_header = save_session(session)
+        
         context = {
-            "chara_img_list": config.Config['chara_images'],
-            "chara_syoku_list": config.Config['chara_jobs'][:4], # 初期職業の4つ (0..3)
-            "img_all_list": config.Config['img_all_list'],
-            "vote_gazou": config.Config['vote_image']
+            "csrf_token": csrf_token,
+            "chara_img_list": Config['chara_images'],
+            "chara_syoku_list": Config['chara_jobs'][:4], # 初期職業の4つ (0..3)
+            "img_all_list": Config['img_all_list'],
+            "vote_gazou": Config['vote_image']
         }
-        common.render_template("chara_make.html", context)
+        common.render_template("chara_make.html", context, extra_headers=[cookie_header])
 
 if __name__ == "__main__":
     main()

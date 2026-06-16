@@ -12,9 +12,9 @@
     
     <div class="menu-bar">
         <span class="white">メニュー / </span>
-        <a href="system.py">登録者一覧</a> | 
-        <a href="rank.py">能力別ランキング</a> | 
-        <a href="system.py?mode=img_list" target="_blank">アイコン画像一覧</a>
+        <a href="login.py?mode=system">登録者一覧</a> | 
+        <a href="login.py?mode=rank">能力別ランキング</a> | 
+        <a href="login.py?mode=img_list" target="_blank">アイコン画像一覧</a>
     </div>
 
     <div class="layout-grid">
@@ -73,15 +73,15 @@
                 <div class="command-list">
                     <div class="command-row">
                         <span class="command-label">⚔️ バトル時の戦術・作戦変更</span>
-                        <a href="tac_change.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">戦術変更</a>
+                        <a href="login.py?mode=tac_change&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">戦術変更</a>
                     </div>
                     <div class="command-row">
                         <span class="command-label">🛡️ 通常ゲーム画面に戻る</span>
-                        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">メイン画面へ</a>
+                        <a href="login.py?mode=main&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">メイン画面へ</a>
                     </div>
                     <div class="command-row">
                         <span class="command-label">🔑 セキュリティパスワード変更</span>
-                        <a href="passchange.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">パスワード変更</a>
+                        <a href="login.py?mode=passchange&id={{ chara.id }}&mydata={{ chara_log }}" class="btn-command">パスワード変更</a>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,8 @@
         <!-- 右カラム: ステータス詳細と編集フォーム -->
         <div class="right-column">
             
-            <form action="sts.py" method="post">
+            <form action="login.py?mode=sts" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mydata" value="{{ chara_log }}">
                 <input type="hidden" name="mode" value="st_buy">
@@ -104,7 +105,7 @@
                     
                     <label class="style-cls-287">🖼️ アイコン画像番号 (0〜40)</label><br>
                     <input type="number" name="chara" value="{{ chara.img }}" class="input-field style-cls-183" min="0" max="40">
-                    <a class="style-cls-288" href="system.py?mode=img_list" target="_blank">画像一覧を確認クポ</a><br><br>
+                    <a class="style-cls-288" href="login.py?mode=img_list" target="_blank">画像一覧を確認クポ</a><br><br>
                     
                     <label class="style-cls-287">💬 クリティカル発動時の台詞・コメント</label><br>
                     <input type="text" name="waza" value="{{ chara.comment }}" class="input-field" maxlength="100"><br>

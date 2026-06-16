@@ -20,6 +20,7 @@
             <h3 class="style-cls-214">✍️ メッセージを送る</h3>
             
             <form class="style-cls-66" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="message">
                 
@@ -58,24 +59,28 @@
             <!-- 各種郵便局メニュー -->
             <div class="style-cls-221" align="center">
                 <form class="style-cls-222" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="all_list">
                     <input type="submit" class="btn style-cls-223" value="🔍 登録者一覧から選ぶ">
                 </form>
                 
                 <form class="style-cls-222" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="ban">
                     <input type="submit" class="btn style-cls-224" value="🚫 拒否リスト設定">
                 </form>
                 
                 <form class="style-cls-222" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="friend">
                     <input type="submit" class="btn style-cls-225" value="🤝 友達リスト設定">
                 </form>
                 
                 <form class="style-cls-222" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="limit">
                     <input type="submit" class="btn style-cls-223" value="🔒 受信凍結設定">
@@ -98,6 +103,7 @@
                     </div>
                     <div class="style-cls-231">
                         <form class="style-cls-232" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="hidden" name="mode" value="res">
                             <input type="hidden" name="mesid" value="{{ msg.id }}">
@@ -135,6 +141,7 @@
     
     <!-- 戻るボタン -->
     <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="ステータス画面へ">
     </form>

@@ -1,5 +1,4 @@
 #!D:\Python\Python314\python.exe
-# -*- coding: utf-8 -*-
 #------------------------------------------------------#
 #  FFA改 Vips Ver 3.00
 #  作成者: ねじりん
@@ -43,10 +42,10 @@ import shutil
 # 共通モジュールと設定モジュールのインポート
 try:
     import config
-    import common
+    from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 except ImportError:
     from . import config
-    from . import common
+    from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 
 

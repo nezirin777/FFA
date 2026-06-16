@@ -11,12 +11,15 @@
     <div class="success-msg">🎉 {{ chara.name }} さんのプロフィール設定を更新しましたクポ！</div>
     
     <div class="btn-container">
-        <form action="sts.py" method="post">
+        <form action="login.py?mode=sts" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn-link" value="⚙️ ステータス設定画面へ">
         </form>
-        <form action="ffadventure.py" method="post">
+        <!-- 移行のため、直接の ffadventure.py から login.py?mode=main へ修正 -->
+        <form action="login.py?mode=main" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn-link" value="🏡 ゲームメイン画面へ">

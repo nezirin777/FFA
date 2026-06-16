@@ -156,6 +156,7 @@
                             {% else %}
                                 <div id="action-form-battle" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form class="style-cls-30" action="{{ config.battle_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <input type="submit" class="btn style-cls-125" value="王者に挑戦する">
                                     </form>
@@ -197,6 +198,7 @@
                         <td><b>{{ chara.lck }}</b></td>
                         <td colspan="2" bgcolor="#05051a">
                             <form class="style-cls-30" action="{{ config.tactics_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn style-cls-123" value="作戦変更">
                             </form>
@@ -219,7 +221,8 @@
                     </tr>
                     <tr align="center">
                         <td>
-                            <form action="shop.py" method="POST">
+                            <form action="login.py?mode=shop" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="mode" value="yado">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="休む" >
@@ -227,18 +230,21 @@
                         </td>
                         <td>
                             <form action="{{ config.shop_item_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="武器屋" >
                             </form>
                         </td>
                         <td>
                             <form action="{{ config.shop_def_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="防具屋" >
                             </form>
                         </td>
                         <td>
                             <form action="{{ config.shop_acs_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="装飾品" >
                             </form>
@@ -253,24 +259,28 @@
                     <tr align="center">
                         <td>
                             <form action="{{ config.status_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="成長" >
                             </form>
                         </td>
                         <td>
                             <form action="{{ config.bank_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="銀行" >
                             </form>
                         </td>
                         <td>
                             <form action="{{ config.souko_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="倉庫" >
                             </form>
                         </td>
                         <td>
                             <form action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="ポスト" >
                             </form>
@@ -285,13 +295,15 @@
                     <tr align="center">
                         <td>
                             <form action="{{ config.tensyoku_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="mode" value="tensyoku">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="転職" >
                             </form>
                         </td>
                         <td>
-                            <form action="chocofarm.py" method="POST">
+                            <form action="login.py?mode=chocofarm" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="牧場" >
                             </form>
@@ -301,6 +313,7 @@
                         </td>
                         <td>
                             <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="mode" value="log_in">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn" value="更新" >
@@ -323,6 +336,7 @@
                             {% else %}
                                 <div id="action-form-monster" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form class="style-cls-30" action="{{ config.monster_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="monster">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <select class="style-cls-124" name="mons_file">
@@ -352,6 +366,7 @@
                             {% else %}
                                 <div id="action-form-genei" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form class="style-cls-30" action="{{ config.monster_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="genei">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <input type="submit" class="btn style-cls-123" value="城へ挑む">
@@ -375,6 +390,7 @@
                             {% else %}
                                 <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form class="style-cls-30" action="{{ config.legend_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="boss">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <select class="style-cls-124" name="boss_file">
@@ -409,6 +425,7 @@
                             {% else %}
                                 <div id="action-form-isekiai" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form class="style-cls-30" action="{{ config.monster_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="isekiai">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <input type="submit" class="btn style-cls-123" value="異世界へ進む">
@@ -448,6 +465,7 @@
         {% if msg.id != 'sys' %}
         <div class="style-cls-127">
             <form class="style-cls-7" action="{{ config.post_message_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="res">
                 <input type="hidden" name="mesid" value="{{ msg.id }}">

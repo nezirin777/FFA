@@ -1,5 +1,4 @@
 #!D:\Python\Python314\python.exe
-# -*- coding: utf-8 -*-
 #------------------------------------------------------#
 #  FFA改 Vips Ver 3.00
 #  作成者: ねじりん
@@ -60,18 +59,20 @@ class FFA_CGIHandler(http.server.CGIHTTPRequestHandler):
         """
         リクエストパスが /FFA_py/ 配下の .py ファイルである場合、CGIとして処理します。
         """
-        # クエリパラメータを取り除く
-        path_no_query = self.path.split('?')[0]
+        # クエリパラメータを分離する
+        path_no_query, _, query = self.path.partition('?')
         
         # Windowsのパス区切りに対応
         normalized_path = path_no_query.replace('\\', '/')
         
         if normalized_path.startswith("/FFA_py/") and normalized_path.endswith(".py"):
-            # cgi_infoを設定: (ディレクトリ部分, スクリプトファイル名)
-            # 例: ("FFA_py", "login.py")
+            # cgi_infoを設定: (ディレクトリ部分, スクリプトファイル名 + クエリ)
+            # 例: ("FFA_py", "login.py?mode=battle")
             parts = normalized_path.lstrip("/").split("/")
             dir_part = "/".join(parts[:-1])
             file_part = parts[-1]
+            if query:
+                file_part += '?' + query
             self.cgi_info = (dir_part, file_part)
             return True
             

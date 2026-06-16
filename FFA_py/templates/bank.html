@@ -56,6 +56,7 @@
                     <p class="style-cls-16">（入力値 × 1,000 Gold を預け入れます）</p>
                     
                     <form class="style-cls-27" action="{{ config.bank_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input class="style-cls-28" type="text" name="azuke" value="" size="8">
                         <span class="style-cls-16"><b>,000</b> Gold</span>
                         <br><br>
@@ -65,6 +66,7 @@
                     </form>
                     
                     <form class="style-cls-30" action="{{ config.bank_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="azuke" value="{{ bank_max_in }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
                         <input type="hidden" name="mode" value="bank_sell">
@@ -80,6 +82,7 @@
                     <p class="style-cls-16">（入力値 × 1,000 Gold を引き出します）</p>
                     
                     <form class="style-cls-27" action="{{ config.bank_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input class="style-cls-28" type="text" name="dasu" value="" size="8">
                         <span class="style-cls-16"><b>,000</b> Gold</span>
                         <br><br>
@@ -89,6 +92,7 @@
                     </form>
                     
                     <form class="style-cls-30" action="{{ config.bank_script }}" method="post">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="dasu" value="{{ bank_max_out }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
                         <input type="hidden" name="mode" value="bank_buy">
@@ -101,6 +105,7 @@
 
     <br><br>
     <form action="{{ config.main_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="submit" class="btn" value="街に戻る">
     </form>

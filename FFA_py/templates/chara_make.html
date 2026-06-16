@@ -27,6 +27,7 @@
 
     <!-- 入力フォーム -->
     <form action="{{ config.chara_make_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="mode" value="make_pre">
         
         <table border="1" cellspacing="0" class="form-table" bordercolor="{{ config.color_dark }}">

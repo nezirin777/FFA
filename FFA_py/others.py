@@ -1,5 +1,4 @@
 #!D:\Python\Python314\python.exe
-# -*- coding: utf-8 -*-
 #------------------------------------------------------#
 #  FFA改 Vips Ver 3.00
 #  作成者: ねじりん
@@ -29,47 +28,23 @@
 #  http://www2.to/meeting/
 #  gun24@j-club.ne.jp
 #------------------------------------------------------#
-#--- [注意事項] ------------------------------------------------#
-# 1. このスクリプトはフリーソフトです。このスクリプトを使用した	#
-#    いかなる損害に対して作者は一切の責任を負いません。		#
-# 2. 設置に関する質問はサポート掲示板にお願いいたします。	#
-#    直接メールによる質問は一切お受けいたしておりません。	#
-# 3. 設置したら皆さんに楽しんでもらう為にも、Webリングへぜひ参加#
-#    してくださいm(__)m						#
-#    http://icus.s13.xrea.com/cgi-bin/cbbs/cbbs.cgi　		#
-#---------------------------------------------------------------#
 """
 FFA Python/CGI - ログイン前トップ・その他メニュー表示スクリプト (others.py)
 """
-
 import sys
+import os
+import time
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 if hasattr(sys.stdin, 'reconfigure'):
     sys.stdin.reconfigure(encoding='utf-8')
-import os
-import time
 
 # 共通モジュールと設定モジュールのインポート
 import config
-import common
-
-def parse_cookie_user(cookie_str):
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+Config = config.Config
 
 def parse_winner_data(winner_str):
     """王者ファイルデータを解析し、キャラクター辞書を返します"""
@@ -147,33 +122,41 @@ def parse_winner_data(winner_str):
     return winner_char
 
 def get_winner():
-    winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
+    winner_path = os.path.join(common.BASE_DIR, Config['winner_file'])
     if not os.path.exists(winner_path):
         return parse_winner_data("sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>0<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>")
     try:
         with open(winner_path, "r", encoding="utf-8") as f:
             content = f.read()
     except Exception:
-        return parse_winner_data("sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>0<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>")
+        return parse_winner_data("sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>")
     return parse_winner_data(content)
 
 def main():
-    if config.Config['maintenance_mode']:
-        common.show_error("現在メンテナンス中です。しばらくお待ちください。")
+    if Config['maintenance_mode']:
+        from sub_def.utils import show_error
+        show_error("現在メンテナンス中です。しばらくお待ちください。")
         
-    # クッキーからログイン情報取得
-    cookie_str = common.get_cookie(config.Config['cookie_name'])
-    c_id, c_pass = parse_cookie_user(cookie_str)
+    # === 暗号化クッキーセッション管理の導入 (改ざん・不正アクセス防御) ===
+    from sub_def.crypto import get_session, token_generate, save_session
+    from sub_def.file_ops import load_user_all
+    from sub_def.utils import redirect, render_template
     
-    # テストプレイ制限チェック (10分=600秒)
-    now = int(time.time())
-    test_playable = False
-    test_chara = common.chara_load("test")
-    if test_chara:
-        last_time = test_chara.get("last_time", 0)
-        if last_time + 600 < now:
-            test_playable = True
-            
+    session = get_session()
+    if session.get("user_id"):
+        user_id = session["user_id"]
+        user_data = load_user_all(user_id)
+        if user_data and user_data.get("chara"):
+            chara = user_data["chara"]
+            # セッションハッシュと一致するか検証 (None-Safety 確保)
+            if chara.get("pass") == session.get("password_hash"):
+                # すでに有効なセッションがある場合はメイン画面(login.py?mode=main)へ自動リダイレクト (NoReturn制御)
+                redirect(f"{Config['login_script']}?mode=main")
+                
+    # CSRF トークンを生成してセッションに紐付ける (ガイドラインに準拠)
+    csrf_token = token_generate(session)
+    cookie_header = save_session(session)
+    
     # チャンプデータの読み込み
     winner = get_winner()
     
@@ -194,17 +177,11 @@ def main():
     
     # 勝率算出
     win_count = winner["win_count"]
-    # winnerの総戦闘回数（Perlの$winner[18]に相当するもの。parse_winner_dataでのlevelが総戦闘回数として使われている可能性があります。）
-    # Perlの$winner[18]は通常 level です。勝率の式： $ritu = int(($winner[19] / $winner[18]) * 100);
-    # ここでの $winner[19] は win_count ですが、winner_char["level"] が総戦闘回数。
     total_count = winner["level"]
-    if total_count > 0:
-        win_ratio = int((win_count / total_count) * 100)
-    else:
-        win_ratio = 0
+    win_ratio = int((win_count / total_count) * 100) if total_count > 0 else 0
         
     # バーのピクセル幅計算
-    divpm = int(config.Config['max_param'] / 100)
+    divpm = int(Config['max_param'] / 100)
     if divpm <= 0:
         divpm = 1
         
@@ -212,7 +189,6 @@ def main():
         w = int(val / divpm)
         return min(max(w, 1), 100)
         
-    # 基本特性値バーの幅
     bw = {
         "str": get_bar_width(winner["str"]),
         "int": get_bar_width(winner["int"]),
@@ -234,20 +210,9 @@ def main():
     waza_base = int(winner["lp"] / 15) + 10 + winner["job_level"]
     waza_base = min(waza_base, 75)
     
-    # 武器命中補正、防具回避補正など (Perlでは $winner[23] は武器命中率上昇、$winner[26] は防具回避率上昇など。)
-    # parse_winner_data で：
-    # parts[23] = 武器効果 (effect)
-    # parts[26] = 防具効果 (effect)
-    # parts[35] = アクセサリー補正 (lp) or 必殺補正？
-    # Perlコードでは：
-    # $winner[23] は武器の命中率補正。
-    # $winner[26] は防具の回避率補正。
-    # $winner[35] は必殺補正。
-    # ここでは raw_parts から読み込んだ値を使います。
-    # winner["equipped_item"]["weapon"]["effect"] 等
     weapon_effect = winner["equipped_item"]["weapon"]["effect"]
     armor_effect = winner["equipped_item"]["armor"]["effect"]
-    acs_lp = winner["equipped_item"]["accessory"]["bonus"]["lp"] # カルマ/必殺補正
+    acs_lp = winner["equipped_item"]["accessory"]["bonus"]["lp"]
     
     bw_hit = int(0.5 * (hit_base + weapon_effect))
     bw_kaihi = int(0.5 * (kaihi_base + armor_effect))
@@ -257,13 +222,21 @@ def main():
     bw["kaihi"] = min(max(bw_kaihi, 1), 100)
     bw["waza"] = min(max(bw_waza, 1), 100)
     
+    # テストプレイの可否判定 (10分のロック時間制御)
+    test_playable = True
+    test_data = load_user_all("test")
+    if test_data and test_data.get("chara"):
+        test_chara = test_data["chara"]
+        last_time = test_chara.get("last_time", 0)
+        if time.time() - last_time < 600:
+            test_playable = False
+            
     # 現在の冒険者一覧HTML取得
     guests_html = common.update_and_get_guests("", "")
     
-    # テンプレートレンダリング
+    # テンプレートレンダリング (CSRFトークンを注入)
     context = {
-        "c_id": c_id or "",
-        "c_pass": c_pass or "",
+        "csrf_token": csrf_token,
         "test_playable": test_playable,
         "winner": winner,
         "winner_class": winner_class,
@@ -274,7 +247,7 @@ def main():
         "waza_base": waza_base,
         "guests_html": guests_html
     }
-    common.render_template("others.html", context)
+    render_template("others.html", context, extra_headers=[cookie_header])
 
 if __name__ == "__main__":
     main()

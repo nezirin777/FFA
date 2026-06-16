@@ -22,6 +22,7 @@
     <!-- 検索フォーム & 一覧遷移 -->
     <div class="form-group">
         <form action="{{ config.select_battle_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="mode" value="battle">
             <input type="hidden" name="id" value="{{ chara.id }}">
             
@@ -33,6 +34,7 @@
 
     <div class="form-group style-cls-67">
         <form action="{{ config.select_battle_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="mode" value="sentaku">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <button type="submit" class="btn-submit">登録済みの冒険者一覧から選択する</button>
@@ -42,6 +44,7 @@
     {% elif mode == 'sentaku' %}
     <!-- 一覧選択フォーム -->
     <form action="{{ config.select_battle_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="mode" value="battle">
         <input type="hidden" name="id" value="{{ chara.id }}">
 

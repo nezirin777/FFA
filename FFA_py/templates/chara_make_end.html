@@ -82,6 +82,7 @@
 
     <!-- ステータスへログイン遷移するフォーム -->
     <form action="{{ config.login_script }}" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="mode" value="log_in">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="pass" value="{{ chara.pass }}">

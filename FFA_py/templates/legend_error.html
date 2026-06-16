@@ -34,13 +34,14 @@
     </div>
 
     <!-- 再挑戦フォーム -->
-    <form action="legend.py" method="POST">
+    <form action="login.py?mode=legend" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="mode" value="boss">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="boss_file" value="{{ boss_file }}">
         <input type="submit" id="submit-btn" class="btn" value="待機中..." disabled>
     </form>
 
-    <a href="ffadventure.py?id={{ chara.id }}" class="btn style-cls-14">街に戻る</a>
+    <a href="login.py?mode=main&id={{ chara.id }}" class="btn style-cls-14">街に戻る</a>
 </div>
 {% endblock %}
