@@ -121,7 +121,18 @@ def main():
     from sub_def.crypto import get_session, token_generate, save_session
     from sub_def.file_ops import load_user_all
     from sub_def.utils import redirect, render_template
+    from http import cookies
     
+    # ユーザーID保存用クッキー (Remember Me) の読み込み
+    cookie_str = os.environ.get("HTTP_COOKIE", "")
+    cookie = cookies.SimpleCookie()
+    cookie.load(cookie_str)
+    c_id = ""
+    if "FFAPY_SAVED_USER" in cookie:
+        c_id = cookie["FFAPY_SAVED_USER"].value
+        
+    is_logged_in = False
+    chara_name = ""
     session = get_session()
     if session.get("user_id"):
         user_id = session["user_id"]
@@ -130,8 +141,8 @@ def main():
             chara = user_data["chara"]
             # セッションハッシュと一致するか検証 (None-Safety 確保)
             if chara.get("pass") == session.get("password_hash"):
-                # すでに有効なセッションがある場合はメイン画面(login.py?mode=main)へ自動リダイレクト (NoReturn制御)
-                redirect(f"{Config['login_script']}?mode=main")
+                is_logged_in = True
+                chara_name = chara.get("name", "冒険者")
                 
     # CSRF トークンを生成してセッションに紐付ける (ガイドラインに準拠)
     csrf_token = token_generate(session)
@@ -217,6 +228,9 @@ def main():
     # テンプレートレンダリング (CSRFトークンを注入)
     context = {
         "csrf_token": csrf_token,
+        "c_id": c_id,  # ログイン画面のユーザー名入力フィールド初期値
+        "is_logged_in": is_logged_in,
+        "chara_name": chara_name,
         "test_playable": test_playable,
         "winner": winner,
         "winner_class": winner_class,

@@ -88,9 +88,10 @@ def get_session() -> dict[str, Any]:
         session_val = cookie[SESSION_COOKIE_NAME].value
         decrypted = decrypt_data(session_val)
         if decrypted:
-            # 有効期限チェック (例: 30日間)
+            # 有効期限チェック (Configのsession_expiryを参照)
             created_at = decrypted.get("created_at", 0)
-            if time.time() - created_at < 30 * 24 * 60 * 60:
+            expiry = Config.get("session_expiry", 1800)
+            if time.time() - created_at < expiry:
                 return decrypted
     return {}
 

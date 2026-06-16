@@ -17,9 +17,21 @@
     <!-- ログイン・新規登録・テストプレイ エリア -->
     <table class="style-cls-159" border="0" cellpadding="5" cellspacing="10">
         <tr align="center" valign="top">
-            <!-- 既存ログイン -->
+            <!-- 既存ログイン / セッション継続 -->
             <td width="33%">
                 <div class="style-cls-160">
+                    {% if is_logged_in %}
+                    <h3 class="style-cls-161">🔑 ログイン中</h3>
+                    <p class="style-cls-166">
+                        現在 <b>{{ chara_name }}</b> さんでログインしています。
+                    </p>
+                    <br>
+                    <div align="center">
+                        <a href="{{ config.main_script }}" class="btn style-cls-163" style="text-decoration: none; display: inline-block; line-height: 25px; margin-bottom: 10px;">街に戻る</a>
+                        <br>
+                        <a href="{{ config.login_script }}?mode=log_out" class="btn" style="text-decoration: none; display: inline-block; line-height: 25px; background-color: #551111;">ログアウト</a>
+                    </div>
+                    {% else %}
                     <h3 class="style-cls-161">💾 冒険を再開する</h3>
                     <form class="style-cls-66" action="{{ config.login_script }}" method="POST">
                         <input type="hidden" name="s" value="{{ csrf_token }}">
@@ -37,6 +49,7 @@
                         <br>
                         <input type="submit" class="btn style-cls-163" value="ログイン">
                     </form>
+                    {% endif %}
                 </div>
             </td>
 
