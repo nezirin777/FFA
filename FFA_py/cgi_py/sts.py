@@ -49,6 +49,7 @@ import sys
 #     sys.stdin.reconfigure(encoding='utf-8')
 import os
 import time
+import json
 
 # 共通モジュールのインポート
 try:
@@ -199,13 +200,12 @@ def main():
         if os.path.exists(tac_file_path):
             try:
                 with open(tac_file_path, "r", encoding="utf-8") as f:
-                    for line in f:
-                        parts = line.strip().split("<>")
-                        if len(parts) >= 2 and parts[0] == str(tac_no):
-                            tac_name = parts[1]
-                            if len(parts) >= 3:
-                                tac_ex = parts[2]
-                            break
+                    tactics = json.load(f)
+                for t in tactics:
+                    if t.get("no") == tac_no:
+                        tac_name = t["name"]
+                        tac_ex = t.get("desc", "")
+                        break
             except:
                 pass
 

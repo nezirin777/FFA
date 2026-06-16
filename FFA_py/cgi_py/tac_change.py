@@ -49,6 +49,7 @@ import sys
 #     sys.stdin.reconfigure(encoding='utf-8')
 import os
 import time
+import json
 
 # 共通モジュールのインポート
 try:
@@ -62,27 +63,21 @@ except ImportError:
 def load_job_tactics(job_id, job_level):
     """特定のジョブで使用可能な戦術を読み込みます"""
     tactics = []
-    tac_path = os.path.join(common.BASE_DIR, config.Config['tac_folder'], f"tac{job_id}.ini")
+    tac_path = os.path.join(common.BASE_DIR, config.Config['tac_folder'], f"tac{job_id}.json")
     
     if os.path.exists(tac_path):
         try:
             with open(tac_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    parts = line.strip().split("<>")
-                    if len(parts) >= 2:
-                        ks_no = int(parts[0])
-                        ks_name = parts[1]
-                        ks_plus = parts[2] if len(parts) > 2 else ""
-                        ks_ms = int(parts[3]) if len(parts) > 3 else 0
-                        
-                        # マスター戦術(ks_ms == 1)の場合はジョブレベルが60以上である必要がある
-                        if ks_ms == 0 or (ks_ms == 1 and job_level >= 60):
-                            tactics.append({
-                                "no": ks_no,
-                                "name": ks_name,
-                                "desc": ks_plus,
-                                "ms": ks_ms
-                            })
+                items = json.load(f)
+            for item in items:
+                # マスター戦術(ms == 1)の場合はジョブレベルが60以上である必要がある
+                if item.get("ms", 0) == 0 or (item.get("ms", 0) == 1 and job_level >= 60):
+                    tactics.append({
+                        "no": item["no"],
+                        "name": item["name"],
+                        "desc": item.get("desc", ""),
+                        "ms": item.get("ms", 0)
+                    })
         except Exception:
             pass
             

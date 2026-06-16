@@ -50,6 +50,7 @@ import sys
 import os
 import time
 import random
+import json
 
 # 共通モジュールと設定モジュールのインポート
 try:
@@ -77,81 +78,60 @@ def parse_cookie_user(cookie_str):
                 pass_val = v
     return id_val, pass_val
 
-def parse_winner_data(winner_str):
-    """王者ファイルデータを解析し、キャラクター辞書と生partsを返します"""
-    parts = winner_str.strip().split("<>")
-    if parts and parts[-1] == "":
-        parts = parts[:-1]
-        
-    def get_val(lst, idx, default=""):
-        return lst[idx] if idx < len(lst) else default
-        
-    def to_i(val):
-        try: return int(val)
-        except: return 0
-
-    winner_char = {
-        "id": get_val(parts, 0, "sys"),
-        "site": get_val(parts, 1),
-        "url": get_val(parts, 2),
-        "name": get_val(parts, 3, "無名の剣士"),
-        "sex": to_i(get_val(parts, 4)),
-        "img": to_i(get_val(parts, 5)),
-        "str": to_i(get_val(parts, 6)),
-        "int": to_i(get_val(parts, 7)),
-        "dex": to_i(get_val(parts, 8)),
-        "vit": to_i(get_val(parts, 9)),
-        "agi": to_i(get_val(parts, 10)),
-        "mnd": to_i(get_val(parts, 11)),
-        "lck": to_i(get_val(parts, 12)),
-        "lp": to_i(get_val(parts, 13)),
-        "job": to_i(get_val(parts, 14)),
-        "hp": to_i(get_val(parts, 15)),
-        "max_hp": to_i(get_val(parts, 16)),
-        "level": to_i(get_val(parts, 17)),
-        "comment": get_val(parts, 20),
-        "host": get_val(parts, 37),
-        "job_level": to_i(get_val(parts, 38)),
-        "win_count": to_i(get_val(parts, 43)),
-        "max_win_count": to_i(get_val(parts, 44)),
-        "max_win_id": get_val(parts, 45),
-        "max_win_name": get_val(parts, 46),
-        "gold": to_i(get_val(parts, 49)), # 賞金
-    }
-    
-    winner_item = {
-        "weapon": {
-            "name": get_val(parts, 21, "素手"),
-            "dmg": to_i(get_val(parts, 22)),
-            "effect": to_i(get_val(parts, 23))
-        },
-        "armor": {
-            "name": get_val(parts, 24, "衣服"),
-            "def": to_i(get_val(parts, 25)),
-            "effect": to_i(get_val(parts, 26))
-        },
+DEFAULT_WINNER = {
+    "id": "sys",
+    "site": "サイト",
+    "url": "URL",
+    "name": "無名の剣士",
+    "sex": 1,
+    "img": 0,
+    "str": 10,
+    "int": 10,
+    "dex": 10,
+    "vit": 10,
+    "agi": 10,
+    "mnd": 10,
+    "lck": 10,
+    "lp": 0,
+    "job": 0,
+    "hp": 1000,
+    "max_hp": 1000,
+    "level": 1,
+    "unused21": 0,
+    "unused22": 0,
+    "comment": "無名",
+    "equipped_item": {
+        "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
+        "armor": { "name": "衣服", "def": 0, "effect": 0 },
         "accessory": {
-            "name": get_val(parts, 27, "なし"),
-            "effect_id": to_i(get_val(parts, 50)),
+            "name": "なし",
+            "effect_id": 0,
             "bonus": {
-                "str": to_i(get_val(parts, 28)),
-                "int": to_i(get_val(parts, 29)),
-                "dex": to_i(get_val(parts, 30)),
-                "vit": to_i(get_val(parts, 31)),
-                "agi": to_i(get_val(parts, 32)),
-                "mnd": to_i(get_val(parts, 33)),
-                "lck": to_i(get_val(parts, 34)),
-                "lp": to_i(get_val(parts, 35)),
+                "str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0
             },
-            "attrib": to_i(get_val(parts, 51)),
-            "spare1": to_i(get_val(parts, 52)),
-            "spare2": to_i(get_val(parts, 53)),
+            "attrib": 0,
+            "spare1": 0,
+            "spare2": 0,
             "spare3": 0
         }
-    }
-    
-    winner_char["equipped_item"] = winner_item
-    return winner_char, parts
+    },
+    "unused30": 0,
+    "host": "127.0.0.1",
+    "job_level": 0,
+    "last_challenger": {
+        "id": "sys",
+        "name": "無名の剣士",
+        "site": "サイト",
+        "url": "URL"
+    },
+    "win_count": 0,
+    "max_win_count": 0,
+    "max_win_id": "sys",
+    "max_win_name": "無名の剣士",
+    "max_win_site": "サイト",
+    "max_win_url": "URL",
+    "gold": 100
+}
 
 def main():
     # 1. メンテナンスチェック
@@ -193,13 +173,13 @@ def main():
         try:
             winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
             if not os.path.exists(winner_path):
-                # デフォルトのダミー王者データ
-                winner_raw = "sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>0<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>"
+                winner = DEFAULT_WINNER
             else:
-                with open(winner_path, "r", encoding="utf-8") as f:
-                    winner_raw = f.read()
-            
-            winner, raw_parts = parse_winner_data(winner_raw)
+                try:
+                    with open(winner_path, "r", encoding="utf-8") as f:
+                        winner = json.load(f)
+                except Exception:
+                    winner = DEFAULT_WINNER
             
             if winner["id"] == chara["id"]:
                 common.release_lock("winner")
@@ -247,25 +227,75 @@ def main():
                     chara["gold"] = config.Config['max_gold']
 
                 # 新しい王者レコードを組み立てる
-                new_parts = [
-                    chara["id"], chara["site"], chara["url"], chara["name"], str(chara["sex"]), str(chara["img"]),
-                    str(chara["str"]), str(chara["int"]), str(chara["dex"]), str(chara["vit"]), str(chara["agi"]),
-                    str(chara["mnd"]), str(chara["lck"]), str(chara["lp"]), str(chara["job"]), str(chara["hp"]),
-                    str(chara["max_hp"]), str(chara["level"]), str(chara["unused21"]), str(chara["unused22"]), chara["comment"],
-                    item["weapon"]["name"], str(item["weapon"]["dmg"]), str(item["weapon"]["effect"]),
-                    item["armor"]["name"], str(item["armor"]["def"]), str(item["armor"]["effect"]),
-                    item["accessory"]["name"], str(item["accessory"]["bonus"]["str"]), str(item["accessory"]["bonus"]["int"]),
-                    str(item["accessory"]["bonus"]["dex"]), str(item["accessory"]["bonus"]["vit"]), str(item["accessory"]["bonus"]["agi"]),
-                    str(item["accessory"]["bonus"]["mnd"]), str(item["accessory"]["bonus"]["lck"]), str(item["accessory"]["bonus"]["lp"]),
-                    str(chara["unused30"]), chara["host"], str(chara["job_level"]),
-                    winner["id"], winner["name"], winner["site"], winner["url"],
-                    "1", # 連勝回数を1にリセット
-                    str(winner["max_win_count"]), winner["max_win_id"], winner["max_win_name"],
-                    winner.get("max_win_site", "不明"), winner.get("max_win_url", ""),
-                    str(gold_gained),
-                    str(item["accessory"]["effect_id"]), str(item["accessory"]["attrib"]), str(item["accessory"]["spare1"])
-                ]
-                new_winner_str = "<>".join(new_parts) + "<>\n"
+                winner = {
+                    "id": chara["id"],
+                    "site": chara["site"],
+                    "url": chara["url"],
+                    "name": chara["name"],
+                    "sex": int(chara["sex"]),
+                    "img": int(chara["img"]),
+                    "str": int(chara["str"]),
+                    "int": int(chara["int"]),
+                    "dex": int(chara["dex"]),
+                    "vit": int(chara["vit"]),
+                    "agi": int(chara["agi"]),
+                    "mnd": int(chara["mnd"]),
+                    "lck": int(chara["lck"]),
+                    "lp": int(chara["lp"]),
+                    "job": int(chara["job"]),
+                    "hp": int(chara["hp"]),
+                    "max_hp": int(chara["max_hp"]),
+                    "level": int(chara["level"]),
+                    "unused21": int(chara.get("unused21", 0)),
+                    "unused22": int(chara.get("unused22", 0)),
+                    "comment": chara["comment"],
+                    "equipped_item": {
+                        "weapon": {
+                            "name": item["weapon"]["name"],
+                            "dmg": int(item["weapon"]["dmg"]),
+                            "effect": int(item["weapon"]["effect"])
+                        },
+                        "armor": {
+                            "name": item["armor"]["name"],
+                            "def": int(item["armor"]["def"]),
+                            "effect": int(item["armor"]["effect"])
+                        },
+                        "accessory": {
+                            "name": item["accessory"]["name"],
+                            "effect_id": int(item["accessory"].get("effect_id", 0)),
+                            "bonus": {
+                                "str": int(item["accessory"]["bonus"]["str"]),
+                                "int": int(item["accessory"]["bonus"]["int"]),
+                                "dex": int(item["accessory"]["bonus"]["dex"]),
+                                "vit": int(item["accessory"]["bonus"]["vit"]),
+                                "agi": int(item["accessory"]["bonus"]["agi"]),
+                                "mnd": int(item["accessory"]["bonus"]["mnd"]),
+                                "lck": int(item["accessory"]["bonus"]["lck"]),
+                                "lp": int(item["accessory"]["bonus"]["lp"])
+                            },
+                            "attrib": int(item["accessory"].get("attrib", 0)),
+                            "spare1": int(item["accessory"].get("spare1", 0)),
+                            "spare2": int(item["accessory"].get("spare2", 0)),
+                            "spare3": 0
+                        }
+                    },
+                    "unused30": int(chara.get("unused30", 0)),
+                    "host": chara["host"],
+                    "job_level": int(chara["job_level"]),
+                    "last_challenger": {
+                        "id": winner.get("id", "sys"),
+                        "name": winner.get("name", "無名の剣士"),
+                        "site": winner.get("site", "サイト"),
+                        "url": winner.get("url", "URL")
+                    },
+                    "win_count": 1, # 連勝回数を1にリセット
+                    "max_win_count": int(winner.get("max_win_count", 0)),
+                    "max_win_id": winner.get("max_win_id", "sys"),
+                    "max_win_name": winner.get("max_win_name", "無名の剣士"),
+                    "max_win_site": winner.get("max_win_site", "不明"),
+                    "max_win_url": winner.get("max_win_url", ""),
+                    "gold": gold_gained
+                }
                 
                 comment += f'<font color="{config.Config['color_green']}" size=5>見事に勝利し、新王者になりました！</font><br>'
                 comment += f'経験値 {exp_gained} と賞金 {gold_gained} ゴールドを獲得しました。<br>'
@@ -277,6 +307,8 @@ def main():
                     winner["max_win_count"] = winner["win_count"]
                     winner["max_win_id"] = winner["id"]
                     winner["max_win_name"] = winner["name"]
+                    winner["max_win_site"] = winner.get("site", "不明")
+                    winner["max_win_url"] = winner.get("url", "")
                 
                 # 防衛成功につき、王者のHPを最大HPの10%分回復
                 winner["hp"] += int(winner["max_hp"] / 10)
@@ -284,25 +316,19 @@ def main():
                     winner["hp"] = winner["max_hp"]
                     
                 # 最後の挑戦者情報として自分を記録
-                raw_parts[15] = str(winner["hp"])
-                raw_parts[43] = str(winner["win_count"])
-                raw_parts[44] = str(winner["max_win_count"])
-                raw_parts[45] = winner["max_win_id"]
-                raw_parts[46] = winner["max_win_name"]
-                
-                raw_parts[40] = chara["id"]
-                raw_parts[41] = chara["name"]
-                raw_parts[42] = chara["site"]
-                raw_parts[43] = chara["url"]
-                
-                new_winner_str = "<>".join(raw_parts) + "<>\n"
+                winner["last_challenger"] = {
+                    "id": chara["id"],
+                    "name": chara["name"],
+                    "site": chara["site"],
+                    "url": chara["url"]
+                }
                 
                 comment += f'<font color="{config.Config['color_red']}" size=5>王者の防衛に阻まれ、敗北しました・・・</font><br>'
                 comment += f'経験値 {exp_gained} を獲得しました。<br>'
 
             # 王者データの保存
             with open(winner_path, "w", encoding="utf-8") as f:
-                f.write(new_winner_str)
+                json.dump(winner, f, ensure_ascii=False, indent=2)
 
         finally:
             common.release_lock("winner")

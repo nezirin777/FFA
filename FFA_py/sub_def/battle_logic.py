@@ -50,6 +50,7 @@ import sys
 import os
 import random
 import time
+import json
 try:
     from . import skills
 except ImportError:
@@ -371,29 +372,25 @@ def process_levelup(chara, exp_gained, syoku_master=None):
     if not os.path.exists(syoku_file_path):
         syoku_file_path = os.path.join(os.path.dirname(base_dir), config.Config['syoku_file'])
         
+    jobs = []
     try:
         with open(syoku_file_path, "r", encoding="utf-8") as f:
-            syoku_lines = f.readlines()
+            jobs = json.load(f)
     except Exception:
-        syoku_lines = []
+        pass
         
     job_idx = chara.get("job", 0)
-    if job_idx < len(syoku_lines):
-        line = syoku_lines[job_idx].strip()
-        parts = line.split("<>")
-        if parts and parts[-1] == "":
-            parts = parts[:-1]
-    else:
-        parts = []
-
-    # 上昇上限パラメータ (デフォルト値)
     sy_limits = [0] * 8 # str, int, dex, vit, agi, mnd, lck, lp
-    if len(parts) >= 16:
-        for idx in range(8):
-            try:
-                sy_limits[idx] = int(parts[8 + idx])
-            except ValueError:
-                sy_limits[idx] = 0
+    if job_idx < len(jobs):
+        job_data = jobs[job_idx]
+        sy_limits[0] = job_data.get("limit_str", 0)
+        sy_limits[1] = job_data.get("limit_int", 0)
+        sy_limits[2] = job_data.get("limit_dex", 0)
+        sy_limits[3] = job_data.get("limit_vit", 0)
+        sy_limits[4] = job_data.get("limit_agi", 0)
+        sy_limits[5] = job_data.get("limit_mnd", 0)
+        sy_limits[6] = job_data.get("limit_lck", 0)
+        sy_limits[7] = job_data.get("limit_lp", 0)
 
     # レベルアップ基本係数
     lv_up_coeff = config.Config['level_up_coeff']

@@ -1,0 +1,211 @@
+[
+  {
+    "no": 7,
+    "name": "クロスピアス",
+    "gold": 2500,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 25,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 8,
+    "name": "クロスリング",
+    "gold": 50000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 50,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 9,
+    "name": "神秘の指輪",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 100,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 37,
+    "name": "魔石",
+    "gold": 5000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 10,
+      "dex": 10,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 43,
+    "name": "オールボーナス",
+    "gold": 5000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 5,
+      "int": 5,
+      "dex": 5,
+      "vit": 5,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 50,
+    "name": "メテオリング",
+    "gold": 9999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 100,
+      "dex": 100,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 53,
+    "name": "回復の指輪",
+    "gold": 9999999,
+    "effect_id": 1,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 56,
+    "name": "プロテスリング",
+    "gold": 999999,
+    "effect_id": 4,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 57,
+    "name": "シェルリング",
+    "gold": 99999999,
+    "effect_id": 5,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 63,
+    "name": "ケアルガの結晶",
+    "gold": 100000000,
+    "effect_id": 11,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 64,
+    "name": "光の結晶",
+    "gold": 100000000,
+    "effect_id": 12,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  }
+]
