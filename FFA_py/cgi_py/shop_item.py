@@ -42,6 +42,7 @@ FFA Python/CGI - 武器屋スクリプト (shop_item.py)
 
 import os
 import sys
+import json
 
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
@@ -54,40 +55,35 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 def get_item_master(item_id):
-    """武器マスタ(item.ini)から特定の武器情報を取得します。"""
+    """武器マスタ(item.json)から特定の武器情報を取得します。"""
     path = os.path.join(common.BASE_DIR, config.Config['item_file'])
     if not os.path.exists(path):
         return None
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split("<>")
-            if parts and parts[0] == str(item_id):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            items = json.load(f)
+        for item in items:
+            if item.get("no") == int(item_id):
                 return {
-                    "id": int(parts[0]),
-                    "name": parts[1],
-                    "power": int(parts[2]),
-                    "gold": int(parts[3])
+                    "id": item["no"],
+                    "name": item["name"],
+                    "power": item["power"],
+                    "gold": item["gold"]
                 }
+    except Exception:
+        pass
     return None
 
 def load_shop_items(job_idx):
     """現在の職業に対応する武器屋の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['item_folder']}/item{job_idx}.ini")
-    items = []
+    path = os.path.join(common.BASE_DIR, f"{config.Config['item_folder']}/item{job_idx}.json")
     if not os.path.exists(path):
-        return items
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split("<>")
-            if len(parts) >= 4:
-                items.append({
-                    "no": int(parts[0]),
-                    "name": parts[1],
-                    "power": int(parts[2]),
-                    "gold": int(parts[3]),
-                    "hit": int(parts[4]) if len(parts) > 4 else 0
-                })
-    return items
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 def main():
     if config.Config['maintenance_mode']:

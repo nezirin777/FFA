@@ -49,6 +49,7 @@ import sys
 #     sys.stdin.reconfigure(encoding='utf-8')
 import os
 import time
+import json
 
 # 共通モジュールと設定モジュールのインポート
 import config
@@ -78,39 +79,24 @@ def get_winner():
     王者データを読み込み、辞書として返します。
     """
     winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
+    default_winner = {
+        "id": "sys", "name": "無名の剣士", "img": 0, "hp": 1000, "max_hp": 1000, "win_count": 0
+    }
     if not os.path.exists(winner_path):
-        return {
-            "id": "sys", "name": "無名の剣士", "img": 0, "hp": 1000, "max_hp": 1000, "win_count": 0
-        }
+        return default_winner
     try:
         with open(winner_path, "r", encoding="utf-8") as f:
-            content = f.read()
-    except Exception:
+            data = json.load(f)
         return {
-            "id": "sys", "name": "無名の剣士", "img": 0, "hp": 1000, "max_hp": 1000, "win_count": 0
+            "id": data.get("id", "sys"),
+            "name": data.get("name", "無名の剣士"),
+            "img": data.get("img", 0),
+            "hp": data.get("hp", 1000),
+            "max_hp": data.get("max_hp", 1000),
+            "win_count": data.get("win_count", 0)
         }
-        
-    parts = content.strip().split("<>")
-    if parts and parts[-1] == "":
-        parts = parts[:-1]
-        
-    def get_val(lst, idx, default=""):
-        return lst[idx] if idx < len(lst) else default
-        
-    try:
-        winner = {
-            "id": get_val(parts, 0, "sys"),
-            "name": get_val(parts, 3, "無名の剣士"),
-            "img": int(get_val(parts, 5, 0)),
-            "hp": int(get_val(parts, 15, 1000)),
-            "max_hp": int(get_val(parts, 16, 1000)),
-            "win_count": int(get_val(parts, 44, 0))
-        }
-    except ValueError:
-        winner = {
-            "id": "sys", "name": "無名の剣士", "img": 0, "hp": 1000, "max_hp": 1000, "win_count": 0
-        }
-    return winner
+    except Exception:
+        return default_winner
 
 def main():
     # 1. メンテナンスチェック

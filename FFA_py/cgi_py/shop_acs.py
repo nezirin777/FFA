@@ -42,6 +42,7 @@ FFA Python/CGI - 装飾品店スクリプト (shop_acs.py)
 
 import os
 import sys
+import json
 
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
@@ -54,71 +55,52 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 def get_acs_master(acs_id):
-    """装飾品マスタ(acs.ini)から特定の装飾品情報を取得します。"""
+    """装飾品マスタ(acs.json)から特定の装飾品情報を取得します。"""
     path = os.path.join(common.BASE_DIR, config.Config['acs_file'])
     if not os.path.exists(path):
         return None
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split("<>")
-            if parts and parts[0] == str(acs_id):
-                def get_val(lst, idx, default=""):
-                    return lst[idx] if idx < len(lst) else default
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            items = json.load(f)
+        for item in items:
+            if item.get("no") == int(acs_id):
                 return {
-                    "id": int(parts[0]),
-                    "name": parts[1],
-                    "gold": int(parts[2]),
-                    "effect_id": int(get_val(parts, 3, 0)),
+                    "id": item["no"],
+                    "name": item["name"],
+                    "gold": item["gold"],
+                    "effect_id": item.get("effect_id", 0),
                     "bonus": {
-                        "str": int(get_val(parts, 4, 0)),
-                        "int": int(get_val(parts, 5, 0)),
-                        "dex": int(get_val(parts, 6, 0)),
-                        "vit": int(get_val(parts, 7, 0)),
-                        "agi": int(get_val(parts, 8, 0)),
-                        "mnd": int(get_val(parts, 9, 0)),
-                        "lck": int(get_val(parts, 10, 0)),
-                        "lp": int(get_val(parts, 11, 0))
+                        "str": item.get("bonus", {}).get("str", 0),
+                        "int": item.get("bonus", {}).get("int", 0),
+                        "dex": item.get("bonus", {}).get("dex", 0),
+                        "vit": item.get("bonus", {}).get("vit", 0),
+                        "agi": item.get("bonus", {}).get("agi", 0),
+                        "mnd": item.get("bonus", {}).get("mnd", 0),
+                        "lck": item.get("bonus", {}).get("lck", 0),
+                        "lp": item.get("bonus", {}).get("lp", 0)
                     },
-                    "attrib": int(get_val(parts, 12, 0)),
-                    "spare1": int(get_val(parts, 13, 0)),
-                    "spare2": int(get_val(parts, 14, 0)),
+                    "attrib": item.get("attrib", 0),
+                    "spare1": item.get("spare1", 0),
+                    "spare2": item.get("spare2", 0),
                     "spare3": 0
                 }
+    except Exception:
+        pass
     return None
 
 def load_shop_items(job_idx):
     """現在の職業に対応する装飾品店の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['acs_folder']}/acs{job_idx}.ini")
-    items = []
+    path = os.path.join(common.BASE_DIR, f"{config.Config['acs_folder']}/acs{job_idx}.json")
     if not os.path.exists(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            items = json.load(f)
+        for item in items:
+            item["spare3"] = 0
         return items
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split("<>")
-            if len(parts) >= 12:
-                def get_val(lst, idx, default=""):
-                    return lst[idx] if idx < len(lst) else default
-                items.append({
-                    "no": int(parts[0]),
-                    "name": parts[1],
-                    "gold": int(parts[2]),
-                    "effect_id": int(get_val(parts, 3, 0)),
-                    "bonus": {
-                        "str": int(get_val(parts, 4, 0)),
-                        "int": int(get_val(parts, 5, 0)),
-                        "dex": int(get_val(parts, 6, 0)),
-                        "vit": int(get_val(parts, 7, 0)),
-                        "agi": int(get_val(parts, 8, 0)),
-                        "mnd": int(get_val(parts, 9, 0)),
-                        "lck": int(get_val(parts, 10, 0)),
-                        "lp": int(get_val(parts, 11, 0))
-                    },
-                    "attrib": int(get_val(parts, 12, 0)),
-                    "spare1": int(get_val(parts, 13, 0)),
-                    "spare2": int(get_val(parts, 14, 0)),
-                    "spare3": 0
-                })
-    return items
+    except Exception:
+        return []
 
 def format_bonus(bonus_dict):
     """ステータス上昇ボーナスを表示用に文字列化します。"""

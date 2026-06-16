@@ -1,0 +1,287 @@
+[
+  {
+    "no": 10,
+    "name": "ライフピアス",
+    "gold": 2500,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 25,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 11,
+    "name": "ライフリング",
+    "gold": 50000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 50,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 12,
+    "name": "命の指輪",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 100,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 37,
+    "name": "魔石",
+    "gold": 5000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 10,
+      "dex": 10,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 38,
+    "name": "魔水晶",
+    "gold": 50000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 25,
+      "dex": 25,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 39,
+    "name": "魔水晶の指輪",
+    "gold": 750000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 50,
+      "dex": 50,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 43,
+    "name": "オールボーナス",
+    "gold": 5000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 5,
+      "int": 5,
+      "dex": 5,
+      "vit": 5,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 44,
+    "name": "ノルンの輝き",
+    "gold": 75000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 10,
+      "int": 10,
+      "dex": 10,
+      "vit": 10,
+      "agi": 10,
+      "mnd": 10,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 45,
+    "name": "アルテミスの指輪",
+    "gold": 800000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 20,
+      "int": 20,
+      "dex": 20,
+      "vit": 20,
+      "agi": 20,
+      "mnd": 20,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 46,
+    "name": "ラクシュミの王冠",
+    "gold": 5000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 50,
+      "int": 50,
+      "dex": 50,
+      "vit": 50,
+      "agi": 50,
+      "mnd": 50,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 50,
+    "name": "メテオリング",
+    "gold": 9999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 100,
+      "dex": 100,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 51,
+    "name": "アルテマリング",
+    "gold": 99999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 200,
+      "dex": 200,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 56,
+    "name": "プロテスリング",
+    "gold": 999999,
+    "effect_id": 4,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 57,
+    "name": "シェルリング",
+    "gold": 99999999,
+    "effect_id": 5,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 58,
+    "name": "ウォールリング",
+    "gold": 150000000,
+    "effect_id": 6,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  }
+]

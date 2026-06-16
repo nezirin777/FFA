@@ -34,6 +34,7 @@ FFA Python/CGI - ログイン前トップ・その他メニュー表示スクリ
 import sys
 import os
 import time
+import json
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 if hasattr(sys.stdout, 'reconfigure'):
@@ -46,91 +47,70 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 Config = config.Config
 
-def parse_winner_data(winner_str):
-    """王者ファイルデータを解析し、キャラクター辞書を返します"""
-    parts = winner_str.strip().split("<>")
-    if parts and parts[-1] == "":
-        parts = parts[:-1]
-        
-    def get_val(lst, idx, default=""):
-        return lst[idx] if idx < len(lst) else default
-        
-    def to_i(val):
-        try: return int(val)
-        except: return 0
-
-    winner_char = {
-        "id": get_val(parts, 0, "sys"),
-        "site": get_val(parts, 1),
-        "url": get_val(parts, 2),
-        "name": get_val(parts, 3, "無名の剣士"),
-        "sex": to_i(get_val(parts, 4)),
-        "img": to_i(get_val(parts, 5)),
-        "str": to_i(get_val(parts, 6)),
-        "int": to_i(get_val(parts, 7)),
-        "dex": to_i(get_val(parts, 8)),
-        "vit": to_i(get_val(parts, 9)),
-        "agi": to_i(get_val(parts, 10)),
-        "mnd": to_i(get_val(parts, 11)),
-        "lck": to_i(get_val(parts, 12)),
-        "lp": to_i(get_val(parts, 13)),
-        "job": to_i(get_val(parts, 14)),
-        "hp": to_i(get_val(parts, 15)),
-        "max_hp": to_i(get_val(parts, 16)),
-        "level": to_i(get_val(parts, 17)),
-        "comment": get_val(parts, 20),
-        "host": get_val(parts, 37),
-        "job_level": to_i(get_val(parts, 38)),
-        "win_count": to_i(get_val(parts, 43)),
-        "max_win_count": to_i(get_val(parts, 44)),
-        "max_win_id": get_val(parts, 45),
-        "max_win_name": get_val(parts, 46),
-        "gold": to_i(get_val(parts, 49)),
-    }
-    
-    winner_item = {
-        "weapon": {
-            "name": get_val(parts, 21, "素手"),
-            "dmg": to_i(get_val(parts, 22)),
-            "effect": to_i(get_val(parts, 23))
-        },
-        "armor": {
-            "name": get_val(parts, 24, "衣服"),
-            "def": to_i(get_val(parts, 25)),
-            "effect": to_i(get_val(parts, 26))
-        },
+DEFAULT_WINNER = {
+    "id": "sys",
+    "site": "サイト",
+    "url": "URL",
+    "name": "無名の剣士",
+    "sex": 1,
+    "img": 0,
+    "str": 10,
+    "int": 10,
+    "dex": 10,
+    "vit": 10,
+    "agi": 10,
+    "mnd": 10,
+    "lck": 10,
+    "lp": 0,
+    "job": 0,
+    "hp": 1000,
+    "max_hp": 1000,
+    "level": 1,
+    "unused21": 0,
+    "unused22": 0,
+    "comment": "無名",
+    "equipped_item": {
+        "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
+        "armor": { "name": "衣服", "def": 0, "effect": 0 },
         "accessory": {
-            "name": get_val(parts, 27, "なし"),
-            "effect_id": to_i(get_val(parts, 50)),
+            "name": "なし",
+            "effect_id": 0,
             "bonus": {
-                "str": to_i(get_val(parts, 28)),
-                "int": to_i(get_val(parts, 29)),
-                "dex": to_i(get_val(parts, 30)),
-                "vit": to_i(get_val(parts, 31)),
-                "agi": to_i(get_val(parts, 32)),
-                "mnd": to_i(get_val(parts, 33)),
-                "lck": to_i(get_val(parts, 34)),
-                "lp": to_i(get_val(parts, 35)),
+                "str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0
             },
-            "attrib": to_i(get_val(parts, 51)),
-            "spare1": to_i(get_val(parts, 52)),
-            "spare2": to_i(get_val(parts, 53)),
+            "attrib": 0,
+            "spare1": 0,
+            "spare2": 0,
             "spare3": 0
         }
-    }
-    winner_char["equipped_item"] = winner_item
-    return winner_char
+    },
+    "unused30": 0,
+    "host": "127.0.0.1",
+    "job_level": 0,
+    "last_challenger": {
+        "id": "sys",
+        "name": "無名の剣士",
+        "site": "サイト",
+        "url": "URL"
+    },
+    "win_count": 0,
+    "max_win_count": 0,
+    "max_win_id": "sys",
+    "max_win_name": "無名の剣士",
+    "max_win_site": "サイト",
+    "max_win_url": "URL",
+    "gold": 100
+}
 
 def get_winner():
     winner_path = os.path.join(common.BASE_DIR, Config['winner_file'])
     if not os.path.exists(winner_path):
-        return parse_winner_data("sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>0<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>")
+        return DEFAULT_WINNER
     try:
         with open(winner_path, "r", encoding="utf-8") as f:
-            content = f.read()
+            return json.load(f)
     except Exception:
-        return parse_winner_data("sys<>サイト<>URL<>無名の剣士<>1<>0<>10<>10<>10<>10<>10<>10<>10<>0<>0<>1000<>1000<>1<>0<>0<>無名<>素手<>0<>0<>衣服<>0<>0<>なし<>0<>0<>0<>0<>0<>0<>0<>0<>0<>127.0.0.1<>0<>sys<>無名の剣士<>サイト<>URL<>100<>0<>0<>0<>")
-    return parse_winner_data(content)
+        return DEFAULT_WINNER
 
 def main():
     if Config['maintenance_mode']:

@@ -50,6 +50,7 @@ import sys
 import os
 import time
 import random
+import json
 
 # 共通モジュールと設定モジュールのインポート
 try:
@@ -78,35 +79,15 @@ def parse_cookie_user(cookie_str):
     return id_val, pass_val
 
 def load_monsters(file_path):
-    """モンスターファイルからモンスター一覧を読み込みます(UTF-8)"""
+    """モンスターファイルからモンスター一覧を読み込みます(JSON)"""
     full_path = os.path.join(common.BASE_DIR, file_path)
     if not os.path.exists(full_path):
         return []
-    
-    monsters = []
-    with open(full_path, "r", encoding="utf-8") as f:
-        for line in f:
-            if not line.strip():
-                continue
-            parts = line.strip().split("<>")
-            if parts and parts[-1] == "":
-                parts = parts[:-1]
-            if len(parts) >= 9:
-                try:
-                    monsters.append({
-                        "name": parts[0],
-                        "ex": int(parts[1]),
-                        "rand": int(parts[2]),
-                        "sp": int(parts[3]),
-                        "dmg": int(parts[4]),
-                        "kahi": int(parts[5]),
-                        "stac": parts[6],
-                        "ritu": int(parts[7]),
-                        "gold": int(parts[8])
-                    })
-                except ValueError:
-                    continue
-    return monsters
+    try:
+        with open(full_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 def main():
     # 1. メンテナンスチェック

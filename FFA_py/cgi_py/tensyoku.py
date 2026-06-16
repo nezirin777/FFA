@@ -31,6 +31,7 @@ import sys
 # if hasattr(sys.stdin, 'reconfigure'):
 #     sys.stdin.reconfigure(encoding='utf-8')
 import os
+import json
 
 # 共通モジュールと設定モジュールのインポート
 import config
@@ -73,23 +74,16 @@ def save_syoku_master_list(user_id, master_list):
 
 def load_syoku_ini():
     """
-    職業マスタデータ(syoku.ini)をロードします。
+    職業マスタデータ(syoku.json)をロードします。
     """
     path = os.path.join(common.BASE_DIR, config.Config['syoku_file'])
     if not os.path.exists(path):
         return []
-    
-    syoku_list = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line_str = line.strip()
-            if not line_str:
-                continue
-            parts = line_str.split("<>")
-            if parts and parts[-1] == "":
-                parts = parts[:-1]
-            syoku_list.append(parts)
-    return syoku_list
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 def main():
     if config.Config['maintenance_mode']:
@@ -149,14 +143,14 @@ def main():
             
             # 転職先職業の必要条件チェック
             target_data = syoku_ini[target_syoku]
-            a = int(target_data[0]) # 力
-            b = int(target_data[1]) # 魔力
-            c = int(target_data[2]) # 信仰心 (mnd)
-            d = int(target_data[3]) # 生命力 (vit)
-            e = int(target_data[4]) # 器用さ (dex)
-            f = int(target_data[5]) # 速さ (agi)
-            g = int(target_data[6]) # 魅力 (lck)
-            h = int(target_data[7]) # レベル
+            a = target_data["req_str"]
+            b = target_data["req_int"]
+            c = target_data["req_mnd"]
+            d = target_data["req_vit"]
+            e = target_data["req_dex"]
+            f = target_data["req_agi"]
+            g = target_data["req_lck"]
+            h = target_data["req_level"]
             
             # 特性値の条件確認
             if not (chara["str"] >= a and chara["int"] >= b and chara["mnd"] >= c and 
@@ -166,8 +160,7 @@ def main():
                 common.show_error("まだ転職条件（能力値・レベル）を満たしていません。")
                 
             # 熟練度要件の確認
-            # インデックス16以降が熟練度要件
-            syoku_require = [int(x) for x in target_data[16:]]
+            syoku_require = target_data["job_reqs"]
             for idx, req_val in enumerate(syoku_require):
                 if idx < len(syoku_master) and req_val > syoku_master[idx]:
                     common.release_lock(user_id)
@@ -230,14 +223,14 @@ def main():
                 if i == chara["job"]:
                     continue # 現在の職業は除外
                     
-                a = int(target_data[0]) # 力
-                b = int(target_data[1]) # 魔力
-                c = int(target_data[2]) # 信仰心 (mnd)
-                d = int(target_data[3]) # 生命力 (vit)
-                e = int(target_data[4]) # 器用さ (dex)
-                f = int(target_data[5]) # 速さ (agi)
-                g = int(target_data[6]) # 魅力 (lck)
-                h = int(target_data[7]) # レベル
+                a = target_data["req_str"]
+                b = target_data["req_int"]
+                c = target_data["req_mnd"]
+                d = target_data["req_vit"]
+                e = target_data["req_dex"]
+                f = target_data["req_agi"]
+                g = target_data["req_lck"]
+                h = target_data["req_level"]
                 
                 # 条件チェック
                 if (chara["str"] >= a and chara["int"] >= b and chara["mnd"] >= c and 
@@ -245,7 +238,7 @@ def main():
                     chara["lck"] >= g and chara["level"] >= h):
                     
                     # 熟練度要件のチェック
-                    syoku_require = [int(x) for x in target_data[16:]]
+                    syoku_require = target_data["job_reqs"]
                     req_ok = True
                     for idx, req_val in enumerate(syoku_require):
                         if idx < len(syoku_master) and req_val > syoku_master[idx]:

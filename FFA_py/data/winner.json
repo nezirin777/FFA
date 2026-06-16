@@ -1,0 +1,69 @@
+{
+  "id": "test",
+  "site": "いくのＣＧＩのＨＰ",
+  "url": "http://www.eriicu.com",
+  "name": "testキャラ",
+  "sex": 1,
+  "img": 11,
+  "str": 54,
+  "int": 25,
+  "dex": 20,
+  "vit": 54,
+  "agi": 27,
+  "mnd": 33,
+  "lck": 19,
+  "lp": 20,
+  "job": 1,
+  "hp": 2936,
+  "max_hp": 2936,
+  "level": 34,
+  "unused21": 56,
+  "unused22": 40,
+  "comment": "テストです！",
+  "equipped_item": {
+    "weapon": {
+      "name": "バスターソード",
+      "dmg": 400,
+      "effect": 0
+    },
+    "armor": {
+      "name": "アイアンアーマー",
+      "def": 100,
+      "effect": 0
+    },
+    "accessory": {
+      "name": "なし",
+      "effect_id": 0,
+      "bonus": {
+        "str": 0,
+        "int": 0,
+        "dex": 0,
+        "vit": 0,
+        "agi": 0,
+        "mnd": 0,
+        "lck": 0,
+        "lp": 0
+      },
+      "attrib": 0,
+      "spare1": 0,
+      "spare2": 0,
+      "spare3": 0
+    }
+  },
+  "unused30": 0,
+  "host": "127.0.0.1",
+  "job_level": 1,
+  "last_challenger": {
+    "id": "1111",
+    "name": "ぽげぽげ",
+    "site": "いくのＣＧＩのＨＰ",
+    "url": "http://www.eriicu.com"
+  },
+  "win_count": 1,
+  "max_win_count": 1,
+  "max_win_id": "6",
+  "max_win_name": "test",
+  "max_win_site": "不明",
+  "max_win_url": "",
+  "gold": 0
+}

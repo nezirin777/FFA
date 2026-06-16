@@ -59,6 +59,7 @@ import sys
 #     sys.stdin.reconfigure(encoding='utf-8')
 import random
 import time
+import json
 
 # 共通モジュールのインポート
 try:
@@ -162,12 +163,12 @@ def main():
     is_king = (winner_raw.get("id") == user_id and winner_raw.get("name") == (choco_raw.get("name", "") if has_choco else ""))
 
     # === モーグリのアドバイスの取得 ===
-    hint_path = os.path.join(common.BASE_DIR, "data", "hint.ini")
+    hint_path = os.path.join(common.BASE_DIR, "data", "hint.json")
     mog_advice = "頑張って育てるクポ！"
     if os.path.exists(hint_path):
         try:
             with open(hint_path, "r", encoding="utf-8") as f:
-                hints = [line.strip() for line in f if line.strip()]
+                hints = json.load(f)
             if hints:
                 mog_advice = random.choice(hints)
         except:

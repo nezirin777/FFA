@@ -182,28 +182,28 @@ def main():
     # クラス条件判定
     win_min = 0
     win_limit = 100000
-    ribal_file = "ribal0.ini"
+    ribal_file = "ribal0.json"
     racename = "新馬戦"
     
     # レースモード判定
     if mode == "race0":
-        win_min, win_limit, ribal_file, racename = 0, 1, "ribal0.ini", "新馬戦"
+        win_min, win_limit, ribal_file, racename = 0, 1, "ribal0.json", "新馬戦"
     elif mode == "race1":
-        win_min, win_limit, ribal_file, racename = 1, 5, "ribal1.ini", "５００万以下"
+        win_min, win_limit, ribal_file, racename = 1, 5, "ribal1.json", "５００万以下"
     elif mode == "race2":
-        win_min, win_limit, ribal_file, racename = 5, 15, "ribal2.ini", "９００万以下"
+        win_min, win_limit, ribal_file, racename = 5, 15, "ribal2.json", "９００万以下"
     elif mode == "race3":
-        win_min, win_limit, ribal_file, racename = 15, 30, "ribal3.ini", "１６００万以下"
+        win_min, win_limit, ribal_file, racename = 15, 30, "ribal3.json", "１６００万以下"
     elif mode == "race4":
-        win_min, win_limit, ribal_file, racename = 30, 80, "ribal4.ini", "オープン特別"
+        win_min, win_limit, ribal_file, racename = 30, 80, "ribal4.json", "オープン特別"
     elif mode == "race5":
-        win_min, win_limit, ribal_file, racename = 50, 100, "ribal5.ini", "グレードⅢ(G3)"
+        win_min, win_limit, ribal_file, racename = 50, 100, "ribal5.json", "グレードⅢ(G3)"
     elif mode == "race6":
-        win_min, win_limit, ribal_file, racename = 75, 130, "ribal6.ini", "グレードⅡ(G2)"
+        win_min, win_limit, ribal_file, racename = 75, 130, "ribal6.json", "グレードⅡ(G2)"
     elif mode == "race7":
         # G1 レース
         win_min = 30
-        ribal_file = "ribal7.ini"
+        ribal_file = "ribal7.json"
         g1_names = {
             1: "チョコボダービー", 2: "チョコボスタリオン", 3: "チョコボカップ",
             4: "ジェイドカップ", 5: "BBA賞", 6: "チョコボ春賞", 7: "チョコボ秋賞",
@@ -216,7 +216,7 @@ def main():
     elif mode == "race8":
         # G2（海外）レース
         win_min = 30
-        ribal_file = "ribal8.ini"
+        ribal_file = "ribal8.json"
         g2_names = {
             12: "シルバーカップ", 13: "新潟アドバンス", 14: "チコスダービー",
             15: "チョコボードカップ", 16: "チョコボエプソム", 17: "チョコボ王",
