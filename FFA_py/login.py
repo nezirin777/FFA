@@ -145,8 +145,19 @@ def main():
         }
         cookie_header = save_session(session_data)
         
-        # ログイン完了後、メイン画面へリダイレクト (連打・F5不正防止のためのNoReturnリダイレクト)
-        redirect(f"login.py?mode=main", extra_headers=[cookie_header])
+        # ユーザーID保存用のクッキーを設定 (Remember Me用、有効期限30日)
+        from http import cookies
+        import datetime
+        saved_user_cookie = cookies.SimpleCookie()
+        saved_user_cookie["FFAPY_SAVED_USER"] = user_id
+        saved_user_cookie["FFAPY_SAVED_USER"]["path"] = "/"
+        
+        # 30日間の有効期限を設定 (ブラウザのロケールやタイムゾーンを考慮しGMTフォーマット)
+        expires = datetime.datetime.now() + datetime.timedelta(days=30)
+        saved_user_cookie["FFAPY_SAVED_USER"]["expires"] = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        
+        # ログイン完了後、メイン画面へリダイレクト
+        redirect(f"login.py?mode=main", extra_headers=[cookie_header, saved_user_cookie.output()])
         
     # 2. ログアウト処理 (mode=log_out)
     elif mode == "log_out":

@@ -1,139 +1,380 @@
 """
 FFA (Final Fantasy Adventure) 設定ファイル
 """
+
 import os
 
 Config = {}
 
-# === 1. 移行した共通設定 ===
+# ==========================================
+# 1. システム・ディレクトリ設定 (System & Directories)
+# ==========================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-Config['save_dir'] = os.path.join(BASE_DIR, "save_data")
-Config['lock_dir'] = os.path.join(BASE_DIR, "lock")
-Config['template_dir'] = os.path.join(BASE_DIR, "templates")
-Config['admin_password'] = '1111'
-Config['secret_key'] = 'ffa_secret_key_vips_ver3'
 
-# === 2. 既存の設定 ===
-Config['acs_file'] = 'data/acs/acs.json'
-Config['acs_folder'] = 'data/acs'
-Config['max_accessories'] = 8
-Config['shop_acs_script'] = 'login.py?mode=shop_acs'
-Config['alink_color'] = '#ff5500'
-Config['all_data_file'] = 'alldata.json'
-Config['max_all_lines'] = 5
-Config['max_all_messages'] = 20
-Config['all_tenka_script'] = 'all_tenka.py'
-Config['body_size'] = '100%'
-Config['battle_cooldown'] = 30
-Config['bg_gif'] = ''
-Config['ban_words'] = ['あほ', '馬鹿', 'SEX', 'ダイヤルQ2', 'キチガイ', 'ウンコ', 'チンポ']
-Config['max_bank'] = 999999999999000
-Config['bbs_url'] = 'http://localhost:8000'
-Config['bbs_title'] = '掲示板'
-Config['bg_color'] = '#0b0b14'
-Config['color_blue'] = '#60a5fa'
-Config['boss_cooldown'] = 10
-Config['boss0_file'] = 'data/bossmons0.json'
-Config['boss1_file'] = 'data/bossmons1.json'
-Config['boss2_file'] = 'data/bossmons2.json'
-Config['boss3_file'] = 'data/bossmons3.json'
-Config['chara_images'] = ['ana.gif', 'arce.gif', 'arlon.gif', 'balt.gif', 'bea.gif', 'bellmayl.gif', 'c_zoro.gif', 'corza.gif', 'dr_kureha.gif', 'elly.gif', 'emerada.gif', 'fei.gif', 'karuu.gif', 'kuina.gif', 'kuro.gif', 'kurokoda.gif', 'kuzya.gif', 'maru.gif', 'meso-s.gif', 'mini-aerith.gif', 'mini-auron.gif', 'mini-baku.gif', 'mini-barret.gif', 'mini-blank.gif', 'mini-braska.gif', 'mini-buricid.gif', 'mini-cait.gif', 'mini-cid.gif', 'mini-cid10.gif', 'mini-cid7.gif', 'mini-cinna.gif', 'mini-cloud.gif', 'mini-edea.gif', 'mini-eiko.gif', 'mini-el.gif', 'mini-ff9-01.gif', 'mini-ff9-02.gif', 'mini-ff9-03.gif', 'mini-ff9-04.gif', 'mini-ff9-05.gif', 'mini-ff9-06.gif', 'mini-ff9-07.gif', 'mini-flatley.gif', 'mini-freija.gif', 'mini-fuujin.gif', 'mini-garnet.gif', 'mini-jecht.gif', 'mini-kerocid.gif', 'mini-kimari.gif', 'mini-kiros.gif', 'mini-laguna.gif', 'mini-lani.gif', 'mini-lulu.gif', 'mini-marcus.gif', 'mini-mikoto.gif', 'mini-quina.gif', 'mini-quistis.gif', 'mini-raijin.gif', 'mini-red.gif', 'mini-rikku.gif', 'mini-rinoa.gif', 'mini-ruby.gif', 'mini-salamander.gif', 'mini-seif.gif', 'mini-selphie.gif', 'mini-sephi.gif', 'mini-seymore.gif', 'mini-shelinda.gif', 'mini-squall.gif', 'mini-steiner.gif', 'mini-tidus.gif', 'mini-tifa.gif', 'mini-vin.gif', 'mini-vivi.gif', 'mini-wakka.gif', 'mini-ward.gif', 'mini-yuffie.gif', 'mini-yuna.gif', 'mini-yunalesca.gif', 'mini-zell.gif', 'mini-zidane.gif', 'mog.gif', 'mr2.gif', 'ms_gw.gif', 'munba.gif', 'nami.gif', 'pel.gif', 'rufi.gif', 'sanji.gif', 'sarama.gif', 'shitan.gif', 'smoker.gif', 'syancs.gif', 'tashi.gif', 'usausa.gif', 'vivi.gif', 'zoro.gif']
-Config['chara_make_script'] = 'chara_make.py'
-Config['chara_jobs'] = ['見習い戦士', '戦士', 'ナイト', 'シーフ', '竜騎士', '赤魔道士', 'バード', '忍者', '召喚士', 'ビショップ', '聖騎士', 'モンク', '暗黒騎士', '魔人', '蒼魔道士', '時魔道士', 'マシーナリー', 'グラディエーター', '学者', 'バーサーカー', '風水士', '召喚術士', '管理者', 'ものまね士', 'アニマルテイマー', 'アサシン', '剣聖', 'バトルマスター', 'ホーリーナイト', '歌姫', 'ナイトメアマイスター']
-Config['max_hp'] = 99999999
-Config['max_level'] = 99999
-Config['max_param'] = 99999
-Config['choco_images'] = ['cho-ml.gif', 'cho-gl.gif', 'cho-yl.gif', 'cho-kl.gif', 'cho-bl.gif', 'cho-wl.gif', 'cho-rl.gif', 'cho-pl.gif']
-Config['choco_css'] = 'html/choco.css'
-Config['crace_back'] = 'images/farm.jpg'
-Config['color_dark'] = '#1e1b4b'
-Config['def_file'] = 'data/def/def.json'
-Config['def_folder'] = 'data/def'
-Config['max_defenses'] = 8
-Config['shop_def_script'] = 'login.py?mode=shop_def'
-Config['farm_back'] = 'images/farm.jpg'
-Config['farm_midi'] = ''
-Config['cookie_name'] = 'FFAPYCOOKIE'
-Config['font_name'] = 'ＭＳ Ｐゴシック'
-Config['genei_level_high'] = 500
-Config['genei_level_low'] = 100
-Config['genei_level_max'] = 1000
-Config['max_gold'] = 999999999999
-Config['color_green'] = '#34d399'
-Config['comeback_factor'] = 100
-Config['help_text'] = 'html/ffhelp.html'
-Config['help_text_url'] = 'ヘルプ'
-Config['img_all_list'] = 'login.py?mode=img_list'  # login.py 経由の画像一覧ルーティングへ統一
-Config['img_farm'] = 'images/chara/choco'
-Config['img_path'] = 'images/chara'
-Config['isekai_level'] = 300
-Config['isekai_file'] = 'data/isekaimons.json'
-Config['item_file'] = 'data/item/item.json'
-Config['item_folder'] = 'data/item'
-Config['max_items'] = 8
-Config['shop_item_script'] = 'login.py?mode=shop_item'
-Config['admin_message'] = '<font color=red>\n・１人で２人以上のキャラクターの登録を禁止します。<br>\n・違法サイトのＵＲＬのキャラクターの登録は禁止します。<br>\n・ブラウザの更新ボタン等を押すことを禁止します。<br>\n・上記に該当するキャラクターは連絡等をなしに管理人の独断により削除することがあります。</font><br>'
-Config['base_exp'] = 30
-Config['base_hp'] = 500
-Config['level_diff_limit'] = 15
-Config['delete_limit_days'] = 60
-Config['link_color'] = '#60a5fa'
-Config['login_script'] = 'login.py'
-Config['level_up_coeff'] = 300
-Config['monster_cooldown'] = 30
-Config['main_title'] = 'FFA改 Vips Ver 3.00'
-Config['master_tac_limit'] = 1
-Config['max_lines'] = 5
-Config['maintenance_mode'] = 0
-Config['max_messages'] = 20
-Config['monster0_file'] = 'data/lowmons.json'
-Config['monster1_file'] = 'data/normalmons.json'
-Config['monster2_file'] = 'data/highmons.json'
-Config['monster3_file'] = 'data/spmons.json'
-Config['ranking_script'] = 'login.py?mode=rank'  # login.py 経由の能力別ランキングルーティングへ統一
-Config['color_red'] = '#f87171'
-Config['active_time'] = 120
-Config['sub_bbs_url'] = ''
-Config['sub_bbs_title'] = ''
-Config['main_script'] = 'login.py?mode=main'
-Config['bank_script'] = 'login.py?mode=bank'
-Config['chocofarm_script'] = 'login.py?mode=chocofarm'
-Config['crace_script'] = 'login.py?mode=crace'
-Config['legend_script'] = 'login.py?mode=legend'
-Config['mori_farm_script'] = 'login.py?mode=morifarm'
-Config['passchange_script'] = 'login.py?mode=passchange'
-Config['post_message_script'] = 'login.py?mode=post_message'
-Config['select_battle_script'] = 'login.py?mode=select_battle'
-Config['souko_script'] = 'login.py?mode=souko'
-Config['tenka_script'] = 'login.py?mode=tenka'
-Config['tensyoku_script'] = 'login.py?mode=tensyoku'
-Config['system_script'] = 'login.py'  # 多重の?を防ぐため login.py に変更し、呼び出し側で ?mode=ranking 等を追加可能にする
-Config['battle_script'] = 'login.py?mode=battle'
-Config['admin_script'] = 'admin.py'
-Config['monster_script'] = 'login.py?mode=monster'
-Config['others_script'] = 'others.py'
-Config['tactics_script'] = 'login.py?mode=tac_change'
-Config['status_script'] = 'login.py?mode=sts'
-Config['shop_script'] = 'login.py?mode=shop'
-Config['battle_limit'] = 9999
-Config['titles'] = ['駆け出し', 'プチ', '超', '極', '超極の殿堂']
-Config['shut_hosts'] = ['999.999.999', '999.999.999', '999.999.999']
-Config['souko_folder'] = 'save_data'
-Config['syoku_file'] = 'data/syoku.json'
-Config['jobs_html_path'] = 'html/syokugyou.html'
-Config['prize_money'] = 500
-Config['tac_file'] = 'data/tac/tac.json'
-Config['tac_folder'] = 'data/tac'
-Config['telop_message'] = '<font color=yellow>ごゆっくりお楽しみください</font>管理人より♪'
-Config['tenka_log_script'] = 'tenka_log.py'
-Config['tenka_count'] = 3
-Config['text_color'] = '#d1d5db'
-Config['max_turns'] = 150
-Config['vlink_color'] = '#9ca3af'
-Config['vote_url'] = ''
-Config['vote_image'] = 'アイコン一覧'
-Config['vote_title'] = ''
-Config['color_white'] = '#ffffff'
-Config['winner_file'] = 'data/winner.json'
-Config['inn_cost'] = 10
-Config['color_yellow'] = '#fbbf24'
+Config["save_dir"] = os.path.join(BASE_DIR, "save_data")  # ユーザーデータの保存先
+Config["lock_dir"] = os.path.join(BASE_DIR, "lock")  # 排他制御用ロックディレクトリ
+Config["template_dir"] = os.path.join(
+    BASE_DIR, "templates"
+)  # HTMLテンプレートディレクトリ
+Config["souko_folder"] = "save_data"  # 倉庫データディレクトリの相対パス
+
+Config["admin_password"] = "1111"  # 管理者用パスワード
+Config["secret_key"] = "ffa_secret_key_vips_ver3"  # クッキー暗号化・署名用の秘密鍵
+Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無効)
+Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
+Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
+Config["shut_hosts"] = [
+    "999.999.999",
+    "999.999.999",
+    "999.999.999",
+]  # アクセス禁止ホストリスト
+
+# ==========================================
+# 2. セッション & セキュリティ設定 (Session & Security)
+# ==========================================
+Config["cookie_name"] = "FFAPYCOOKIE"  # ログインID記憶用などのレガシーCookie名
+Config["session_expiry"] = 1800  # 暗号化セッション(FFAPY_SESSION)の有効期限 (秒: 30分)
+
+# ==========================================
+# 3. ゲームルール・数値設計 (Game Balance & Limits)
+# ==========================================
+Config["max_level"] = 99999  # キャラクターの最大レベル
+Config["max_hp"] = 99999999  # キャラクターの最大HP
+Config["max_param"] = 99999  # 力・魔力などの最大能力値
+Config["max_gold"] = 999999999999  # 所持金の最大値
+Config["max_bank"] = 999999999999000  # 銀行預金の最大値
+
+Config["inn_cost"] = 10  # 宿屋の宿泊費の基本係数 (レベル乗算用)
+Config["prize_money"] = 500  # 対戦で得られる賞金の基本額
+Config["base_exp"] = 30  # 戦闘で得られる基本経験値
+Config["base_hp"] = 500  # キャラクター作成時の初期HP
+Config["level_up_coeff"] = 300  # レベルアップに必要な経験値の係数 (レベル乗算用)
+
+Config["battle_cooldown"] = 30  # 通常対戦(対人)のクールダウン秒数
+Config["monster_cooldown"] = 30  # モンスター修行のクールダウン秒数
+Config["boss_cooldown"] = 10  # ボス戦のクールダウン秒数
+
+Config["level_diff_limit"] = 15  # 通常戦闘で対戦相手を選べるレベル差制限
+Config["battle_limit"] = 9999  # 1日の最大対戦回数制限
+Config["max_turns"] = 150  # 1戦闘における最大ターン数 (引き分け判定用)
+Config["master_tac_limit"] = 1  # 転職後の戦術（タクティクス）クリア設定 (1: クリアする)
+Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
+
+# ==========================================
+# 4. 表示・デザイン設定 (Aesthetics & CSS)
+# ==========================================
+Config["main_title"] = "FFA改 Vips Ver 3.00"  # ゲームのメインタイトル
+Config["font_name"] = "ＭＳ Ｐゴシック"  # 表示用フォント名
+Config["body_size"] = "100%"  # コンテンツの表示幅
+
+Config["bg_color"] = "#0b0b14"  # 背景色
+Config["bg_gif"] = ""  # 背景画像URL (空時は背景色のみ)
+
+# テキスト・リンク・カラー
+Config["text_color"] = "#d1d5db"  # 通常テキストカラー
+Config["link_color"] = "#60a5fa"  # リンクカラー
+Config["vlink_color"] = "#9ca3af"  # 訪問済みリンクカラー
+Config["alink_color"] = "#ff5500"  # アクティブリンクカラー
+
+# システムメッセージ用カラーコード
+Config["color_green"] = "#34d399"
+Config["color_blue"] = "#60a5fa"
+Config["color_red"] = "#f87171"
+Config["color_white"] = "#ffffff"
+Config["color_yellow"] = "#fbbf24"
+Config["color_dark"] = "#1e1b4b"
+
+# ヘルプ関連
+Config["help_text"] = "html/ffhelp.html"  # ヘルプファイルのパス
+Config["help_text_url"] = "ヘルプ"  # ヘルプリンクの表示文字列
+
+# ==========================================
+# 5. メッセージ・お知らせ設定 (Notices & Messages)
+# ==========================================
+Config["telop_message"] = (
+    "<font color=yellow>ごゆっくりお楽しみください</font>管理人より♪"  # 画面上部テロップメッセージ
+)
+Config["admin_message"] = (  # ログイン画面の管理者お知らせ事項 (HTML)
+    "<font color=red>\n"
+    "・１人で２人以上のキャラクターの登録を禁止します。<br>\n"
+    "・違法サイトのＵＲＬのキャラクターの登録は禁止します。<br>\n"
+    "・ブラウザの更新ボタン等を押すことを禁止します。<br>\n"
+    "・上記に該当するキャラクターは連絡等をなしに管理人の独断により削除することがあります。</font><br>"
+)
+Config["ban_words"] = [
+    "あほ",
+    "馬鹿",
+    "SEX",
+    "ダイヤルQ2",
+    "キチガイ",
+    "ウンコ",
+    "チンポ",
+]  # 禁止ワードリスト
+
+# ==========================================
+# 6. スクリプト・URLルーティング (Scripts & Routing)
+# ==========================================
+# メイン・システム
+Config["login_script"] = "login.py"
+Config["chara_make_script"] = "chara_make.py"
+Config["admin_script"] = "admin.py"
+Config["others_script"] = "others.py"
+
+# プレイヤー画面・設定
+Config["main_script"] = "login.py?mode=main"
+Config["status_script"] = "login.py?mode=sts"
+Config["tactics_script"] = "login.py?mode=tac_change"
+Config["passchange_script"] = "login.py?mode=passchange"
+Config["tensyoku_script"] = "login.py?mode=tensyoku"
+Config["system_script"] = (
+    "login.py"  # 共通サブ画面エントリ (後方に?mode=ranking等を動的付与)
+)
+
+# ショップ・施設
+Config["shop_script"] = "login.py?mode=shop"
+Config["shop_item_script"] = "login.py?mode=shop_item"
+Config["shop_def_script"] = "login.py?mode=shop_def"
+Config["shop_acs_script"] = "login.py?mode=shop_acs"
+Config["bank_script"] = "login.py?mode=bank"
+Config["souko_script"] = "login.py?mode=souko"
+
+# 戦闘・修行
+Config["select_battle_script"] = "login.py?mode=select_battle"
+Config["battle_script"] = "login.py?mode=battle"
+Config["monster_script"] = "login.py?mode=monster"
+Config["legend_script"] = "login.py?mode=legend"
+
+# チョコボ・育成
+Config["chocofarm_script"] = "login.py?mode=chocofarm"
+Config["mori_farm_script"] = "login.py?mode=morifarm"
+Config["crace_script"] = "login.py?mode=crace"
+
+# コミュニケーション・ランキング
+Config["post_message_script"] = "login.py?mode=post_message"
+Config["ranking_script"] = "login.py?mode=rank"
+Config["img_all_list"] = "login.py?mode=img_list"
+
+# 天下一武道会
+Config["tenka_script"] = "login.py?mode=tenka"
+Config["all_tenka_script"] = "all_tenka.py"
+Config["tenka_log_script"] = "tenka_log.py"
+
+# ==========================================
+# 7. 外部掲示板・投票リンク設定 (External BBS & Votes)
+# ==========================================
+Config["bbs_url"] = "http://localhost:8000"
+Config["bbs_title"] = "掲示板"
+Config["sub_bbs_url"] = ""
+Config["sub_bbs_title"] = ""
+Config["vote_url"] = ""
+Config["vote_title"] = ""
+Config["vote_image"] = "アイコン一覧"
+
+# ==========================================
+# 8. マスタデータ・定義ファイル設定 (Master Data Files)
+# ==========================================
+Config["winner_file"] = "data/winner.json"  # 王者（チャンプ）データファイル
+Config["syoku_file"] = "data/syoku.json"  # 職業マスタデータファイル
+Config["tac_file"] = "data/tac/tac.json"  # 戦術マスタデータファイル
+Config["tac_folder"] = "data/tac"  # 戦術データフォルダ
+
+# ショップ商品マスタ
+Config["item_file"] = "data/item/item.json"  # 武器マスタ
+Config["item_folder"] = "data/item"
+Config["max_items"] = 8
+
+Config["def_file"] = "data/def/def.json"  # 防具マスタ
+Config["def_folder"] = "data/def"
+Config["max_defenses"] = 8
+
+Config["acs_file"] = "data/acs/acs.json"  # 装飾品マスタ
+Config["acs_folder"] = "data/acs"
+Config["max_accessories"] = 8
+
+# モンスター・ボス出現マスタ
+Config["monster0_file"] = "data/lowmons.json"  # 初級モンスター
+Config["monster1_file"] = "data/normalmons.json"  # 中級モンスター
+Config["monster2_file"] = (
+    "data/highmons.json"  # 上級モンスター (※現在高難易度用で未使用)
+)
+Config["monster3_file"] = "data/spmons.json"  # 特殊モンスター
+
+Config["isekai_file"] = "data/isekaimons.json"  # 異世界モンスター
+Config["isekai_level"] = 300  # 異世界侵入の制限レベル
+
+Config["boss0_file"] = "data/bossmons0.json"  # 伝説の地ボス層0
+Config["boss1_file"] = "data/bossmons1.json"  # 伝説の地ボス層1
+Config["boss2_file"] = "data/bossmons2.json"  # 伝説の地ボス層2
+Config["boss3_file"] = "data/bossmons3.json"  # 伝説の地ボス層3
+
+# ==========================================
+# 9. リスト・ゲームマスタ定義 (Assets & Game Masters)
+# ==========================================
+# キャラクター立ち絵リスト
+Config["chara_images"] = [
+    "ana.gif",
+    "arce.gif",
+    "arlon.gif",
+    "balt.gif",
+    "bea.gif",
+    "bellmayl.gif",
+    "c_zoro.gif",
+    "corza.gif",
+    "dr_kureha.gif",
+    "elly.gif",
+    "emerada.gif",
+    "fei.gif",
+    "karuu.gif",
+    "kuina.gif",
+    "kuro.gif",
+    "kurokoda.gif",
+    "kuzya.gif",
+    "maru.gif",
+    "meso-s.gif",
+    "mini-aerith.gif",
+    "mini-auron.gif",
+    "mini-baku.gif",
+    "mini-barret.gif",
+    "mini-blank.gif",
+    "mini-braska.gif",
+    "mini-buricid.gif",
+    "mini-cait.gif",
+    "mini-cid.gif",
+    "mini-cid10.gif",
+    "mini-cid7.gif",
+    "mini-cinna.gif",
+    "mini-cloud.gif",
+    "mini-edea.gif",
+    "mini-eiko.gif",
+    "mini-el.gif",
+    "mini-ff9-01.gif",
+    "mini-ff9-02.gif",
+    "mini-ff9-03.gif",
+    "mini-ff9-04.gif",
+    "mini-ff9-05.gif",
+    "mini-ff9-06.gif",
+    "mini-ff9-07.gif",
+    "mini-flatley.gif",
+    "mini-freija.gif",
+    "mini-fuujin.gif",
+    "mini-garnet.gif",
+    "mini-jecht.gif",
+    "mini-kerocid.gif",
+    "mini-kimari.gif",
+    "mini-kiros.gif",
+    "mini-laguna.gif",
+    "mini-lani.gif",
+    "mini-lulu.gif",
+    "mini-marcus.gif",
+    "mini-mikoto.gif",
+    "mini-quina.gif",
+    "mini-quistis.gif",
+    "mini-raijin.gif",
+    "mini-red.gif",
+    "mini-rikku.gif",
+    "mini-rinoa.gif",
+    "mini-ruby.gif",
+    "mini-salamander.gif",
+    "mini-seif.gif",
+    "mini-selphie.gif",
+    "mini-sephi.gif",
+    "mini-seymore.gif",
+    "mini-shelinda.gif",
+    "mini-squall.gif",
+    "mini-steiner.gif",
+    "mini-tidus.gif",
+    "mini-tifa.gif",
+    "mini-vin.gif",
+    "mini-vivi.gif",
+    "mini-wakka.gif",
+    "mini-ward.gif",
+    "mini-yuffie.gif",
+    "mini-yuna.gif",
+    "mini-yunalesca.gif",
+    "mini-zell.gif",
+    "mini-zidane.gif",
+    "mog.gif",
+    "mr2.gif",
+    "ms_gw.gif",
+    "munba.gif",
+    "nami.gif",
+    "pel.gif",
+    "rufi.gif",
+    "sanji.gif",
+    "sarama.gif",
+    "shitan.gif",
+    "smoker.gif",
+    "syancs.gif",
+    "tashi.gif",
+    "usausa.gif",
+    "vivi.gif",
+    "zoro.gif",
+]
+
+# チョコボアイコン・アセット
+Config["choco_images"] = [
+    "cho-ml.gif",
+    "cho-gl.gif",
+    "cho-yl.gif",
+    "cho-kl.gif",
+    "cho-bl.gif",
+    "cho-wl.gif",
+    "cho-rl.gif",
+    "cho-pl.gif",
+]
+Config["img_farm"] = "images/chara/choco"
+Config["img_path"] = "images/chara"
+Config["farm_back"] = "images/farm.jpg"
+Config["farm_midi"] = ""
+Config["crace_back"] = "images/farm.jpg"
+Config["choco_css"] = "html/choco.css"
+
+# レベル進行段階・タイトル・職業一覧
+Config["titles"] = ["駆け出し", "プチ", "超", "極", "超極の殿堂"]
+Config["chara_jobs"] = [
+    "見習い戦士",
+    "戦士",
+    "ナイト",
+    "シーフ",
+    "竜騎士",
+    "赤魔道士",
+    "バード",
+    "忍者",
+    "召喚士",
+    "ビショップ",
+    "聖騎士",
+    "モンク",
+    "暗黒騎士",
+    "魔人",
+    "蒼魔道士",
+    "時魔道士",
+    "マシーナリー",
+    "グラディエーター",
+    "学者",
+    "バーサーカー",
+    "風水士",
+    "召喚術士",
+    "管理者",
+    "ものまね士",
+    "アニマルテイマー",
+    "アサシン",
+    "剣聖",
+    "バトルマスター",
+    "ホーリーナイト",
+    "歌姫",
+    "ナイトメアマイスター",
+]
+Config["jobs_html_path"] = "html/syokugyou.html"
+
+# 幻影闘技場レベル制限
+Config["genei_level_low"] = 100
+Config["genei_level_high"] = 500
+Config["genei_level_max"] = 1000
+
+# メッセージログ表示限界数・その他
+Config["max_lines"] = 5
+Config["max_messages"] = 20
+Config["max_all_lines"] = 5
+Config["max_all_messages"] = 20
+Config["comeback_factor"] = 100
+Config["all_data_file"] = "alldata.json"
