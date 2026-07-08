@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="farm-container farm-container--md">
+    <div class="farm-header">
+        <h1>🌳 黒チョコボの森</h1>
+        <hr>
+    </div>
+
+    <!-- モーグリ長老 -->
+    <div class="farm-msg-box">
+        <div class="farm-msg-content">
+            「クポポ！ここは深い黒チョコボの森クポ。非常に野生の強いチョコボが生息しているクポ！<br>
+            ここでは捕獲したり、森の中に残されたお宝を探索することができるクポ！」
+        </div>
+    </div>
+
+    <!-- アクションカード -->
+    <div class="farm-card">
+        <div class="farm-card__title">🌲 森のアクション</div>
+        
+        <!-- 探索 -->
+        <div class="farm-action-row">
+            <span class="farm-action-label">🔍 森の探索</span>
+            <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mode" value="search">
+                <input type="submit" class="farm-btn" value="探索に出かける">
+            </form>
+        </div>
+
+        <!-- チョコボの捕獲 -->
+        <div class="farm-action-row">
+            <span class="farm-action-label">🕸️ チョコボ捕獲</span>
+            <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mode" value="catch">
+                <input type="submit" class="farm-btn" value="捕獲を試みる">
+            </form>
+        </div>
+    </div>
+
+    <!-- 戻るボタン -->
+    <div class="farm-back-actions">
+        <form action="{{ config.chocofarm_script }}" method="POST">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="submit" class="btn" value="チョコボ牧場に戻る">
+        </form>
+        <form action="{{ config.script }}" method="POST">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="submit" class="btn" value="街に戻る">
+        </form>
+    </div>
+</div>
+{% endblock %}

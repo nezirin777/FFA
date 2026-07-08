@@ -1,0 +1,59 @@
+<!-- templates/name_change_tmp.html -->
+
+{% extends "base_tmp.html" %}
+
+{% block content %}
+
+<div class="card content-sm">
+  <div class="card__header">ユーザー名変更</div>
+  <div class="card__desc">
+    使用可能な文字は半角/全角英数字及び日本語です<br>
+    <small>（一部特殊文字は使用できません）</small>
+  </div>
+  <div class="card__body">
+    <form action="{{ Conf.cgi_url }}" method="post" id="nameChangeForm" class="form"
+      data-confirm="ユーザー名を変更します。本当によろしいですか？" data-loading="名前を変更中...">
+
+      <div class="form-group">
+        <label class="form-label">現在の名前</label>
+        <input type="text" class="form-control" value="{{ current_name }}" disabled>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">新しい名前</label>
+        <input type="text" name="new_name" id="newNameInput" class="form-control" maxlength="20" placeholder="新しい名前を入力"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">確認用パスワード</label>
+        <input type="password" name="password" class="form-control" placeholder="パスワードを入力" required>
+      </div>
+
+      <button type="submit" class="btn btn--block">名前を確認して変更する</button>
+
+      <input type="hidden" name="mode" value="name_change_ok">
+      <input type="hidden" name="token" value="{{ token }}">
+      <input type="hidden" name="name" value="{{ current_name }}">
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("nameChangeForm");
+    const input = document.getElementById("newNameInput");
+    const currentName = "{{ current_name }}";
+
+    input.addEventListener("input", function () {
+      const newName = input.value.trim();
+      form.dataset.confirm = newName
+        ? `ユーザー名を「${currentName}」から「${newName}」へ変更します。\n本当によろしいですか？`
+        : `ユーザー名を変更します。\n本当によろしいですか？`;
+    });
+  });
+</script>
+
+{% include "my_page_button_tmp.html" %}
+
+{% endblock %}

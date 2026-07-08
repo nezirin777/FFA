@@ -1,25 +1,25 @@
-function jump(sel) {
-  if (sel.options[sel.selectedIndex].value) {
-    location.href = sel.options[sel.selectedIndex].value;
-  }
-}
-function mdown(e) {
-  if (navigator.appName == "Microsoft Internet Explorer") {
-    if (event.button == 2) {
-      alert("•s³sˆ×‚ÍŒµ‹Ö‚Å‚·II•p”­‚·‚éê‡ƒLƒƒƒ‰‚ğíœ‚µ‚Ü‚·II");
-      return(false);
-    }
-  } else if (navigator.appName == "Netscape") {
-    if (e.which == 3) {
-      alert("•s³sˆ×‚ÍŒµ‹Ö‚Å‚·II•p”­‚·‚éê‡ƒLƒƒƒ‰‚ğíœ‚µ‚Ü‚·II");
-      return(false);
-    }
-  }
-}
-if (document.all) {
-  document.onmousedown = mdown;
-}
-if (document.layers) {
-  window.onmousedown = mdown;
-  window.captureEvents(Event.MOUSEDOWN);
-}
+function jump(sel) {
+  if (sel.options[sel.selectedIndex].value) {
+    location.href = sel.options[sel.selectedIndex].value;
+  }
+}
+function mdown(e) {
+  if (navigator.appName == "Microsoft Internet Explorer") {
+    if (event.button == 2) {
+      alert("ä¸æ­£è¡Œç‚ºã¯å³ç¦ã§ã™ï¼ï¼é »ç™ºã™ã‚‹å ´åˆã‚­ãƒ£ãƒ©ã‚’å‰Šé™¤ã—ã¾ã™ï¼ï¼");
+      return(false);
+    }
+  } else if (navigator.appName == "Netscape") {
+    if (e.which == 3) {
+      alert("ä¸æ­£è¡Œç‚ºã¯å³ç¦ã§ã™ï¼ï¼é »ç™ºã™ã‚‹å ´åˆã‚­ãƒ£ãƒ©ã‚’å‰Šé™¤ã—ã¾ã™ï¼ï¼");
+      return(false);
+    }
+  }
+}
+if (document.all) {
+  document.onmousedown = mdown;
+}
+if (document.layers) {
+  window.onmousedown = mdown;
+  window.captureEvents(Event.MOUSEDOWN);
+}

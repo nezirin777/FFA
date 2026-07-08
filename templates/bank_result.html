@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}取引結果 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="bank-result-stack">
+    <div class="card">
+        <div class="card__header">🏦 取引完了のお知らせ</div>
+        <div class="card__body layout-stack">
+            <p class="u-text-center yellow">
+                {{ msg }}
+            </p>
+            
+            <hr class="section-divider">
+            
+            <div class="bank-dashboard">
+                <div class="bank-dashboard-card">
+                    <div>現在の手持ち資金</div>
+                    <div class="bank-dashboard-card__val">{{ chara.gold }} <small>G</small></div>
+                </div>
+                <div class="bank-dashboard-card">
+                    <div>現在の銀行預金残高</div>
+                    <div class="bank-dashboard-card__val">{{ chara.bank }} <small>G</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- アクションボタン (横並び/縦積み) -->
+    <div class="layout-cluster">
+        <!-- 銀行のトップに戻る -->
+        <form action="{{ config.bank_script }}" method="POST" class="bank-result-form">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ user_id }}">
+            <input type="submit" class="btn btn--block" value="銀行に戻る">
+        </form>
+        
+        <!-- 街に戻る -->
+        <form action="{{ config.main_script }}" method="POST" class="bank-result-form">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ user_id }}">
+            <input type="submit" class="btn btn--block" value="街に戻る">
+        </form>
+    </div>
+</div>
+{% endblock %}

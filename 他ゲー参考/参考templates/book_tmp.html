@@ -1,0 +1,62 @@
+<!-- templates/book_tmp.html -->
+
+{% extends "base_tmp.html" %}
+
+{% block content %}
+
+<div class="card content-sm">
+  <div class="card__header">本　屋</div>
+  <div class="card__desc">
+    モンスターに本を読ませると性格が変わります。<br>
+    <small>※現在の性格によっては変わらない場合もあります。 1冊: {{ book_price }}G</small>
+  </div>
+</div>
+
+<div class="preview-grid">
+  {% for monster in monster_data %}
+  <div class="preview-card">
+    <div class="preview-card__no">No.{{ monster.no }}</div>
+    <div class="preview-card__img">
+      <img src="{{ monster.img }}" alt="{{ monster.name }}">
+    </div>
+    <div class="preview-card__info">
+      <div class="preview-card__name">{{ monster.name }}</div>
+      <div class="preview-card__meta">-{{ monster.sex }}-</div>
+      <div class="preview-card__sei">{{ monster.sei }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="card content-sm">
+  <div class="card__body">
+    <form method="post" data-loading="本を読んでいます..." data-confirm="本を読ませますか？" class="form">
+
+      <div class="form-group">
+        <div class="section-label">モンスターを選択</div>
+        <select name="Mno" class="form-control">
+          {% for option in monster_options %}
+          <option value="{{ option.value }}">{{ option.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="section-label">本を選択</div>
+        <select name="Bname" class="form-control">
+          {% for b_name in book_options %}
+          <option value="{{ b_name }}">{{ b_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn--block">本を読む</button>
+      <input type="hidden" name="mode" value="book_read">
+      <input type="hidden" name="token" value="{{ token }}">
+    </form>
+  </div>
+</div>
+
+{% include "my_page_button_tmp.html" %}
+
+{% endblock %}

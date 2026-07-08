@@ -1,0 +1,2830 @@
+/* ====================================================== */
+/* new_game.css                                           */
+/* 設計層: new_common.css + new_game.css                  */
+/* ====================================================== */
+
+/* ====================================================== */
+/* 0. Foundation / Reset                                  */
+/* ====================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.wrapper {
+  margin: var(--space-s);
+  padding-bottom: 36px;
+}
+
+/* ====================================================== */
+/* 1. Layout Core                                         */
+/* ====================================================== */
+/* --- Stack --- */
+.layout-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, var(--space-m));
+}
+
+.layout-stack--sm {
+  --stack-gap: var(--space-s);
+  gap: var(--space-s);
+}
+
+.layout-stack--lg {
+  --stack-gap: var(--space-l);
+  gap: var(--space-l);
+}
+
+/* --- Cluster --- */
+.layout-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cluster-gap, var(--space-s));
+}
+
+.layout-cluster--start {
+  justify-content: flex-start;
+}
+
+.layout-cluster--end {
+  justify-content: flex-end;
+}
+
+.layout-cluster--between {
+  justify-content: space-between;
+}
+
+/* --- Grid --- */
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min, 280px), 1fr));
+  gap: var(--grid-gap, var(--space-m));
+}
+
+.layout-grid--2col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.layout-grid--3col {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ====================================================== */
+/* 2. Width System                                        */
+/* ====================================================== */
+.content-sm {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-block: var(--space-s);
+}
+
+.content-md {
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-block: var(--space-s);
+}
+
+.content-lg {
+  width: 95%;
+  max-width: 1200px;
+  margin-inline: auto;
+  margin-block: var(--space-s);
+}
+
+.content-sm--spaced,
+.content-md--spaced,
+.content-lg--spaced {
+  margin-block: var(--space-m);
+}
+
+/* ====================================================== */
+/* 3. Card Core                                           */
+/* ====================================================== */
+.card {
+  box-sizing: border-box;
+  background-color: rgba(20, 20, 40, 0.85);
+  border: 1px solid var(--dark, #1e1b4b);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-m);
+}
+
+.card__header {
+  background-color: rgba(5, 5, 26, 0.6);
+  border-bottom: 1px solid var(--dark, #1e1b4b);
+  color: var(--yellow);
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: var(--space-m);
+  text-align: center;
+}
+
+.card__desc {
+  background-color: rgba(10, 10, 30, 0.5);
+  color: var(--text-color);
+  font-weight: bold;
+  padding: var(--space-s) var(--space-m);
+  font-size: 95%;
+  border-bottom: 1px solid var(--dark, #1e1b4b);
+
+  & small {
+    color: var(--vlink-color);
+    font-size: 90%;
+  }
+}
+
+.card__body {
+  padding: var(--space-m);
+  color: var(--text-color);
+}
+
+.card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-s);
+  padding: var(--space-m);
+  border-top: 1px solid var(--dark, #1e1b4b);
+  background-color: rgba(5, 5, 26, 0.4);
+}
+
+/* Modifier */
+.card--primary {
+  border-color: var(--link-color);
+  box-shadow: 0 0 10px rgba(100, 100, 255, 0.15);
+  background-color: rgba(5, 5, 26, 0.4);
+}
+.card--primary .card__header {
+  color: var(--link-color);
+  border-bottom-color: rgba(96, 165, 250, 0.2);
+}
+
+.card--danger {
+  border-color: var(--red);
+  background-color: rgba(34, 0, 0, 0.65);
+}
+.card--danger .card__header {
+  color: var(--red);
+  border-bottom-color: rgba(248, 113, 113, 0.2);
+}
+
+.card--success {
+  border-color: var(--green);
+  background-color: rgba(0, 34, 0, 0.4);
+}
+.card--success .card__header {
+  color: var(--green);
+  border-bottom-color: rgba(52, 211, 153, 0.2);
+}
+
+.card--warning {
+  border-color: var(--yellow);
+  background-color: rgba(10, 10, 30, 0.9);
+}
+.card--warning .card__header {
+  color: var(--yellow);
+  border-bottom-color: rgba(251, 191, 36, 0.2);
+}
+
+.card--orange {
+  border-color: #885522;
+  background-color: rgba(5, 5, 20, 0.4);
+  box-shadow: 0 0 20px rgba(136, 85, 34, 0.25);
+}
+.card--orange .card__header {
+  color: #fb923c;
+  border-bottom-color: rgba(136, 85, 34, 0.25);
+}
+.card--orange .card__footer {
+  border-top-color: rgba(136, 85, 34, 0.25);
+}
+
+/* ====================================================== */
+/* 4. Button Core                                         */
+/* ====================================================== */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #222266 0%, #111144 100%);
+  border: 1px solid var(--link-color);
+  border-radius: var(--radius-s);
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s);
+  text-align: center;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #333388 0%, #222266 100%);
+  box-shadow: 0 0 8px var(--link-color);
+  color: #fff;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn.disabled {
+  background: #1e1e24;
+  border-color: #3f3f46;
+  color: #71717a;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Modifier */
+.btn--danger {
+  background: linear-gradient(135deg, #661111 0%, #330000 100%);
+  border-color: var(--red);
+}
+.btn--danger:hover {
+  background: linear-gradient(135deg, #882222 0%, #551111 100%);
+  box-shadow: 0 0 8px var(--red);
+}
+
+.btn--sm {
+  padding: 4px 8px;
+  font-size: 85%;
+}
+
+.btn--block {
+  display: block;
+  width: 100%;
+}
+
+/* ====================================================== */
+/* 5. Form Core                                           */
+/* ====================================================== */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-m);
+}
+
+.form--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--dark, #1e1b4b);
+  color: #fff;
+  border-radius: var(--radius-s);
+  transition: border-color var(--transition-fast, 0.2s);
+}
+
+.form-control:focus {
+  border-color: var(--link-color);
+  outline: none;
+  box-shadow: 0 0 4px rgba(96, 165, 250, 0.5);
+}
+
+.form-control:disabled,
+.form-control[disabled] {
+  background-color: #1e1e24;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.form-label {
+  display: block;
+  font-size: 90%;
+  font-weight: bold;
+  color: var(--link-color);
+  margin-bottom: var(--space-xs);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-xs);
+}
+
+.form-group--row {
+  flex-direction: row;
+  align-items: center;
+
+  & .form-label {
+    flex: 0 0 120px;
+    text-align: right;
+    margin-bottom: 0;
+    padding-right: var(--space-m);
+  }
+
+  & .form-control {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ====================================================== */
+/* 6. Badge / Label Core                                  */
+/* ====================================================== */
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-s);
+  border-radius: var(--radius-s);
+  font-size: 85%;
+  font-weight: bold;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.badge--key {
+  background-color: rgba(30, 30, 80, 0.6);
+  border-color: var(--link-color);
+  color: var(--white);
+}
+
+.badge--skill {
+  background-color: rgba(80, 50, 20, 0.6);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.badge--tag {
+  background-color: var(--dark);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.job-badge {
+  background-color: rgba(30, 30, 80, 0.5);
+  padding: 4px var(--space-s);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  color: var(--white);
+  font-size: 90%;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.job-badge--unmastered {
+  background-color: rgba(80, 30, 30, 0.5);
+}
+
+/* ====================================================== */
+/* 7. Banner Core                                         */
+/* ====================================================== */
+.banner {
+  box-sizing: border-box;
+  width: 95%;
+  margin-inline: auto;
+  padding: var(--space-m);
+  border-radius: var(--radius-m);
+  text-align: center;
+  font-size: 110%;
+  font-weight: bold;
+  border: 1px solid transparent;
+}
+
+.banner--event {
+  background-color: rgba(80, 60, 20, 0.4);
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+
+.banner--warning {
+  background-color: rgba(80, 20, 20, 0.4);
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.banner--info {
+  background-color: rgba(20, 40, 80, 0.4);
+  color: var(--link-color);
+  border-color: var(--link-color);
+}
+
+/* ====================================================== */
+/* 8. Utility                                             */
+/* ====================================================== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--dark);
+  margin: var(--space-l) 0;
+}
+
+.u-m-0 { margin: 0 !important; }
+.u-display-inline { display: inline !important; }
+.u-display-inline-block { display: inline-block !important; }
+.u-text-center { text-align: center !important; }
+.u-text-left { text-align: left !important; }
+
+/* ====================================================== */
+/* 9. Top / Welcome Page                                  */
+/* ====================================================== */
+.others-title {
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  margin-top: var(--space-l);
+  margin-bottom: var(--space-xs);
+  font-family: 'Outfit', sans-serif;
+  text-align: center;
+}
+
+.others-subtitle {
+  color: var(--white);
+  margin-bottom: var(--space-l);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.others-main-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+}
+
+
+
+.others-champ-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-l);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+}
+
+
+
+.others-lock-card {
+  box-sizing: border-box;
+  background-color: rgba(34, 0, 0, 0.65);
+  border: 1px solid var(--red);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  padding: var(--space-m);
+  margin-top: var(--space-s);
+  text-align: left;
+  color: #ff8888;
+  font-weight: bold;
+}
+
+.others-guest-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+
+.others-guest-input {
+  width: auto;
+  display: inline-block;
+  max-width: 150px;
+  margin-inline: var(--space-s);
+}
+
+.others-telop-box {
+  width: 100%;
+  border: 1px solid var(--dark, #1e1b4b);
+  padding: var(--space-s);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-s);
+  margin-bottom: var(--space-m);
+}
+
+.others-telop-box marquee {
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.others-guest-box {
+  background-color: rgba(3, 3, 20, 0.6);
+  border-left: 3px solid #3b3b98;
+  border-radius: var(--radius-s);
+  padding: var(--space-m);
+  text-align: left;
+}
+
+.others-section-title {
+  border-bottom: 2px solid var(--dark, #1e1b4b);
+  color: var(--yellow);
+  margin-top: 0;
+  margin-bottom: var(--space-m);
+  padding-bottom: var(--space-s);
+  font-size: 1.3rem;
+  text-align: left;
+}
+
+.others-champ-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: var(--space-m);
+}
+
+.others-champ-avatar-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  text-align: center;
+  flex: 1;
+  min-width: 150px;
+}
+
+.others-champ-avatar {
+  background-color: #000;
+  border: 2px solid var(--yellow);
+  border-radius: var(--radius-m);
+  width: 48px;
+  height: 48px;
+  margin-inline: auto;
+  display: block;
+}
+
+.others-champ-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  flex: 2;
+  min-width: 260px;
+  text-align: left;
+}
+
+.others-champ-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--white);
+  font-size: 90%;
+  text-align: left;
+}
+
+.others-champ-info-table td {
+  padding: var(--space-xs) 0;
+}
+
+.others-champ-bar {
+  --bar-width: 50px;
+}
+
+.others-stat-bar {
+  --bar-width: 80px;
+}
+
+.others-footer-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+
+.others-notice-card {
+  border-color: var(--red);
+  background-color: rgba(34, 0, 0, 0.65);
+  margin-top: var(--space-s);
+  text-align: left;
+}
+
+/* login.html */
+.login-panel-card {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-block: var(--space-s);
+  text-align: center;
+  background-color: rgba(5, 5, 26, 0.4);
+  border: 1px solid var(--link-color);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(100, 100, 255, 0.15);
+}
+
+.login-msg-card {
+  padding: var(--space-s) var(--space-m);
+  margin-bottom: 0;
+}
+
+.login-msg-actions-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-s);
+  text-align: left;
+}
+
+.login-msg-text {
+  flex: 1;
+}
+
+.login-msg-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-s);
+  margin-top: var(--space-xs);
+}
+
+.login-notice-text {
+  color: var(--red);
+  flex: 1;
+}
+
+.login-action-form {
+  margin: 0;
+  display: inline-block;
+}
+
+.login-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.login-table th,
+.login-table td {
+  padding: var(--space-s) var(--space-m);
+  border-bottom: 1px solid var(--dark);
+  font-size: 0.9rem;
+}
+
+.login-table th {
+  background-color: rgba(5, 5, 26, 0.6);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.login-table th:first-child {
+  width: 50%;
+}
+
+.login-table th:nth-child(2) {
+  width: 50%;
+}
+
+.login-table--err th:first-child {
+  width: 40%;
+}
+
+.login-table--err th:nth-child(2) {
+  width: 30%;
+}
+
+.login-table--err th:nth-child(3) {
+  width: 30%;
+}
+
+/* ====================================================== */
+/* 10. Dashboard / My Page                                */
+/* ====================================================== */
+.ff-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin: var(--space-m) auto;
+  text-align: left;
+}
+
+.ff-header {
+  text-align: center;
+  border-bottom: 1px solid var(--dark);
+  padding-bottom: var(--space-s);
+}
+
+.ff-header h1 {
+  font-size: 1.8rem;
+  color: var(--yellow);
+  text-shadow: 0 0 10px rgba(255, 255, 85, 0.3);
+  margin: var(--space-xs) 0;
+}
+
+.ff-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--space-m);
+}
+
+.ff-status-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+}
+
+/* --- Character Main Stats Card & Table --- */
+.ff-chara-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: var(--space-s);
+  margin-bottom: var(--space-s);
+}
+
+.ff-chara-avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 80px;
+  text-align: center;
+}
+
+.ff-chara-avatar-box .ff-avatar {
+  background: #000;
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+}
+
+.ff-chara-equip-box {
+  flex: 1;
+}
+
+.ff-chara-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ff-chara-table th,
+.ff-chara-table td {
+  padding: 6px var(--space-s);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.ff-chara-table th {
+  text-align: left;
+  color: var(--sky-blue);
+  font-weight: bold;
+  width: 90px;
+}
+
+.ff-chara-table td {
+  color: var(--white);
+}
+
+.ff-accessory-effects {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  background: rgba(0, 0, 0, 0.2);
+  padding: var(--space-s);
+  border-radius: var(--radius-s);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: var(--space-s);
+}
+
+/* --- HP Bar --- */
+.ff-bar-bg {
+  background: #220000;
+  border: 1px solid #550000;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.ff-bar-fill {
+  background: linear-gradient(90deg, #ff3333 0%, #bb0000 100%);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+
+
+.ff-main-col,
+.ff-side-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.ff-status-card {
+  background-color: rgba(10, 10, 30, 0.5);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+}
+
+.ff-status-card__header {
+  border-bottom: 1px solid var(--dark);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-s);
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.ff-status-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: var(--space-m);
+  align-items: center;
+}
+
+.ff-avatar {
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-sm);
+  background: #000;
+  width: 80px;
+  height: 80px;
+}
+
+.ff-status-info {
+  font-size: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ff-bar-outer {
+  background: #331111;
+  border: 1px solid #551111;
+  height: 8px;
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.ff-bar-fill {
+  background: linear-gradient(to right, #aa2222, #ff5555);
+  height: 100%;
+}
+
+.facility-desc-box {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px dashed var(--link-color);
+  padding: var(--space-s) var(--space-m);
+  border-radius: var(--radius-s);
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  color: var(--sky-blue);
+  font-weight: bold;
+  font-size: 90%;
+}
+
+.facility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-s);
+}
+
+.facility-btn {
+  width: 100%;
+  padding: 10px var(--space-s);
+  font-size: 90%;
+}
+
+/* sts.html */
+.sts-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 900px;
+  margin: var(--space-m) auto;
+  text-align: left;
+}
+
+.sts-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+}
+
+
+
+.sts-equip-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sts-equip-table td {
+  padding: var(--space-s) var(--space-m);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sts-equip-table .sts-equip-label {
+  font-weight: bold;
+  color: var(--sky-blue);
+  width: 120px;
+}
+
+/* ====================================================== */
+/* 11. Bank Page                                          */
+/* ====================================================== */
+.bank-main-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.bank-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.bank-action-row form {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bank-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-m);
+}
+
+
+
+.bank-dashboard-card {
+  background-color: rgba(10, 10, 30, 0.6);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+  text-align: center;
+}
+
+.bank-dashboard-card__val {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--yellow);
+  margin-top: var(--space-xs);
+}
+
+.bank-amount-input {
+  width: auto;
+  display: inline-block;
+  max-width: 100px;
+}
+
+.bank-submit-btn {
+  width: 100%;
+  max-width: 200px;
+  margin-inline: auto;
+}
+
+.bank-back-form {
+  margin: 0;
+  display: inline-block;
+}
+
+.bank-result-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-l);
+  margin-bottom: var(--space-l);
+  text-align: left;
+}
+
+.bank-result-form {
+  margin: 0;
+  width: 100%;
+  max-width: 150px;
+}
+
+/* ====================================================== */
+/* 12. Shop, Board, etc.                                  */
+/* ====================================================== */
+.shop-trade-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.shop-trade-btn {
+  width: 100%;
+  max-width: 320px;
+  margin-inline: auto;
+}
+
+.shop-trade-btn--sm {
+  max-width: 200px;
+}
+
+.shop-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.shop-table th,
+.shop-table td {
+  padding: var(--space-s) var(--space-m);
+  border-bottom: 1px solid var(--dark);
+  font-size: 0.9rem;
+}
+
+.shop-table th {
+  background-color: rgba(5, 5, 26, 0.6);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.shop-table th:first-child {
+  width: 10%;
+}
+.shop-table th:nth-child(2) {
+  width: 15%;
+}
+.shop-table th:nth-child(3) {
+  width: 40%;
+}
+.shop-table th:nth-child(4) {
+  width: 15%;
+}
+.shop-table th:nth-child(5) {
+  width: 20%;
+}
+
+.shop-table--sell th:first-child {
+  width: 15%;
+}
+.shop-table--sell th:nth-child(2) {
+  width: 20%;
+}
+.shop-table--sell th:nth-child(3) {
+  width: 30%;
+}
+.shop-table--sell th:nth-child(4) {
+  width: 15%;
+}
+.shop-table--sell th:nth-child(5) {
+  width: 20%;
+}
+
+/* ====================================================== */
+/* 13. Password Change (パスワード変更所)                   */
+/* ====================================================== */
+.passchange-title {
+  color: #ffaa55;
+  text-shadow: 0 0 10px rgba(255, 170, 85, 0.3);
+  font-family: 'Outfit', sans-serif;
+  text-align: center;
+}
+
+.passchange-desc {
+  color: var(--white);
+  text-align: center;
+}
+
+.npc-box {
+  background-color: #030312;
+  border: 1px solid #885522;
+  border-left: 4px solid #ffaa55;
+  border-radius: var(--radius-m);
+  padding: 20px;
+  margin: 15px auto;
+  width: 95%;
+  max-width: 650px;
+  box-shadow: 0 0 20px rgba(136, 85, 34, 0.25);
+  text-align: left;
+}
+
+.npc-box__title {
+  color: #ffaa55;
+  font-size: 1.05rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: var(--space-s);
+}
+
+.npc-box__message {
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.passchange-form-table {
+  background-color: #030315;
+  border: 1px solid #3b3b98;
+  border-radius: var(--radius-m);
+  width: 95%;
+  max-width: 650px;
+  margin: var(--space-m) auto;
+  border-collapse: collapse;
+}
+
+.passchange-form-table td {
+  padding: 10px 15px;
+  border: 1px solid var(--dark);
+}
+
+.passchange-form-table__header {
+  background-color: rgba(10, 10, 37, 0.8);
+  color: var(--yellow);
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.passchange-form-table__header td {
+  border-bottom: 2px solid var(--dark);
+}
+
+.passchange-form-table__label {
+  background-color: rgba(2, 2, 16, 0.8);
+  color: var(--white);
+  font-weight: bold;
+  text-align: right;
+  width: 35%;
+}
+
+.passchange-form-table__input-cell {
+  text-align: left;
+}
+
+.passchange-form-table__input {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #3b3b98;
+  padding: 8px;
+  border-radius: var(--radius-s);
+  width: 100%;
+  max-width: 250px;
+}
+
+.passchange-form-table__submit-btn {
+  width: auto;
+  min-width: 180px;
+  margin-inline: auto;
+  display: block;
+}
+
+.passchange-actions {
+  display: flex;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-l);
+}
+.passchange-actions form {
+  margin: 0;
+}
+
+.passchange-word-box {
+  background-color: #1a0f03;
+  border: 1px solid #885522;
+  padding: 15px;
+  border-radius: var(--radius-s);
+  color: #ffaa55;
+  font-size: 1.25rem;
+  font-weight: bold;
+  width: 80%;
+  margin: var(--space-m) auto;
+  text-align: center;
+}
+
+.passchange-done-msg {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.passchange-done-submsg {
+  font-size: 0.9rem;
+}
+
+.passchange-set-msg {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.passchange-set-action-form {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.passchange-action-form {
+  margin: 0;
+  display: inline-block;
+}
+
+.note-text {
+  margin-top: 3px;
+}
+
+.note-text--danger {
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+/* ====================================================== */
+/* 14. Character Creation                                 */
+/* ====================================================== */
+.chara-make-title {
+  color: #ffaa55;
+  text-shadow: 0 0 10px rgba(255, 170, 85, 0.3);
+  font-family: 'Outfit', sans-serif;
+  text-align: center;
+}
+
+.chara-make-notice {
+  background-color: rgba(30, 0, 0, 0.4);
+  border: 1px solid var(--red);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+  text-align: left;
+}
+
+.chara-make-notice__title {
+  color: var(--red);
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: var(--space-s);
+}
+
+.chara-make-notice__list {
+  margin: 0;
+  padding-left: var(--space-m);
+  line-height: 1.6;
+  font-size: 90%;
+}
+
+.chara-make-notice__list li {
+  margin-bottom: var(--space-xs);
+}
+
+.chara-make-confirm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.chara-make-confirm-table td {
+  padding: 6px;
+  font-size: 0.95rem;
+}
+
+.chara-make-confirm-table td:first-child {
+  font-weight: bold;
+  width: 40%;
+}
+
+.chara-make-confirm-value {
+  font-weight: bold;
+}
+
+.chara-make-warn-footer {
+  background-color: rgba(30, 10, 10, 0.4);
+  padding: var(--space-s);
+  border-radius: var(--radius-s);
+  border: 1px solid var(--red);
+  color: var(--red);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.chara-make-info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.chara-make-info-table td {
+  padding: 6px;
+  font-size: 0.9rem;
+}
+
+.chara-make-info-table td:nth-child(odd) {
+  font-weight: bold;
+  width: 25%;
+}
+
+.chara-make-info-table td:nth-child(even) {
+  width: 25%;
+}
+
+.chara-make-end-footer {
+  background-color: rgba(0, 30, 0, 0.4);
+  padding: var(--space-s);
+  border-radius: var(--radius-s);
+  border: 1px solid var(--green);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.chara-make-layout-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: var(--space-m);
+}
+
+.chara-make-avatar-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  text-align: center;
+  flex: 1;
+  min-width: 150px;
+}
+
+.chara-make-avatar-img {
+  margin: 0 auto;
+  border-radius: var(--radius-s);
+}
+
+.chara-make-end-name {
+  font-size: 1.1rem;
+}
+
+.chara-make-info-box {
+  flex: 2;
+  min-width: 260px;
+}
+
+.chara-make-action-form {
+  margin: 0;
+  min-width: 200px;
+}
+
+.chara-make-action-btn {
+  width: 100%;
+}
+
+.chara-make-end-footer-nav {
+  margin-bottom: var(--space-l);
+}
+
+.chara-make-login-btn {
+  width: 100%;
+  max-width: 350px;
+}
+
+.chara-make-submit-btn {
+  width: 100%;
+  max-width: 300px;
+}
+
+.chara-make-footer {
+  margin-bottom: var(--space-l);
+}
+
+.chara-make-actions {
+  display: flex;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: var(--space-l);
+}
+.chara-make-actions form {
+  margin: 0;
+}
+
+/* ====================================================== */
+/* 15. Admin Portal                                       */
+/* ====================================================== */
+.admin-portal-container {
+  max-width: 900px;
+  margin: var(--space-l) auto;
+  background: rgba(0, 0, 20, 0.85);
+  border: 2px solid var(--dark);
+  border-radius: var(--radius-l);
+  padding: 25px;
+  box-shadow: 0 0 15px rgba(0, 0, 150, 0.4);
+}
+
+.admin-portal-header {
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--dark);
+  padding-bottom: 15px;
+}
+
+.admin-menu-card__desc {
+  font-size: 80%;
+  color: #aaa;
+  height: 40px;
+  margin-bottom: var(--space-m);
+}
+
+.admin-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 85%;
+}
+
+.admin-list-table th, 
+.admin-list-table td {
+  border: 1px solid #111133;
+  padding: var(--space-s);
+  text-align: center;
+}
+
+.admin-list-table th {
+  background-color: rgba(30, 30, 80, 0.5);
+  color: var(--yellow);
+}
+
+.admin-list-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.admin-info-msg {
+  background: rgba(0, 50, 0, 0.5);
+  border: 1px solid var(--green);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.admin-return-nav {
+  margin-bottom: var(--space-s);
+}
+
+.admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-inline-form {
+  margin: 0;
+  display: inline-block;
+}
+
+.admin-empty-cell {
+  padding: 20px;
+  color: #888;
+}
+
+.admin-form-submit-cell {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.admin-form-btn {
+  padding: 10px 30px;
+}
+
+.admin-form-btn--cancel {
+  background: #333;
+  border-color: #555;
+  margin-left: 10px;
+  padding: 10px 30px;
+}
+
+.admin-footer-nav {
+  text-align: center;
+  margin-top: 25px;
+  border-top: 1px solid var(--dark);
+  padding-top: 15px;
+}
+
+.admin-footer-btn {
+  background: #222;
+  border-color: #444;
+  color: #aaa;
+}
+
+.admin-footer-btn:hover {
+  background: #333;
+  box-shadow: 0 0 8px #444;
+  color: #fff;
+}
+
+/* ====================================================== */
+/* 16. System Modules                                     */
+/* ====================================================== */
+.system-container {
+  width: 95%;
+  max-width: 960px;
+  margin: var(--space-l) auto;
+  padding: 20px;
+  background: rgba(10, 10, 30, 0.9);
+  border: 2px solid var(--dark);
+  border-radius: var(--radius-l);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.system-container--lg {
+  max-width: 1200px;
+}
+
+.system-header-title {
+  text-align: center;
+  color: var(--yellow);
+  font-size: 1.6rem;
+  margin-bottom: var(--space-m);
+  text-shadow: 0 0 8px rgba(255, 255, 85, 0.4);
+  font-weight: bold;
+}
+
+.system-subtitle {
+  text-align: center;
+  color: #aaaaff;
+  margin-bottom: 25px;
+  font-size: 0.85rem;
+}
+
+.system-warning-msg {
+  text-align: center;
+  color: var(--red);
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 25px;
+}
+
+.system-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+}
+
+
+
+.system-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-m);
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.system-card__title {
+  background: var(--dark);
+  color: #ffffff;
+  text-align: center;
+  padding: 6px;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.system-stat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.system-stat-table th, 
+.system-stat-table td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+}
+
+.system-stat-table th {
+  background: rgba(255, 255, 255, 0.02);
+  color: #8888ff;
+  text-align: left;
+  width: 90px;
+}
+
+.system-stat-table td {
+  color: #ffffff;
+}
+
+.system-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 6px;
+}
+
+.system-job-cell {
+  background: rgba(255, 255, 85, 0.03);
+  border: 1px solid var(--yellow);
+  border-radius: var(--radius-s);
+  padding: 6px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.system-img-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 30px;
+}
+
+.system-img-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-s);
+  padding: 8px;
+  text-align: center;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.system-img-card:hover {
+  border-color: var(--yellow);
+  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.05);
+}
+
+.system-img-element {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-s);
+  margin-bottom: var(--space-xs);
+  display: block;
+  margin-inline: auto;
+}
+
+.system-img-num {
+  font-weight: bold;
+  color: var(--yellow);
+  font-size: 0.8rem;
+}
+
+.system-player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.system-player-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-m);
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.system-player-card:hover {
+  border-color: var(--link-color);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.system-rank-badge {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--yellow);
+  width: 50px;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding-right: 10px;
+}
+
+.system-player-img-box {
+  text-align: center;
+  width: 80px;
+}
+
+.system-player-img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-s);
+  background: rgba(0,0,0,0.3);
+}
+
+.system-player-name-link {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  margin-top: 5px;
+}
+
+.system-player-name-link:hover {
+  color: var(--yellow);
+  text-decoration: underline;
+}
+
+.system-player-info-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.system-info-sub-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.system-info-sub-table td {
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  color: #ffffff;
+}
+
+.system-info-sub-table td.label {
+  color: #8888ff;
+  font-weight: bold;
+  width: 65px;
+}
+
+.system-info-sub-table td.yellow,
+.system-info-sub-table td.green {
+  font-weight: bold;
+}
+
+.system-paging-nav {
+  text-align: center;
+  margin: 25px 0;
+  font-size: 0.9rem;
+}
+
+.system-paging-nav a {
+  color: var(--yellow);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px 12px;
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  background: rgba(255, 255, 255, 0.02);
+  margin: 0 5px;
+  transition: all var(--transition-normal, 0.3s);
+}
+
+.system-paging-nav a:hover {
+  background: rgba(255, 255, 85, 0.1);
+  border-color: var(--yellow);
+}
+
+.system-paging-nav span {
+  padding: 5px 10px;
+  color: #888;
+}
+
+.system-paging-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: var(--radius-m);
+  margin-top: 25px;
+}
+
+.system-paging-select-cell {
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.system-paging-select-cell a {
+  color: #aaaaff;
+  text-decoration: none;
+  padding: 4px;
+  display: block;
+  border-radius: var(--radius-s);
+  border: 1px solid transparent;
+}
+
+.system-paging-select-cell a:hover {
+  color: var(--yellow);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.system-paging-select-cell.active a {
+  color: #ffffff;
+  background: var(--dark);
+  border-color: var(--link-color);
+  font-weight: bold;
+}
+
+.system-avatar-wrapper {
+  padding: 15px 0;
+}
+
+.system-avatar-img {
+  margin: 0 auto;
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-md);
+}
+
+.system-avatar-note {
+  display: block;
+  margin-top: 8px;
+}
+
+.system-avatar-link {
+  font-weight: bold;
+}
+
+.system-job-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #777;
+  font-size: 12px;
+  padding: 10px;
+}
+
+.system-stat-bonus {
+  font-size: 10px;
+}
+
+.system-comment-cell {
+  font-style: italic;
+  color: var(--yellow);
+}
+
+.system-empty-msg {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.system-footer-nav {
+  margin-top: var(--space-l);
+}
+
+/* ====================================================== */
+/* 22. Ranking (ランキング)                                 */
+/* ====================================================== */
+.rank-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.rank-header-info {
+  font-size: 0.85rem;
+  color: #ccc;
+  margin-top: var(--space-s);
+}
+
+.rank-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+}
+
+.rank-card {
+  background-color: rgba(5, 5, 20, 0.4);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+}
+
+.rank-card h3 {
+  color: var(--yellow);
+  margin-top: 0;
+  margin-bottom: var(--space-m);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--dark);
+  padding-bottom: var(--space-s);
+}
+
+.rank-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rank-table th,
+.rank-table td {
+  padding: 6px 4px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--dark);
+}
+
+.rank-table th {
+  background-color: rgba(5, 5, 26, 0.6);
+  color: #888;
+  font-weight: bold;
+}
+
+.rank-num {
+  text-align: center;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.rank-num--1 {
+  color: var(--yellow) !important;
+  font-size: 1rem;
+}
+
+.rank-num--2 {
+  color: #c0c0c0 !important;
+}
+
+.rank-num--3 {
+  color: #cd7f32 !important;
+}
+
+.rank-val {
+  text-align: right;
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.rank-back-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-l);
+}
+.rank-back-actions a {
+  min-width: 200px;
+}
+
+.rank-name-link {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.rank-table th:first-child {
+  width: 15%;
+}
+.rank-table th:nth-child(2) {
+  width: 55%;
+}
+.rank-table th:nth-child(3) {
+  width: 30%;
+}
+
+/* ====================================================== */
+/* 16. Strategy Change (作戦変更)                           */
+/* ====================================================== */
+.tac-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.tac-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tac-table th,
+.tac-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--dark);
+  text-align: left;
+}
+
+.tac-table th {
+  background-color: rgba(10, 10, 37, 0.8);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.tac-table tr {
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s);
+}
+
+.tac-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tac-table tr.active {
+  background-color: rgba(100, 181, 246, 0.15);
+}
+
+.tac-radio {
+  text-align: center !important;
+  width: 50px;
+}
+
+.tac-tag-master {
+  background-color: var(--red);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: var(--radius-s);
+  margin-left: var(--space-s);
+  font-weight: bold;
+}
+
+.tac-submit-btn {
+  width: auto;
+  min-width: 200px;
+  margin-inline: auto;
+  display: block;
+}
+
+.tac-nav-actions {
+  display: flex;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-m);
+}
+.tac-nav-actions a {
+  margin: 0;
+}
+
+/* ====================================================== */
+/* 17. Job Change (転職)                                    */
+/* ====================================================== */
+.tensyoku-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.tensyoku-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-m);
+}
+
+.job-badge {
+  background-color: rgba(0, 172, 193, 0.15);
+  border: 1px solid var(--main);
+  color: var(--white);
+  padding: 4px 8px;
+  border-radius: var(--radius-s);
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.job-badge--unmastered {
+  border-color: var(--yellow);
+  background-color: rgba(251, 192, 45, 0.15);
+}
+
+.job-badge__level {
+  color: var(--yellow);
+}
+
+.tensyoku-unmastered-note {
+  font-size: 0.8rem;
+  color: var(--yellow);
+  margin-top: 0;
+}
+
+.tensyoku-form-card select {
+  max-width: 350px;
+}
+
+.tensyoku-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-m);
+}
+
+.tensyoku-back-btn {
+  width: auto !important;
+  min-width: 180px;
+  margin-inline: auto;
+}
+
+/* --- Job Change Result --- */
+.tensyoku-result-container {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.tensyoku-result-title {
+  color: var(--yellow);
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: var(--space-s);
+}
+
+.tensyoku-result-subtitle {
+  text-align: center;
+  color: var(--white);
+  margin-bottom: var(--space-m);
+}
+
+.tensyoku-penalty-banner {
+  padding: 10px;
+  margin-bottom: var(--space-m);
+  text-align: center;
+}
+
+.tensyoku-status-table {
+  width: 100%;
+  max-width: 300px;
+  margin: var(--space-m) auto;
+  border-collapse: collapse;
+}
+
+.tensyoku-status-table th,
+.tensyoku-status-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--dark);
+}
+
+.tensyoku-status-table th {
+  text-align: right;
+  color: var(--white);
+  width: 50%;
+}
+
+.tensyoku-status-table td {
+  text-align: left;
+  color: var(--yellow);
+}
+
+.tensyoku-result-actions {
+  display: flex;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-m);
+}
+.tensyoku-result-actions form {
+  margin: 0;
+}
+.tensyoku-nav-btn {
+  min-width: 150px;
+}
+
+/* ====================================================== */
+/* 18. Warehouse (倉庫)                                     */
+/* ====================================================== */
+.souko-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.souko-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-m);
+}
+
+.souko-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.souko-table th,
+.souko-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--dark);
+  font-size: 0.85rem;
+}
+
+.souko-table th {
+  background-color: rgba(5, 5, 26, 0.6);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.souko-col-part { width: 15%; }
+.souko-col-name { width: 45%; }
+.souko-col-status { width: 20%; }
+.souko-col-action { width: 20%; }
+
+.souko-part-label {
+  font-weight: bold;
+  color: var(--white);
+  text-align: center;
+}
+
+.souko-item-name {
+  font-weight: bold;
+  color: var(--white);
+}
+
+.souko-item-name-left {
+  text-align: left;
+  font-weight: bold;
+  color: var(--white);
+}
+
+.souko-item-power {
+  text-align: center;
+  color: var(--yellow);
+}
+
+.souko-empty-msg {
+  text-align: center;
+  color: #888;
+  padding: var(--space-m) 0;
+}
+
+.souko-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-m);
+}
+
+.souko-back-btn {
+  width: auto !important;
+  min-width: 180px;
+  margin-inline: auto;
+}
+
+/* ====================================================== */
+/* 19. Mail Post (郵便局)                                  */
+/* ====================================================== */
+.post-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: var(--space-l);
+}
+
+.post-box {
+  background-color: rgba(5, 5, 20, 0.4);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+}
+
+.post-box__title {
+  color: var(--white);
+  border-bottom: 2px solid var(--dark);
+  padding-bottom: var(--space-s);
+  margin-top: 0;
+  margin-bottom: var(--space-m);
+  font-size: 1.15rem;
+}
+
+.post-box__title--blue {
+  color: var(--sky-blue);
+  border-bottom-color: rgba(100, 181, 246, 0.3);
+}
+
+.post-box__title--yellow {
+  color: var(--yellow);
+  border-bottom-color: rgba(251, 192, 45, 0.3);
+}
+
+.post-form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.post-form-table th,
+.post-form-table td {
+  padding: 8px 0;
+  text-align: left;
+}
+
+.post-form-table th {
+  color: var(--white);
+  width: 30%;
+  vertical-align: top;
+  font-size: 0.9rem;
+}
+
+.post-form-note {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.post-actions-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  justify-content: center;
+  margin-top: var(--space-m);
+}
+.post-actions-menu form {
+  margin: 0;
+}
+.post-menu-btn {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  min-width: 100px;
+}
+
+/* メッセージトレイ */
+.msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin-bottom: var(--space-l);
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+}
+
+.msg-item {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  padding: var(--space-m);
+}
+
+.msg-item-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #888;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 4px;
+  margin-bottom: var(--space-s);
+}
+
+.msg-sender {
+  color: var(--sky-blue);
+  font-weight: bold;
+}
+
+.msg-receiver {
+  color: var(--white);
+  font-weight: bold;
+}
+
+.msg-content {
+  color: var(--white);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.msg-content--sent {
+  color: #ccc;
+}
+
+.msg-action-form {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-s);
+}
+
+.msg-empty {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  padding: var(--space-m) 0;
+}
+
+.post-nav-actions {
+  display: flex;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-m);
+}
+.post-nav-actions form {
+  margin: 0;
+}
+
+.post-done-container {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.post-done-title {
+  color: var(--yellow);
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: var(--space-s);
+}
+
+.post-done-desc {
+  text-align: center;
+  color: var(--white);
+}
+
+/* ====================================================== */
+/* 20. Battle Selection (対戦相手選択)                       */
+/* ====================================================== */
+.battle-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.battle-container--sm {
+  max-width: 650px;
+}
+
+.battle-msg-box {
+  background-color: #030312;
+  border: 1px solid #3b3b98;
+  border-left: 4px solid var(--sky-blue);
+  border-radius: var(--radius-m);
+  padding: 15px;
+  margin-bottom: var(--space-s);
+  color: var(--white);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.battle-player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-m);
+  margin-bottom: var(--space-m);
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+}
+
+.battle-player-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  padding: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.battle-player-card:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--sky-blue);
+}
+
+.battle-player-card input[type="radio"]:checked + .battle-player-info {
+  color: var(--sky-blue);
+}
+
+.battle-player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.battle-player-name {
+  font-weight: bold;
+  color: var(--white);
+}
+
+.battle-player-sub {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.battle-back-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-s);
+}
+.battle-back-actions a {
+  min-width: 180px;
+  text-align: center;
+}
+
+/* ====================================================== */
+/* 21. Chocobo Farm (チョコボ牧場)                         */
+/* ====================================================== */
+.farm-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 95%;
+  max-width: 960px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.farm-header h1 {
+  color: var(--yellow);
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.farm-winner-board {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #2a2005 0%, #151002 100%);
+  border: 2px solid var(--yellow);
+  border-radius: var(--radius-m);
+  padding: 15px;
+  gap: var(--space-m);
+  color: var(--white);
+  box-shadow: 0 0 15px rgba(251, 192, 45, 0.2);
+}
+
+.farm-winner-img {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  border-radius: 50%;
+  border: 1px solid var(--yellow);
+  overflow: hidden;
+}
+
+.farm-winner-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.farm-winner-details {
+  flex: 1;
+}
+
+.farm-winner-title {
+  font-size: 0.75rem;
+  color: var(--yellow);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.farm-winner-name {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
+.farm-winner-record {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.farm-winner-streak {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--red);
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 4px 12px;
+  border-radius: var(--radius-s);
+}
+
+.farm-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--space-l);
+}
+
+.farm-main-col,
+.farm-side-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+}
+
+.farm-card {
+  background-color: rgba(5, 5, 20, 0.4);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+}
+
+.farm-card__title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--white);
+  border-bottom: 2px solid var(--dark);
+  padding-bottom: var(--space-s);
+  margin-bottom: var(--space-m);
+}
+
+.farm-status-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.farm-status-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--dark);
+  font-size: 0.9rem;
+}
+
+.farm-lbl-header {
+  color: #888;
+  font-weight: bold;
+  text-align: right;
+  width: 25%;
+}
+
+.farm-val-cell {
+  color: var(--white);
+  text-align: left;
+  width: 25%;
+}
+
+.farm-trophy-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+}
+
+.farm-trophy-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--dark);
+  padding: 4px 8px;
+  border-radius: var(--radius-s);
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.farm-trophy-item.gold {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.farm-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-s) 0;
+  border-bottom: 1px dashed var(--dark);
+  gap: var(--space-m);
+}
+
+.farm-action-row:last-child {
+  border-bottom: none;
+}
+
+.farm-action-label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--white);
+  flex: 1;
+}
+
+.farm-action-form {
+  display: flex;
+  gap: var(--space-s);
+  align-items: center;
+}
+
+.farm-btn {
+  background: linear-gradient(135deg, #222266 0%, #111144 100%);
+  border: 1px solid var(--link-color);
+  border-radius: var(--radius-s);
+  color: #fff;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.farm-btn:hover {
+  background: linear-gradient(135deg, #333388 0%, #222266 100%);
+}
+
+.farm-select {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid var(--dark);
+  padding: 6px;
+  border-radius: var(--radius-s);
+  font-size: 0.85rem;
+  max-width: 150px;
+}
+
+.farm-msg-box {
+  background-color: #030312;
+  border: 1px solid #885522;
+  border-left: 4px solid #ffaa55;
+  border-radius: var(--radius-m);
+  padding: 15px;
+  color: var(--white);
+  line-height: 1.5;
+  font-size: 0.85rem;
+}
+
+.farm-back-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-m);
+}
+.farm-back-actions form {
+  margin: 0;
+}
+
+/* ====================================================== */
+/* 19. Battle Main Commands (冒険に出発)                   */
+/* ====================================================== */
+.ff-battle-commands {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-m);
+  width: 100%;
+}
+
+.ff-battle-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-m);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-m);
+  gap: var(--space-s);
+  min-height: 140px;
+  text-align: center;
+}
+
+.ff-battle-label {
+  font-weight: bold;
+  color: var(--yellow);
+  font-size: 1rem;
+}
+
+.ff-action-btn {
+  width: 100%;
+  padding: 8px var(--space-s);
+}
+
+.ff-boss-form,
+.ff-monster-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.ff-boss-select,
+.ff-monster-select {
+  width: 100%;
+  font-size: 85%;
+}

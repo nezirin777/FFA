@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}登録確認 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="layout-stack content-sm">
+    <div class="u-text-center">
+        <br>
+        <h1 class="chara-make-title">🛡️ 登録内容の確認</h1>
+        <p>以下の内容でキャラクターを作成してよろしいですか？</p>
+    </div>
+    
+    <div class="card">
+        <div class="card__header">確認項目</div>
+        <div class="card__body">
+            <div class="chara-make-layout-cluster">
+                <!-- 画像表示 -->
+                <div class="chara-make-avatar-box">
+                    <img class="chara-make-avatar-img" src="{{ config.img_path }}/{{ chara_img_name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
+                    <small>外見画像 (No.{{ chara }})</small>
+                </div>
+                
+                <!-- 基本情報 -->
+                <div class="chara-make-info-box">
+                    <table class="chara-make-confirm-table">
+                        <tr><td><b>なまえ:</b></td><td><span class="chara-make-confirm-value">{{ c_name }}</span></td></tr>
+                        <tr><td><b>性別:</b></td><td>{{ sex == 1 and '男' or '女' }}</td></tr>
+                        <tr><td><b>初期職業:</b></td><td><span class="chara-make-confirm-value">{{ config.chara_jobs[syoku] }}</span></td></tr>
+                        <tr><td><b>初期ゴールド:</b></td><td><span class="chara-make-confirm-value yellow">{{ intgold }}</span> Gold</td></tr>
+                        <tr><td><b>ホームページ:</b></td><td><a href="{{ url }}" target="_blank">{{ site }}</a></td></tr>
+                        <tr><td><b>パスワード変更用単語:</b></td><td><span class="chara-make-confirm-value">{{ passchange }}</span></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="chara-make-warn-footer">
+            ⚠️ <b>「パスワード変更用単語」はパスワード紛失時に必須となります。忘れないよう必ずメモしてください！</b>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- アクションボタンエリア (横並び/縦積み) -->
+    <div class="chara-make-actions">
+        <!-- 決定するフォーム -->
+        <form action="{{ config.chara_make_script }}" method="POST" class="chara-make-action-form">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="mode" value="make_end">
+            <input type="hidden" name="id" value="{{ in.id }}">
+            <input type="hidden" name="pass" value="{{ in.pass }}">
+            <input type="hidden" name="passchange" value="{{ passchange }}">
+            <input type="hidden" name="site" value="{{ site }}">
+            <input type="hidden" name="url" value="{{ url }}">
+            <input type="hidden" name="c_name" value="{{ c_name }}">
+            <input type="hidden" name="sex" value="{{ sex }}">
+            <input type="hidden" name="chara" value="{{ chara }}">
+            <input type="hidden" name="syoku" value="{{ syoku }}">
+            <input type="submit" class="btn chara-make-action-btn" value="作成を確定する">
+        </form>
+
+        <!-- 修正（戻る）フォーム -->
+        <form action="{{ config.chara_make_script }}" method="POST" class="chara-make-action-form">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ in.id }}">
+            <input type="hidden" name="pass" value="{{ in.pass }}">
+            <input type="hidden" name="passchange" value="{{ passchange }}">
+            <input type="hidden" name="site" value="{{ site }}">
+            <input type="hidden" name="url" value="{{ url }}">
+            <input type="hidden" name="c_name" value="{{ c_name }}">
+            <input type="hidden" name="sex" value="{{ sex }}">
+            <input type="hidden" name="chara" value="{{ chara }}">
+            <input type="hidden" name="syoku" value="{{ syoku }}">
+            <input type="submit" class="btn btn--danger chara-make-action-btn" value="修正する (戻る)">
+        </form>
+    </div>
+    
+    <br><br><br>
+</div>
+{% endblock %}

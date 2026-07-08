@@ -1,81 +1,88 @@
-<STYLE type="text/css">
-<!--
-TD{
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#8888cc;
+/* FFA py ver 1.00 ã‚¹ã‚¿ã‚¤ãƒ«ã‚·ãƒ¼ãƒˆ (cgi.css) */
+
+body {
+  margin: 20px;
 }
-p,font,b{
-  font-family : ‚l‚r@–¾’©;
+
+td {
+  font-family: inherit; /* base.htmlå´ã§æŒ‡å®šã•ã‚ŒãŸãƒ•ã‚©ãƒ³ãƒˆã‚’ç¶™æ‰¿ */
+  font-size: 100%;
+  color: #8888cc;
 }
-a:link{
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#8888ff;
-  text-decoration:none;
+
+p, font, b {
+  font-family: inherit;
 }
-a:visited{
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#8888ff;
-  text-decoration:none;
+
+a:link {
+  font-size: 100%;
+  color: #60a5fa;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
-a:active{
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#999999;
-  text-decoration:none;
+
+a:visited {
+  font-size: 100%;
+  color: #60a5fa;
+  text-decoration: none;
 }
+
+a:active {
+  font-size: 100%;
+  color: #999999;
+  text-decoration: none;
+}
+
 a:hover {
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#ff5500;
-  text-decoration:none;
+  font-size: 100%;
+  color: #ff5500;
+  text-decoration: underline;
 }
-#td1{
-  font-family : ‚l‚r@–¾’©;
-  font-size:16px;
-  color:#ffff00;
-  background-color :#000066;
-border-top : 1px solid #aaaaFF; 
-border-bottom : 1px solid #aaaaFF; 
-border-left : 1px solid #aaaaFF; 
-border-right : 1px solid #aaaaFF; 
- }
-#td2{
-  font-family : ‚l‚r@–¾’©;
-  font-size:12px;
-  color:#aaaaff;
-  background-color :#006600;
-border-top : 1px solid #aaFFaa; 
-border-bottom : 1px solid #aaFFaa; 
-border-left : 1px solid #aaFFaa; 
-border-right : 1px solid #aaFFaa; 
- }
-TH{
-  font-family : ‚l‚r@–¾’©;
-  font-size:14px;
-  color:#ffff22;
-  background-color :#660000;
+
+#td1 {
+  font-size: 120%;
+  color: #ffff00;
+  background-color: #000066;
+  border: 1px solid #aaaaFF;
 }
-.b1 { 
-border-top : 1px solid #0000FF; 
-border-bottom : 1px solid #0000FF; 
-border-left : 1px solid #0000FF; 
-border-right : 1px solid #0000FF; 
+
+#td2 {
+  font-size: 100%;
+  color: #aaaaff;
+  background-color: #006600;
+  border: 1px solid #aaFFaa;
 }
-.b2 { 
-border-top : 1px solid #5555FF; 
-border-bottom : 1px solid #5555FF; 
-border-left : 1px solid #5555FF; 
-border-right : 1px solid #5555FF; 
+
+th {
+  font-size: 105%;
+  color: #ffff22;
+  background-color: #660000;
+  padding: 4px 8px;
 }
-.btn { 
-font-family : ‚l‚r@–¾’©;font-size:12px;color:#00aaff;
-border-top : 1px solid #9999ff; 
-border-bottom : 1px solid #000011; 
-border-left : 1px solid #8888dd; 
-border-right : 1px solid #000022; 
-background-color :#000033;
+
+.b1 {
+  border: 1px solid #0000FF;
 }
-</STYLE>
+
+.b2 {
+  border: 1px solid #5555FF;
+}
+
+.btn {
+  font-size: 100%;
+  color: #00aaff;
+  border-top: 1px solid #9999ff;
+  border-bottom: 1px solid #000011;
+  border-left: 1px solid #8888dd;
+  border-right: 1px solid #000022;
+  background-color: #000033;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 3px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn:hover {
+  background-color: #000055;
+  color: #ffffff;
+}

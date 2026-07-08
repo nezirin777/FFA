@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}天下一武道会 戦闘結果 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="battle-container">
+    <div class="battle-header">
+        <h1 class="header-title">🏆 天下一武道会 戦闘レポート</h1>
+    </div>
+
+    <!-- 対戦ヘッダー -->
+    <div class="battle-header-versus">
+        <div class="battle-round-title">⚔️ 第 {{ round_no }} 回戦 ⚔️</div>
+        <div class="battle-versus-names">
+            <span>{{ chara.name }} (Lv {{ chara.level }})</span>
+            <span class="battle-versus-separator">VS</span>
+            <span class="yellow">{{ winner.name }} (Lv {{ winner.level }} / 相手ランク: 第 {{ juni }} 位)</span>
+        </div>
+    </div>
+
+    <!-- 戦闘ログ -->
+    <div class="battle-log battle-log--tenka">
+        {% for log in battle_logs %}
+        <div class="battle-log-line">
+            {% if "ターン" in log %}
+            <span class="battle-log-turn-title">{{ log }}</span>
+            {% else %}
+            {{ log }}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 戦闘結果コメント -->
+    <div class="battle-summary">
+        {{ comment | safe }}
+        <div class="post-form-note u-mt-s">
+            （獲得経験値: <b class="green">+{{ exp_gained }} exp</b>
+            {% if win == 1 %} / 獲得賞金: <b class="yellow">+{{ gold_reward }} G</b>{% endif %}）
+        </div>
+    </div>
+
+    <div class="battle-nav-actions">
+        {% if win == 1 and next_winner != 0 %}
+            <form action="tenka.py" method="post">
+                <input type="hidden" name="mode" value="battle">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mydata" value="{{ chara_log }}">
+                <input type="hidden" name="no" value="{{ next_round_no }}">
+                <button type="submit" class="btn btn--success">⚔️ 次の戦い（第 {{ next_round_no }} 回戦）へ</button>
+            </form>
+        {% endif %}
+        
+        <a href="ffadventure.py?id={{ chara.id }}&mydata={{ chara_log }}" class="btn btn-secondary">🏡 メイン画面へ戻る</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+<!-- templates/battle_encount_tmp.html -->
+
+<div class="card encount-card content-sm">
+
+  <div class="encount-card__header">
+    {% if target == "スライム" %}
+    スライムの不思議な城に迷い込んだ！<br>
+    <small>勝利すれば不思議な鍵が貰えます！</small>
+    {% elif target == "わたぼう" %}
+    わたぼうのメダル城に迷い込んだ！<br>
+    <small>勝利すればメダルが貰えます！</small>
+    {% elif target == "vipsg" %}
+    VIPSガールズが現れた！
+    {% elif target == "異世界" %}
+    異界の者たちが現れた！
+    {% else %}
+    モンスターが現れた！
+    {% endif %}
+  </div>
+
+  <!-- styleから背景色・内側余白等を排除し、新設した .encount-grid クラスを適用 -->
+  <div class="layout-grid encount-grid">
+    {% for teki in tekis %}
+    <div class="enemy-card">
+      <div class="enemy-card__img">
+        <img src="{{ Conf.imgpath }}/{{ teki.name }}.gif" alt="{{ teki.name }}">
+      </div>
+      <div class="enemy-card__info">
+        <div class="enemy-card__name">{{ teki.name2 }}</div>
+        <div class="enemy-card__meta">-{{ teki.sex }}-</div>
+      </div>
+      <div class="enemy-card__hp">
+        <div class="enemy-card__hp-label">HP</div>
+        <div class="enemy-card__hp-value">
+          {{ teki.hp }}<span> / {{ teki.mhp }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>

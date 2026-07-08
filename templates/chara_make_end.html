@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}登録完了 - {{ config.main_title }}{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="layout-stack content-sm">
+    <div class="u-text-center">
+        <br>
+        <h1 class="chara-make-title">🎉 キャラクター作成完了！</h1>
+        <p>キャラクターの作成が完了しました。さあ、冒険に出発しましょう！</p>
+    </div>
+    
+    <div class="card">
+        <div class="card__header">初期登録ステータス</div>
+        <div class="card__body">
+            <div class="chara-make-layout-cluster">
+                <!-- 画像表示 -->
+                <div class="chara-make-avatar-box">
+                    <img class="chara-make-avatar-img" src="{{ config.img_path }}/{{ chara_img_name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
+                    <small>Lv. 1</small><br>
+                    <b class="yellow chara-make-end-name">{{ chara.name }}</b>
+                </div>
+                
+                <!-- 基本情報 & パラメータ -->
+                <div class="chara-make-info-box">
+                    <table class="chara-make-info-table">
+                        <tr>
+                            <td><b>性別:</b></td><td>{{ chara.sex == 1 and '男' or '女' }}</td>
+                            <td><b>初期職業:</b></td><td><b>{{ chara_syoku_name }}</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>最大HP:</b></td><td>{{ chara.max_hp }}</td>
+                            <td><b>所持金:</b></td><td><b class="yellow">{{ chara.gold }}</b> G</td>
+                        </tr>
+                        <tr>
+                            <td><b>力 (STR):</b></td><td>{{ chara.str }}</td>
+                            <td><b>魔力 (INT):</b></td><td>{{ chara.int }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>器用さ (DEX):</b></td><td>{{ chara.dex }}</td>
+                            <td><b>生命力 (VIT):</b></td><td>{{ chara.vit }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>速さ (AGI):</b></td><td>{{ chara.agi }}</td>
+                            <td><b>信仰心 (MND):</b></td><td>{{ chara.mnd }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>魅力 (LCK):</b></td><td>{{ chara.lck }}</td>
+                            <td><b>カルマ (LP):</b></td><td>{{ chara.lp }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chara-make-end-footer">
+            🔑 <b>パスワード変更用単語: {{ passchange }}</b><br>
+            （※パスワードを忘れた時に使用します。必ずこの文字列を控えておいてください）
+        </div>
+    </div>
+
+    <br>
+
+    <!-- ステータスへログイン遷移するフォーム -->
+    <div class="chara-make-footer u-text-center">
+        <form action="{{ config.login_script }}" method="POST" class="chara-make-action-form">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="mode" value="log_in">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="pass" value="{{ chara.pass }}">
+            <input type="submit" class="btn chara-make-login-btn" value="ステータス画面へ（ログイン）">
+        </form>
+    </div>
+</div>
+{% endblock %}

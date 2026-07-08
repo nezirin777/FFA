@@ -1,0 +1,8 @@
+# Bin/binディレクトリとその中身を除外する
+#[Bb]in/
+
+__pycache__/
+*.pyc
+images/
+FFA_py/images/
+FFA_py/save_data
