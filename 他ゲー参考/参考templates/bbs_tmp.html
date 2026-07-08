@@ -1,0 +1,39 @@
+<!-- templates/bbs_tmp.html -->
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>一行掲示板</title>
+</head>
+
+<body>
+
+  <form method="post" action="{{ Conf.bbs_url }}" data-no-lock="true" class="bbs-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <div class="layout-cluster">
+      <input type="text" placeholder="発言" name="bbs_txt" class="form-control" autocomplete="off" required>
+      <button type="submit" class="btn btn--sm bbs-btn">送信</button>
+      <button type="button" class="btn btn--sm bbs-refresh">更新</button>
+    </div>
+
+    <div class="color-picker">
+      {% for idx in range(color_count) %}
+      <label class="color-picker__item">
+        {# value はインデックス文字列。CSS クラス bbs-color-{idx} で色を制御する #}
+        <input type="radio" name="color" value="{{ idx }}" {% if idx==selected_idx %}checked{% endif %}>
+        <span class="color-picker__swatch bbs-color-{{ idx }}"></span>
+      </label>
+      {% endfor %}
+    </div>
+  </form>
+
+  <div id="log-area" class="bbs-log">
+    {{ log | safe }}
+  </div>
+
+</body>
+
+</html>

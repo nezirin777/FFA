@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Script-Type" content="text/javascript">
+<META http-equiv="Content-Style-Type" content="text/css">
+<SCRIPT Language="JavaScript" src="$java_script" type="text/javascript">
+</SCRIPT>
+<STYLE type="text/css">
+<!--
+BODY{
+  font-family : $font_name;
+  font-size:12px;
+  color:$text;
+  background-image : url($backgif);
+  background-attachment : fixed;
+}
+.red{font-family : $font_name;color:$red;}
+.yellow{font-family : $font_name;color:$yellow;}
+.blue{font-family : $font_name;color:$blue;}
+.green{font-family : $font_name;color:$green;}
+.white{font-family : $font_name;color:$white;}
+.dark{font-family : $font_name;color:$dark;}
+.small{font-size:8px;$font_name;color:$red;}
+//-->
+</STYLE>
+<link rel="stylesheet" href="cgi.css" type="text/css">
+<title>各職業に必要な特性値</title></head>
+</head>
+
+<body text="#FFFFFF" bgcolor="#000000">
+<div align="center">
+<b>各職業に必要な特性値</b> 
+  <table border=0>
+    <tr bgcolor="black"> 
+      <th NOWRAP>特性</th>
+      <th NOWRAP>Strength</th>
+      <th NOWRAP>Intelligence</th>
+      <th NOWRAP>Piety</th>
+      <th NOWRAP>Vitality</th>
+      <th NOWRAP>Dexterity</th>
+      <th NOWRAP>Agility</th>
+      <th NOWRAP>Charisma</th>
+      <th NOWRAP>Level</th>
+    </tr>
+    <tr bgcolor="#242424" align=center> 
+      <th NOWRAP>職業</th>
+      <td NOWRAP>力</td>
+      <td NOWRAP>知能</td>
+      <td NOWRAP>信仰心</td>
+      <td NOWRAP>生命力</td>
+      <td NOWRAP>器用さ</td>
+      <td NOWRAP>速さ</td>
+      <td NOWRAP>魅力</td>
+      <td NOWRAP>レベル</td>
+      <td NOWRAP>職歴</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>ソルジャー</td>
+      <td NOWRAP>12</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>10</td>
+      <td NOWRAP>―</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>黒魔道士</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>12</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>10</td>
+      <td NOWRAP>―</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>白魔道士</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>12</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>8</td>
+      <td NOWRAP>10</td>
+      <td NOWRAP>―</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>シーフ</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>12</td>
+      <td NOWRAP>8</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>10</td>
+      <td NOWRAP>―</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>時魔道士</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>30</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>25</td>
+      <td NOWRAP>―</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>赤魔道士</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>25</td>
+      <td NOWRAP>黒魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>バード</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>25</td>
+      <td NOWRAP>―</td>
+    </tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>ものまね師</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>－</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>25</td>
+      <td NOWRAP>？？？？</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>召還士</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>70</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>35</td>
+      <td NOWRAP>25</td>
+      <td NOWRAP>時魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>竜騎士</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>ソルジャー</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>ビショップ</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>50</td>
+      <td NOWRAP>黒魔道士・白魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>ナイト</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>ソルジャー・白魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>侍</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>ソルジャー・黒魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>モンク</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>白魔道士</td>
+    </tr>
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>忍者</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>125</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>180</td>
+      <td NOWRAP>200</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>75</td>
+      <td NOWRAP>シーフ・バード</td>
+    </tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>暗黒騎士</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>黒魔道士・時魔道士</td>
+    </tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>魔法剣士</td>
+      <td NOWRAP>300</td>
+      <td NOWRAP>300</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>300</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>ソルジャー・赤魔道士</td>
+    </tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>マシナリー</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>250</td>
+      <td NOWRAP>―</td>
+      <td NOWRAP>100</td>
+      <td NOWRAP>シーフ・時魔道士</td>
+</tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>幻獣師</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>500</td>
+      <td NOWRAP>500</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>500</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>？？？？</td>
+</tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>Ｓｅｅｄ</td>
+      <td NOWRAP>500</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>500</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>350</td>
+      <td NOWRAP>-</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>？？？？</td>
+</tr><tr bgcolor="#501020" align=center> 
+      <td NOWRAP>占い師</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>450</td>
+      <td NOWRAP>450</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>400</td>
+      <td NOWRAP>150</td>
+      <td NOWRAP>？？？？</td>
+</tr>
+<tr bgcolor="#501020" align=center> 
+      <td NOWRAP>皇帝</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？？？？</td>
+
+    <tr bgcolor="#501020" align=center> 
+      <td NOWRAP>管理人</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？</td>
+      <td NOWRAP>？？？？</td>
+  
+    <TR>
+      <TD bgcolor="#501020" align="center">????</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">?</TD>
+      <TD bgcolor="#501020" align="center">????</TD>
+    </TR>
+  </table>
+</div>
+</body>
+</html>

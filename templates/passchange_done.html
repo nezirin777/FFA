@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}パスワード変更完了 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="u-text-center">
+    <br><br><br>
+    <div class="card card--success content-sm">
+        <div class="card__header">🎉 パスワード変更完了</div>
+        <div class="card__body">
+            <p class="u-text-center passchange-done-msg">
+                <strong>新しいパスワードの設定が完了しました。</strong>
+            </p>
+            <br>
+            <p class="u-text-center note-text passchange-done-submsg">
+                次回ログイン時からは新しいパスワードをご使用ください。<br>
+                （ログイン用クッキー情報も更新されました）
+            </p>
+        </div>
+    </div>
+    <br><br>
+    
+    <!-- 街に戻る -->
+    <form action="{{ config.script }}" method="POST">
+        <input type="hidden" name="id" value="{{ user_id }}">
+        <input type="submit" class="btn" value="街に戻る">
+    </form>
+    <br><br><br>
+</div>
+{% endblock %}

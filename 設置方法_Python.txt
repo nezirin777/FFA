@@ -34,8 +34,8 @@ FFA_py/
   │  ├ const.js           (右クリック禁止用JS)
   │  ├ ffhelp.html        (ゲームヘルプ)
   │  └ syokugyou.html     (転職職業ヘルプ)
-  └ images/               (アバター画像などのゲーム素材フォルダ)
-      ├ chara/            (キャラクターアバター画像 .gif)
+  └ images/               (画像素材フォルダ)
+      ├ chara/            (キャラクター画像 .gif)
       ├ choco/            (チョコボ画像)
       └ *.jpg, *.gif      (背景、その他素材)
 
@@ -54,7 +54,7 @@ FFA_py/
 
 3. サーバーへの転送とパーミッション設定 (Linuxサーバーの場合)
    FTP等でサーバーの公開ディレクトリに `FFA_py` フォルダごと転送します。
-   - 動作用スクリプト (*.py)：「755」(またはサーバー推奨 of CGI実行権限)
+   - 動作用スクリプト (*.py)：「755」(またはサーバー推奨のCGI実行権限)
    - 記録用フォルダ (save_data, lock)：「777」(またはサーバーの書き込み権限。所有者実行時は 707 や 755 でも可)
    - 静的ファイル (html/, images/ 内のファイル、index.html)：「644」
 
@@ -98,13 +98,13 @@ FFA_py/
 | `admin.py` | `admin.cgi` | 管理者コントロールパネル。プレイヤーデータの編集や削除。 |
 | `passchange.py` | `passchange.cgi` | パスワードの変更処理。 |
 | `post_message.py` | `post_message.cgi` | 個人宛郵便メッセージの送受信。 |
-| `morifarm.py` | `morifarm.cgi` | 森 of 農場（チョコボ捕獲、配合、命名、引退、宿屋）。 |
+| `morifarm.py` | `morifarm.cgi` | 森の農場（チョコボ捕獲、配合、命名、引退、宿屋）。 |
 | `chocofarm.py` | `chocofarm.cgi` | チョコボ農場（ステータス確認、レース出走登録）。 |
-| `ctrain.py` | `ctrain.cgi` | チョコボ of トレーニング（筋力、瞬発力などの特訓）。 |
+| `ctrain.py` | `ctrain.cgi` | チョコボのトレーニング（筋力、瞬発力などの特訓）。 |
 | `crace.py` | `crace.cgi`, `crace2.cgi` | チョコボレース（一般レース、重賞G1レース、海外レース）。 |
 | `farmrace.py` | `farmrace.cgi` | チョコボ王者決定戦。 |
 | `dendo.py` | `dendo.cgi` | チョコボ殿堂入り登録、閲覧。 |
-| `chocorank.py` | `chocorank.cgi` | チョコボ of ステータス・獲得賞金ランキング。 |
+| `chocorank.py` | `chocorank.cgi` | チョコボのステータス・獲得賞金ランキング。 |
 | `common.py` | `regist.pl`, `choco-farm.pl` | データベースのJSON入出力、排他制御、Jinja2描画を担う共通コアモジュール。 |
 | `battle_logic.py` | `battle.pl` 等から抽出 | 戦闘ダメージ計算・行動選択シミュレータコア（対人・対モンスター・対レジェンド共通）。 |
 | `skills.py` | `battle.pl` 等から抽出 | ジョブごとの戦闘必殺技、モンスター特殊行動、アビリティ定義マスタ。 |

@@ -1,0 +1,122 @@
+<!-- templates/battle_menu_tmp.html -->
+
+<div class="card battle-menu content-md">
+  <div class="card__header">行動を選択して下さい！</div>
+
+  <div class="card__body">
+    <form action="{{ Conf.cgi_url }}" method="post" class="form">
+
+      <!-- styleを排除し、Modifierクラス .layout-grid--cmd を適用 -->
+      <div class="layout-grid layout-grid--cmd">
+        {% for pt in party %}
+          {% if pt.hp != 0 and pt.hp != "0" %}
+          <div class="cmd-card">
+
+            <div class="cmd-card__header">
+              <div class="cmd-card__img">
+                <img src="{{ Conf.imgpath }}/{{ pt.name }}.gif" alt="{{ pt.name }}">
+              </div>
+              <div class="cmd-card__info">
+                <div class="cmd-card__name">{{ pt.name }}</div>
+                <div class="cmd-card__stats">
+                  <div class="cmd-card__stat">
+                    <span class="cmd-card__stat-label">LV</span> {{ pt.lv }}
+                  </div>
+                  <div class="cmd-card__stat">
+                    <span class="cmd-card__stat-label">HP</span> {{ pt.hp }} / {{ pt.mhp }}
+                  </div>
+                  <div class="cmd-card__stat">
+                    <span class="cmd-card__stat-label">MP</span> {{ pt.mp }} / {{ pt.mmp }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cmd-card__actions">
+
+              <div class="cmd-card__row">
+                <div class="cmd-card__row-label">行動選択</div>
+
+                <select name="hit{{ pt.no }}" class="form-control">
+                  {% for item in pt.hit_options %}
+                  <option value="{{ item.value }}" {% if item.selected %}selected{% endif %}>
+                    {{ item.label }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+
+              <div class="cmd-card__row">
+                <div class="cmd-card__row-label">攻撃相手</div>
+                <select name="target{{ pt.no }}" class="form-control">
+                  {% for enemy in pt.target_options %}
+                  <option value="{{ enemy.value }}" {% if enemy.selected %}selected{% endif %}>
+                    {{ enemy.label }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="cmd-card__row">
+                <div class="cmd-card__row-label">特技</div>
+                <select name="toku{{ pt.no }}" class="form-control">
+                  {% for skill in pt.attack_skills %}
+                  <option value="{{ skill.name }}" {% if skill.selected %}selected{% endif %}>
+                    {{ skill.name }}
+                    {% if not special_flag %}
+                    ({{ skill.mp }} MP)
+                    {% endif %}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              {% if not special_flag %}
+              <div class="cmd-card__row">
+                <div class="cmd-card__row-label">回復相手</div>
+                <select name="nakama{{ pt.no }}" class="form-control">
+                  {% for member in pt.nakama_options %}
+                  <option value="{{ member.value }}" {% if member.selected %}selected{% endif %}>
+                    {{ member.label }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="cmd-card__row">
+                <div class="cmd-card__row-label">回復魔法</div>
+                <select name="ktoku{{ pt.no }}" class="form-control">
+                  {% for skill in pt.heal_skills %}
+                  <option value="{{ skill.name }}" {% if skill.selected %}selected{% endif %}>
+                    {{ skill.label }}
+                    {% if skill.name != "0" %}
+                      ({{ skill.mp }} MP)
+                    {% endif %}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- ボタンエリアを横並びに配置（手動決定 と オートバトルの共存） -->
+      <div class="layout-cluster">
+        <button type="submit" name="monok" value="決定"
+                class="btn battle-btn">決　定</button>
+        <!-- クリック時にhidden入力を強制的に追加して、JSからの送信でも値を消失させない -->
+        <button type="submit" name="monok" value="オートバトル"
+                class="btn battle-btn" data-loading="オート戦闘計算中..." data-confirm="戦闘終了まで自動で進めます。よろしいですか？"
+                onclick="this.form.appendChild(Object.assign(document.createElement('input'), {type: 'hidden', name: 'monok', value: 'オートバトル'}))">オートバトル</button>
+        <input type="hidden" name="mode" value="battle_fight">
+        <input type="hidden" name="token" value="{{ token }}">
+      </div>
+
+    </form>
+  </div>
+</div>

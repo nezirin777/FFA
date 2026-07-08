@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}戦闘結果 - {{ enemy_name }}戦 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="battle-container">
+    <div class="battle-header">
+        <h1>{{ chara.name }} vs {{ enemy_name }}</h1>
+        <p class="battle-subtitle">
+            戦闘モード: {% if mode == 'genei' %}幻影闘技場{% elif mode == 'isekiai' %}異世界修行{% else %}モンスター修行{% endif %}
+        </p>
+        <hr>
+    </div>
+
+    <!-- 戦闘概要 -->
+    <div class="battle-summary">
+        {{ comment | safe }}
+    </div>
+
+    <!-- 戦闘詳細ログ -->
+    <div class="battle-log">
+        {% for log in logs %}
+        <div class="battle-turn-card">
+            <div class="battle-turn-title">ターン {{ log.turn }}</div>
+            
+            <!-- HP状況バー -->
+            <div class="battle-hp-bar-container">
+                <div class="battle-hp-bar-wrapper">
+                    <span>{{ chara.name }}: HP {{ log.player_hp }} / {{ log.player_max_hp }}</span>
+                    <div class="battle-hp-bar-outer">
+                        {% set p_pct = (log.player_hp / log.player_max_hp * 100) | int %}
+                        <div class="battle-hp-bar-inner battle-hp-bar-inner--player" style="width: {{ p_pct if p_pct <= 100 else 100 }}%;"></div>
+                    </div>
+                </div>
+                <div class="battle-hp-bar-wrapper">
+                    <span>{{ enemy_name }}: HP {{ log.enemy_hp }} / {{ log.enemy_max_hp }}</span>
+                    <div class="battle-hp-bar-outer">
+                        {% set e_pct = (log.enemy_hp / log.enemy_max_hp * 100) | int %}
+                        <div class="battle-hp-bar-inner" style="width: {{ e_pct if e_pct <= 100 else 100 }}%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 行動内容 -->
+            <div class="battle-action-desc">
+                {{ log.com1 | safe }}
+                {% if log.dmg1 > 0 %}
+                <span class="yellow font-weight-bold">(➔ {{ enemy_name }} に {{ log.dmg1 }} のダメージ)</span>
+                {% endif %}
+            </div>
+            <div class="battle-action-desc battle-action-desc--enemy">
+                {{ log.com2 | safe }}
+                {% if log.dmg2 > 0 %}
+                <span class="red font-weight-bold">(➔ {{ chara.name }} に {{ log.dmg2 }} の被ダメージ)</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="battle-back-actions">
+        <a href="{{ config.script }}?id={{ chara.id }}" class="btn">街に戻る</a>
+    </div>
+</div>
+{% endblock %}
