@@ -1,2 +1,0 @@
-sub wacskouka{}
-1;

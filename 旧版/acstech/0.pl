@@ -1,2 +1,0 @@
-sub acskouka{}
-1;
