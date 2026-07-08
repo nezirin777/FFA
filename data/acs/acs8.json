@@ -1,0 +1,325 @@
+[
+  {
+    "no": 1,
+    "name": "パワーピアス",
+    "gold": 2500,
+    "effect_id": 0,
+    "bonus": {
+      "str": 25,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 2,
+    "name": "パワーリング",
+    "gold": 50000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 50,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 3,
+    "name": "パワーリスト",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 100,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 13,
+    "name": "スピードピアス",
+    "gold": 2500,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 25,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 14,
+    "name": "スピードリング",
+    "gold": 50000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 50,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 15,
+    "name": "エルメスの靴",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 100,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 28,
+    "name": "蝶の羽",
+    "gold": 15000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 10,
+    "spare2": 0
+  },
+  {
+    "no": 29,
+    "name": "翼竜の翼",
+    "gold": 75000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 20,
+    "spare2": 0
+  },
+  {
+    "no": 30,
+    "name": "飛竜の翼",
+    "gold": 8000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 30,
+    "spare2": 0
+  },
+  {
+    "no": 47,
+    "name": "バッカスの腕輪",
+    "gold": 9999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 100,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 100
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 48,
+    "name": "武神の腕輪",
+    "gold": 99999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 200,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 200
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 49,
+    "name": "シヴァ・ソウル",
+    "gold": 1500000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 500,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 500
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 56,
+    "name": "プロテスリング",
+    "gold": 999999,
+    "effect_id": 4,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 59,
+    "name": "バーサクリング",
+    "gold": 999999,
+    "effect_id": 7,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 60,
+    "name": "魔神の指輪",
+    "gold": 99999999,
+    "effect_id": 8,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 61,
+    "name": "鬼神の指輪",
+    "gold": 150000000,
+    "effect_id": 9,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 62,
+    "name": "オーラの結晶",
+    "gold": 100000000,
+    "effect_id": 10,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  }
+]

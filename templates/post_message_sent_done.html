@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}送信完了 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="post-done-container">
+    <div class="card post-done-card">
+        <div class="card__header post-done-header">✉️ メッセージ送信完了</div>
+        <div class="card__body post-done-body">
+            <p class="post-done-title">
+                {{ aite_name }} さんへメッセージを送りました。
+            </p>
+            <p class="post-done-desc">
+                郵便局の送受信履歴に正しく記録されました。
+            </p>
+        </div>
+    </div>
+    
+    <!-- 戻るボタン -->
+    <div class="post-nav-actions">
+        <a href="login.py?mode=post_message&id={{ chara.id }}" class="btn">郵便局に戻る</a>
+        <a href="login.py?mode=main&id={{ chara.id }}" class="btn">街に戻る</a>
+    </div>
+</div>
+{% endblock %}

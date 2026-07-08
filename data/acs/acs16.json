@@ -1,0 +1,344 @@
+[
+  {
+    "no": 3,
+    "name": "パワーリスト",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 100,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 12,
+    "name": "命の指輪",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 100,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 15,
+    "name": "エルメスの靴",
+    "gold": 999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 100,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 25,
+    "name": "近視眼鏡",
+    "gold": 15000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 10,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 26,
+    "name": "赤外線スコープ",
+    "gold": 75000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 20,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 27,
+    "name": "デジタルスコープ",
+    "gold": 8000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 30,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 45,
+    "name": "アルテミスの指輪",
+    "gold": 800000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 20,
+      "int": 20,
+      "dex": 20,
+      "vit": 20,
+      "agi": 20,
+      "mnd": 20,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 46,
+    "name": "ラクシュミの王冠",
+    "gold": 5000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 50,
+      "int": 50,
+      "dex": 50,
+      "vit": 50,
+      "agi": 50,
+      "mnd": 50,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 47,
+    "name": "バッカスの腕輪",
+    "gold": 9999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 100,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 100
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 48,
+    "name": "武神の腕輪",
+    "gold": 99999999,
+    "effect_id": 0,
+    "bonus": {
+      "str": 200,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 200
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 49,
+    "name": "シヴァ・ソウル",
+    "gold": 1500000000,
+    "effect_id": 0,
+    "bonus": {
+      "str": 500,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 500
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 53,
+    "name": "回復の指輪",
+    "gold": 9999999,
+    "effect_id": 1,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 56,
+    "name": "プロテスリング",
+    "gold": 999999,
+    "effect_id": 4,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 57,
+    "name": "シェルリング",
+    "gold": 99999999,
+    "effect_id": 5,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 58,
+    "name": "ウォールリング",
+    "gold": 150000000,
+    "effect_id": 6,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 62,
+    "name": "オーラの結晶",
+    "gold": 100000000,
+    "effect_id": 10,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 69,
+    "name": "オメガ・ソウル",
+    "gold": 3000000000,
+    "effect_id": 17,
+    "bonus": {
+      "str": 100,
+      "int": 100,
+      "dex": 100,
+      "vit": 100,
+      "agi": 100,
+      "mnd": 100,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0
+  },
+  {
+    "no": 77,
+    "name": "ルナ・ブレスレット",
+    "gold": 15000000000,
+    "effect_id": 24,
+    "bonus": {
+      "str": 300,
+      "int": 300,
+      "dex": 300,
+      "vit": 300,
+      "agi": 300,
+      "mnd": 300,
+      "lck": 300,
+      "lp": 0
+    },
+    "attrib": 30,
+    "spare1": 30,
+    "spare2": 30
+  }
+]

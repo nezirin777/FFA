@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}管理者ツール - {{ config.main_title }}{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-portal-container">
+    <div class="admin-portal-header">
+        <h1>管理者用コントロールパネル</h1>
+    </div>
+
+    <!-- 通知メッセージ -->
+    {% if message %}
+    <div class="admin-info-msg">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <!-- 1. トップ画面 -->
+    {% if mode == 'kanri_top' %}
+    <div class="admin-menu-grid">
+        <div class="admin-menu-card">
+            <h3>登録キャラクター一覧</h3>
+            <p class="admin-menu-card__desc">登録されているすべての冒険者データの閲覧、編集、削除を行います。</p>
+            <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn">一覧を開く</a>
+        </div>
+        <div class="admin-menu-card">
+            <h3>長期間放置キャラの削除</h3>
+            <p class="admin-menu-card__desc">前回の行動から一定期間（{{ config.limit }}日）以上経過したキャラクターを一括削除します。</p>
+            <form action="admin.py" method="POST" onsubmit="return confirm('本当に削除してよろしいですか？');">
+                <input type="hidden" name="pass" value="{{ pass }}">
+                <input type="hidden" name="mode" value="del_noplay">
+                <button type="submit" class="btn btn--danger">一括削除を実行</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. 全キャラクター表示 -->
+    {% elif mode == 'kanri_all' %}
+    <h2>登録冒険者一覧 (全 {{ players | length }}人)</h2>
+    <div class="layout-cluster layout-cluster--end admin-return-nav">
+        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
+    </div>
+    <div class="admin-table-wrapper">
+        <table class="admin-list-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名前</th>
+                    <th>Lv</th>
+                    <th>職業</th>
+                    <th>所持金</th>
+                    <th>最終行動日時</th>
+                    <th>ホスト</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                <tr>
+                    <td>{{ player.id }}</td>
+                    <td class="white"><strong>{{ player.name }}</strong></td>
+                    <td>{{ player.level }}</td>
+                    <td>{{ config.chara_syoku[player.job] }}</td>
+                    <td>{{ player.gold }} G</td>
+                    <td>{{ player.last_time_str }}</td>
+                    <td>{{ player.host }}</td>
+                    <td>
+                        <a href="admin.py?pass={{ pass }}&mode=data&target_id={{ player.id }}" class="btn btn--sm">編集</a>
+                        <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('キャラクター「{{ player.name }}」を完全に削除します。よろしいですか？');">
+                            <input type="hidden" name="pass" value="{{ pass }}">
+                            <input type="hidden" name="mode" value="del_chara">
+                            <input type="hidden" name="target_id" value="{{ player.id }}">
+                            <button type="submit" class="btn btn--danger btn--sm">削除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="admin-empty-cell">登録されているキャラクターはいません。</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. キャラクター個別編集 -->
+    {% elif mode == 'data' %}
+    <h2>冒険者データ編集: {{ chara.name }} (ID: {{ chara.id }})</h2>
+    
+    <form action="admin.py" method="POST">
+        <input type="hidden" name="pass" value="{{ pass }}">
+        <input type="hidden" name="mode" value="save">
+        <input type="hidden" name="target_id" value="{{ chara.id }}">
+
+        <table class="admin-form-table">
+            <tr>
+                <td width="30%"><strong>名前</strong></td>
+                <td><input type="text" name="name" class="admin-form-input" value="{{ chara.name }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>レベル</strong></td>
+                <td><input type="number" name="level" class="admin-form-input" value="{{ chara.level }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>職業</strong></td>
+                <td>
+                    <select name="job" class="admin-form-input">
+                        {% for job_name in chara_syoku %}
+                        <option value="{{ loop.index0 }}" {% if chara.job == loop.index0 %}selected{% endif %}>{{ job_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>熟練度</strong></td>
+                <td><input type="number" name="job_level" class="admin-form-input" value="{{ chara.job_level }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>所持金</strong></td>
+                <td><input type="number" name="gold" class="admin-form-input" value="{{ chara.gold }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>現在HP</strong></td>
+                <td><input type="number" name="hp" class="admin-form-input" value="{{ chara.hp }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>最大HP</strong></td>
+                <td><input type="number" name="max_hp" class="admin-form-input" value="{{ chara.max_hp }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>力 (STR)</strong></td>
+                <td><input type="number" name="str" class="admin-form-input" value="{{ chara.str }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>魔力 (INT)</strong></td>
+                <td><input type="number" name="int" class="admin-form-input" value="{{ chara.int }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>信仰心 (DEX)</strong></td>
+                <td><input type="number" name="dex" class="admin-form-input" value="{{ chara.dex }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>生命力 (VIT)</strong></td>
+                <td><input type="number" name="vit" class="admin-form-input" value="{{ chara.vit }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>素早さ (AGI)</strong></td>
+                <td><input type="number" name="agi" class="admin-form-input" value="{{ chara.agi }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>知性 (MND)</strong></td>
+                <td><input type="number" name="mnd" class="admin-form-input" value="{{ chara.mnd }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>運 (LCK)</strong></td>
+                <td><input type="number" name="lck" class="admin-form-input" value="{{ chara.lck }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>LP / カルマ</strong></td>
+                <td><input type="number" name="lp" class="admin-form-input" value="{{ chara.lp }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>自己紹介コメント</strong></td>
+                <td><input type="text" name="comment" class="admin-form-input" value="{{ chara.comment }}"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="admin-form-submit-cell">
+                    <button type="submit" class="btn admin-form-btn">変更を保存する</button>
+                    <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn admin-form-btn--cancel">キャンセル</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+    {% endif %}
+
+    <div class="admin-footer-nav">
+        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-footer-btn">管理メインへ</a>
+    </div>
+</div>
+{% endblock %}

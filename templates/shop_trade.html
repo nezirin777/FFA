@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}ショップ - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="shop-trade-stack">
+    <h1 class="u-text-center">{{ shop_title }}</h1>
+    <hr class="section-divider">
+
+    <!-- 店主のメッセージ -->
+    <div class="card card--primary">
+        <div class="card__header">🗣️ 店主の言葉</div>
+        <div class="card__body">
+            <span class="yellow">{{ shop_msg | safe }}</span>
+        </div>
+    </div>
+
+    <div class="u-text-center u-text-large u-mb-s">
+        現在の所持金：<b><span class="yellow">{{ chara.gold }}</span></b> G
+    </div>
+
+    <!-- 現在の装備品の売却 -->
+    <div class="card">
+        <div class="card__header">現在の装備品（下取り）</div>
+        <div class="card__body">
+            <div class="table-wrapper">
+                <table class="shop-table shop-table--sell">
+                    <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>状態</th>
+                            <th>名前</th>
+                            <th>性能</th>
+                            <th>下取り価格</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {% if equipped_item.id and equipped_item.id != 0 %}
+                                <form action="{{ post_url }}" method="POST" class="u-m-0">
+                                    <input type="hidden" name="s" value="{{ csrf_token }}">
+                                    <input type="hidden" name="id" value="{{ chara.id }}">
+                                    <input type="hidden" name="mode" value="sell">
+                                    <input type="submit" class="btn btn--sm" value="売却">
+                                </form>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>装備中</td>
+                            <td><b>{{ equipped_item.name }}</b></td>
+                            <td>{{ equipped_item.power }}</td>
+                            <td><span class="yellow">{{ equipped_item.sell_gold }}</span> G</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 購入可能な商品リスト -->
+    <form action="{{ post_url }}" method="POST" class="u-m-0">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
+        <input type="hidden" name="id" value="{{ chara.id }}">
+        <input type="hidden" name="mode" value="buy">
+        
+        <div class="card">
+            <div class="card__header">販売商品リスト</div>
+            <div class="card__body">
+                <div class="table-wrapper">
+                    <table class="shop-table">
+                        <thead>
+                            <tr>
+                                <th>選択</th>
+                                <th>No.</th>
+                                <th>商品名</th>
+                                <th>性能</th>
+                                <th>販売価格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in shop_items %}
+                            <tr>
+                                <td>
+                                    {% if chara.gold >= item.gold %}
+                                    <input type="radio" name="item_no" value="{{ item.no }}">
+                                    {% else %}
+                                    <span class="red"><span class="small-text">不可</span></span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.no }}</td>
+                                <td class="u-text-left">{{ item.name }}</td>
+                                <td>{{ item.power }}</td>
+                                <td><span class="yellow">{{ item.gold }}</span> G</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5">現在、販売している商品はありません。</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card__footer">
+                <input type="submit" class="btn shop-trade-btn" value="選択した商品を購入する">
+            </div>
+        </div>
+    </form>
+
+    <div class="u-text-center">
+        <form action="{{ config.main_script }}" method="POST" class="u-m-0">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="submit" class="btn shop-trade-btn shop-trade-btn--sm" value="街に戻る">
+        </form>
+    </div>
+</div>
+{% endblock %}

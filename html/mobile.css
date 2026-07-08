@@ -1,0 +1,214 @@
+/* ====================================================== */
+/* mobile.css (モバイル専用補正スタイル)                      */
+/* ====================================================== */
+
+@media screen and (max-width: 768px) {
+  /* 1. レイアウトの縦積み化 */
+  .layout-cluster {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  
+  .layout-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-s);
+  }
+  
+  /* 2. タップエリアの拡張 (タップしやすくするため) */
+  .btn, button, input[type="submit"], input[type="button"] {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: var(--space-xs);
+  }
+  
+  /* 3. モバイル用マージン・パディング調整 */
+  body {
+    margin: 10px;
+  }
+  
+  .card {
+    padding: var(--space-s);
+    margin-bottom: var(--space-s);
+  }
+  
+  /* 4. フォントサイズと要素の微調整 */
+  body {
+    font-size: 95%;
+  }
+
+  .content-sm, .content-md, .content-lg {
+    padding-left: var(--space-s);
+    padding-right: var(--space-s);
+  }
+
+  /* 5. ページ固有のレスポンシブ調整 */
+  .others-main-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .others-champ-guide-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ff-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ff-status-split-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sts-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bank-dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .system-grid-2col {
+    grid-template-columns: 1fr;
+  }
+  
+  .bank-action-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .bank-action-row form {
+    width: 100%;
+  }
+  
+  .passchange-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .passchange-actions form {
+    width: 100%;
+  }
+  
+  .chara-make-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .chara-make-actions form {
+    width: 100%;
+  }
+  
+  .tac-nav-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .tac-nav-actions a {
+    width: 100%;
+  }
+  
+  .tensyoku-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tensyoku-back-btn {
+    width: 100% !important;
+  }
+  
+  .tensyoku-result-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .tensyoku-result-actions form {
+    width: 100%;
+  }
+  .tensyoku-nav-btn {
+    width: 100%;
+  }
+  
+  .souko-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .souko-back-btn {
+    width: 100% !important;
+  }
+  
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .post-actions-menu {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .post-actions-menu form,
+  .post-actions-menu .btn {
+    width: 100%;
+  }
+  
+  .post-nav-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .post-nav-actions form,
+  .post-nav-actions .btn {
+    width: 100%;
+  }
+  
+  .battle-player-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .battle-back-actions,
+  .battle-back-actions a {
+    width: 100%;
+  }
+  
+  .farm-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .farm-winner-board {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .farm-action-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+  .farm-action-form {
+    width: 100%;
+  }
+  .farm-btn,
+  .farm-select {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .farm-back-actions,
+  .farm-back-actions form,
+  .farm-back-actions .btn {
+    width: 100%;
+  }
+  
+  .rank-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .rank-back-actions,
+  .rank-back-actions a {
+    width: 100%;
+  }
+
+  .ff-battle-commands {
+    grid-template-columns: 1fr;
+  }
+}

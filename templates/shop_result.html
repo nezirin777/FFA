@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}取引完了 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="layout-stack content-sm u-mt-xl">
+    <div class="card card--primary u-text-center">
+        <div class="card__header">🛍️ 取引が完了しました</div>
+        <div class="card__body">
+            <span>
+                {{ result_msg | safe }}
+            </span>
+        </div>
+        <div class="card__footer">
+            <form action="{{ back_url }}" method="POST" class="u-m-0">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="submit" class="btn btn--block" value="店に戻る">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
