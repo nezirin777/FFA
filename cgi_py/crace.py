@@ -141,7 +141,7 @@ def main():
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
     chara_log = in_params.get("mydata", "")
-    mode = in_params.get("mode", "race0")
+    mode = in_params.get("mode", "")
     race_id = int(in_params.get("race", "0"))
 
     # キャラクターデータのロード
@@ -161,23 +161,24 @@ def main():
     ctrain = choco.get("train", 0)
     csex = choco.get("sex", 0)
     
-    # 戻るフォーム
-    from sub_def.crypto import get_session
-    csrf_token = get_session().get("csrf_token", "")
-    backform_html = f"""
-    <form action="{config.Config['chocofarm_script']}" method="post">
-      <input type="hidden" name="s" value="{csrf_token}">
-      <input type="hidden" name="id" value="{user_id}">
-      <input type="hidden" name="mydata" value="{chara_log}">
-      <input type="submit" class="btn-farm btn-secondary" value="牧場に戻る">
-    </form>
-    """
-    
+    # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
+    back_ctx = {
+        "back_action": config.Config['chocofarm_script'],
+        "back_params": {"id": user_id, "mydata": chara_log},
+        "back_label": "牧場に戻る",
+    }
+
+    # 出走レースの検証 (無選択のまま新馬戦が暗黙実行されるのを防ぐ)
+    valid_modes = {"race0", "race1", "race2", "race3", "race4", "race5",
+                   "race6", "race7", "race8", "race_dendo"}
+    if mode not in valid_modes:
+        common.show_error("出走するレースが選択されていません。牧場のレース選択から出走してください。", back_ctx)
+
     # バリデーション
     if not cname or cname == "名無しのチョコボ":
-        common.show_error(f"チョコボに名前を付けてからレースに出走させてください。<br>{backform_html}")
+        common.show_error("チョコボに名前を付けてからレースに出走させてください。", back_ctx)
     if clife < 400:
-        common.show_error(f"チョコボの体力が足りません。宿屋で休ませてから出走させてください。<br>{backform_html}")
+        common.show_error("チョコボの体力が足りません。宿屋で休ませてから出走させてください。", back_ctx)
 
     # クラス条件判定
     win_min = 0
@@ -212,7 +213,7 @@ def main():
         racename = g1_names.get(race_id, "G1重賞")
         # 周期チェック
         if (crun + ctrain) % 40 != 0:
-            common.show_error(f"現在はそのG1レースの開催日ではありません。<br>{backform_html}")
+            common.show_error("現在はそのG1レースの開催日ではありません。", back_ctx)
     elif mode == "race8":
         # G2（海外）レース
         win_min = 30
@@ -226,7 +227,7 @@ def main():
         racename = g2_names.get(race_id, "海外重賞")
         # 周期チェック
         if (crun + ctrain) % 60 != 0:
-            common.show_error(f"現在はその海外レースの開催日ではありません。<br>{backform_html}")
+            common.show_error("現在はその海外レースの開催日ではありません。", back_ctx)
     elif mode == "race_dendo":
         # 殿堂レース
         win_min = 30
@@ -234,7 +235,7 @@ def main():
         racename = "殿堂レジェンドレース"
         
     if cwin < win_min or cwin >= win_limit:
-        common.show_error(f"勝利数がクラス制限に合致しません。現在の勝利数: {cwin}<br>{backform_html}")
+        common.show_error(f"勝利数がクラス制限に合致しません。現在の勝利数: {cwin}", back_ctx)
 
     # 時間制限チェック
     now = int(time.time())
@@ -242,17 +243,17 @@ def main():
     ltime = now - last_time
     if ltime < config.Config['battle_cooldown']:
         wait_sec = config.Config['battle_cooldown'] - ltime
-        common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。<br>{backform_html}")
+        common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。", back_ctx)
 
     # アクション時間更新
     chara["last_time"] = now
 
     # === ライバルたちのロード ===
-    # ribal_file の絶対パス
-    if ribal_file.endswith('.json'):
-        ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
-    else:
+    # ribal0〜8.json はマスタデータ (data/)、denchoco.json は殿堂データ (save_data/)
+    if ribal_file.startswith("ribal"):
         ribal_path = os.path.join(common.BASE_DIR, "data", ribal_file)
+    else:
+        ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
         
     rivals = load_rivals(ribal_path, count=4)
 
@@ -338,13 +339,13 @@ def main():
                 if random.randint(0, kisyou) <= random.randint(0, int(c3[n] * 2 / 3)):
                     dmg[n] = int(random.randint(0, int(c0[n] / (tyousei * 4))) + c0[n] / (tyousei * 4))
                     if n == 0:
-                        step_comment += f'<span style="color:#ff5555;">{names[n]}はスタートで出遅れましたクポ！</span> '
+                        step_comment += f'<span class="red">{names[n]}はスタートで出遅れましたクポ！</span> '
                     syoumou[n] = heri * dmg[n] * 3 * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 好スタート判定
                 elif random.randint(0, tiryoku) <= random.randint(0, int(c5[n] * 2 / 3)):
                     dmg[n] = int(random.randint(0, int(c0[n] * 1.5 / tyousei)))
                     if n == 0:
-                        step_comment += f'<span style="color:#55ff55;">{names[n]}は素晴らしいスタートを切りましたクポ！</span> '
+                        step_comment += f'<span class="green">{names[n]}は素晴らしいスタートを切りましたクポ！</span> '
                     syoumou[n] = heri * (dmg[n] / 2) * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 普通スタート
                 else:
@@ -375,13 +376,13 @@ def main():
                     else:
                         base_dmg = base_dmg / 3
                         if n == 0 and step % 4 == 0:
-                            step_comment += f'<span style="color:#ff5555;">{names[n]}は完全にバテていますクポ...</span> '
+                            step_comment += f'<span class="red">{names[n]}は完全にバテていますクポ...</span> '
                 # ラストスパート（終盤かつ闘争心/スタミナで加速）
                 elif (random.randint(0, seriai) < random.randint(0, c4[n])) or (hp_flg[n] / max(1, c1[n]) >= 0.4):
                     syoumou_base = syoumou_base * 2
                     base_dmg = base_dmg * 2.2
                     if n == 0 and step % 4 == 0:
-                        step_comment += f'<span style="color:#ffff55;">{names[n]}のラストスパートクポ！</span> '
+                        step_comment += f'<span class="yellow">{names[n]}のラストスパートクポ！</span> '
                         
                 dmg[n] = int(base_dmg)
                 positions[n] = max(0, positions[n] - dmg[n])
@@ -557,7 +558,7 @@ def main():
             finally:
                 common.release_lock("all_message")
                 
-            comment += f"<br><span style='color:gold; font-size:18px;'>🎉 【重賞制覇】「{racename}」のタイトルを獲得しました！</span>"
+            comment += f'<br><span class="gold u-text-large">🎉 【重賞制覇】「{racename}」のタイトルを獲得しました！</span>'
             
     # 敗北時の処理
     else:
@@ -701,6 +702,7 @@ def main():
         "racename": racename,
         "runners": runners_data,
         "runners_json": json.dumps(runners_data),
+        "turns": turns_data,
         "turns_json": json.dumps(turns_data),
         "comment": comment,
         "agari": agari,
