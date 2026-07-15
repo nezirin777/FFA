@@ -25,6 +25,7 @@
             </div>
 
             <form action="{{ config.script_post }}" method="POST">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="limit_do">
                 

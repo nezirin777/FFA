@@ -73,6 +73,12 @@ def main():
     if admin_pass != config.Config['admin_password']:
         common.show_error("管理者パスワードが一致しません。")
 
+    # データ改変・削除を伴う操作はCSRFトークン検証を必須とする
+    method = os.environ.get("REQUEST_METHOD", "GET").upper()
+    if method == "POST" and mode in ("save", "del_chara", "del_noplay"):
+        from sub_def.crypto import get_session, token_check
+        token_check(params, get_session())
+
     # 1. 管理画面トップ
     if mode == "kanri_top":
         context = {

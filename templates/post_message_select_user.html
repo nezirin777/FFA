@@ -13,6 +13,7 @@
     <div class="card post-detail-card">
         <div class="card__body">
             <form action="{{ config.script_post }}" method="POST" class="layout-stack">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="message">
                 

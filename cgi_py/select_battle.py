@@ -99,6 +99,9 @@ def main():
     # 2. パラメータの取得
     params = common.decode_params()
     mode = params.get("mode", "log_in") # log_in, sentaku, battle
+    # ルーティングキー (login.py?mode=select_battle) で入場した場合や不明なmodeは初期画面へ
+    if mode not in ("log_in", "sentaku", "battle"):
+        mode = "log_in"
     user_id = params.get("id", "").strip()
 
     if not user_id:
@@ -184,11 +187,11 @@ def main():
 
         comment = ""
         if win == 1:
-            comment = f'<span class="green" style="font-size: 1.25em;">{aite_chara["name"]} に勝利しました！</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="green u-text-large">{aite_chara["name"]} に勝利しました！</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         elif win == 0:
-            comment = f'<span class="red" style="font-size: 1.25em;">{aite_chara["name"]} に敗北しました・・・</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="red u-text-large">{aite_chara["name"]} に敗北しました・・・</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         else:
-            comment = f'<span class="yellow" style="font-size: 1.25em;">引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="yellow u-text-large">引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
 
         # 5. 戦闘結果画面の描画 (monster_result.html を再利用)
         context = {

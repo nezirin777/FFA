@@ -27,11 +27,13 @@
     <!-- 戻るボタン -->
     <div class="passchange-actions">
         <form action="{{ config.script_pass }}" method="POST">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ user_id }}">
             <input type="submit" class="btn" value="パスワード変更所に戻る">
         </form>
         
         <form action="{{ config.script }}" method="POST">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ user_id }}">
             <input type="submit" class="btn" value="街に戻る">
         </form>

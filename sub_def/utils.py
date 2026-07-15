@@ -86,6 +86,12 @@ def redirect(url: str, extra_headers: list[str] | None = None) -> NoReturn:
     if extra_headers:
         for header in extra_headers:
             sys.stdout.write(f"{header}\n")
-    sys.stdout.write("\n")
+    # dev_server.py (CGIHTTPRequestHandler) は Status ヘッダーをHTTPステータスに
+    # 反映しないため、meta refresh によるフォールバックボディを併せて出力する
+    sys.stdout.write("Content-type: text/html; charset=utf-8\n\n")
+    sys.stdout.write(
+        f'<html><head><meta http-equiv="refresh" content="0;url={url}"></head>'
+        f'<body><a href="{url}">移動しない場合はこちらをクリックしてください</a></body></html>'
+    )
     # NoReturn関数設計に基づき、プロセスを即座に終了
     sys.exit(0)

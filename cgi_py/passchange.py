@@ -53,6 +53,7 @@ import time
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import hash_password
 
 def parse_cookie_user(cookie_str):
     if not cookie_str:
@@ -130,15 +131,18 @@ def main():
             
         pass_change = load_pass_change(user_id)
         
-        # 1. パスワード変更用単語の新規設定 (passchange)
-        if mode == "passchange":
+        # 1. パスワード変更用単語の新規設定 (passset)
+        # ※サブ動作名を "passchange" にするとルーティングキー (login.py?mode=passchange) と
+        #   衝突し、入場時のGETでもこの分岐に入ってしまうため別名にしている
+        if mode == "passset":
             pass_confirm = params.get("pass", "").strip()
             word = params.get("passchange", "").strip()
-            
-            if pass_confirm != chara["pass"]:
+
+            # 保存値はハッシュのため、入力値もハッシュ化して比較する
+            if hash_password(pass_confirm) != chara["pass"]:
                 common.release_lock(user_id)
                 common.show_error("現在のパスワードが間違っています。")
-                
+
             if pass_change:
                 common.release_lock(user_id)
                 common.show_error("パスワード変更用単語はすでに設定されています。")
@@ -171,8 +175,9 @@ def main():
             word = params.get("passchange", "").strip()
             npass = params.get("npass", "").strip()
             nkpass = params.get("nkpass", "").strip()
-            
-            if pass_confirm != chara["pass"]:
+
+            # 保存値はハッシュのため、入力値もハッシュ化して比較する
+            if hash_password(pass_confirm) != chara["pass"]:
                 common.release_lock(user_id)
                 common.show_error("現在のパスワードが間違っています。")
                 
@@ -199,19 +204,20 @@ def main():
             now = int(time.time())
             remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             
-            # 更新
-            chara["pass"] = npass
+            # 更新 (保存・クッキーともにハッシュ値を用いる)
+            hashed_npass = hash_password(npass)
+            chara["pass"] = hashed_npass
             common.chara_regist(user_id, chara)
-            
+
             # パスワード変更ファイルも更新
-            pass_change["pass"] = npass
+            pass_change["pass"] = hashed_npass
             pass_change["created_at"] = now
             pass_change["host"] = remote_addr
             save_pass_change(user_id, pass_change)
-            
+
             # クッキーのヘッダーを返すためのクッキー値変更
             # ログインセッションを維持するため、クッキーを書き換えます
-            cookie_value = f"id<>{user_id},pass<>{npass}"
+            cookie_value = f"id<>{user_id},pass<>{hashed_npass}"
             cookie_header = common.set_cookie_header(config.Config['cookie_name'], cookie_value)
             
             context = {

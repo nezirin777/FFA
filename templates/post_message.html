@@ -17,6 +17,7 @@
             <h3 class="post-box__title post-box__title--blue">✍️ メッセージを送る</h3>
             
             <form action="{{ config.script_post }}" method="POST">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="mode" value="message">
                 
@@ -54,24 +55,28 @@
             <!-- 各種郵便局メニュー -->
             <div class="post-actions-menu">
                 <form action="{{ config.script_post }}" method="POST">
+                    <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="all_list">
                     <input type="submit" class="btn post-menu-btn" value="🔍 登録者一覧">
                 </form>
                 
                 <form action="{{ config.script_post }}" method="POST">
+                    <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="ban">
                     <input type="submit" class="btn post-menu-btn post-menu-btn--danger" value="🚫 拒否設定">
                 </form>
                 
                 <form action="{{ config.script_post }}" method="POST">
+                    <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="friend">
                     <input type="submit" class="btn post-menu-btn post-menu-btn--success" value="🤝 友達設定">
                 </form>
                 
                 <form action="{{ config.script_post }}" method="POST">
+                    <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="limit">
                     <input type="submit" class="btn post-menu-btn" value="🔒 受信凍結">
@@ -94,6 +99,7 @@
                     </div>
                     <div class="msg-action-form">
                         <form action="{{ config.script_post }}" method="POST">
+                            <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="hidden" name="mode" value="res">
                             <input type="hidden" name="mesid" value="{{ msg.id }}">

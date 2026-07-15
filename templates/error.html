@@ -11,7 +11,18 @@
                 {{ error_message | safe }}
             </p>
             <br>
+            {% if back_action %}
+            {# 呼び出し元指定の戻るフォーム。s は render 時に再生成された最新トークンが入る #}
+            <form action="{{ back_action }}" method="post">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                {% for k, v in (back_params or {}).items() %}
+                <input type="hidden" name="{{ k }}" value="{{ v }}">
+                {% endfor %}
+                <input type="submit" class="btn" value="{{ back_label or '戻る' }}">
+            </form>
+            {% else %}
             <input type="button" class="btn btn--danger btn--sm" value="戻る" onclick="history.back()">
+            {% endif %}
         </div>
     </div>
 </div>

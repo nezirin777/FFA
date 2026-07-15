@@ -88,8 +88,6 @@ FUNCTION_MAP = {
     "img_list": "cgi_py.system",        # (画像一覧表示)
     "ranking": "cgi_py.system",         # (登録者一覧)
     "tenka": "cgi_py.tenka",
-    "all_tenka": "cgi_py.all_tenka",
-    "tenka_log": "cgi_py.tenka_log",
     "rank": "cgi_py.rank",
     "chocorank": "cgi_py.chocorank"
 }

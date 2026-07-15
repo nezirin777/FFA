@@ -75,7 +75,7 @@ def main():
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
     chara_log = in_params.get("mydata", "")
-    mode = in_params.get("mode", "race0")
+    mode = in_params.get("mode", "")
 
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
@@ -90,21 +90,16 @@ def main():
     cname = choco.get("name", "名無しのチョコボ")
     clife = choco.get("life", 1000)
     
-    # 戻るフォーム
-    from sub_def.crypto import get_session
-    csrf_token = get_session().get("csrf_token", "")
-    backform_html = f"""
-    <form action="{config.Config['chocofarm_script']}" method="post">
-      <input type="hidden" name="s" value="{csrf_token}">
-      <input type="hidden" name="id" value="{user_id}">
-      <input type="hidden" name="mydata" value="{chara_log}">
-      <input type="submit" class="btn-farm btn-secondary" value="牧場に戻る">
-    </form>
-    """
-    
+    # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
+    back_ctx = {
+        "back_action": config.Config['chocofarm_script'],
+        "back_params": {"id": user_id, "mydata": chara_log},
+        "back_label": "牧場に戻る",
+    }
+
     # 体力チェック (200未満なら不可)
     if clife < 200:
-        common.show_error(f"チョコボの体力が足りません。宿屋で休ませてください。<br>{backform_html}")
+        common.show_error("チョコボの体力が足りません。宿屋で休ませてください。", back_ctx)
 
     # トレーニング種類の設定
     # 0: 瞬発力(c0), 1: 持久力(c1), 2: 粘り強さ(c2), 3: 落ち着き(c3), 4: 闘争心(c4), 5: 知力(c5), 6: 切れ味(c6)
@@ -117,8 +112,12 @@ def main():
         "race5": (5, "お勉強"),
         "race6": (6, "坂道ダッシュ")
     }
-    
-    syurui, subject = syurui_map.get(mode, (0, "バーベルあげ"))
+
+    # 訓練メニューの検証 (無選択のまま瞬発力訓練が暗黙実行され寿命を消費するのを防ぐ)
+    if mode not in syurui_map:
+        common.show_error("訓練メニューが選択されていません。牧場の訓練メニューから選択してください。", back_ctx)
+
+    syurui, subject = syurui_map[mode]
 
     # キャラクターの時間制限チェック
     now = int(time.time())
@@ -126,7 +125,7 @@ def main():
     ltime = now - last_time
     if ltime < config.Config['monster_cooldown']:
         wait_sec = config.Config['monster_cooldown'] - ltime
-        common.show_error(f"まだトレーニングできません。あと {wait_sec} 秒お待ちください。<br>{backform_html}")
+        common.show_error(f"まだトレーニングできません。あと {wait_sec} 秒お待ちください。", back_ctx)
 
     # アクション時間を更新
     chara["last_time"] = now
@@ -143,25 +142,25 @@ def main():
         # メッセージの決定
         msg = ""
         if syurui == 0: # 瞬発力
-            msg = '<span style="color:#ff5555; font-weight:bold;">重すぎてあがらないクポ！</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">バーベルがあがったクポ！</span>'
+            msg = '<span class="red">重すぎてあがらないクポ！</span>' if not is_success else '<span class="green">バーベルがあがったクポ！</span>'
         elif syurui == 1: # 持久力
-            msg = '<span style="color:#ff5555; font-weight:bold;">砂浜で遊んでしまっているクポ...</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">砂浜を走りきったクポ！</span>'
+            msg = '<span class="red">砂浜で遊んでしまっているクポ...</span>' if not is_success else '<span class="green">砂浜を走りきったクポ！</span>'
         elif syurui == 2: # 粘り強さ
-            msg = '<span style="color:#ff5555; font-weight:bold;">おぼれそうになっているクポ！</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">スイスイ泳ぎきったクポ！</span>'
+            msg = '<span class="red">おぼれそうになっているクポ！</span>' if not is_success else '<span class="green">スイスイ泳ぎきったクポ！</span>'
         elif syurui == 3: # 落ち着き
-            msg = '<span style="color:#ff5555; font-weight:bold;">目の前を通る虫に気を取られているクポ...</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">あらゆる雑念を振り払ったクポ！</span>'
+            msg = '<span class="red">目の前を通る虫に気を取られているクポ...</span>' if not is_success else '<span class="green">あらゆる雑念を振り払ったクポ！</span>'
         elif syurui == 4: # 闘争心
-            msg = '<span style="color:#ff5555; font-weight:bold;">サボっているクポ...</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">闘志がみなぎっているクポ！</span>'
+            msg = '<span class="red">サボっているクポ...</span>' if not is_success else '<span class="green">闘志がみなぎっているクポ！</span>'
         elif syurui == 5: # 知力
             if not is_success:
-                msg = '<span style="color:#ff5555; font-weight:bold;">居眠りしているクポ...</span>'
+                msg = '<span class="red">居眠りしているクポ...</span>'
             else:
                 mae = random.randint(10, 99)
                 usiro = random.randint(10, 99)
                 kotae = mae * usiro
-                msg = f'<span style="color:#55ff55; font-weight:bold;">難解な問題を解いたクポ！ ({mae} × {usiro} = {kotae})</span>'
+                msg = f'<span class="green">難解な問題を解いたクポ！ ({mae} × {usiro} = {kotae})</span>'
         elif syurui == 6: # 切れ味
-            msg = '<span style="color:#ff5555; font-weight:bold;">坂道から転げ落ちているクポ！</span>' if not is_success else '<span style="color:#55ff55; font-weight:bold;">疾風のように駆け上がったクポ！</span>'
+            msg = '<span class="red">坂道から転げ落ちているクポ！</span>' if not is_success else '<span class="green">疾風のように駆け上がったクポ！</span>'
 
         if is_success:
             success += 1
@@ -471,6 +470,7 @@ def main():
         "senzai": senzai,
         "genkai": genkai,
         "rousui": rousui,
+        "turns": turns_data,
         "turns_json": json.dumps(turns_data)
     }
 
