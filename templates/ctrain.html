@@ -3,37 +3,54 @@
 {% block content %}
 <div class="farm-container farm-container--md">
     <div class="farm-header">
-        <h1>💪 チョコボトレーニング</h1>
+        <h1>💪 トレーニング結果: {{ subject }}</h1>
         <hr>
     </div>
 
     <!-- 指導モーグリ -->
     <div class="farm-msg-box">
         <div class="farm-msg-content">
-            「クポッ！トレーニング指導員のモーグリクポ！<br>
-            愛チョコボの長所を伸ばしたり、弱点を補うメニューを選択するクポ！」
+            「{{ choco.name or "チョコボ" }}の「{{ subject }}」が終わったクポ！<br>
+            結果は <b class="green">成功 {{ success }} 回</b> / <b class="red">失敗 {{ lose }} 回</b> だったクポ！」
         </div>
     </div>
 
-    <div class="farm-card">
-        <div class="farm-card__title">🏋️ 訓練メニュー (費用: 50G)</div>
-        <div class="card__body">
-            <form action="{{ config.crace_script }}" method="POST" class="layout-stack">
-                <input type="hidden" name="id" value="{{ chara.id }}">
-                <input type="hidden" name="mode" value="train_start">
-                
-                <div class="farm-action-row">
-                    <span class="farm-action-label">トレーニングメニュー:</span>
-                    <div class="farm-action-form">
-                        <select name="train_menu" class="farm-select">
-                            <option value="speed">スピード特訓 (速度増加)</option>
-                            <option value="stamina">耐久ランニング (スタミナ増加)</option>
-                            <option value="balance">並走訓練 (親愛度・バランス向上)</option>
-                        </select>
-                    </div>
-                </div>
+    <!-- トレーニングログ -->
+    <div class="battle-log">
+        {% for t in turns %}
+        <div class="battle-log-line">
+            {{ loop.index }}回目: {{ t.msg | safe }}
+        </div>
+        {% endfor %}
+    </div>
 
-                <input type="submit" class="farm-btn btn--block u-mt-m" value="トレーニングを開始する">
+    <!-- 成果 -->
+    <div class="battle-summary">
+        {% if agari %}{{ agari | safe }}<br>{% endif %}
+        {% if senzai %}{{ senzai | safe }}{% endif %}
+        {% if genkai %}{{ genkai | safe }}{% endif %}
+        {% if rousui %}<span class="red">{{ rousui | safe }}</span>{% endif %}
+    </div>
+
+    <!-- もう一度訓練 -->
+    <div class="farm-card">
+        <div class="farm-card__title">🏋️ 続けて訓練する</div>
+        <div class="farm-action-row">
+            <span class="farm-action-label">訓練メニュー:</span>
+            <form action="{{ config.ctrain_script }}" method="POST" class="farm-action-form">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mydata" value="{{ chara_log }}">
+                <select name="mode" class="farm-select">
+                    <option value="race0">バーベルあげ（瞬発力）</option>
+                    <option value="race1">砂浜走り（持久力）</option>
+                    <option value="race2">スイミング（粘り強さ）</option>
+                    <option value="race3">瞑想（落ち着き）</option>
+                    <option value="race4">猛特訓（闘争心）</option>
+                    <option value="race5">お勉強（知力）</option>
+                    <option value="race6">坂道ダッシュ（切れ味）</option>
+                </select>
+                <input type="submit" class="farm-btn" value="訓練開始">
             </form>
         </div>
     </div>
@@ -41,7 +58,9 @@
     <!-- 戻るボタン -->
     <div class="farm-back-actions">
         <form action="{{ config.chocofarm_script }}" method="POST">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn" value="チョコボ牧場に戻る">
         </form>
     </div>

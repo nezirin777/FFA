@@ -226,8 +226,7 @@ def main():
         # シミュレータ起動
         # 対人戦なので is_player_enemy=True に設定
         simulator = battle_logic.BattleSimulator("battle", chara, item, winner, is_player_enemy=True)
-        win = simulator.simulate() # 1: プレイヤー勝利, 0: プレイヤー敗北, 2: 引き分け
-        battle_logs = simulator.battle_logs
+        win, battle_logs = simulator.simulate() # 1: プレイヤー勝利, 0: プレイヤー敗北, 2: 引き分け
         
         # 残りHP、経験値計算
         restored_hp = simulator.state.khp + random.randint(0, max(0, chara.get("vit", 10) - 1))
