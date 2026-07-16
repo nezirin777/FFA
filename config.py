@@ -18,8 +18,10 @@ Config["template_dir"] = os.path.join(
 )  # HTMLテンプレートディレクトリ
 Config["souko_folder"] = "save_data"  # 倉庫データディレクトリの相対パス
 
-Config["admin_password"] = "1111"  # 管理者用パスワード
-Config["secret_key"] = "ffa_secret_key_vips_ver3"  # クッキー暗号化・署名用の秘密鍵
+# 管理者パスワード・秘密鍵は環境変数から取得することを推奨（本番では必ず設定すること）。
+# 環境変数が未設定の場合は下記の既定値にフォールバックする（開発用。公開運用では変更必須）。
+Config["admin_password"] = os.environ.get("FFA_ADMIN_PASSWORD", "1111")  # 管理者用パスワード
+Config["secret_key"] = os.environ.get("FFA_SECRET_KEY", "ffa_secret_key_vips_ver3")  # クッキー暗号化・署名用の秘密鍵
 Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無効)
 Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
 Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
@@ -141,6 +143,8 @@ Config["farmrace_script"] = "login.py?mode=farmrace"
 
 # コミュニケーション・ランキング
 Config["post_message_script"] = "login.py?mode=post_message"
+Config["bbs_script"] = "login.py?mode=bbs"  # プレイヤー掲示板
+Config["max_bbs_posts"] = 50  # 掲示板に保持する最大投稿数
 Config["ranking_script"] = "login.py?mode=rank"
 Config["img_all_list"] = "login.py?mode=img_list"
 

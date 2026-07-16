@@ -159,7 +159,7 @@ def main():
             common.show_error("キャラクター情報が見つかりません。")
             
         # パスワードチェック
-        if c_id == user_id and c_pass != chara["pass"]:
+        if c_id != user_id or c_pass != chara["pass"]:
             common.release_lock(user_id)
             common.show_error("ログインパスワードが一致しません。")
             

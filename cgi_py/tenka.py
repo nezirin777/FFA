@@ -170,9 +170,11 @@ def main():
         
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
-    
+
     # ログインキャラのロード
     chara = common.chara_load(user_id)
     if not chara:
@@ -278,7 +280,7 @@ def main():
                     common.release_lock("tenka_logs")
                     
                 # 全体メッセージに制覇通知を流す
-                common.get_lock("all_message")
+                common.get_lock("all_message_post")
                 try:
                     all_msgs = common.all_message_load()
                     new_msg = {
@@ -292,7 +294,7 @@ def main():
                         all_msgs = all_msgs[:config.Config['max_all_messages']]
                     common.all_message_regist(all_msgs)
                 finally:
-                    common.release_lock("all_message")
+                    common.release_lock("all_message_post")
             else:
                 comment += f"<br>戦闘勝利！次の対戦に進めるクポ。"
         else:
@@ -321,14 +323,14 @@ def main():
             common.release_lock(user_id)
             
         next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['boss_cooldown']
-        juni = config.Config['tenka_count'] - int(in_params.get("no", "1")) + 1
+        juni = config.Config['tenka_count'] - common.to_int(in_params.get("no", "1"), 1) + 1
         
         context = {
             "chara": chara,
             "chara_log": chara_log,
             "winner": winner,
             "round_no": in_params.get("no", "1"),
-            "next_round_no": str(int(in_params.get("no", "1")) + 1),
+            "next_round_no": str(common.to_int(in_params.get("no", "1"), 1) + 1),
             "juni": juni,
             "win": win,
             "next_winner": next_winner,

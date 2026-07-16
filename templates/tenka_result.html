@@ -23,9 +23,9 @@
         {% for log in battle_logs %}
         <div class="battle-log-line">
             {% if "ターン" in log %}
-            <span class="battle-log-turn-title">{{ log }}</span>
+            <span class="battle-log-turn-title">{{ log | safe }}</span>
             {% else %}
-            {{ log }}
+            {{ log | safe }}
             {% endif %}
         </div>
         {% endfor %}

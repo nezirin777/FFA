@@ -92,6 +92,8 @@ def main():
     params = common.decode_params()
     mode = params.get("mode", "")
     user_id = params.get("id", "").strip()
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     
     if not user_id:
         common.show_error("ユーザーIDが指定されていません。")

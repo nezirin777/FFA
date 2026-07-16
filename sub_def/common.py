@@ -269,6 +269,18 @@ def all_message_regist(msg_data):
     file_path = os.path.join(Config['save_dir'], "all_message.json")
     save_data_atomically(msg_data, file_path, "all_message")
 
+def bbs_load():
+    """掲示板の投稿一覧をロードします (共有ファイル排他ロード)"""
+    from sub_def.file_ops import load_data_with_lock
+    file_path = os.path.join(Config['save_dir'], "bbs.json")
+    return load_data_with_lock(file_path, "bbs") or []
+
+def bbs_regist(posts):
+    """掲示板の投稿一覧を保存します (共有ファイルアトミック保存)"""
+    from sub_def.file_ops import save_data_atomically
+    file_path = os.path.join(Config['save_dir'], "bbs.json")
+    save_data_atomically(posts, file_path, "bbs")
+
 def save_user_all(user_id, chara, item, syoku):
     """ユーザー全データを一括保存します"""
     data = load_user_all(user_id) or {}
@@ -337,6 +349,41 @@ def show_error(msg: str, context: dict | None = None) -> NoReturn:
     """エラー画面を表示します。"""
     from sub_def.utils import show_error as utils_show_error
     utils_show_error(msg, context)
+
+def to_int(value, default=0):
+    """ユーザー入力を安全に整数化する。変換不能なら default を返す（非数値入力によるクラッシュ防止）。"""
+    try:
+        return int(str(value).strip())
+    except (ValueError, TypeError):
+        return default
+
+def parse_cookie_user(cookie_str):
+    """クッキー文字列 "id<>user_id,pass<>password" から ID とパスワードを抽出します。"""
+    if not cookie_str:
+        return None, None
+    id_val = None
+    pass_val = None
+    for pair in cookie_str.split(","):
+        if "<>" in pair:
+            k, v = pair.split("<>", 1)
+            if k == "id":
+                id_val = v
+            elif k == "pass":
+                pass_val = v
+    return id_val, pass_val
+
+def require_owner(user_id):
+    """状態変更操作の認可チェック（ロック取得前に呼ぶこと）。
+    ログイン中のクッキーが対象 user_id 本人（かつパスワード一致）であることを要求する。
+    他人のIDを指定した操作（IDOR）を防ぐ。閲覧系では呼ばない。
+    条件を満たさない場合はエラー画面を表示して終了する。
+    認証用に chara を（ロック無しで）読み込むだけなので、この時点でロックは保持しないこと。
+    """
+    cookie_str = get_cookie(Config['cookie_name'])
+    c_id, c_pass = parse_cookie_user(cookie_str)
+    chara = chara_load(user_id)
+    if not c_id or c_id != user_id or not chara or c_pass != chara.get("pass"):
+        show_error("認証に失敗しました。ご自身のキャラクターのみ操作できます。再度ログインしてください。")
 
 # === 7. 日時フォーマット ===
 def get_time_str(t=None):

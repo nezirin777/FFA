@@ -74,6 +74,8 @@ def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     mode = in_params.get("mode", "main")
     if mode == "choco":
         mode = "main"
@@ -238,7 +240,7 @@ def main():
 
     elif mode == "choco_buy":
         # === 野生チョコボ購入・捕獲処理 ===
-        item_no = int(in_params.get("item_no", "-1"))
+        item_no = common.to_int(in_params.get("item_no", "-1"), -1)
         
         # 野生チョコボリストから対象のチョコボを検索
         choco_list = common.choco_list_load("chocobofile")
@@ -314,7 +316,7 @@ def main():
         if not has_choco:
             common.show_error("親となるチョコボがいません。")
             
-        item_no = int(in_params.get("item_no", "-1"))
+        item_no = common.to_int(in_params.get("item_no", "-1"), -1)
         
         # 親チョコボ情報
         cfname = choco_raw.get("name", "")

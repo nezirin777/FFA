@@ -124,14 +124,9 @@ def main():
     if not chara:
         common.show_error("キャラクターが存在しないか、データが破損しています。")
         
-    # パスワード検証（クッキーによるログインまたはパラメータによるログイン時）
-    # クッキーのパスワードまたは直接パラメータから検証
-    if c_id == user_id:
-        if c_pass != chara["pass"]:
-            common.show_error("認証に失敗しました。パスワードが変更された可能性があります。")
-    else:
-        # IDが一致しない、またはクッキーが無い場合は再度ログインが必要
-        pass
+    # パスワード検証（IDOR対策: ログイン中の本人のみ自分のホーム画面を表示できる）
+    if c_id != user_id or c_pass != chara["pass"]:
+        common.show_error("認証に失敗しました。再度ログインしてください。")
         
     # 4. 所持アイテムのロード
     item = common.item_load(user_id)
