@@ -115,7 +115,7 @@ def main():
     if not chara:
         common.show_error("キャラクターが見つかりません。")
         
-    if c_id == user_id and c_pass != chara["pass"]:
+    if c_id != user_id or c_pass != chara["pass"]:
         common.show_error("パスワード認証に失敗しました。")
 
     # 3. 各モードの実行

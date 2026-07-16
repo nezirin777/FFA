@@ -67,6 +67,8 @@ def main():
     # パラメータ解析
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
@@ -106,6 +108,10 @@ def main():
             site = "いくのCGIのHP"
         if not url:
             url = "http://www.eriicu.com"
+
+        # URLスキーム検証: href に埋め込まれるため http(s):// 以外(javascript: 等)を拒否
+        if not (url.startswith("http://") or url.startswith("https://")):
+            common.show_error("ホームページURLは http:// または https:// で始まる必要があります。", back_ctx)
 
         # コメント長さ制限
         if len(waza) > 100:

@@ -76,6 +76,7 @@ FUNCTION_MAP = {
     "legend": "cgi_py.legend",
     "boss": "cgi_py.legend",           # (伝説サブモード: ボス挑戦)
     "post_message": "cgi_py.post_message",
+    "bbs": "cgi_py.bbs",
     "chocofarm": "cgi_py.chocofarm",
     "morifarm": "cgi_py.morifarm",
     "choco": "cgi_py.morifarm",         # (チョコボの森サブモード)
@@ -137,15 +138,24 @@ def main():
             if time.time() - last_time < 600:
                 show_error("現在他のプレイヤーがテストプレイ中です。終了（ロック解除）までしばらくお待ちください。")
         
-        # パスワード検証 (平文およびストレッチングハッシュ双方に対応)
-        hashed_pass = hash_password(password)
-        if chara.get("pass") != password and chara.get("pass") != hashed_pass:
+        # パスワード検証 (新形式salted・旧形式固定ソルト・平文レガシーの全てに対応)
+        from sub_def.crypto import verify_password, needs_rehash
+        stored_pass = chara.get("pass")
+        if not verify_password(password, stored_pass):
             show_error("パスワードが一致しません。")
-            
+
+        # 旧形式のパスワードはこの機会にユーザー毎ソルトの新形式へ透過的に移行する
+        if needs_rehash(stored_pass):
+            new_hash = hash_password(password)
+            chara["pass"] = new_hash
+            stored_pass = new_hash
+            from sub_def.file_ops import save_user_all
+            save_user_all(user_id, user_data)
+
         # ログイン成功、暗号化クッキーセッションデータ生成
         session_data = {
             "user_id": user_id,
-            "password_hash": chara.get("pass"),
+            "password_hash": stored_pass,
             "csrf_token": session.get("csrf_token")
         }
         cookie_header = save_session(session_data)
@@ -209,9 +219,14 @@ def main():
             module = importlib.import_module(module_path)
             # 各モジュールをインポートして main() を起動
             module.main()
+        except SystemExit:
+            # show_error / redirect による正常終了はそのまま通す
+            raise
         except Exception as e:
-            # 開発デバッグ用に詳細を表示
-            show_error(f"システム実行エラーが発生しました。<pre>{e}</pre>")
+            # 例外の詳細（スタック・内部情報）はユーザーに晒さず、サーバーログにのみ出力する
+            import traceback
+            sys.stderr.write("FFA system error:\n" + traceback.format_exc())
+            show_error("システム実行エラーが発生しました。時間をおいて再度お試しください。")
 
 if __name__ == "__main__":
     main()

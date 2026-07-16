@@ -102,7 +102,7 @@ class tech_2:
             s.dmg1 += (s.chara['str'] + s.chara['job_level']) * random.randrange(int(10))
             s.dmg1 = s.dmg1 * s.dhit
             s.sake2 -= 999999
-            s.com1 += "<font class='white' size='5'>必殺技！！！超究武神覇斬！！！</font><font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"<font class='white' size='5'>必殺技！！！超究武神覇斬！！！</font><font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -134,7 +134,7 @@ class tech_5:
             s.dmg1 = (s.chara['int'] + s.chara['job_level']) * random.randrange(int(10))
             s.dmg1 = s.dmg1 * s.dhit
             s.sake2 -= 999999
-            s.com1 += "<font class='yellow' size='5'>黒魔法メテオ！！！</font><font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"<font class='yellow' size='5'>黒魔法メテオ！！！</font><font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -154,7 +154,7 @@ class tech_7:
             s.dmg1 = 0
             s.hpplus1 = (s.chara['dex'] + s.chara['job_level']) + random.randrange(int(s.chara['lp']))
             s.com1 += "<font class='white' size='5'>白魔法ケアルガ！！！</font><br>"
-            s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+            s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
 
     def atowaza(s):
         pass
@@ -175,19 +175,19 @@ class tech_9:
     def atowaza(s):
         if (s.waza_ritu > random.randrange(int(80))):
             if (s.mode == 'isekai' or s.mode == 'boss' and random.randrange(int(4)) == 1):
-                s.com1 += "s.chara['name']が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>s.winner['url'] s.mnameには効かなかった！！<br>"
+                s.com1 += f"{s.chara['name']}が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>{s.winner['url']} {s.mname}には効かなかった！！<br>"
             else:
                 s.sake2 -= 999999
                 s.dmg2 = 0
-                s.com1 += "s.chara['name']が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>s.winner['url'] s.mnameに隙ができた！<br>"
+                s.com1 += f"{s.chara['name']}が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>{s.winner['url']} {s.mname}に隙ができた！<br>"
 
 
 class tech_10:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(120))):
-            s.temp_gold =  random.randrange(int(s.gold)) + 1
-            s.com1 += "<font class='yellow'>お金を盗んだ♪合計s.temp_goldＧゲット♪</font><br>"
-            s.gold += s.temp_gold
+            # 演出のみ(実ゴールドは戦闘後処理で扱うため、ここでは増減しない)
+            s.temp_gold = random.randrange(1, 100)
+            s.com1 += f"<font class='yellow'>お金を盗んだ♪合計{s.temp_gold}Ｇゲット♪</font><br>"
 
     def atowaza(s):
         pass
@@ -198,7 +198,7 @@ class tech_11:
             s.dmg1+= ((s.chara['agi']+s.chara['job_level']) * random.randrange(int(50)))
             s.com1 += "<font class='yellow' size='5'>必殺技ライフ・デジョン！！！</font><br>"
             s.hpplus1 = int(s.dmg1 / 5)
-            s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪<br>"
+            s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪<br>"
 
     def atowaza(s):
         pass
@@ -219,11 +219,11 @@ class tech_13:
     def atowaza(s):
         if (s.waza_ritu > random.randrange(int(120))):
             if (s.mode == 'isekai' or s.mode == 'boss'):
-                s.com1 += "<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>s.mnameには効かなかった！！<br>"
+                s.com1 += f"<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>{s.mname}には効かなかった！！<br>"
             else:
                 s.sake2 -= 999999
                 s.dmg2 = 0
-                s.com1 += "<font class='yellow' size='5'>時空魔法ストップ！！！</font>s.winner['url'] s.mnameの動きを止めた！<br>"
+                s.com1 += f"<font class='yellow' size='5'>時空魔法ストップ！！！</font>{s.winner['url']} {s.mname}の動きを止めた！<br>"
 
 
 class tech_14:
@@ -264,7 +264,7 @@ class tech_17:
     def atowaza(s):
         if (s.waza_ritu > random.randrange(int(120))):
             if (s.mode == 'isekai' or s.mode == 'boss'):
-                s.com2 += "<font class='red' size='5'>赤魔法ウオール！！！</FONT>s.mnameには効かなかった！！<br>"
+                s.com2 += f"<font class='red' size='5'>赤魔法ウオール！！！</FONT>{s.mname}には効かなかった！！<br>"
             else:
                 s.sake1 += 999
                 s.dmg2 = 0
@@ -276,8 +276,8 @@ class tech_18:
         if (s.waza_ritu > random.randrange(int(80))):
             s.hpplus1 = (s.chara['lck'] + s.chara['job_level']) + random.randrange(int(s.chara['lp']))
             s.dmg1 = 0
-            s.com1 += "<font class='white' size='5'>s.chara['name']は回復の歌を歌った♪</font><br>"
-            s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+            s.com1 += f"<font class='white' size='5'>{s.chara['name']}は回復の歌を歌った♪</font><br>"
+            s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
 
     def atowaza(s):
         pass
@@ -287,7 +287,7 @@ class tech_19:
         if (s.waza_ritu > random.randrange(int(80))):
             s.sake1 += 999
             s.dmg1 += s.dmg1
-            s.com1 += "<font class='white' size='5'>s.chara['name']は勇奮の歌を歌った♪（攻撃力、回避率上昇）</font><br>"
+            s.com1 += f"<font class='white' size='5'>{s.chara['name']}は勇奮の歌を歌った♪（攻撃力、回避率上昇）</font><br>"
 
     def atowaza(s):
         pass
@@ -298,7 +298,7 @@ class tech_20:
             s.item['weapon']['dmg'] += s.item['weapon']['dmg']
             s.item['armor']['def'] += s.item['armor']['def']
             s.syukuhuku += 1
-            s.com1 += "<font class='white' size='5'>s.chara['name']は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</font><br>"
+            s.com1 += f"<font class='white' size='5'>{s.chara['name']}は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</font><br>"
 
     def atowaza(s):
         pass
@@ -329,7 +329,7 @@ class tech_23:
     def atowaza(s):
         if (s.waza_ritu > random.randrange(int(120))):
             if (s.mode == 'isekai' or s.mode == 'boss'):
-                s.com1 += "<font class='yellow' size='4'>幻獣カーバンクルを召還！！リフレク！！</FONT>s.mnameには効かなかった！！<br>"
+                s.com1 += f"<font class='yellow' size='4'>幻獣カーバンクルを召還！！リフレク！！</FONT>{s.mname}には効かなかった！！<br>"
             else:
                 s.dmg1 += s.dmg2
                 s.dmg2 = 0
@@ -393,7 +393,7 @@ class tech_29:
         if (s.waza_ritu > random.randrange(int(150))):
             s.hpplus1 = s.chara['max_hp']
             s.dmg1 = 0
-            s.com1 += "<font class='yellow' size='4'>大いなる福音♪s.chara['name']の傷が完全に回復した！！</font><br>"
+            s.com1 += f"<font class='yellow' size='4'>大いなる福音♪{s.chara['name']}の傷が完全に回復した！！</font><br>"
 
     def atowaza(s):
         pass
@@ -403,7 +403,7 @@ class tech_30:
         pass
     def atowaza(s):
         s.dmg2 = int(s.dmg2 * 0.1)
-        s.com1 += "s.chara['name']は防御している。。。<br>"
+        s.com1 += f"{s.chara['name']}は防御している。。。<br>"
 
 
 class tech_31:
@@ -460,7 +460,7 @@ class tech_36:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(80))):
             s.dmg1 += (s.chara['str'] + s.chara['agi'] + s.chara['mnd'] + s.chara['job_level']) * random.randrange(int(80))
-            s.com1 += "<font class='yellow' size='6'>s.chara['name']は大きな気の塊をs.mname s.winner['url']に放った！！</font><br>"
+            s.com1 += f"<font class='yellow' size='6'>{s.chara['name']}は大きな気の塊を{s.mname} {s.winner['url']}に放った！！</font><br>"
 
     def atowaza(s):
         pass
@@ -470,7 +470,7 @@ class tech_37:
         if (s.waza_ritu > random.randrange(int(120))):
             s.dhit = random.randrange(int(7)) + 1
             s.dmg1 = s.dmg1 * s.dhit
-            s.com1 += "<font class='yellow' size='4'>必殺技！！！無限乱武！！！</font><font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"<font class='yellow' size='4'>必殺技！！！無限乱武！！！</font><font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -489,7 +489,7 @@ class tech_39:
         if (s.waza_ritu > random.randrange(int(80))):
             s.sake1 += 999
             s.sake2 -= 999999
-            s.com1 += "<font class='green' size='4'>影縫いの術！！（姿を消してs.mname s.winner['url']に忍び寄る！！）</font><br>"
+            s.com1 += f"<font class='green' size='4'>影縫いの術！！（姿を消して{s.mname} {s.winner['url']}に忍び寄る！！）</font><br>"
 
     def atowaza(s):
         pass
@@ -499,7 +499,7 @@ class tech_40:
         if (s.waza_ritu > random.randrange(int(80))):
             s.dhit = random.randrange(int(7)) + 1
             s.dmg1 = s.dmg1 * s.dhit
-            s.com1 += "<font class='yellow' size='4'>分身の術！！</font><font color=red>s.dhit体の分身が一斉に攻撃！！</font><br>"
+            s.com1 += f"<font class='yellow' size='4'>分身の術！！</font><font color=red>{s.dhit}体の分身が一斉に攻撃！！</font><br>"
 
     def atowaza(s):
         pass
@@ -518,7 +518,7 @@ class tech_42:
     def hissatu(s):
         s.dmg1 += s.chara['str'] * random.randrange(int(100))
         s.hpplus1 = int(0) - int(s.dmg1 * (random.random() * 0.1))
-        s.com1 += "<font class='dark' size='5'>暗黒剣！！（自分にもs.hpplus1ダメージ）</font><br>"
+        s.com1 += f"<font class='dark' size='5'>暗黒剣！！（自分にも{s.hpplus1}ダメージ）</font><br>"
 
     def atowaza(s):
         pass
@@ -529,7 +529,7 @@ class tech_43:
             s.dmg1 = (s.chara['int'] + s.chara['job_level']) * random.randrange(int(20))
             s.hpplus1 = s.dmg1
             s.sake2 -= 999999
-            s.com1 += "<font class='dark' size='4'>暗黒魔法ドレイン！！！</font><br>";s.kaihuku1 += "s.kname のＨＰが s.hpplus1 回復した！♪"
+            s.com1 += "<font class='dark' size='4'>暗黒魔法ドレイン！！！</font><br>";s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
 
     def atowaza(s):
         pass
@@ -540,7 +540,7 @@ class tech_44:
             s.dmg1 += (s.chara['int'] + s.chara['job_level']) * random.randrange(int(360))
             s.hpplus1 = int(s.dmg1 / 10)
             s.com1 += "<font class='dark' size='4'>必殺技！！ダーク・イリュージョン！！！</font><br>"
-            s.kaihuku1 += "s.kname のＨＰが s.hpplus1 回復した！♪"
+            s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
 
     def atowaza(s):
         pass
@@ -587,7 +587,7 @@ class tech_49:
         if (s.waza_ritu > random.randrange(int(120))):
             s.dhit = random.randrange(int(7))+1
             s.dmg1 = s.dmg1 * s.dhit
-            s.com1 += "乱れ撃ち！！<font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"乱れ撃ち！！<font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -630,7 +630,7 @@ class tech_53:
             s.sake2 -= 999999
             s.dmg1 = (s.chara['int'] + s.chara['dex'] + s.chara['job_level']) * random.randrange(int(100))
             s.dmg1 = s.dmg1 * s.dhit
-            s.com1 += "<font class='yellow' size='4'>幻獣ナイツ・オブ・ラウンドを召還！！</font><font color=red>s.dhit人の騎士が力を貸した！！</font><br>"
+            s.com1 += f"<font class='yellow' size='4'>幻獣ナイツ・オブ・ラウンドを召還！！</font><font color=red>{s.dhit}人の騎士が力を貸した！！</font><br>"
 
     def atowaza(s):
         pass
@@ -693,7 +693,7 @@ class tech_59:
             s.dmg1 += (s.chara['str'] + s.chara['mnd']) * random.randrange(int(80))
             s.dmg1 = s.dmg1 * s.dhit
             s.sake2 -= 999999
-            s.com1 += "<font class='white' size='5'>必殺技！！！エンド・オブ・ハート！！！</font><font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"<font class='white' size='5'>必殺技！！！エンド・オブ・ハート！！！</font><font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -701,7 +701,7 @@ class tech_59:
 class tech_60:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(100))):
-            s.com1 += "<font color='white'>s.chara['name']は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
+            s.com1 += f"<font color='white'>{s.chara['name']}は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
             s.ura = random.randrange(int(22))
             if (0 == s.ura):
                 s.com1 += "THE MAGICIAN！！！！\n"
@@ -719,7 +719,7 @@ class tech_60:
                 s.com1 += "THE HIGH PRIESTESS！！！\n"
                 s.dmg1 = 0
                 s.hpplus1 = (s.chara['int'] + s.chara['dex']) * random.randrange(int(180))
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (4 == s.ura):
                 s.com1 += "THE HIEROPHANT！！！！\n"
                 s.dmg1 += (s.chara['str'] +s.chara['int'] + s.chara['dex']) * random.randrange(int(80))
@@ -736,7 +736,7 @@ class tech_60:
                 s.com1 += "THE LOVERS！！！！\n"
                 s.hpplus1 = s.chara['vit'] * random.randrange(int(80))
                 s.dmg1 = 0
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (8 == s.ura):
                 s.com1 += "THE HERMIT！！！！\n"
                 s.dmg1 += s.chara['lck'] * random.randrange(int(80))
@@ -769,7 +769,7 @@ class tech_60:
                 s.com1 += "THE TOWER！！！！\n"
                 s.hpplus2 = (s.chara['str'] +s.chara['int'] + s.chara['dex'] + s.chara['vit'] +s.chara['agi'] + s.chara['mnd'] + s.chara['lck']) * random.randrange(int(180))
                 s.dmg1 = 0
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (16 == s.ura):
                 s.com1 += "THE STAR！！！！\n"
                 s.dmg1 += (s.chara['dex'] + s.chara['lck']) * random.randrange(int(80))
@@ -777,7 +777,7 @@ class tech_60:
                 s.com1 += "THE MOON！！！！\n"
                 s.hpplus1 = (s.chara['int'] + s.chara['dex']) * random.randrange(int(80))
                 s.dmg1 = 0
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (18 == s.ura):
                 s.com1 += "THE SUN！！！！\n"
                 s.dmg1 += (s.chara['str'] + s.chara['agi']) * random.randrange(int(999))
@@ -800,7 +800,7 @@ class tech_60:
 class tech_61:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(100))):
-            s.com1 += "<font color='white'>s.chara['name']は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
+            s.com1 += f"<font color='white'>{s.chara['name']}は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
             s.ura = random.randrange(int(22))
             if (0 == s.ura):
                 s.com1 += "THE MAGICIAN！！！！\n"
@@ -818,7 +818,7 @@ class tech_61:
                 s.com1 += "THE HIGH PRIESTESS！！！\n"
                 s.dmg1 = 0
                 s.hpplus1 = (s.chara['int'] + s.chara['dex']) * random.randrange(int(180))
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (4 == s.ura):
                 s.com1 += "THE HIEROPHANT！！！！\n"
                 s.dmg1 += (s.chara['str'] +s.chara['int'] + s.chara['dex']) * random.randrange(int(80))
@@ -835,7 +835,7 @@ class tech_61:
                 s.com1 += "THE LOVERS！！！！\n"
                 s.hpplus1 = s.chara['vit'] * random.randrange(int(80))
                 s.dmg1 = 0
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (8 == s.ura):
                 s.com1 += "THE HERMIT！！！！\n"
                 s.dmg1 += s.chara['lck'] * random.randrange(int(80))
@@ -868,7 +868,7 @@ class tech_61:
                 s.com1 += "THE TOWER！！！！\n"
                 s.hpplus2 = (s.chara['str'] +s.chara['int'] + s.chara['dex'] + s.chara['vit'] +s.chara['agi'] + s.chara['mnd'] + s.chara['lck']) * random.randrange(int(180))
                 s.dmg1 = 0
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (16 == s.ura):
                 s.com1 += "THE STAR！！！！\n"
                 s.dmg1 += (s.chara['dex'] + s.chara['lck']) * random.randrange(int(80))
@@ -876,7 +876,7 @@ class tech_61:
                 s.com1 += "THE MOON！！！！\n"
                 s.hpplus1 = (s.chara['int'] + s.chara['dex']) * random.randrange(int(80))
                 s.dmg1 = 0
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (18 == s.ura):
                 s.com1 += "THE SUN！！！！\n"
                 s.dmg1 += (s.chara['str'] + s.chara['agi']) * random.randrange(int(999))
@@ -896,7 +896,7 @@ class tech_61:
             s.dmg2 += s.dmg2
             s.hpplus1 += s.hpplus1
             s.hpplus2 += s.hpplus2
-            s.com1 += "<font color=s.red>効果倍増</font><br>"
+            s.com1 += "<font color='red'>効果倍増</font><br>"
 
     def atowaza(s):
         pass
@@ -921,8 +921,8 @@ class tech_63:
             s.hpplus1 = s.hpplus2
             s.clit1 = s.clit2
             if (s.hpplus1):
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
-            s.com1 += "<font class='red'>s.mname s.winner['url']のものまね〜♪</font><br>"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
+            s.com1 += f"<font class='red'>{s.mname} {s.winner['url']}のものまね〜♪</font><br>"
 
 
 class tech_64:
@@ -932,7 +932,7 @@ class tech_64:
             s.dmg1 = (s.chara['int'] + s.chara['job_level']) * random.randrange(int(20))
             s.dmg1 = s.dmg1 * s.dhit
             s.sake2 -= 999999
-            s.com1 += "<font class='yellow' size='5'>古代魔法Ｗメテオ！！！</font><font class=small>s.dhit連続ヒット！！</font><br>"
+            s.com1 += f"<font class='yellow' size='5'>古代魔法Ｗメテオ！！！</font><font class=small>{s.dhit}連続ヒット！！</font><br>"
 
     def atowaza(s):
         pass
@@ -993,7 +993,7 @@ class tech_69:
             s.hpplus1 = (s.chara['dex'] + s.chara['vit'] + s.chara['job_level']) + random.randrange(int(s.chara['lp']))
             s.dmg1 = 0
             s.com1 += "<font class='white' size='5'>光・あれ！！！</font><br>"
-            s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+            s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
 
     def atowaza(s):
         pass
@@ -1113,7 +1113,7 @@ class wtech_2:
             s.dwhit = random.randrange(int(7))+1;	s.dmg2 +=(s.winner['img'] + s.winner['attr_39'])* random.randrange(int(10))
             s.dmg2 =s.dmg2 *s.dwhit
             s.sake1 -= 999999
-            s.com2 += "<font class='white' size='5'>必殺技！！！超究武神覇斬！！！</font><font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"<font class='white' size='5'>必殺技！！！超究武神覇斬！！！</font><font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1145,7 +1145,7 @@ class wtech_5:
             s.dmg2 = (s.winner['str'] + s.winner['attr_39']) * random.randrange(int(10))
             s.dmg2 = s.dmg2 * s.dwhit
             s.sake1 -= 999999
-            s.com2 += "<font class='yellow' size='5'>黒魔法メテオ！！！</font><font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='5'>黒魔法メテオ！！！</font><font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1167,7 +1167,7 @@ class wtech_7:
             if (s.hpplus2 > s.winner['max_hp']/10):
                 s.hpplus2 = s.winner['max_hp']/10
             s.com2 += "<br><font class='yellow' size='3'>白魔法ケアルガ！！！</FONT><br>"
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -1188,17 +1188,18 @@ class wtech_9:
     def watowaza(s):
         if (s.wwaza_ritu > random.randrange(int(80))):
             if (random.randrange(int(4)) == 0):
-                s.com2 += "s.winner['url']が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>s.chara['name']には効かなかった！！<br>"
+                s.com2 += f"{s.winner['url']}が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>{s.chara['name']}には効かなかった！！<br>"
             else:
                 s.sake1 -= 999999
                 s.dmg1 = 0
-                s.com2 += "s.winner['url']が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>s.chara['name']に隙ができた！<br>"
+                s.com2 += f"{s.winner['url']}が叫んだ！<font size='5'>「あ！あれはなんだ！？？？？」</font>{s.chara['name']}に隙ができた！<br>"
 
 class wtech_10:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
-            s.gold -= int(s.kgold /25)
-            s.com2 += "<font class='red'>お金を盗まれた！！合計s.goldＧマイナス！！</FONT><br>"
+            # 演出のみ(実ゴールドは戦闘後処理で扱う)
+            s.tgold = random.randrange(1, 100)
+            s.com2 += f"<font class='red'>お金を盗まれた！！合計{s.tgold}Ｇマイナス！！</font><br>"
 
     def watowaza(s):
         pass
@@ -1209,7 +1210,7 @@ class wtech_11:
             s.dmg2 = s.dmg2 + ((s.winner['vit'] + s.winner['attr_39']) * random.randrange(int(50)))
             s.com2 += "<font class='yellow' size='5'>必殺技ライフ・デジョン！！！</FONT><br>"
             s.hpplus2 = int(s.dmg2 /5)
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -1229,11 +1230,11 @@ class wtech_13:
     def watowaza(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
             if (random.randrange(int(4)) == 0):
-                s.com2 += "<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>s.chara['name']には効かなかった！！<br>"
+                s.com2 += f"<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>{s.chara['name']}には効かなかった！！<br>"
             else:
                 s.sake1 -= 999999
                 s.dmg1 = 0
-                s.com2 += "<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>s.chara['name']の動きを止めた！<br>"
+                s.com2 += f"<font class='yellow' size='5'>時空魔法ストップ！！！</FONT>{s.chara['name']}の動きを止めた！<br>"
 
 class wtech_14:
     def whissatu(s):
@@ -1272,7 +1273,7 @@ class wtech_17:
     def watowaza(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
             if (random.randrange(int(4)) == 0):
-                s.com2 += "<font class='red' size='5'>赤魔法ウオール！！！</FONT>s.chara['name']には効かなかった！！<br>"
+                s.com2 += f"<font class='red' size='5'>赤魔法ウオール！！！</FONT>{s.chara['name']}には効かなかった！！<br>"
             else:
                 s.sake2 += 999
                 s.dmg1 = 0
@@ -1283,8 +1284,8 @@ class wtech_18:
         if (s.wwaza_ritu > random.randrange(int(200))):
             s.dmg2 = 0
             s.hpplus2 = ((s.winner['mnd'] + s.winner['attr_39']) + random.randrange(int(s.winner['lck'])))/10
-            s.com2 += "<font class='yellow' size='3'>s.winner['url']は回復の歌を歌った♪</FONT><br>"
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner['url']}は回復の歌を歌った♪</FONT><br>"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -1294,7 +1295,7 @@ class wtech_19:
         if (s.wwaza_ritu > random.randrange(int(80))):
             s.sake2 += 999
             s.dmg2 += s.dmg2
-            s.com2 += "<font class='yellow' size='3'>s.winner['url']は勇奮の歌を歌った♪（攻撃力、回避率上昇）</FONT><br>"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner['url']}は勇奮の歌を歌った♪（攻撃力、回避率上昇）</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1304,7 +1305,7 @@ class wtech_20:
         if (s.wwaza_ritu > random.randrange(int(80))):
             s.winner['attr_22'] += s.winner['attr_22']
             s.winner['battle_limit'] += s.winner['battle_limit']
-            s.com2 += "<font class='yellow' size='3'>s.winner['url']は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</FONT><br>"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner['url']}は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1334,7 +1335,7 @@ class wtech_23:
     def watowaza(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
             if (random.randrange(int(4)) == 0):
-                s.com2 += "<font class='yellow' size='4'>幻獣カーバンクルを召還！！リフレク！！</FONT>s.chara['name']には効かなかった！！<br>"
+                s.com2 += f"<font class='yellow' size='4'>幻獣カーバンクルを召還！！リフレク！！</FONT>{s.chara['name']}には効かなかった！！<br>"
             else:
                 s.dmg2 += s.dmg1
                 s.dmg1 = 0
@@ -1397,7 +1398,7 @@ class wtech_29:
         if (s.wwaza_ritu > random.randrange(int(150))):
             s.hpplus2 = int(s.chara['max_hp'] * 1 / 100)
             s.dmg2 = 0
-            s.com2 += "<font class='yellow' size='4'>大いなる福音により、s.winner['url']の傷の一部が回復</FONT><br>"
+            s.com2 += f"<font class='yellow' size='4'>大いなる福音により、{s.winner['url']}の傷の一部が回復</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1407,7 +1408,7 @@ class wtech_30:
         pass
     def watowaza(s):
         s.dmg2 = int(s.dmg2 * 0.5)
-        s.com2 += "s.winner['url']は防御している。。。<br>"
+        s.com2 += f"{s.winner['url']}は防御している。。。<br>"
 
 
 class wtech_31:
@@ -1433,7 +1434,7 @@ class wtech_33:
         pass
     def watowaza(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
-            if (s.ksyoku <= 16):
+            if (s.chara['job'] <= 16):
                 s.dmg1 = 0
                 s.com2 += "<font class='white'>真剣白刃取り！！</FONT><br>"
 
@@ -1461,7 +1462,7 @@ class wtech_36:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(80))):
             s.dmg2 +=(s.winner['img'] + s.winner['vit'] + s.winner['agi'] + s.winner['attr_39']) * random.randrange(int(80))
-            s.com2 += "<font class='yellow' size='6'>s.winner['url']は大きな気の塊をs.chara['name']に放った！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='6'>{s.winner['url']}は大きな気の塊を{s.chara['name']}に放った！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1471,7 +1472,7 @@ class wtech_37:
         if (s.wwaza_ritu > random.randrange(int(120))):
             s.dwhit = random.randrange(int(7))+1
             s.dmg2 = s.dmg2 * s.dwhit
-            s.com2 += "<font class='yellow' size='4'>必殺技！！！無限乱武！！！</font><font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='4'>必殺技！！！無限乱武！！！</font><font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1490,7 +1491,7 @@ class wtech_39:
         if (s.wwaza_ritu > random.randrange(int(80))):
             s.sake2 += 999
             s.sake1 -= 999999
-            s.com2 += "<font color='#006600' size='4'>影縫いの術！！（姿を消してs.chara['name']に忍び寄る！！）</FONT><br>"
+            s.com2 += f"<font color='#006600' size='4'>影縫いの術！！（姿を消して{s.chara['name']}に忍び寄る！！）</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1500,7 +1501,7 @@ class wtech_40:
         if (s.wwaza_ritu > random.randrange(int(80))):
             s.dwhit = random.randrange(int(7))+1
             s.dmg2 = s.dmg2 * s.dwhit
-            s.com2 += "<font class='yellow' size='4'>分身の術！！</font><font class=small>s.dwhit体の分身が一斉に攻撃！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='4'>分身の術！！</font><font class=small>{s.dwhit}体の分身が一斉に攻撃！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1531,7 +1532,7 @@ class wtech_43:
             s.hpplus2 = s.dmg2
             s.sake1 -= 999999
             s.com2 += "<font color='#009999' size='4'>暗黒魔法ドレイン！！！</FONT><br>"
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -1542,7 +1543,7 @@ class wtech_44:
             s.dmg2 += (s.winner['str'] + s.winner['attr_39']) * random.randrange(int(360))
             s.hpplus2 = int(s.dmg2 / 10)
             s.com2 += "<font color='#009999' size='4'>必殺技！！ダーク・イリュージョン！！！</FONT><br>"
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -1589,7 +1590,7 @@ class wtech_49:
         if (s.wwaza_ritu > random.randrange(int(120))):
             s.dwhit = random.randrange(int(7))+1
             s.dmg2 = s.dmg2 * s.dwhit
-            s.com2 += "乱れ撃ち！！<font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"乱れ撃ち！！<font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1631,7 +1632,7 @@ class wtech_53:
             s.sake1 -= 999999
             s.dmg2 = (s.winner['str'] + s.winner['int'] + s.winner['attr_39']) * random.randrange(int(100))
             s.dmg2 = s.dmg2 * s.dwhit
-            s.com2 += "<font class='yellow' size='4'>幻獣ナイツ・オブ・ラウンドを召還！！</font><font class=small>s.dwhit人の騎士が力を貸した！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='4'>幻獣ナイツ・オブ・ラウンドを召還！！</font><font class=small>{s.dwhit}人の騎士が力を貸した！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1693,7 +1694,7 @@ class wtech_59:
             s.dmg2 += (s.winner['img'] + s.winner['agi']) * random.randrange(int(80))
             s.dmg2 = s.dmg2 * s.dwhit
             s.sake1 -= 999999
-            s.com2 += "<font class='white' size='5'>必殺技！！！エンド・オブ・ハート！！！</font><font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"<font class='white' size='5'>必殺技！！！エンド・オブ・ハート！！！</font><font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1701,7 +1702,7 @@ class wtech_59:
 class wtech_60:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(100))):
-            s.com2 += "<font color='white'>s.winner['url']は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
+            s.com2 += f"<font color='white'>{s.winner['url']}は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
             s.ura = random.randrange(int(22))
             if (0 == s.ura):
                 s.com2 += "THE MAGICIAN！！！！\n"
@@ -1719,7 +1720,7 @@ class wtech_60:
                 s.com2 += "THE HIGH PRIESTESS！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = (s.winner['str'] + s.winner['int']) * random.randrange(int(180))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (4 == s.ura):
                 s.com2 += "THE HIEROPHANT！！！！\n"
                 s.dmg2 += (s.winner['img'] + s.winner['str'] + s.winner['int']) * random.randrange(int(80))
@@ -1736,7 +1737,7 @@ class wtech_60:
                 s.com2 += "THE LOVERS！！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = s.winner['dex'] * random.randrange(int(80))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (8 == s.ura):
                 s.com2 += "THE HERMIT！！！！\n"
                 s.dmg2 += s.winner['mnd'] * random.randrange(int(80))
@@ -1768,7 +1769,7 @@ class wtech_60:
                 s.com2 += "THE TOWER！！！！\n"
                 s.dmg2 = 0
                 s.hpplus1 = (s.winner['img'] + s.winner['str'] + s.winner['int'] + s.winner['dex'] + s.winner['vit'] + s.winner['agi'] + s.winner['mnd']) * random.randrange(int(180))
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (16 == s.ura):
                 s.com2 += "THE STAR！！！！\n"
                 s.dmg2 += (s.winner['int'] + s.winner['mnd']) * random.randrange(int(80))
@@ -1777,7 +1778,7 @@ class wtech_60:
                 s.com2 += "THE MOON！！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = (s.winner['str'] + s.winner['int']) * random.randrange(int(80))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (18 == s.ura):
                 s.com2 += "THE SUN！！！！\n"
                 s.dmg2 += (s.winner['img'] + s.winner['vit']) * random.randrange(int(999))
@@ -1800,7 +1801,7 @@ class wtech_60:
 class wtech_61:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(100))):
-            s.com2 += "<font color='white'>s.winner['url']は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
+            s.com2 += f"<font color='white'>{s.winner['url']}は、タロットカードを一枚捲った！！ 生か死か？ 全てはこの運命のカード一枚に委ねられたッ！！</font><br>"
             s.ura = random.randrange(int(22))
             if (0 == s.ura):
                 s.com2 += "THE MAGICIAN！！！！\n"
@@ -1818,7 +1819,7 @@ class wtech_61:
                 s.com2 += "THE HIGH PRIESTESS！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = (s.winner['str'] + s.winner['int']) * random.randrange(int(180))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (4 == s.ura):
                 s.com2 += "THE HIEROPHANT！！！！\n"
                 s.dmg2 += (s.winner['img'] + s.winner['str'] + s.winner['int']) * random.randrange(int(80))
@@ -1835,7 +1836,7 @@ class wtech_61:
                 s.com2 += "THE LOVERS！！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = s.winner['dex'] * random.randrange(int(80))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (8 == s.ura):
                 s.com2 += "THE HERMIT！！！！\n"
                 s.dmg2 += s.winner['mnd'] * random.randrange(int(80))
@@ -1867,7 +1868,7 @@ class wtech_61:
                 s.com2 += "THE TOWER！！！！\n"
                 s.dmg2 = 0
                 s.hpplus1 = (s.winner['img'] + s.winner['str'] + s.winner['int'] + s.winner['dex'] + s.winner['vit'] + s.winner['agi'] + s.winner['mnd']) * random.randrange(int(180))
-                s.kaihuku1 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku1 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
             elif (16 == s.ura):
                 s.com2 += "THE STAR！！！！\n"
                 s.dmg2 += (s.winner['int'] + s.winner['mnd']) * random.randrange(int(80))
@@ -1876,7 +1877,7 @@ class wtech_61:
                 s.com2 += "THE MOON！！！！\n"
                 s.dmg2 = 0
                 s.hpplus2 = (s.winner['str'] + s.winner['int']) * random.randrange(int(80))
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
             elif (18 == s.ura):
                 s.com2 += "THE SUN！！！！\n"
                 s.dmg2 += (s.winner['img'] + s.winner['vit']) * random.randrange(int(999))
@@ -1896,7 +1897,7 @@ class wtech_61:
             s.dmg2 += s.dmg2
             s.hpplus1 += s.hpplus1
             s.hpplus2 += s.hpplus2
-            s.com2 += "<font color=s.red>効果倍増</font><br>"
+            s.com2 += "<font color='red'>効果倍増</font><br>"
 
     def watowaza(s):
         pass
@@ -1921,8 +1922,8 @@ class wtech_63:
             s.hpplus2 = s.hpplus1
             s.clit2 = s.clit1
             if (s.hpplus2):
-                s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
-            s.com2 += "<font class='red'>s.chara['name']のものまね〜♪</FONT><br>"
+                s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
+            s.com2 += f"<font class='red'>{s.chara['name']}のものまね〜♪</FONT><br>"
 
 
 class wtech_64:
@@ -1932,7 +1933,7 @@ class wtech_64:
             s.dmg2 = (s.winner['str'] + s.winner['attr_39']) * random.randrange(int(20))
             s.dmg2 = s.dmg2 * s.dwhit
             s.sake1 -= 999999
-            s.com2 += "<font class='yellow' size='5'>古代魔法Ｗメテオ！！！</font><font class=small>s.dwhit連続ヒット！！</FONT><br>"
+            s.com2 += f"<font class='yellow' size='5'>古代魔法Ｗメテオ！！！</font><font class=small>{s.dwhit}連続ヒット！！</FONT><br>"
 
     def watowaza(s):
         pass
@@ -1992,7 +1993,7 @@ class wtech_69:
             s.hpplus2 = (s.winner['int'] + s.winner['dex'] + s.winner['attr_39']) + random.randrange(int(s.winner['lck']))
             s.dmg2 = 0
             s.com2 += "<font class='white' size='5'>光・あれ！！！</font><br>"
-            s.kaihuku2 += "s.winner['url'] のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪"
 
     def watowaza(s):
         pass
@@ -2122,7 +2123,7 @@ class mons_2:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.hpplus2 = random.randrange(int(s.mhp)) * 2
-            s.kaihuku2 += "s.mname のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
             s.dmg2 = 0
             s.com2 = "<font class='yellow' size='5'>白魔法ケアルガ！！！</font><br>"
 
@@ -2169,7 +2170,7 @@ class mons_6:
             s.sake1 -= 999999
             s.dmg2 = random.randrange(int(s.mrand)) * s.dmhit
             s.dmg2 += s.item['armor']['def']
-            s.com2 += "<font class='red' size='5'>古代魔法メテオ！！！</font><font color=red>s.dmhitヒット！！</font><br>"
+            s.com2 += f"<font class='red' size='5'>古代魔法メテオ！！！</font><font color=red>{s.dmhit}ヒット！！</font><br>"
 
     def mons_atowaza(s):
         pass
@@ -2247,7 +2248,7 @@ class mons_13:
         if (s.mons_ritu > random.randrange(int(100))):
             if (random.randrange(int(1))==0):
                 s.hpplus2 = random.randrange(int(s.mrand)) * 2
-                s.kaihuku2 += "s.mname のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
                 s.com2 = "<font class='yellow' size='5'>白魔法ケアルガ！！！</font><br>"
             else:
                 s.sake1 -= 999999
@@ -2261,9 +2262,9 @@ class mons_13:
 class mons_14:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
-            s.tgold = random.randrange(int(s.chara['gold'] /7))
-            s.gold -= s.tgold
-            s.com2 += "<font class='red'>お金を盗まれた！！s.tgoldＧマイナス！！</font><br>"
+            # 演出のみ(実ゴールドは戦闘後処理で扱う)
+            s.tgold = random.randrange(1, 100)
+            s.com2 += f"<font class='red'>お金を盗まれた！！{s.tgold}Ｇマイナス！！</font><br>"
 
     def mons_atowaza(s):
         pass
@@ -2276,7 +2277,7 @@ class mons_15:
             s.hpplus2 = s.dmg2
             s.sake1 -= 999999
             s.com2 += "<font class='dark' size='4'>暗黒魔法ドレイン！！！</font><br>"
-            s.kaihuku2 += "s.mname のＨＰが s.hpplus2 回復した！♪"
+            s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
 
     def mons_atowaza(s):
         pass
@@ -2302,7 +2303,7 @@ class mons_17:
                 s.com2 = "<font class='red' size =6>えりりんの甘いささやき！</font><br>"
             else:
                 s.hpplus1 = random.randrange(int(s.msp)) * 8
-                s.kaihuku2 += "s.chara['name'] のＨＰが s.hpplus1 回復した！♪"
+                s.kaihuku2 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
                 s.dmg1 = 0
                 s.dmg2 = 0
                 s.com2 = "<font class='yellow' size='5'>祝福のキス♪♪</font><br>"
@@ -2326,7 +2327,7 @@ class mons_19:
         if (s.mons_ritu > random.randrange(int(100))):
             if (random.randrange(int(5))==0):
                 s.hpplus2 = random.randrange(int(s.mrand)) * 4
-                s.kaihuku2 += "s.mname のＨＰが s.hpplus2 回復した！♪"
+                s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
                 s.com2 = "<font class='yellow' size='5'>ハァハァ。。。</font><br>"
             else:
                 s.dmg2 += random.randrange(int(s.mrand)) * 5
@@ -2361,7 +2362,7 @@ class mons_21:
                 s.seibetu = "男"
             elif (s.ksex == 0):
                 s.seibetu = "女"
-            s.com2 += "<font class='red' size='5'>性転換！！！</font><font color =#cc6633 size = 2><br>性別がランダムに変化する！s.seibetuになった！</font><br>"
+            s.com2 += f"<font class='red' size='5'>性転換！！！</font><font color =#cc6633 size = 2><br>性別がランダムに変化する！{s.seibetu}になった！</font><br>"
 
     def mons_atowaza(s):
         pass
@@ -2418,19 +2419,19 @@ class acstech_0:
 class acstech_1:
     def acskouka(s):
         s.hpplus1 += int(s.chara['lp'] * (random.random() * 10))
-        s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！s.chara['name'] のＨＰが s.hpplus1 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
 
 
 class acstech_2:
     def acskouka(s):
         s.hpplus1 += int(s.chara['lp'] * (random.random() * 50))
-        s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！s.chara['name'] のＨＰが s.hpplus1 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
 
 
 class acstech_3:
     def acskouka(s):
         s.hpplus1 += int(s.chara['lp'] * (random.random() * 200))
-        s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！s.chara['name'] のＨＰが s.hpplus1 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
 
 
 class acstech_4:
@@ -2467,14 +2468,14 @@ class acstech_10:
     def acskouka(s):
         if (random.randrange(int(5))==0):
             s.item['weapon']['dmg'] = s.item['weapon']['dmg'] * 2
-            s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</font><br>"
+            s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</font><br>"
 
 
 class acstech_11:
     def acskouka(s):
         if (random.randrange(int(5))==0):
             s.hpplus1 = s.chara['dex'] * random.randrange(int(s.chara['lp']))
-            s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！ケアルガの効果！！s.chara['name'] のＨＰが s.hpplus1 回復した！♪</font><br>"
+            s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！ケアルガの効果！！{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪</font><br>"
 
 
 class acstech_12:
@@ -2482,7 +2483,7 @@ class acstech_12:
         if (random.randrange(int(5))==0):
             s.sake2 -= 999999
             s.dmg1 += s.chara['dex'] * random.randrange(int(80))
-            s.com1 += "<font class='white' size='3'>s.item['accessory']['name']が光を放つ！！ホーリーの効果！！</font><br>"
+            s.com1 += f"<font class='white' size='3'>{s.item['accessory']}['name']が光を放つ！！ホーリーの効果！！</font><br>"
 
 
 class acstech_13:
@@ -2490,7 +2491,7 @@ class acstech_13:
         if (random.randrange(int(5))==0):
             s.sake2 -= 999999
             s.dmg1 += s.chara['int'] * random.randrange(int(80))
-            s.com1 += "<font class='red' size='3'>s.item['accessory']['name']が光を放つ！！メテオの効果！！</font><br>"
+            s.com1 += f"<font class='red' size='3'>{s.item['accessory']}['name']が光を放つ！！メテオの効果！！</font><br>"
 
 
 class acstech_14:
@@ -2498,13 +2499,13 @@ class acstech_14:
         if (random.randrange(int(5))==0):
             s.sake2 -= 999999
             s.dmg1 += (s.chara['int'] + s.chara['dex']) * random.randrange(int(100))
-            s.com1 += "<font class='white' size='3'>s.item['accessory']['name']が光を放つ！！アルテマの効果！！</font><br>"
+            s.com1 += f"<font class='white' size='3'>{s.item['accessory']}['name']が光を放つ！！アルテマの効果！！</font><br>"
 
 
 class acstech_15:
     def acskouka(s):
         if (random.randrange(int(10))==0):
-            s.com1 += "<font class='dark' size='3'>s.item['accessory']['name']が光を放つ！！デジョンの効果！！</font><br>"
+            s.com1 += f"<font class='dark' size='3'>{s.item['accessory']}['name']が光を放つ！！デジョンの効果！！</font><br>"
             if (random.randrange(int(3)) == 0):
                 s.sake2 -= 999999
                 s.dmg1 = s.winner['max_hp'] + s.mhp_flg
@@ -2543,7 +2544,7 @@ class acstech_21:
         if (random.randrange(int(2))==0):
             s.sake2 -= 999999
             s.dmg1 += (s.chara['int'] + s.chara['dex']) * random.randrange(int(500))
-            s.com1 += "<font class='green' size='3'>s.item['accessory']['name']が光を放つ！！時の狭間より古の魔神を呼び寄せた！！グランドクロス！！</font><br>"
+            s.com1 += f"<font class='green' size='3'>{s.item['accessory']}['name']が光を放つ！！時の狭間より古の魔神を呼び寄せた！！グランドクロス！！</font><br>"
 
 
 class acstech_22:
@@ -2551,12 +2552,12 @@ class acstech_22:
         if (random.randrange(int(10))==0):
             if (s.khp < s.dmg2):
                 if (s.a_22lmt >= 3):
-                    s.com1 += "<font class='red' size='3'>s.item['accessory']['name']は光らなかった。。。</font><br>"
+                    s.com1 += f"<font class='red' size='3'>{s.item['accessory']}['name']は光らなかった。。。</font><br>"
                 else:
                     s.a_22lmt += 1
                     s.dmg1 += s.dmg2
                     s.dmg2 = 0
-                    s.com1 += "<font class='white' size='3'>s.item['accessory']['name']が光を放つ！！s.winner['url'] s.mnameの攻撃を跳ね返した！！</font><br>"
+                    s.com1 += f"<font class='white' size='3'>{s.item['accessory']}['name']が光を放つ！！{s.winner['url']} {s.mname}の攻撃を跳ね返した！！</font><br>"
 
 
 class acstech_23:
@@ -2564,12 +2565,12 @@ class acstech_23:
         if (random.randrange(int(5))==0):
             if (s.khp < s.dmg2):
                 if (s.a_23lmt >= 1):
-                    s.com1 += "<font class='red' size='3'>s.item['accessory']['name']は光らなかった。。。</font><br>"
+                    s.com1 += f"<font class='red' size='3'>{s.item['accessory']}['name']は光らなかった。。。</font><br>"
                 else:
                     s.a_23lmt += 1
                     s.hpplus1 = s.chara['max_hp']
                     s.dmg2 = 0
-                    s.com1 += "<font class='white' size='5'>s.item['accessory']['name']が光を放つ！！s.chara['name']の傷が完全に回復した！！</font><br>"
+                    s.com1 += f"<font class='white' size='5'>{s.item['accessory']}['name']が光を放つ！！{s.chara['name']}の傷が完全に回復した！！</font><br>"
 
 
 class acstech_24:
@@ -2578,7 +2579,7 @@ class acstech_24:
             if (random.randrange(int(4))==0):
                 s.dmg1 = s.dmg1 * 10
                 s.sake2 -= 999999
-                s.com1 += "<font class='green' size='3'>s.item['accessory']['name']が光を放つ！！s.winner['last_time']に封じ込めれれた力を解放！！</font><br>"
+                s.com1 += f"<font class='green' size='3'>{s.item['accessory']}['name']が光を放つ！！{s.winner['last_time']}に封じ込めれれた力を解放！！</font><br>"
 
 
 # ==========================================
@@ -2592,19 +2593,19 @@ class wacstech_0:
 class wacstech_1:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['lck'] * (random.random() * 10))
-        s.com2 += "<font class='yellow' size='3'>s.winner['last_time']が光を放つ！！s.winner['url'] のＨＰが s.hpplus2 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner['last_time']}が光を放つ！！{s.winner['url']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
 
 
 class wacstech_2:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['lck'] * (random.random() * 50))
-        s.com2 += "<font class='yellow' size='3'>s.winner['last_time']が光を放つ！！s.winner['url'] のＨＰが s.hpplus2 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner['last_time']}が光を放つ！！{s.winner['url']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
 
 
 class wacstech_3:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['lck'] * (random.random() * 200))
-        s.com2 += "<font class='yellow' size='3'>s.winner['last_time']が光を放つ！！s.winner['url'] のＨＰが s.hpplus2 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner['last_time']}が光を放つ！！{s.winner['url']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
 
 
 class wacstech_4:
@@ -2641,14 +2642,14 @@ class wacstech_10:
     def wacskouka(s):
         if (random.randrange(int(5))==0):
             s.winner['attr_22'] = s.winner['attr_22'] * 2
-            s.com2 += "<font class='yellow' size='3'>s.winner['last_time']が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</FONT><br>"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner['last_time']}が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</FONT><br>"
 
 
 class wacstech_11:
     def wacskouka(s):
         if (random.randrange(int(15))==0):
             s.hpplus2 = s.winner['int'] * random.randrange(int(s.winner['lck']))
-            s.com2 += "<font class='yellow' size='3'>s.winner['last_time']が光を放つ！！ケアルガの効果！！s.winner['url'] のＨＰが s.hpplus2 回復した！♪</FONT><br>"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner['last_time']}が光を放つ！！ケアルガの効果！！{s.winner['url']} のＨＰが {s.hpplus2} 回復した！♪</FONT><br>"
 
 
 class wacstech_12:
@@ -2656,7 +2657,7 @@ class wacstech_12:
         if (random.randrange(int(5))==0):
             s.sake1 -= 999999
             s.dmg2 = s.winner['int'] * random.randrange(int(80))
-            s.com2 += "<font class='white' size='3'>s.winner['last_time']が光を放つ！！ホーリーの効果！！</FONT><br>"
+            s.com2 += f"<font class='white' size='3'>{s.winner['last_time']}が光を放つ！！ホーリーの効果！！</FONT><br>"
 
 
 class wacstech_13:
@@ -2664,7 +2665,7 @@ class wacstech_13:
         if (random.randrange(int(5))==0):
             s.sake1 -= 999999
             s.dmg2 = s.winner['str'] * random.randrange(int(80))
-            s.com2 += "<font class='red' size='3'>s.winner['last_time']が光を放つ！！メテオの効果！！</FONT><br>"
+            s.com2 += f"<font class='red' size='3'>{s.winner['last_time']}が光を放つ！！メテオの効果！！</FONT><br>"
 
 
 class wacstech_14:
@@ -2672,13 +2673,13 @@ class wacstech_14:
         if (random.randrange(int(5))==0):
             s.sake1 -= 999999
             s.dmg2 = (s.winner['str'] + s.winner['int']) * random.randrange(int(100))
-            s.com2 += "<font class='white' size='3'>s.winner['last_time']が光を放つ！！アルテマの効果！！</FONT><br>"
+            s.com2 += f"<font class='white' size='3'>{s.winner['last_time']}が光を放つ！！アルテマの効果！！</FONT><br>"
 
 
 class wacstech_15:
     def wacskouka(s):
         if (random.randrange(int(10))==0):
-            s.com2 += "<font class='dark' size='3'>s.winner['last_time']が光を放つ！！デジョンの効果！！</FONT><br>"
+            s.com2 += f"<font class='dark' size='3'>{s.winner['last_time']}が光を放つ！！デジョンの効果！！</FONT><br>"
             if (random.randrange(int(3)) == 0):
                 s.sake1 -= 999999
                 s.dmg2 = s.chara['max_hp']
@@ -2718,7 +2719,7 @@ class wacstech_21:
         if (random.randrange(int(2))==0):
             s.sake1 -= 999999
             s.dmg2 += (s.winner['str'] + s.winner['int']) * random.randrange(int(500))
-            s.com2 += "<font class='green' size='3'>s.winner['last_time']が光を放つ！！時の狭間より古の魔神を呼び寄せた！！グランドクロス！！</FONT><br>"
+            s.com2 += f"<font class='green' size='3'>{s.winner['last_time']}が光を放つ！！時の狭間より古の魔神を呼び寄せた！！グランドクロス！！</FONT><br>"
 
 
 class wacstech_22:
@@ -2727,18 +2728,18 @@ class wacstech_22:
             if (s.khp < s.dmg1):
                 if (s.wa_22lmt >= 3):
                     s.winner['attr_51'] == 0
-                    s.com2 += "<font class='green' size='3'>s.winner['last_time']は光らなかった。。。</FONT><br>"
+                    s.com2 += f"<font class='green' size='3'>{s.winner['last_time']}は光らなかった。。。</FONT><br>"
                 else:
                     s.wa_22lmt += 1
                     s.dmg2 += s.dmg1
                     s.dmg1 = 0
-                    s.com2 += "<font class='white' size='3'>s.winner['last_time']が光を放つ！！s.chara['name']の攻撃を跳ね返した！！</FONT><br>"
+                    s.com2 += f"<font class='white' size='3'>{s.winner['last_time']}が光を放つ！！{s.chara['name']}の攻撃を跳ね返した！！</FONT><br>"
 
 
 class wacstech_23:
     def wacskouka(s):
         if (s.khp < s.dmg1):
-            s.com2 += "<font class='green' size='3'>s.winner['last_time']は光らなかった。。。</FONT><br>"
+            s.com2 += f"<font class='green' size='3'>{s.winner['last_time']}は光らなかった。。。</FONT><br>"
 
 
 class wacstech_24:
@@ -2747,7 +2748,7 @@ class wacstech_24:
             if (random.randrange(int(5))==0):
                 s.dmg2 = s.dmg2 * 10
                 s.sake1 -= 999999
-                s.com2 += "<font class='green' size='3'>s.winner['last_time']が光を放つ！！s.item['accessory']['name']に封じ込めれれた力を解放！！</FONT><br>"
+                s.com2 += f"<font class='green' size='3'>{s.winner['last_time']}が光を放つ！！{s.item['accessory']}['name']に封じ込めれれた力を解放！！</FONT><br>"
 
 
 

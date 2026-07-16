@@ -140,9 +140,11 @@ def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
-    race_id = int(in_params.get("race", "0"))
+    race_id = common.to_int(in_params.get("race", "0"), 0)
 
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
@@ -542,7 +544,7 @@ def main():
                 common.release_lock("rireki")
                 
             # 全体メッセージに流す
-            common.get_lock("all_message")
+            common.get_lock("all_message_post")
             try:
                 all_msgs = common.all_message_load()
                 new_msg = {
@@ -556,7 +558,7 @@ def main():
                     all_msgs = all_msgs[:config.Config['max_all_messages']]
                 common.all_message_regist(all_msgs)
             finally:
-                common.release_lock("all_message")
+                common.release_lock("all_message_post")
                 
             comment += f'<br><span class="gold u-text-large">🎉 【重賞制覇】「{racename}」のタイトルを獲得しました！</span>'
             

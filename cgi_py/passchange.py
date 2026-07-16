@@ -53,7 +53,7 @@ import time
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
-from sub_def.crypto import hash_password
+from sub_def.crypto import hash_password, verify_password
 
 def parse_cookie_user(cookie_str):
     if not cookie_str:
@@ -121,7 +121,7 @@ def main():
             common.show_error("キャラクター情報が見つかりません。")
             
         # パスワードチェック
-        if c_id == user_id and c_pass != chara["pass"]:
+        if c_id != user_id or c_pass != chara["pass"]:
             common.release_lock(user_id)
             common.show_error("ログインパスワードが一致しません。")
             
@@ -138,8 +138,8 @@ def main():
             pass_confirm = params.get("pass", "").strip()
             word = params.get("passchange", "").strip()
 
-            # 保存値はハッシュのため、入力値もハッシュ化して比較する
-            if hash_password(pass_confirm) != chara["pass"]:
+            # 新形式(salted)・旧形式いずれの保存ハッシュにも対応して検証する
+            if not verify_password(pass_confirm, chara["pass"]):
                 common.release_lock(user_id)
                 common.show_error("現在のパスワードが間違っています。")
 
@@ -176,8 +176,8 @@ def main():
             npass = params.get("npass", "").strip()
             nkpass = params.get("nkpass", "").strip()
 
-            # 保存値はハッシュのため、入力値もハッシュ化して比較する
-            if hash_password(pass_confirm) != chara["pass"]:
+            # 新形式(salted)・旧形式いずれの保存ハッシュにも対応して検証する
+            if not verify_password(pass_confirm, chara["pass"]):
                 common.release_lock(user_id)
                 common.show_error("現在のパスワードが間違っています。")
                 

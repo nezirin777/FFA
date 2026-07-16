@@ -126,6 +126,8 @@ def main():
     params = common.decode_params()
     mode = params.get("mode", "")
     user_id = params.get("id", "").strip()
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     item_no_str = params.get("item_no", "").strip()
     
     if not user_id:

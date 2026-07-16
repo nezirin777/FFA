@@ -51,6 +51,7 @@ import os
 import random
 import time
 import json
+import html
 try:
     from . import skills
 except ImportError:
@@ -118,6 +119,8 @@ class BattleState:
         self.sake1 = 0
         self.sake2 = 0
         self.waza_ritu = 0
+        self.wwaza_ritu = 0  # 対人戦の相手(王者)側の必殺率(setupで算出)
+        self.wd_dmg = 0      # 特殊技の追加ダメージ枠(既定0)
         self.kaihuku1 = ""
         self.kaihuku2 = ""
         self.huin = 0
@@ -235,6 +238,13 @@ class BattleSimulator:
             if s.waza_ritu > 75: s.waza_ritu = 75
             s.waza_ritu += s.a_wazaup
             if s.waza_ritu > 95: s.waza_ritu = 95
+
+            # 対人戦の相手(王者)側の必殺率。プレイヤー側と同じ式で算出する。
+            # モンスター戦では winner に lp/job_level が無いため 0 起点となり、実際には mons_ritu が使われる。
+            s.wwaza_ritu = int(s.winner.get("lp", 0) / 15) + 10 + s.winner.get("job_level", 0)
+            if s.wwaza_ritu > 95: s.wwaza_ritu = 95
+            # 特殊技の追加ダメージ枠(旧版で未実装だった変数)。既定 0。
+            s.wd_dmg = 0
             
             # モードに応じた技確率減衰 (O(1) frozenset ルックアップで判定)
             if s.mode in _SPECIAL_MODES:
@@ -266,13 +276,13 @@ class BattleSimulator:
             # === 5. クリティカル判定 (mons_clt / clt) ===
             kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
             if kclt_ritu > random.randrange(100):
-                s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{s.chara['comment']}」</span>"
+                s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
                 s.dmg1 = s.dmg1 * 3
                 
             if s.is_player_enemy:
                 mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
                 if mclt_ritu > random.randrange(100):
-                    s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{s.winner['comment']}」</span>"
+                    s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
                     s.dmg2 = s.dmg2 * 3
             else:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0

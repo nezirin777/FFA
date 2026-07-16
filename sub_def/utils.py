@@ -5,7 +5,7 @@ import os
 import sys
 import time
 from typing import NoReturn, Any
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 try:
     import config
@@ -49,7 +49,12 @@ def render_template(template_name: str, context: dict[str, Any] | None = None, e
     merged_context["csrf_token"] = csrf_token
     
     template_dir = config.Config.get("template_dir", "./templates")
-    env = Environment(loader=FileSystemLoader(template_dir))
+    # XSS対策: 既定で全ての {{ }} 出力を HTML エスケープする。
+    # サーバー側で組み立てた HTML(戦闘ログ等)は明示的に | safe を付けた箇所のみ素通しする。
+    env = Environment(
+        loader=FileSystemLoader(template_dir),
+        autoescape=select_autoescape(default=True, default_for_string=True),
+    )
     
     # 標準CGIヘッダー (ブラウザキャッシュ無効化)
     sys.stdout.write("Cache-Control: no-cache\n")

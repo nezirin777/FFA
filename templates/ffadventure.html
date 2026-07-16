@@ -268,6 +268,14 @@
                                    onmouseover="document.getElementById('facility-desc').innerText = '他の冒険者に個別メッセージを送信できますクポ。'"
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
+                        <!-- 掲示板 -->
+                        <form action="{{ config.bbs_script }}" method="POST">
+                            <input type="hidden" name="s" value="{{ csrf_token }}">
+                            <input type="hidden" name="id" value="{{ chara.id }}">
+                            <input type="submit" class="btn facility-btn" value="📝 掲示板"
+                                   onmouseover="document.getElementById('facility-desc').innerText = '冒険者みんなが書き込める掲示板クポ。'"
+                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                        </form>
                         <!-- 転職の神殿 -->
                         <form action="{{ config.tensyoku_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
