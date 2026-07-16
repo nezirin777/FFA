@@ -157,7 +157,7 @@ def main():
             common.release_lock(user_id)
             common.show_error("キャラクターが見つかりません。")
             
-        if c_id == user_id and c_pass != chara["pass"]:
+        if c_id != user_id or c_pass != chara["pass"]:
             common.release_lock(user_id)
             common.show_error("パスワード認証に失敗しました。")
 

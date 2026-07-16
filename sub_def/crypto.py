@@ -143,8 +143,43 @@ def token_check(FORM: dict[str, Any], session: dict[str, Any]) -> None:
         show_error("不正なリクエスト（CSRF）を検知しました。操作を中断します。")
 
 # === パスワードハッシュ ===
+_PBKDF2_ITER = 100000  # 新形式の反復回数
+
+def _hash_with_salt(password: str, salt: bytes) -> bytes:
+    return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, _PBKDF2_ITER, 32)
+
 def hash_password(password: str) -> str:
-    """PBKDF2-SHA256 を用いて安全にパスワードをストレッチング・ハッシュ化します。"""
-    salt = base64.b64encode(SECRET_KEY[:16]).decode("utf-8") # 固定キーから塩を導出（あるいは個別可変ソルト）
+    """ユーザー毎のランダムソルトで PBKDF2-SHA256 ハッシュを生成します（新形式: pbkdf2$salt$hash）。
+    ソルトが各ユーザーで異なるため、同一パスワードでもハッシュが一致しません（レインボーテーブル対策）。
+    """
+    salt = os.urandom(16)
+    h = _hash_with_salt(password, salt)
+    return "pbkdf2$" + base64.b64encode(salt).decode("utf-8") + "$" + base64.b64encode(h).decode("utf-8")
+
+def _hash_legacy(password: str) -> str:
+    """旧形式（全ユーザー共通の固定ソルト）ハッシュ。既存パスワードの検証にのみ使用。"""
+    salt = base64.b64encode(SECRET_KEY[:16]).decode("utf-8")
     hashed = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 2000, 32)
     return base64.b64encode(hashed).decode("utf-8")
+
+def verify_password(password: str, stored: str) -> bool:
+    """パスワードを検証します。新形式(salted)・旧形式(固定ソルト)・平文(旧レガシー)のいずれにも対応。"""
+    if not stored:
+        return False
+    if stored.startswith("pbkdf2$"):
+        try:
+            _, salt_b64, hash_b64 = stored.split("$", 2)
+            salt = base64.b64decode(salt_b64)
+            expected = base64.b64decode(hash_b64)
+            return hmac.compare_digest(_hash_with_salt(password, salt), expected)
+        except Exception:
+            return False
+    # 旧固定ソルト形式
+    if hmac.compare_digest(_hash_legacy(password), stored):
+        return True
+    # さらに古い平文形式
+    return hmac.compare_digest(password, stored)
+
+def needs_rehash(stored: str) -> bool:
+    """新形式(pbkdf2$...)でなければ True。ログイン成功時に新形式へ移行する判定に使う。"""
+    return not (stored or "").startswith("pbkdf2$")

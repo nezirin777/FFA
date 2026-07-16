@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}冒険者の掲示板 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="layout-stack content-sm">
+    <br>
+    <h1 class="u-text-center">📝 冒険者の掲示板</h1>
+    <p class="u-text-center note-text">冒険者たちが自由に語り合える広場クポ。（最新 {{ config.max_bbs_posts }} 件まで保持）</p>
+    <hr class="section-divider">
+
+    <!-- 投稿フォーム -->
+    <div class="card">
+        <div class="card__header">✍️ 書き込む</div>
+        <div class="card__body">
+            <form action="{{ config.bbs_script }}" method="POST" class="layout-stack">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="id" value="{{ chara.id }}">
+                <input type="hidden" name="mode" value="post">
+                <div class="form-group">
+                    <label class="form-label" for="bbs-message">{{ chara.name }} として書き込む（200文字以内）</label>
+                    <textarea id="bbs-message" name="message" class="form-control" rows="3" maxlength="200" placeholder="メッセージを入力してくださいクポ" required></textarea>
+                </div>
+                <button type="submit" class="btn btn--block">書き込む</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 投稿一覧 -->
+    <div class="layout-stack layout-stack--sm">
+        {% for p in posts %}
+        <div class="card">
+            <div class="card__body">
+                <div class="layout-cluster">
+                    {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
+                    <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="" class="bbs-avatar" width="32" height="32">
+                    {% endif %}
+                    <div>
+                        <b class="yellow">{{ p.name }}</b>
+                        <span class="note-text">（{{ p.time }}）</span>
+                    </div>
+                </div>
+                <div class="bbs-message u-mt-s">{{ p.message }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card u-text-center">
+            <div class="card__body">まだ書き込みがありませんクポ。最初の一言をどうぞ！</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <br>
+    <div class="u-text-center">
+        <a href="login.py?mode=main&id={{ chara.id }}" class="btn">🏡 街に戻る</a>
+    </div>
+    <br><br>
+</div>
+{% endblock %}

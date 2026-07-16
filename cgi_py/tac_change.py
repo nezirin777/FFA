@@ -127,6 +127,8 @@ def main():
     # パラメータ解析
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
+    common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 

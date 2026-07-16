@@ -249,7 +249,7 @@ def main():
     else:
         # === 登録者一覧ランキング (ranking_no_html) ===
         try:
-            shtm = int(in_params.get("shtm", "0"))
+            shtm = common.to_int(in_params.get("shtm", "0"), 0)
         except ValueError:
             shtm = 0
             
