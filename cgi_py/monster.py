@@ -234,20 +234,20 @@ def main():
                 if random.randrange(3) == 0:
                     otakara = (random.randrange(1000) + 1) * enemy_data["gold"]
                     gold_gained += otakara
-                    comment += f'<br><b><span class="red u-text-large">宝箱を発見！ {otakara} ゴールドを獲得しました！！</span></b><br>'
+                    comment += f'<br><b><span class="red" style="font-size: 1.25em;">宝箱を発見！ {otakara} ゴールドを獲得しました！！</span></b><br>'
                 else:
-                    comment += '<br><b><span class="gray u-text-large">宝箱は空っぽだった・・・</span></b><br>'
+                    comment += '<br><b><span style="font-size: 1.25em; color: #aaaaaa;">宝箱は空っぽだった・・・</span></b><br>'
 
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
             
-            comment += f'<span class="green u-text-large">戦闘に勝利しました！</span><br>'
+            comment += f'<span class="green" style="font-size: 1.25em;">戦闘に勝利しました！</span><br>'
             comment += f'経験値 {exp_gained} と {gold_gained} ゴールドを獲得しました。<br>'
         elif win == 0:
-            comment += f'<span class="red u-text-large">戦闘に敗北しました・・・</span><br>'
+            comment += f'<span class="red" style="font-size: 1.25em;">戦闘に敗北しました・・・</span><br>'
         else:
-            comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'
+            comment += f'<span class="yellow" style="font-size: 1.25em;">時間切れ引き分けです。</span><br>'
 
         # レベルアップ処理
         syoku = common.syoku_load(user_id)

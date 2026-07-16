@@ -192,7 +192,7 @@ def main():
             chara["boss_flag"] -= 1
             if chara["boss_flag"] <= 0:
                 # 階層クリア！
-                comment += f'<b><span class="yellow u-text-large">{chara["name"]} は伝説のプレイスを攻略しました！新称号を獲得しました！</span></b><br>'
+                comment += f'<b><span class="yellow" style="font-size: 1.25em;">{chara["name"]} は伝説のプレイスを攻略しました！新称号を獲得しました！</span></b><br>'
                 
                 # 全体メッセージに投稿
                 all_msgs = common.all_message_load()

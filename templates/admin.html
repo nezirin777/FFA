@@ -30,7 +30,6 @@
             <h3>長期間放置キャラの削除</h3>
             <p class="admin-menu-card__desc">前回の行動から一定期間（{{ config.limit }}日）以上経過したキャラクターを一括削除します。</p>
             <form action="admin.py" method="POST" onsubmit="return confirm('本当に削除してよろしいですか？');">
-                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="pass" value="{{ pass }}">
                 <input type="hidden" name="mode" value="del_noplay">
                 <button type="submit" class="btn btn--danger">一括削除を実行</button>
@@ -71,7 +70,6 @@
                     <td>
                         <a href="admin.py?pass={{ pass }}&mode=data&target_id={{ player.id }}" class="btn btn--sm">編集</a>
                         <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('キャラクター「{{ player.name }}」を完全に削除します。よろしいですか？');">
-                            <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="pass" value="{{ pass }}">
                             <input type="hidden" name="mode" value="del_chara">
                             <input type="hidden" name="target_id" value="{{ player.id }}">
@@ -93,7 +91,6 @@
     <h2>冒険者データ編集: {{ chara.name }} (ID: {{ chara.id }})</h2>
     
     <form action="admin.py" method="POST">
-        <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="pass" value="{{ pass }}">
         <input type="hidden" name="mode" value="save">
         <input type="hidden" name="target_id" value="{{ chara.id }}">

@@ -200,7 +200,7 @@ def main():
                         is_g1 = int(r_key[1:]) <= 11
                         break
                 color = "red" if is_g1 else "blue"
-                trophy_elements.append(f'<span class="{color}">● {t_name}</span>')
+                trophy_elements.append(f'<span style="color:{color};">● {t_name}</span>')
             trophy_str = "  ".join(trophy_elements)
         else:
             trophy_str = "なし"

@@ -297,7 +297,7 @@ def main():
                     "gold": gold_gained
                 }
                 
-                comment += f'<span class="green u-text-large">見事に勝利し、新王者になりました！</span><br>'
+                comment += f'<span class="green" style="font-size: 1.25em;">見事に勝利し、新王者になりました！</span><br>'
                 comment += f'経験値 {exp_gained} と賞金 {gold_gained} ゴールドを獲得しました。<br>'
             else:
                 # 挑戦者の敗北 ➔ 王者の防衛成功
@@ -323,7 +323,7 @@ def main():
                     "url": chara["url"]
                 }
                 
-                comment += f'<span class="red u-text-large">王者の防衛に阻まれ、敗北しました・・・</span><br>'
+                comment += f'<span class="red" style="font-size: 1.25em;">王者の防衛に阻まれ、敗北しました・・・</span><br>'
                 comment += f'経験値 {exp_gained} を獲得しました。<br>'
 
             # 王者データの保存

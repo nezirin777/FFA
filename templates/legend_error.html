@@ -34,8 +34,7 @@
             </div>
 
             <!-- 再挑戦フォーム -->
-            <form action="login.py?mode=legend" method="POST" class="layout-stack">
-                <input type="hidden" name="s" value="{{ csrf_token }}">
+            <form action="legend.py" method="POST" class="layout-stack">
                 <input type="hidden" name="mode" value="boss">
                 <input type="hidden" name="id" value="{{ chara.id }}">
                 <input type="hidden" name="boss_file" value="{{ boss_file }}">
@@ -43,7 +42,7 @@
             </form>
 
             <br>
-            <a href="login.py?mode=main&id={{ chara.id }}" class="btn btn-secondary">街に戻る</a>
+            <a href="ffadventure.py?id={{ chara.id }}" class="btn btn-secondary">街に戻る</a>
         </div>
     </div>
 </div>

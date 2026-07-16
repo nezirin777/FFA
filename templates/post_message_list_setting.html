@@ -18,7 +18,6 @@
     <div class="list-container layout-stack">
         <!-- 1. 新規追加フォーム -->
         <form action="{{ config.script_post }}" method="POST" class="card">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="ban_do">
             <input type="hidden" name="bansts" value="{% if mode == 'ban' %}1{% else %}2{% endif %}">
@@ -40,7 +39,6 @@
 
         <!-- 2. リスト表示 ＆ 削除フォーム -->
         <form action="{{ config.script_post }}" method="POST" class="card">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="ban_do">
             <input type="hidden" name="bansts" value="0">

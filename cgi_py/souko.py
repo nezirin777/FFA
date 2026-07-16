@@ -42,7 +42,6 @@ FFA Python/CGI - 倉庫管理スクリプト (souko.py)
 
 import os
 import sys
-import json
 
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
@@ -65,46 +64,43 @@ def get_item_master(item_id, item_type):
         
     if not os.path.exists(path):
         return None
-
-    # マスタは JSON 配列 (shop_item.py / shop_acs.py と同一フォーマット)
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-    except Exception:
-        return None
-
-    for item in items:
-        if item.get("no") == int(item_id):
-            if item_type == "acs":
-                bonus = item.get("bonus", {})
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "gold": item.get("gold", 0),
-                    "effect_id": item.get("effect_id", 0),
-                    "bonus": {
-                        "str": bonus.get("str", 0),
-                        "int": bonus.get("int", 0),
-                        "dex": bonus.get("dex", 0),
-                        "vit": bonus.get("vit", 0),
-                        "agi": bonus.get("agi", 0),
-                        "mnd": bonus.get("mnd", 0),
-                        "lck": bonus.get("lck", 0),
-                        "lp": bonus.get("lp", 0)
-                    },
-                    "attrib": item.get("attrib", 0),
-                    "spare1": item.get("spare1", 0),
-                    "spare2": item.get("spare2", 0),
-                    "spare3": item.get("spare3", 0)
-                }
-            else:
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "power": item.get("power", 0),
-                    "gold": item.get("gold", 0),
-                    "effect": item.get("effect", item.get("hit", 0))
-                }
+        
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            parts = line.strip().split("<>")
+            if parts and parts[0] == str(item_id):
+                def get_val(lst, idx, default=""):
+                    return lst[idx] if idx < len(lst) else default
+                
+                if item_type == "acs":
+                    return {
+                        "id": int(parts[0]),
+                        "name": parts[1],
+                        "gold": int(parts[2]),
+                        "effect_id": int(get_val(parts, 3, 0)),
+                        "bonus": {
+                            "str": int(get_val(parts, 4, 0)),
+                            "int": int(get_val(parts, 5, 0)),
+                            "dex": int(get_val(parts, 6, 0)),
+                            "vit": int(get_val(parts, 7, 0)),
+                            "agi": int(get_val(parts, 8, 0)),
+                            "mnd": int(get_val(parts, 9, 0)),
+                            "lck": int(get_val(parts, 10, 0)),
+                            "lp": int(get_val(parts, 11, 0))
+                        },
+                        "attrib": int(get_val(parts, 12, 0)),
+                        "spare1": int(get_val(parts, 13, 0)),
+                        "spare2": int(get_val(parts, 14, 0)),
+                        "spare3": int(get_val(parts, 15, 0))
+                    }
+                else:
+                    return {
+                        "id": int(parts[0]),
+                        "name": parts[1],
+                        "power": int(parts[2]),
+                        "gold": int(parts[3]),
+                        "effect": int(get_val(parts, 4, 0))
+                    }
     return None
 
 def format_bonus(bonus_dict):

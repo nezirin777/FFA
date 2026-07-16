@@ -46,7 +46,6 @@
     <!-- 戻るボタン -->
     <div class="farm-back-actions">
         <form action="{{ config.chocofarm_script }}" method="POST">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn" value="チョコボ牧場に戻る">
         </form>

@@ -77,11 +77,6 @@ def main():
     mode = in_params.get("mode", "main")
     if mode == "choco":
         mode = "main"
-    # ルーティングキー (login.py?mode=morifarm) や不明なmodeで入場した場合はメイン表示へ
-    valid_modes = ("main", "choco_shop", "choco_buy", "choco_shopb",
-                   "choco_buyb", "choco_sell", "choco_name", "yadoya")
-    if mode not in valid_modes:
-        mode = "main"
     
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
@@ -103,6 +98,18 @@ def main():
     # タイプ一覧
     types = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
 
+    # 戻るボタン用の共通フォーム
+    from sub_def.crypto import get_session
+    csrf_token = get_session().get("csrf_token", "")
+    backform_html = f"""
+    <form action="{config.Config['chocofarm_script']}" method="post">
+      <input type="hidden" name="s" value="{csrf_token}">
+      <input type="hidden" name="id" value="{user_id}">
+      <input type="hidden" name="mydata" value="{chara_log}">
+      <input type="submit" class="btn-farm btn-secondary" value="牧場に戻る">
+    </form>
+    """
+
     context = {
         "chara": chara,
         "chara_log": chara_log,
@@ -110,6 +117,7 @@ def main():
         "has_choco": has_choco,
         "rank_imgs": rank_imgs,
         "types": types,
+        "backform": backform_html
     }
 
     if mode == "main":

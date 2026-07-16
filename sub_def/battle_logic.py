@@ -266,13 +266,13 @@ class BattleSimulator:
             # === 5. クリティカル判定 (mons_clt / clt) ===
             kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
             if kclt_ritu > random.randrange(100):
-                s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{s.chara['comment']}」</span>"
+                s.com1 += f"<br><span class=\"red\" style=\"font-size: 1.15em;\"><b>クリティカルヒット！！</b>「{s.chara['comment']}」</span>"
                 s.dmg1 = s.dmg1 * 3
                 
             if s.is_player_enemy:
                 mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
                 if mclt_ritu > random.randrange(100):
-                    s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{s.winner['comment']}」</span>"
+                    s.com2 += f"<br><span class=\"red\" style=\"font-size: 1.15em;\"><b>クリティカルヒット！！</b>「{s.winner['comment']}」</span>"
                     s.dmg2 = s.dmg2 * 3
             else:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0
@@ -307,12 +307,12 @@ class BattleSimulator:
             # プレイヤー回避判定
             if sake1 > random.randrange(300):
                 s.dmg2 = 0
-                s.com2 += f"<br><span class=\"red u-text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
+                s.com2 += f"<br><span class=\"red\" style=\"font-size: 1.05em;\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
             # 敵回避判定
             if sake2 > random.randrange(100):
                 s.dmg1 = 0
-                s.com1 += f"<br><span class=\"red u-text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
+                s.com1 += f"<br><span class=\"red\" style=\"font-size: 1.05em;\"><b>{s.mname}は攻撃をかわした！</b></span>"
                 
             # === 7. HPの減算処理 (hp_sum) ===
             s.khp = s.khp - s.dmg2 - s.dmgme1 + s.hpplus1

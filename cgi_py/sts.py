@@ -85,15 +85,16 @@ def main():
 
     if mode == "st_buy":
         # === ステータス更新処理 ===
-        # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
-        back_ctx = {
-            "back_action": config.Config['status_script'],
-            "back_params": {"id": user_id, "mydata": chara_log},
-            "back_label": "戻る",
-        }
-
+        from sub_def.crypto import get_session
+        csrf_token = get_session().get("csrf_token", "")
+        
         if user_id == "test":
-            common.show_error("テストキャラはステータス変更はできません", back_ctx)
+            back_form = f'<br><form action="{config.Config['status_script']}" method="post">' \
+                        f'<input type="hidden" name="s" value="{csrf_token}">' \
+                        f'<input type="hidden" name="id" value="{user_id}">' \
+                        f'<input type="hidden" name="mydata" value="{chara_log}">' \
+                        f'<input type="submit" class="btn" value="戻る"></form>'
+            common.show_error(f"テストキャラはステータス変更はできません{back_form}")
 
         # パラメータ取得
         site = in_params.get("site", "").strip()
@@ -109,12 +110,22 @@ def main():
 
         # コメント長さ制限
         if len(waza) > 100:
-            common.show_error("技発動コメントが長すぎます！(100文字以内)", back_ctx)
+            back_form = f'<br><form action="{config.Config['status_script']}" method="post">' \
+                        f'<input type="hidden" name="s" value="{csrf_token}">' \
+                        f'<input type="hidden" name="id" value="{user_id}">' \
+                        f'<input type="hidden" name="mydata" value="{chara_log}">' \
+                        f'<input type="submit" class="btn" value="戻る"></form>'
+            common.show_error(f"技発動コメントが長すぎます！(100文字以内){back_form}")
 
         # 禁止ワードチェック
         for word in config.Config['ban_words']:
             if word in waza or word in site:
-                common.show_error(f"入力に禁止語「{word}」が含まれています", back_ctx)
+                back_form = f'<br><form action="{config.Config['status_script']}" method="post">' \
+                            f'<input type="hidden" name="s" value="{csrf_token}">' \
+                            f'<input type="hidden" name="id" value="{user_id}">' \
+                            f'<input type="hidden" name="mydata" value="{chara_log}">' \
+                            f'<input type="submit" class="btn" value="戻る"></form>'
+                common.show_error(f"入力に禁止語「{word}」が含まれています{back_form}")
 
         # 画像インデックスチェック
         try:

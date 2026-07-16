@@ -12,12 +12,10 @@
 
   --yellow: #ffff55;
   --red: #ff5555;
-  --red-light: #ffb3b3;
   --blue: #5555ff;
   --green: #55ff55;
   --white: #aaaaff;
   --dark: #333399;
-  --gold: #ffd700;
 
   /* --- カラーパレット (モダナイズ用) --- */
   --sky-blue: #64B5F6;
@@ -85,16 +83,7 @@ input:invalid {
 .sky_blue { color: var(--sky-blue); font-size: 100%; font-weight: bold; }
 .blue { color: var(--blue); font-size: 100%; font-weight: bold; }
 .red { color: var(--red); font-size: 100%; font-weight: bold; }
-.red-light { color: var(--red-light); font-size: 100%; font-weight: bold; }
 .yellow { color: var(--yellow); font-size: 100%; font-weight: bold; }
-.green { color: var(--green); font-size: 100%; font-weight: bold; }
-.gold { color: var(--gold); font-size: 100%; font-weight: bold; }
-.gray { color: var(--gray); font-size: 100%; font-weight: bold; }
-
-/* テキストサイズのユーティリティ (戦闘・レース等の結果強調表示用) */
-.u-text-large { font-size: 1.25em; }
-.u-text-medium { font-size: 1.15em; }
-.u-text-small { font-size: 1.05em; }
 
 /* 共通レイアウト */
 .wrapper {

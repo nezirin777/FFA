@@ -189,14 +189,7 @@ def main():
         
     in_params = common.decode_params()
     mode = in_params.get("mode", "")
-    user_id = in_params.get("id", "")
-    chara_log = in_params.get("mydata", "")
-
-    # 戻るフォーム用のキャラクターデータ
-    chara = common.chara_load(user_id) if user_id else None
-    if not chara:
-        common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
-
+    
     # アルファベット能力ランク画像
     rank_imgs = [
         "e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif",
@@ -216,8 +209,6 @@ def main():
     
     context = {
         "mode": mode,
-        "chara": chara,
-        "chara_log": chara_log,
         "rank_imgs": rank_imgs,
         "races_names": races_names
     }

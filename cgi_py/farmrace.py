@@ -92,18 +92,23 @@ def main():
     crun = choco.get("run", 0)
     ctrain = choco.get("train", 0)
     
-    # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
-    back_ctx = {
-        "back_action": config.Config['chocofarm_script'],
-        "back_params": {"id": user_id, "mydata": chara_log},
-        "back_label": "牧場に戻る",
-    }
-
+    # 戻るフォーム
+    from sub_def.crypto import get_session
+    csrf_token = get_session().get("csrf_token", "")
+    backform_html = f"""
+    <form action="{config.Config['chocofarm_script']}" method="post">
+      <input type="hidden" name="s" value="{csrf_token}">
+      <input type="hidden" name="id" value="{user_id}">
+      <input type="hidden" name="mydata" value="{chara_log}">
+      <input type="submit" class="btn-farm btn-secondary" value="牧場に戻る">
+    </form>
+    """
+    
     # バリデーション
     if not cname or cname == "名無しのチョコボ":
-        common.show_error("チョコボに名前を付けてからレースに出走させてください。", back_ctx)
+        common.show_error(f"チョコボに名前を付けてからレースに出走させてください。<br>{backform_html}")
     if clife < 400:
-        common.show_error("チョコボの体力が足りません。宿屋で休ませてから出走させてください。", back_ctx)
+        common.show_error(f"チョコボの体力が足りません。宿屋で休ませてから出走させてください。<br>{backform_html}")
 
     # 時間制限チェック (30秒間隔)
     now = int(time.time())
@@ -111,7 +116,7 @@ def main():
     ltime = now - last_time
     if ltime < config.Config['battle_cooldown']:
         wait_sec = config.Config['battle_cooldown'] - ltime
-        common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。", back_ctx)
+        common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。<br>{backform_html}")
 
     # 王者データのロード
     winner = common.farm_winner_load()
@@ -141,7 +146,7 @@ def main():
 
     # すでに王者かどうかのチェック
     if winner.get("id") == user_id and winner.get("name") == cname:
-        common.show_error("現在あなたのチョコボが王者なので、挑戦レースはできません。", back_ctx)
+        common.show_error(f"現在あなたのチョコボが王者なので、挑戦レースはできません。<br>{backform_html}")
 
     # アクション時間更新
     chara["last_time"] = now
@@ -198,11 +203,11 @@ def main():
             # プレイヤーのスタートダッシュ
             if random.randint(0, kisyou) <= random.randint(0, int(c3 * 2 / 3)):
                 kdmg = int(random.randint(0, int(c0 / (tyousei * 4))) + c0 / (tyousei * 4))
-                step_comment += f'<span class="red">{cname}はスタートで出遅れましたクポ！</span> '
+                step_comment += f'<span style="color:#ff5555;">{cname}はスタートで出遅れましたクポ！</span> '
                 ksyoumou = heri * kdmg * 3 * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             elif random.randint(0, tiryoku) <= random.randint(0, int(c5 * 2 / 3)):
                 kdmg = int(random.randint(0, int(c0 * 1.5 / tyousei)))
-                step_comment += f'<span class="green">{cname}は好スタート！</span> '
+                step_comment += f'<span style="color:#55ff55;">{cname}は好スタート！</span> '
                 ksyoumou = heri * (kdmg / 2) * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             else:
                 kdmg = int(random.randint(0, int(c0 / (tyousei * 2))) + c0 / (tyousei * 2))
@@ -211,11 +216,11 @@ def main():
             # 王者のスタートダッシュ
             if random.randint(0, kisyou) <= random.randint(0, int(wc3 * 2 / 3)):
                 wdmg = int(random.randint(0, int(wc0 / (tyousei * 4))) + wc0 / (tyousei * 4))
-                step_comment += f'<span class="red-light">王者{wcname}はスタートで出遅れたクポ！</span> '
+                step_comment += f'<span style="color:#ffb3b3;">王者{wcname}はスタートで出遅れたクポ！</span> '
                 wsyoumou = heri * wdmg * 3 * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             elif random.randint(0, tiryoku) <= random.randint(0, int(wc5 * 2 / 3)):
                 wdmg = int(random.randint(0, int(wc0 * 1.5 / tyousei)))
-                step_comment += f'<span class="yellow">王者{wcname}は好スタートを切ったクポ！</span> '
+                step_comment += f'<span style="color:#ffff55;">王者{wcname}は好スタートを切ったクポ！</span> '
                 wsyoumou = heri * (wdmg / 2) * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             else:
                 wdmg = int(random.randint(0, int(wc0 / (tyousei * 2))) + wc0 / (tyousei * 2))
@@ -247,12 +252,12 @@ def main():
                 else:
                     kdmg = kdmg / 3
                     if step % 4 == 0:
-                        step_comment += f'<span class="red">{cname}はバテています...</span> '
+                        step_comment += f'<span style="color:#ff5555;">{cname}はバテています...</span> '
             elif (random.randint(0, seriai) < random.randint(0, c4)) or (khp_flg / max(1, c1) >= 0.4):
                 ksyoumou = ksyoumou * 2
                 kdmg = kdmg * 2.2
                 if step % 4 == 0:
-                    step_comment += f'<span class="green">{cname}のラストスパート！</span> '
+                    step_comment += f'<span style="color:#55ff55;">{cname}のラストスパート！</span> '
                     
             kdmg = int(kdmg)
             
@@ -267,12 +272,12 @@ def main():
                 else:
                     wdmg = wdmg / 3
                     if step % 4 == 0:
-                        step_comment += f'<span class="red-light">王者{wcname}がバテてきたクポ！</span> '
+                        step_comment += f'<span style="color:#ffb3b3;">王者{wcname}がバテてきたクポ！</span> '
             elif (random.randint(0, seriai) < random.randint(0, wc4)) or (whp_flg / max(1, wc1) >= 0.4):
                 wsyoumou = wsyoumou * 2
                 wdmg = wdmg * 2.2
                 if step % 4 == 0:
-                    step_comment += f'<span class="yellow">王者{wcname}のラストスパート！</span> '
+                    step_comment += f'<span style="color:#ffff55;">王者{wcname}のラストスパート！</span> '
                     
             wdmg = int(wdmg)
             

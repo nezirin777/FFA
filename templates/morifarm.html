@@ -7,213 +7,46 @@
         <hr>
     </div>
 
-    {% if mode == 'main' %}
-    <!-- ============ メイン画面 ============ -->
+    <!-- モーグリ長老 -->
     <div class="farm-msg-box">
         <div class="farm-msg-content">
             「クポポ！ここは深い黒チョコボの森クポ。非常に野生の強いチョコボが生息しているクポ！<br>
-            野生のチョコボを探して捕まえたり、育てたチョコボの世話をすることができるクポ！」
+            ここでは捕獲したり、森の中に残されたお宝を探索することができるクポ！」
         </div>
     </div>
 
-    {% if has_choco and choco %}
-    <!-- 飼育中チョコボのステータス -->
-    <div class="farm-card">
-        <div class="farm-card__title">🐤 あなたのチョコボ</div>
-        <table class="farm-status-table">
-            <tr>
-                <td class="farm-lbl-header">名前</td>
-                <td class="farm-val-cell"><b>{{ choco.name or "（まだ名前がありません）" }}</b></td>
-                <td class="farm-lbl-header">性別</td>
-                <td class="farm-val-cell">{{ "オス" if choco.sex == 1 else "メス" }}</td>
-            </tr>
-            <tr>
-                <td class="farm-lbl-header">クラス</td>
-                <td class="farm-val-cell">{{ choco.cls }}</td>
-                <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ choco.waza }}</td>
-            </tr>
-            <tr>
-                <td class="farm-lbl-header">出走 / 勝数</td>
-                <td class="farm-val-cell">{{ choco.run }} 戦 {{ choco.win }} 勝</td>
-                <td class="farm-lbl-header">体調</td>
-                <td class="farm-val-cell">{{ choco.csta }}</td>
-            </tr>
-            <tr>
-                <td class="farm-lbl-header">想定引取額</td>
-                <td class="farm-val-cell">{{ choco.money }} G</td>
-                <td class="farm-lbl-header">総合限界</td>
-                <td class="farm-val-cell">{{ choco.max }}</td>
-            </tr>
-        </table>
-    </div>
-    {% endif %}
-
-    <!-- 森のアクション -->
+    <!-- アクションカード -->
     <div class="farm-card">
         <div class="farm-card__title">🌲 森のアクション</div>
-        {% if has_choco %}
-        <div class="farm-msg-content u-mt-s">
-            既にチョコボを飼育しているため、新しいチョコボは捕まえられないクポ。<br>
-            新しい子を迎えるには、今の子と別れる（牧場の「野に放す」）必要があるクポ。
-        </div>
-        {% else %}
+        
+        <!-- 探索 -->
         <div class="farm-action-row">
-            <span class="farm-action-label">🔍 野生チョコボを探す</span>
+            <span class="farm-action-label">🔍 森の探索</span>
             <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
-                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
-                <input type="hidden" name="mydata" value="{{ chara_log }}">
-                <input type="hidden" name="mode" value="choco_shop">
+                <input type="hidden" name="mode" value="search">
                 <input type="submit" class="farm-btn" value="探索に出かける">
             </form>
         </div>
-        {% endif %}
-    </div>
 
-    {% elif mode == 'choco_shop' %}
-    <!-- ============ 野生チョコボ発見一覧 ============ -->
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">
-            「野生のチョコボを見つけたクポ！気に入った子がいたら捕まえるクポ！」
-        </div>
-    </div>
-
-    {% for cy in choco_list %}
-    <div class="farm-card">
-        <div class="farm-card__title">🐤 {{ cy.name }}</div>
-        <table class="farm-status-table">
-            <tr>
-                <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza < types|length else "不明" }}</td>
-                <td class="farm-lbl-header">父 / 母</td>
-                <td class="farm-val-cell">{{ cy.father }} / {{ cy.mother }}</td>
-            </tr>
-        </table>
-        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
-            <input type="hidden" name="id" value="{{ chara.id }}">
-            <input type="hidden" name="mydata" value="{{ chara_log }}">
-            <input type="hidden" name="mode" value="choco_buy">
-            <input type="hidden" name="item_no" value="{{ cy.no }}">
-            <input type="submit" class="farm-btn" value="この子を捕まえる">
-        </form>
-    </div>
-    {% else %}
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">今日は野生のチョコボが見つからなかったクポ……。</div>
-    </div>
-    {% endfor %}
-
-    {% elif mode == 'choco_shopb' %}
-    <!-- ============ お見合い（配合）相手選択 ============ -->
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">
-            「<b>{{ choco.name }}</b>（{{ "オス" if choco.sex == 1 else "メス" }}・{{ choco.waza }}）のお相手候補を連れてきたクポ！<br>
-            ⚠️ 配合すると今の子は引退し、生まれた子チョコボと入れ替わるクポ！」
-        </div>
-    </div>
-
-    {% for cy in choco_list %}
-    <div class="farm-card">
-        <div class="farm-card__title">💕 {{ cy.name }}</div>
-        <table class="farm-status-table">
-            <tr>
-                <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza < types|length else "不明" }}</td>
-                <td class="farm-lbl-header">戦績</td>
-                <td class="farm-val-cell">{{ cy.run }} 戦 {{ cy.win }} 勝</td>
-            </tr>
-            <tr>
-                <td class="farm-lbl-header">父 / 母</td>
-                <td class="farm-val-cell">{{ cy.father }} / {{ cy.mother }}</td>
-                <td class="farm-lbl-header">育て親</td>
-                <td class="farm-val-cell">{{ cy.breader }}</td>
-            </tr>
-        </table>
-        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s" onsubmit="return confirm('{{ cy.name }} と配合します。今のチョコボは引退しますがよろしいですか？');">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
-            <input type="hidden" name="id" value="{{ chara.id }}">
-            <input type="hidden" name="mydata" value="{{ chara_log }}">
-            <input type="hidden" name="mode" value="choco_buyb">
-            <input type="hidden" name="item_no" value="{{ cy.no }}">
-            <input type="submit" class="farm-btn" value="この子と配合する">
-        </form>
-    </div>
-    {% else %}
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">今日はお相手が見つからなかったクポ……また来るクポ。</div>
-    </div>
-    {% endfor %}
-
-    {% elif mode == 'choco_buyb' %}
-    <!-- ============ 誕生結果・命名 ============ -->
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">
-            「おめでとうクポ！元気な子チョコボが生まれたクポ！！」
-        </div>
-    </div>
-
-    <div class="farm-card">
-        <div class="farm-card__title">🐣 生まれた子チョコボ</div>
-        <table class="farm-status-table">
-            <tr>
-                <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ choco.waza }}</td>
-                <td class="farm-lbl-header">父 / 母</td>
-                <td class="farm-val-cell">{{ choco.father }} / {{ choco.mother }}</td>
-            </tr>
-        </table>
-
-        <div class="farm-action-row u-mt-m">
-            <span class="farm-action-label">✏️ 名前をつける</span>
+        <!-- チョコボの捕獲 -->
+        <div class="farm-action-row">
+            <span class="farm-action-label">🕸️ チョコボ捕獲</span>
             <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
-                <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="id" value="{{ chara.id }}">
-                <input type="hidden" name="mydata" value="{{ chara_log }}">
-                <input type="hidden" name="mode" value="choco_name">
-                <input type="text" name="st_name" placeholder="子チョコボの名前" class="farm-select" required>
-                <input type="submit" class="farm-btn" value="命名する">
+                <input type="hidden" name="mode" value="catch">
+                <input type="submit" class="farm-btn" value="捕獲を試みる">
             </form>
         </div>
     </div>
-
-    {% elif mode == 'choco_sell' %}
-    <!-- ============ 引退（お別れ）結果 ============ -->
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">
-            「<b>{{ choco.name }}</b> は森に帰っていったクポ……。<br>
-            {{ choco.run }} 戦 {{ choco.win }} 勝、よく頑張ったクポ。きっとまた誰かのお見合い相手として活躍するクポ！」
-        </div>
-    </div>
-
-    <div class="farm-card">
-        <div class="farm-card__title">💰 引退金</div>
-        <div class="farm-msg-content">
-            引き取り額として <b class="yellow">{{ choco.money }} G</b> を受け取りましたクポ。
-        </div>
-    </div>
-
-    {% elif mode == 'yadoya' %}
-    <!-- ============ 宿屋（体力回復）結果 ============ -->
-    <div class="farm-msg-box">
-        <div class="farm-msg-content">
-            「チョコボをゆっくり休ませたクポ！（5,000G）<br>
-            体力が回復して、体も少したくましくなったクポ！」
-        </div>
-    </div>
-    {% endif %}
 
     <!-- 戻るボタン -->
     <div class="farm-back-actions">
         <form action="{{ config.chocofarm_script }}" method="POST">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
-            <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn" value="チョコボ牧場に戻る">
         </form>
         <form action="{{ config.script }}" method="POST">
-            <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn" value="街に戻る">
         </form>

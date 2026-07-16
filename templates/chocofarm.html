@@ -29,22 +29,21 @@
     <div class="farm-grid">
         <!-- 左メインカラム -->
         <div class="farm-main-col">
-            {% if has_choco %}
             <!-- チョコボステータス -->
             <div class="farm-card">
                 <div class="farm-card__title">📊 愛チョコボのステータス</div>
                 <table class="farm-status-table">
                     <tr>
                         <td class="farm-lbl-header">名前</td>
-                        <td class="farm-val-cell"><b>{{ choco_name or "（まだ名前がありません）" }}</b></td>
+                        <td class="farm-val-cell"><b>{{ choco_name }}</b></td>
                         <td class="farm-lbl-header">クラス</td>
                         <td class="farm-val-cell"><b>{{ choco_class }}</b></td>
                     </tr>
                     <tr>
                         <td class="farm-lbl-header">タイプ</td>
                         <td class="farm-val-cell">{{ choco_type }}</td>
-                        <td class="farm-lbl-header">体調</td>
-                        <td class="farm-val-cell">{{ choco.csta }}</td>
+                        <td class="farm-lbl-header">親愛度</td>
+                        <td class="farm-val-cell"><span class="red">♥ {{ choco_love }}</span></td>
                     </tr>
                     <tr>
                         <td class="farm-lbl-header">スピード</td>
@@ -53,10 +52,10 @@
                         <td class="farm-val-cell">{{ choco_stamina }}</td>
                     </tr>
                     <tr>
-                        <td class="farm-lbl-header">出走 / 勝数</td>
-                        <td class="farm-val-cell">{{ choco.run }} 戦 {{ choco_win }} 勝</td>
-                        <td class="farm-lbl-header">想定引取額</td>
-                        <td class="farm-val-cell">{{ choco.money }} G</td>
+                        <td class="farm-lbl-header">勝数</td>
+                        <td class="farm-val-cell">{{ choco_win }} 勝</td>
+                        <td class="farm-lbl-header">年齢</td>
+                        <td class="farm-val-cell">{{ choco_age }} 歳</td>
                     </tr>
                 </table>
 
@@ -73,207 +72,74 @@
                 {% endif %}
             </div>
 
-            <!-- 訓練・レースアクション -->
+            <!-- トレーニング・配合・改名等アクション -->
             <div class="farm-card">
-                <div class="farm-card__title">⚙️ 訓練・レース</div>
-
+                <div class="farm-card__title">⚙️ 牧場アクション</div>
+                
                 <!-- 訓練 -->
                 <div class="farm-action-row">
                     <span class="farm-action-label">💪 チョコボの訓練</span>
-                    {% if time_limits.train_ok %}
-                    <form action="{{ config.ctrain_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <select name="mode" class="farm-select">
-                            <option value="race0">バーベルあげ（瞬発力）</option>
-                            <option value="race1">砂浜走り（持久力）</option>
-                            <option value="race2">スイミング（粘り強さ）</option>
-                            <option value="race3">瞑想（落ち着き）</option>
-                            <option value="race4">猛特訓（闘争心）</option>
-                            <option value="race5">お勉強（知力）</option>
-                            <option value="race6">坂道ダッシュ（切れ味）</option>
-                        </select>
-                        <input type="submit" class="farm-btn" value="訓練開始">
-                    </form>
-                    {% else %}
-                    <span class="farm-action-form">あと {{ time_limits.train_wait }} 秒休ませるクポ…</span>
-                    {% endif %}
-                </div>
-
-                <!-- 一般レース -->
-                <div class="farm-action-row">
-                    <span class="farm-action-label">🏁 一般レース</span>
-                    {% if not time_limits.race_ok %}
-                    <span class="farm-action-form">あと {{ time_limits.race_wait }} 秒休ませるクポ…</span>
-                    {% elif race_classes %}
                     <form action="{{ config.crace_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <select name="mode" class="farm-select">
-                            {% for rc in race_classes %}
-                            <option value="{{ rc.value }}">{{ rc.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="submit" class="farm-btn" value="出走する">
+                        <input type="hidden" name="mode" value="ctrain">
+                        <input type="submit" class="farm-btn" value="トレーニング">
                     </form>
-                    {% else %}
-                    <span class="farm-action-form">出走できる一般レースがありません</span>
-                    {% endif %}
                 </div>
 
-                <!-- G1重賞 -->
-                {% if choco_win >= 30 %}
+                <!-- チョコボレース -->
                 <div class="farm-action-row">
-                    <span class="farm-action-label">👑 G1重賞</span>
-                    {% if not time_limits.race_ok %}
-                    <span class="farm-action-form">あと {{ time_limits.race_wait }} 秒休ませるクポ…</span>
-                    {% elif g1_race %}
+                    <span class="farm-action-label">🏁 レースに出走</span>
                     <form action="{{ config.crace_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="race7">
-                        <input type="hidden" name="race" value="{{ g1_race.value }}">
-                        <input type="submit" class="farm-btn" value="{{ g1_race.name }}に出走">
-                    </form>
-                    {% else %}
-                    <span class="farm-action-form">次のG1開催まで あと {{ g1_nokori }} 回（訓練・出走）</span>
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                <!-- 海外重賞 (重賞3勝以上) -->
-                {% if trophies_count >= 3 %}
-                <div class="farm-action-row">
-                    <span class="farm-action-label">🌏 海外重賞</span>
-                    {% if not time_limits.race_ok %}
-                    <span class="farm-action-form">あと {{ time_limits.race_wait }} 秒休ませるクポ…</span>
-                    {% elif g2_race %}
-                    <form action="{{ config.crace_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="race8">
-                        <input type="hidden" name="race" value="{{ g2_race.value }}">
-                        <input type="submit" class="farm-btn" value="{{ g2_race.name }}に出走">
-                    </form>
-                    {% else %}
-                    <span class="farm-action-form">次の海外重賞まで あと {{ g2_nokori }} 回（訓練・出走）</span>
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                <!-- 王者決定戦 -->
-                {% if choco_name and not is_king %}
-                <div class="farm-action-row">
-                    <span class="farm-action-label">🏆 王者決定戦</span>
-                    {% if time_limits.race_ok %}
-                    <form action="{{ config.farmrace_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="submit" class="farm-btn" value="王者に挑戦する">
-                    </form>
-                    {% else %}
-                    <span class="farm-action-form">あと {{ time_limits.race_wait }} 秒休ませるクポ…</span>
-                    {% endif %}
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- お世話アクション -->
-            <div class="farm-card">
-                <div class="farm-card__title">🏡 チョコボのお世話</div>
-
-                <!-- 宿屋 -->
-                <div class="farm-action-row">
-                    <span class="farm-action-label">🛌 宿屋で休ませる (5,000G)</span>
-                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="yadoya">
-                        <input type="submit" class="farm-btn" value="休ませる">
+                        <input type="hidden" name="mode" value="crace">
+                        <input type="submit" class="farm-btn" value="公式レース">
                     </form>
                 </div>
 
-                <!-- 命名・改名 -->
-                <div class="farm-action-row">
-                    <span class="farm-action-label">✏️ 名前をつける・変える</span>
-                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="choco_name">
-                        <input type="text" name="st_name" placeholder="新しい名前" class="farm-select" required>
-                        <input type="submit" class="farm-btn" value="決定">
-                    </form>
-                </div>
-
-                {% if trophies_count >= 3 and choco_name %}
-                <!-- 殿堂登録 (重賞3勝以上) -->
-                <div class="farm-action-row">
-                    <span class="farm-action-label">🏛️ 殿堂に登録する</span>
-                    <form action="{{ config.dendo_script }}" method="POST" class="farm-action-form" onsubmit="return confirm('{{ choco_name }} を殿堂に登録します。よろしいですか？');">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                        <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="dendo">
-                        <input type="submit" class="farm-btn" value="殿堂入り登録">
-                    </form>
-                </div>
-                {% endif %}
-
-                {% if choco_name %}
-                <!-- 交配 -->
+                <!-- 配合 -->
+                {% if choco_age >= 3 %}
                 <div class="farm-action-row">
                     <span class="farm-action-label">🥚 チョコボの交配</span>
-                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
+                    <form action="{{ config.chocofarm_script }}" method="POST" class="farm-action-form">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="choco_shopb">
+                        <input type="hidden" name="mode" value="haigou">
                         <input type="submit" class="farm-btn" value="配合相手を選ぶ">
+                    </form>
+                </div>
+                {% endif %}
+
+                <!-- 改名 -->
+                <div class="farm-action-row">
+                    <span class="farm-action-label">✏️ 名前の変更 (1000G)</span>
+                    <form action="{{ config.chocofarm_script }}" method="POST" class="farm-action-form">
+                        <input type="hidden" name="id" value="{{ chara.id }}">
+                        <input type="hidden" name="mode" value="rename">
+                        <input type="text" name="newname" placeholder="新しい名前" class="farm-select" required>
+                        <input type="submit" class="farm-btn" value="改名する">
                     </form>
                 </div>
 
                 <!-- 野に放す -->
                 <div class="farm-action-row">
-                    <span class="farm-action-label">🍃 自然に帰す（引退）</span>
-                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form" onsubmit="return confirm('本当に別れてよろしいですか？この操作は取り消せません。');">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
+                    <span class="farm-action-label">🍃 自然に帰す</span>
+                    <form action="{{ config.chocofarm_script }}" method="POST" class="farm-action-form" onsubmit="return confirm('本当に別れてよろしいですか？この操作は取り消せません。');">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="choco_sell">
+                        <input type="hidden" name="mode" value="sayonara">
                         <input type="submit" class="farm-btn btn--danger" value="野に放す">
                     </form>
                 </div>
-                {% endif %}
             </div>
-            {% else %}
-            <!-- チョコボ未所持 -->
-            <div class="farm-card">
-                <div class="farm-card__title">⚙️ 牧場アクション</div>
-                <div class="farm-msg-box">
-                    <div class="farm-msg-content">
-                        まだチョコボがいないクポ。<br>
-                        「黒チョコボの森」で野生のチョコボを捕まえてくるクポ！
-                    </div>
-                </div>
-            </div>
-            {% endif %}
         </div>
 
         <!-- 右サイドカラム -->
         <div class="farm-side-col">
             <!-- 受付モーグリ -->
             <div class="farm-card">
-                <div class="farm-card__title">💬 モーグリのアドバイス</div>
+                <div class="farm-card__title">💬 牧場案内</div>
                 <div class="farm-msg-box">
                     <div class="farm-msg-content">
-                        「{{ mog_advice }}」
+                        「クポ！ここではチョコボを育てて最強の駿馬を目指すクポ！<br>
+                        スピードやスタミナを高めて、公式レースで勝ち抜いていくクポ〜！」
                     </div>
                 </div>
             </div>
@@ -283,24 +149,17 @@
                 <div class="farm-card__title">🔗 関連施設</div>
                 <div class="layout-cluster">
                     <form action="{{ config.mori_farm_script }}" method="POST">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
                         <input type="submit" class="btn" value="🌳 黒チョコボの森">
                     </form>
-                    <form action="{{ config.dendo_script }}" method="POST">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
+                    <form action="{{ config.chocofarm_script }}" method="POST">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        {# mode=dendo は殿堂への登録処理なので、閲覧は別の値で入場する #}
-                        <input type="hidden" name="mode" value="list">
+                        <input type="hidden" name="mode" value="dendo">
                         <input type="submit" class="btn" value="🏛️ チョコボの殿堂">
                     </form>
-                    <form action="{{ config.chocorank_script }}" method="POST">
-                        <input type="hidden" name="s" value="{{ csrf_token }}">
+                    <form action="{{ config.chocofarm_script }}" method="POST">
                         <input type="hidden" name="id" value="{{ chara.id }}">
-                        <input type="hidden" name="mydata" value="{{ chara_log }}">
-                        <input type="hidden" name="mode" value="ranking">
+                        <input type="hidden" name="mode" value="chocorank">
                         <input type="submit" class="btn" value="📊 チョコボランキング">
                     </form>
                 </div>
