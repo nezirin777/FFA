@@ -291,6 +291,22 @@ Config["chara_images"] = [
     "usausa.gif",
     "vivi.gif",
     "zoro.gif",
+    # --- 追加キャラアイコン (既存のimg indexを崩さないよう末尾に追加) ---
+    "chop.gif",
+    "gf-efreet.gif",
+    "gf-karban.gif",
+    "gf-leviathan.gif",
+    "gf-siren.gif",
+    "ikon_m_c.gif",
+    "ikon_m_e.gif",
+    "ikon_m_f.gif",
+    "ikon_m_g.gif",
+    "ikon_m_m.gif",
+    "ikon_m_q.gif",
+    "ikon_m_sa.gif",
+    "ikon_m_st.gif",
+    "ikon_m_v.gif",
+    "ikon_m_z.gif",
 ]
 
 # チョコボアイコン・アセット
