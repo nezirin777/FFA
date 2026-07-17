@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>遊び方マニュアル - FFA改 Vips</title>
+<style>
+:root{
+  --bg:#05060f; --bg2:#0c1023; --panel:#121734; --panel2:#171d40;
+  --border:#2b356b; --border-soft:#222a55;
+  --text:#c9d1ff; --muted:#8b93c8; --heading:#eaf0ff;
+  --blue:#64b5f6; --gold:#ffd15a; --red:#ff6b7a; --green:#5fe08a; --purple:#b388ff;
+  --sp:8px;
+  --radius:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; padding:0; color:var(--text);
+  font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+  font-size:15px; line-height:1.75;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(99,102,241,.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(179,136,255,.12), transparent 55%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  background-attachment:fixed; min-height:100vh;
+}
+a{color:var(--blue); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px; margin:0 auto; padding:0 20px 80px}
+
+/* ===== Hero ===== */
+.hero{
+  text-align:center; padding:56px 20px 40px;
+  background:linear-gradient(180deg, rgba(99,102,241,.14), transparent);
+  border-bottom:1px solid var(--border-soft);
+}
+.hero .kicker{letter-spacing:.35em; font-size:12px; color:var(--purple); margin:0 0 12px}
+.hero h1{
+  margin:0; font-size:clamp(28px,6vw,46px); font-weight:800; letter-spacing:.04em;
+  background:linear-gradient(90deg,var(--gold),#fff3c4,var(--gold));
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(255,209,90,.15);
+}
+.hero p{margin:14px auto 0; max-width:640px; color:var(--muted)}
+
+/* ===== TOC ===== */
+.toc{
+  position:sticky; top:0; z-index:20; margin:0 0 34px;
+  background:rgba(8,10,26,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-soft);
+}
+.toc-inner{max-width:960px; margin:0 auto; padding:12px 16px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center}
+.toc a{
+  display:inline-block; padding:6px 13px; border-radius:999px; font-size:13px; font-weight:600;
+  color:var(--text); background:var(--panel); border:1px solid var(--border-soft);
+}
+.toc a:hover{border-color:var(--blue); color:#fff; text-decoration:none; background:var(--panel2)}
+
+/* ===== Section / Card ===== */
+section{margin:0 0 40px; scroll-margin-top:72px}
+.sec-head{display:flex; align-items:center; gap:12px; margin:0 0 18px}
+.sec-head .ico{font-size:24px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.sec-head h2{margin:0; font-size:22px; color:var(--heading); font-weight:800; letter-spacing:.02em}
+.sec-head .sub{color:var(--muted); font-size:13px; margin-left:auto; text-align:right}
+
+.card{
+  background:linear-gradient(180deg,var(--panel),rgba(18,23,52,.7));
+  border:1px solid var(--border-soft); border-radius:var(--radius);
+  padding:20px 22px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.card + .card{margin-top:14px}
+
+/* Steps */
+ol.steps{margin:0; padding-left:0; counter-reset:step; list-style:none}
+ol.steps li{position:relative; padding:8px 0 8px 44px; border-bottom:1px dashed var(--border-soft)}
+ol.steps li:last-child{border-bottom:0}
+ol.steps li::before{
+  counter-increment:step; content:counter(step);
+  position:absolute; left:0; top:8px; width:28px; height:28px; border-radius:50%;
+  display:grid; place-items:center; font-size:13px; font-weight:800; color:#08122a;
+  background:linear-gradient(180deg,var(--gold),#e0a838);
+}
+.hl{color:var(--gold); font-weight:700}
+.hl-red{color:var(--red); font-weight:700}
+
+/* ===== Tables ===== */
+.table-scroll{overflow-x:auto; border-radius:var(--radius); border:1px solid var(--border-soft)}
+table{border-collapse:collapse; width:100%; font-size:14px; min-width:520px}
+thead th{
+  position:sticky; top:0; background:var(--panel2); color:var(--heading);
+  font-weight:700; text-align:left; padding:11px 14px; border-bottom:2px solid var(--border);
+  white-space:nowrap; z-index:1;
+}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top}
+tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+tbody tr:hover{background:rgba(100,181,246,.07)}
+td.name,th.name{font-weight:700; color:#fff; white-space:nowrap}
+
+/* Job cards */
+.jobs{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px}
+.job{
+  background:linear-gradient(180deg,var(--panel),rgba(18,23,52,.6));
+  border:1px solid var(--border-soft); border-radius:var(--radius); padding:16px 18px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.job:hover{border-color:var(--border)}
+.job h3{margin:0; font-size:17px; color:#fff; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.job .tier{font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(179,136,255,.18); color:var(--purple)}
+.job .tier.adv{background:rgba(255,209,90,.16); color:var(--gold)}
+.job .tier.sec{background:rgba(255,107,122,.16); color:var(--red)}
+.job .desc{color:var(--muted); font-size:13.5px; margin:0}
+.req{display:flex; flex-wrap:wrap; gap:6px; margin-top:2px}
+.req .stat{font-size:12px; padding:3px 8px; border-radius:8px; background:var(--bg2); border:1px solid var(--border-soft); color:var(--text)}
+.req .stat b{color:var(--gold)}
+.req .lv{background:rgba(95,224,138,.12); border-color:transparent; color:var(--green)}
+.req .pre{background:rgba(100,181,246,.12); border-color:transparent; color:var(--blue)}
+.moves{margin-top:auto; padding-top:8px; border-top:1px solid var(--border-soft); font-size:13px}
+.moves .lbl{color:var(--muted); font-size:11px; letter-spacing:.1em; display:block; margin-bottom:4px}
+.moves .m{display:inline-block; margin:2px 4px 2px 0; padding:2px 8px; border-radius:6px; background:rgba(100,181,246,.1); color:var(--blue); font-size:12.5px}
+.moves .m.master{background:rgba(255,209,90,.13); color:var(--gold)}
+
+/* Rate chips inside skills */
+.rate{font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap}
+.r-h{background:rgba(95,224,138,.15); color:var(--green)}
+.r-m{background:rgba(255,209,90,.15); color:var(--gold)}
+.r-l{background:rgba(255,107,122,.15); color:var(--red)}
+.r-x{background:rgba(179,136,255,.15); color:var(--purple)}
+
+/* Param / facility grid */
+.deflist{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+.def{background:var(--panel); border:1px solid var(--border-soft); border-radius:12px; padding:14px 16px}
+.def dt{font-weight:700; color:var(--gold); margin:0 0 4px; font-size:14.5px}
+.def dd{margin:0; color:var(--muted); font-size:13.5px}
+
+/* Notice */
+.notice{border-left:4px solid var(--red); background:rgba(255,107,122,.06); border-radius:0 12px 12px 0; padding:14px 18px; margin:0 0 14px}
+.notice h4{margin:0 0 8px; color:var(--red); font-size:15px}
+.notice ul{margin:0; padding-left:18px} .notice li{margin:4px 0; color:var(--muted); font-size:13.5px}
+.notice.info{border-color:var(--blue); background:rgba(100,181,246,.06)} .notice.info h4{color:var(--blue)}
+
+.warn-inline{color:var(--red); font-weight:600}
+footer{text-align:center; color:var(--muted); font-size:12px; padding:30px 0 0; border-top:1px solid var(--border-soft); margin-top:40px}
+.top-link{position:fixed; right:18px; bottom:18px; z-index:30; width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center; background:var(--panel2); border:1px solid var(--border); color:var(--blue); font-size:18px; box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.top-link:hover{background:var(--panel); text-decoration:none}
+
+@media(max-width:600px){
+  body{font-size:14px}
+  .wrap{padding:0 12px 60px}
+  .sec-head .sub{display:none}
+  .hero{padding:40px 16px 28px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <p class="kicker">FREE FIGHT ADVENTURE</p>
+  <h1>⚔ FFA改 Vips 遊び方マニュアル ⚔</h1>
+  <p>キャラクターを育て、必殺技を極め、頂点を目指す対戦育成RPG。<br>初めての方も、極めたい方も、まずはここから。</p>
+</header>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#play">遊び方</a>
+    <a href="#jobs">職業と必殺技</a>
+    <a href="#skills">必殺技リスト</a>
+    <a href="#params">パラメータ</a>
+    <a href="#town">街の施設</a>
+    <a href="#field">冒険エリア</a>
+    <a href="#rules">注意事項</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===== 遊び方 ===== -->
+  <section id="play">
+    <div class="sec-head"><span class="ico">🎮</span><h2>このゲームの遊び方</h2></div>
+    <div class="card">
+      <ol class="steps">
+        <li>トップ画面の <span class="hl">「新規キャラクター登録」</span> からキャラクターを作成します。</li>
+        <li>作成が完了したら、トップ画面のログイン欄から<b>あなた専用のステータス画面</b>に入ります。</li>
+        <li>ステータス画面で、冒険・買い物・転職などの行動を選択できます。</li>
+        <li>登録できるのは<b>1人につき1キャラクターのみ</b>です。以降はログインして遊びます。</li>
+        <li>これはHPバトラーではなく<b>キャラバトラー</b>。能力を自分で振り分けて育てるゲームです。</li>
+        <li><span class="hl-red">60日</span>以上戦わないとキャラクターデータは削除されます。</li>
+        <li>一度戦闘すると、次の戦闘まで一定の<b>クールダウン</b>（数十秒）があります。</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== 職業 ===== -->
+  <section id="jobs">
+    <div class="sec-head"><span class="ico">🛡️</span><h2>職業と必殺技</h2>
+      <span class="sub">必要特性値・前提職業・習得必殺技（<span style="color:var(--gold)">金色</span>=マスター時習得）</span></div>
+    <div class="jobs">
+
+      <div class="job"><h3>ソルジャー <span class="tier">基本</span></h3>
+        <p class="desc">武器攻撃のエキスパート。力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力 <b>12</b></span><span class="stat lv">Lv 10</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">凶斬り</span><span class="m master">超究武神覇斬</span></div></div>
+
+      <div class="job"><h3>黒魔道士 <span class="tier">基本</span></h3>
+        <p class="desc">魔法攻撃を得意とする。魔力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">知 <b>12</b></span><span class="stat lv">Lv 10</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">ファイガ</span><span class="m">フレア</span><span class="m master">メテオ</span></div></div>
+
+      <div class="job"><h3>白魔道士 <span class="tier">基本</span></h3>
+        <p class="desc">防御魔法を得意とする。信仰心を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">信 <b>12</b></span><span class="stat">魅 <b>8</b></span><span class="stat lv">Lv 10</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">シェル</span><span class="m">ケアルガ</span><span class="m master">ホーリー</span></div></div>
+
+      <div class="job"><h3>シーフ <span class="tier">基本</span></h3>
+        <p class="desc">相手のお金を盗んで稼ぐ。器用さを上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">技 <b>12</b></span><span class="stat">速 <b>8</b></span><span class="stat lv">Lv 10</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">あれはなんだ</span><span class="m">お金を盗む</span><span class="m master">ライフデジョン</span></div></div>
+
+      <div class="job"><h3>時魔道士 <span class="tier adv">上級</span></h3>
+        <p class="desc">時を操る魔法のエキスパート。魔力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>35</b></span><span class="stat">知<b>35</b></span><span class="stat">信<b>30</b></span><span class="stat">生<b>50</b></span><span class="stat">技<b>50</b></span><span class="stat">速<b>35</b></span><span class="stat">魅<b>35</b></span><span class="stat lv">Lv 25</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">ヘイスト</span><span class="m">ストップ</span><span class="m master">テレポ</span></div></div>
+
+      <div class="job"><h3>赤魔道士 <span class="tier adv">上級</span></h3>
+        <p class="desc">古代魔法の研究家。魔力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">知<b>50</b></span><span class="stat">技<b>35</b></span><span class="stat lv">Lv 25</span><span class="stat pre">要 黒魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">トルネド</span><span class="m">メルトン</span><span class="m master">ウォール</span></div></div>
+
+      <div class="job"><h3>バード <span class="tier adv">上級</span></h3>
+        <p class="desc">吟遊詩人。魔力と信仰心を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">知<b>35</b></span><span class="stat">技<b>35</b></span><span class="stat">速<b>35</b></span><span class="stat">魅<b>50</b></span><span class="stat lv">Lv 25</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">回復の歌</span><span class="m">勇奮の歌</span><span class="m master">祝福の歌</span></div></div>
+
+      <div class="job"><h3>召還士 <span class="tier adv">上級</span></h3>
+        <p class="desc">サイコキネシスで攻撃する超能力者。信仰心を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>35</b></span><span class="stat">知<b>70</b></span><span class="stat">生<b>35</b></span><span class="stat">魅<b>35</b></span><span class="stat lv">Lv 25</span><span class="stat pre">要 時魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">イフリート召還</span><span class="m">ディアボロス召還</span><span class="m master">カーバンクル召還</span></div></div>
+
+      <div class="job"><h3>竜騎士 <span class="tier adv">上級</span></h3>
+        <p class="desc">槍で戦う職業。空に飛んで攻撃を回避できる。</p>
+        <div class="req"><span class="stat">力<b>100</b></span><span class="stat">信<b>75</b></span><span class="stat">生<b>100</b></span><span class="stat">技<b>100</b></span><span class="stat">速<b>150</b></span><span class="stat">魅<b>75</b></span><span class="stat lv">Lv 50</span><span class="stat pre">要 ソルジャー</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">ジャンプ</span><span class="m">ハイウインド</span><span class="m master">旋空飛竜滅殺槍</span></div></div>
+
+      <div class="job"><h3>ビショップ <span class="tier adv">上級</span></h3>
+        <p class="desc">魔法のエキスパート。魔力と信仰心を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">知<b>150</b></span><span class="stat">信<b>150</b></span><span class="stat">魅<b>100</b></span><span class="stat lv">Lv 50</span><span class="stat pre">要 黒・白魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">コメット</span><span class="m">ジハード</span><span class="m master">大いなる福音</span></div></div>
+
+      <div class="job"><h3>ナイト <span class="tier adv">上級</span></h3>
+        <p class="desc">神に仕える戦士。力と信仰心を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>150</b></span><span class="stat">知<b>125</b></span><span class="stat">信<b>150</b></span><span class="stat">生<b>150</b></span><span class="stat">技<b>125</b></span><span class="stat">速<b>125</b></span><span class="stat">魅<b>180</b></span><span class="stat lv">Lv 75</span><span class="stat pre">要 ソルジャー・白魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">守って戦う</span><span class="m">オーラ</span><span class="m master">ホーリースラッシュ</span></div></div>
+
+      <div class="job"><h3>侍 <span class="tier adv">上級</span></h3>
+        <p class="desc">日本の戦士。力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>180</b></span><span class="stat">知<b>100</b></span><span class="stat">生<b>180</b></span><span class="stat">技<b>125</b></span><span class="stat">速<b>150</b></span><span class="stat">魅<b>100</b></span><span class="stat lv">Lv 75</span><span class="stat pre">要 ソルジャー・黒魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">真剣白刃取り</span><span class="m">燕返し</span><span class="m master">斬鉄剣</span></div></div>
+
+      <div class="job"><h3>モンク <span class="tier adv">上級</span></h3>
+        <p class="desc">気孔の使い手。力と生命力を上げると攻撃力が伸びる（武器は攻撃力に影響しない）。</p>
+        <div class="req"><span class="stat">力<b>180</b></span><span class="stat">知<b>75</b></span><span class="stat">信<b>125</b></span><span class="stat">技<b>100</b></span><span class="stat">速<b>150</b></span><span class="stat">魅<b>100</b></span><span class="stat lv">Lv 75</span><span class="stat pre">要 白魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">硬気砲</span><span class="m">無限乱武</span><span class="m master">ファイナルヘヴン</span></div></div>
+
+      <div class="job"><h3>忍者 <span class="tier adv">上級</span></h3>
+        <p class="desc">忍術の使い手。力・器用さ・素早さを上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>180</b></span><span class="stat">知<b>125</b></span><span class="stat">信<b>100</b></span><span class="stat">生<b>180</b></span><span class="stat">技<b>180</b></span><span class="stat">速<b>200</b></span><span class="stat lv">Lv 75</span><span class="stat pre">要 シーフ・バード</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">影縫いの術</span><span class="m">分身の術</span><span class="m master">森羅万象</span></div></div>
+
+      <div class="job"><h3>暗黒騎士 <span class="tier adv">上級</span></h3>
+        <p class="desc">暗黒の力を使う戦士。力を溜めて強力な一撃を放つ。</p>
+        <div class="req"><span class="stat">力<b>350</b></span><span class="stat">生<b>350</b></span><span class="stat">技<b>250</b></span><span class="stat">速<b>250</b></span><span class="stat lv">Lv 100</span><span class="stat pre">要 黒魔道士・時魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">暗黒剣</span><span class="m">ドレイン</span><span class="m master">ダークイリュージョン</span></div></div>
+
+      <div class="job"><h3>魔法剣士 <span class="tier adv">上級</span></h3>
+        <p class="desc">古代魔法を武器に宿して攻撃。力と魔力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>300</b></span><span class="stat">知<b>300</b></span><span class="stat">生<b>300</b></span><span class="stat">技<b>250</b></span><span class="stat">速<b>250</b></span><span class="stat lv">Lv 100</span><span class="stat pre">要 ソルジャー・赤魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">ファイガ剣</span><span class="m">ホーリー剣</span><span class="m master">アルテマ剣</span></div></div>
+
+      <div class="job"><h3>マシナリー <span class="tier adv">上級</span></h3>
+        <p class="desc">近代兵器の使い手。飛空艇ラグナロクの援護を受けられる。</p>
+        <div class="req"><span class="stat">力<b>250</b></span><span class="stat">知<b>350</b></span><span class="stat">生<b>250</b></span><span class="stat">技<b>350</b></span><span class="stat">速<b>250</b></span><span class="stat lv">Lv 100</span><span class="stat pre">要 シーフ・時魔道士</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">狙い撃ち</span><span class="m">乱れ撃ち</span><span class="m master">急所を狙い撃ち</span></div></div>
+
+      <div class="job"><h3>幻獣師 <span class="tier sec">隠し</span></h3>
+        <p class="desc">幻獣を召還する。まれにバハムートの支援攻撃を受けられる。</p>
+        <div class="req"><span class="stat">知<b>500</b></span><span class="stat">信<b>500</b></span><span class="stat">生<b>400</b></span><span class="stat">魅<b>500</b></span><span class="stat lv">Lv 150</span><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">リヴァイアサン召還</span><span class="m">バハムート召還</span><span class="m master">ナイツオブラウンド召還</span></div></div>
+
+      <div class="job"><h3>Ｓｅｅｄ <span class="tier sec">隠し</span></h3>
+        <p class="desc">武器攻撃のエキスパート。力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat">力<b>500</b></span><span class="stat">生<b>500</b></span><span class="stat">技<b>350</b></span><span class="stat">速<b>350</b></span><span class="stat lv">Lv 150</span><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">ラブディバイド</span><span class="m">ブラスティングゾーン</span><span class="m master">エンドオブハート</span></div></div>
+
+      <div class="job"><h3>占い師 <span class="tier sec">隠し</span></h3>
+        <p class="desc">タロットカードで結果を得る。まれに相手のHPを回復してしまう。</p>
+        <div class="req"><span class="stat">力<b>400</b></span><span class="stat">知<b>450</b></span><span class="stat">信<b>450</b></span><span class="stat">生<b>400</b></span><span class="stat">技<b>400</b></span><span class="stat">速<b>400</b></span><span class="stat">魅<b>400</b></span><span class="stat lv">Lv 150</span><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">タロット（通常）</span><span class="m">タロット（倍増）</span><span class="m master">スターダスト・フォーチューン</span></div></div>
+
+      <div class="job"><h3>ものまね師 <span class="tier sec">隠し</span></h3>
+        <p class="desc">ダンスしながら攻撃する。強くないのでお勧めできない。</p>
+        <div class="req"><span class="stat">技<b>50</b></span><span class="stat">速<b>50</b></span><span class="stat">魅<b>50</b></span><span class="stat lv">Lv 25</span><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m master">ものまね</span></div></div>
+
+      <div class="job"><h3>皇帝 <span class="tier sec">隠し</span></h3>
+        <p class="desc">皇帝を名乗る。カルマと魅力を上げると攻撃力が伸びる。</p>
+        <div class="req"><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">アルテマ</span><span class="m">デジョン</span><span class="m master">ショックウェーブパルサー</span></div></div>
+
+      <div class="job"><h3>管理人 <span class="tier sec">隠し</span></h3>
+        <p class="desc">最強の職業。必殺技の効果は絶大で安定し、強力な武具を装備できる。</p>
+        <div class="req"><span class="stat pre">特殊条件</span></div>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">Ｗメテオ</span><span class="m">アルテマ・ホーリー・フレア・メテオ</span><span class="m master">アポガリプス</span></div></div>
+
+      <div class="job"><h3>???? <span class="tier sec">隠し</span></h3>
+        <p class="desc">この他にも隠し職業がいくつか存在する。自分の目で確かめてみよう。</p>
+        <div class="moves"><span class="lbl">必殺技</span><span class="m">？？？？</span></div></div>
+
+    </div>
+  </section>
+
+  <!-- ===== 必殺技リスト ===== -->
+  <section id="skills">
+    <div class="sec-head"><span class="ico">✨</span><h2>必殺技リスト</h2>
+      <span class="sub">発動率: <span class="rate r-h">高</span> <span class="rate r-m">中</span> <span class="rate r-l">低</span> <span class="rate r-x">特殊</span></span></div>
+    <p style="color:var(--muted);margin:0 0 14px">戦術は、マスターした職業の技に加えて現在の職で使える技が選べます。ごく稀に自分の持つ必殺技がランダム発動することもあります。</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th class="name">必殺技</th><th>効果</th><th>発動率</th></tr></thead>
+      <tbody>
+        <tr><td class="name">凶斬り</td><td>威力中の物理攻撃。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">超究武神覇斬</td><td>威力小の物理攻撃を最大8回連続。相手の回避率を無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ファイガ</td><td>威力中の魔法攻撃。回避率無視。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">フレア</td><td>威力大の魔法攻撃。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">メテオ</td><td>威力小の魔法攻撃を最大16回連続。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">シェル</td><td>相手から受けるダメージを1/10に軽減。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">ケアルガ</td><td>自分のHPを威力大で回復。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ホーリー</td><td>威力大の魔法攻撃。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">あれはなんだ</td><td>相手に隙を作り攻撃を100%命中させ、相手の攻撃を無効化。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">お金を盗む</td><td>相手のお金を盗む。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">ライフデジョン</td><td>威力中の魔法攻撃。与ダメージ分だけ自分のHPを回復。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ヘイスト</td><td>回避率をかなり上げる。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">ストップ</td><td>相手の攻撃を無効化。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">テレポ</td><td>戦闘を強制終了させる（あまり意味はない）。</td><td><span class="rate r-x">特殊</span></td></tr>
+        <tr><td class="name">トルネド</td><td>威力中の魔法攻撃。回避率無視。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">メルトン</td><td>威力中の魔法攻撃。追加効果で相手の防具効果を無効化（持続）。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ウォール</td><td>相手の攻撃を無効化。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">回復の歌</td><td>自分のHPを威力大で回復。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">勇奮の歌</td><td>攻撃力を2倍にする。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">祝福の歌</td><td>武器と防具の効果を2倍にする（持続）。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">イフリート召還</td><td>地獄の火炎。威力大の魔法攻撃。回避率無視。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">ディアボロス召還</td><td>グラビガ。相手の現在HPの1/3ダメージ。回避率無視。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">カーバンクル召還</td><td>リフレク。相手の攻撃をそのまま反射する。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">ジャンプ</td><td>ジャンプ攻撃。物理攻撃を100%回避し必ず命中。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ハイウインド</td><td>上空から威力大の魔法攻撃。物理攻撃を100%回避し必ず命中。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">旋空飛竜滅殺槍</td><td>威力大のジャンプ攻撃。物理攻撃を100%回避し必ず命中。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">コメット</td><td>威力大の魔法攻撃。回避率無視。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">ジハード</td><td>威力極大の魔法攻撃。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">大いなる福音</td><td>自分のHPを最大値まで回復。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">守って戦う</td><td>相手からのダメージを常に半減（常時有効）。</td><td><span class="rate r-x">常時</span></td></tr>
+        <tr><td class="name">オーラ</td><td>武器の攻撃力を2倍にする。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ホーリースラッシュ</td><td>威力大の物理攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">真剣白刃取り</td><td>相手の攻撃を無効化。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">燕返し</td><td>威力大の物理攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">斬鉄剣</td><td>相手を一撃で仕留める。</td><td><span class="rate r-l">超低</span></td></tr>
+        <tr><td class="name">硬気砲</td><td>威力大の遠隔物理攻撃。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">無限乱武</td><td>威力小の物理攻撃を最大8回連続。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">ファイナルヘヴン</td><td>威力激大の物理攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">影縫いの術</td><td>攻撃を100%命中させ、相手への回避率を激増。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">分身の術</td><td>最大8体の分身が同時攻撃。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">森羅万象</td><td>威力激大の物理攻撃。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">暗黒剣</td><td>威力中の物理攻撃。自分も1/10ダメージを受ける。</td><td><span class="rate r-h">激高</span></td></tr>
+        <tr><td class="name">ドレイン</td><td>威力小の魔法攻撃。与ダメージの1/5を回復。回避率無視。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ダークイリュージョン</td><td>威力激大の物理攻撃。与ダメージの1/10を回復。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ファイガ剣</td><td>威力中の物理攻撃。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">ホーリー剣</td><td>威力大の物理攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">アルテマ剣</td><td>威力激大の物理攻撃。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">狙い撃ち</td><td>狙いを定め、確実に通常より強力な攻撃を当てる。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">乱れ撃ち</td><td>ランダムで1〜8倍のダメージを与える。</td><td><span class="rate r-m">中</span></td></tr>
+        <tr><td class="name">急所を狙い撃ち</td><td>急所に定まれば相手を一撃で葬る。</td><td><span class="rate r-l">激低</span></td></tr>
+        <tr><td class="name">リヴァイアサン召還</td><td>威力大の魔法攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">バハムート召還</td><td>威力大の魔法攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ナイツオブラウンド召還</td><td>威力激大の魔法攻撃を連続12回（ほぼ瞬殺）。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">アルテマ</td><td>威力激大の魔法攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">デジョン</td><td>成功すると相手を異次元へ飛ばして葬る。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ショックウェーブパルサー</td><td>威力激大の魔法攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ラブディバイド</td><td>威力大の物理攻撃。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">ブラスティングゾーン</td><td>威力激大の物理攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">エンドオブハート</td><td>威力大の物理攻撃を連続最大16回（ほぼ瞬殺）。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">タロット・カード（通常）</td><td>強烈なダメージや自己回復。相手を回復してしまうことも。</td><td><span class="rate r-x">運</span></td></tr>
+        <tr><td class="name">タロット・カード（効果倍増）</td><td>タロットの効果を全て倍増する。</td><td><span class="rate r-x">運</span></td></tr>
+        <tr><td class="name">スターダスト・フォーチューン</td><td>威力激大の魔法攻撃。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">ものまね</td><td>相手の攻撃をそっくりそのまま真似る。</td><td><span class="rate r-x">特殊</span></td></tr>
+        <tr><td class="name">Ｗメテオ</td><td>威力激大の魔法攻撃。</td><td><span class="rate r-h">高</span></td></tr>
+        <tr><td class="name">アルテマ・ホーリー・フレア・メテオ</td><td>威力激大の魔法攻撃を連続で行う。</td><td><span class="rate r-x">連続</span></td></tr>
+        <tr><td class="name">アポガリプス</td><td>威力絶大の魔法攻撃（ほぼ瞬殺）。</td><td><span class="rate r-l">低</span></td></tr>
+        <tr><td class="name">？？？？</td><td>この他にも様々な必殺技が用意されている。</td><td><span class="rate r-x">秘密</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ===== パラメータ ===== -->
+  <section id="params">
+    <div class="sec-head"><span class="ico">📊</span><h2>パラメータの見方</h2></div>
+    <dl class="deflist">
+      <div class="def"><dt>職業 / クラス</dt><dd>職業ごとに買える装備・発動する必殺技が異なる。クラスが上がるとチャンピオン時の必殺技発動率が上昇。</dd></div>
+      <div class="def"><dt>レベル</dt><dd>上がるとHPをはじめ各パラメータが上昇。転職には職業ごとに必要レベルがある。</dd></div>
+      <div class="def"><dt>ジョブレベル</dt><dd>上がると現在の職をマスター。マスター後は転職しても前職のアビリティを継続使用できる。転職するとジョブLvは1に戻る。上がると必殺率も上昇。</dd></div>
+      <div class="def"><dt>経験値</dt><dd>次のレベルに必要な値に達するとレベルアップ。</dd></div>
+      <div class="def"><dt>お金（ギル）</dt><dd>強力な武具の購入や訓練所での強化に使う。</dd></div>
+      <div class="def"><dt>HP</dt><dd>ゼロになると敗北。レベルと生命力が高いほど増加量が大きい。</dd></div>
+      <div class="def"><dt>力</dt><dd>戦士・モンク系で高いと攻撃力・必殺技威力が上がる。</dd></div>
+      <div class="def"><dt>魔力</dt><dd>魔道士・ビショップ系で高いと攻撃力・必殺技威力が上がる。</dd></div>
+      <div class="def"><dt>信仰心</dt><dd>僧侶・ナイト系で高いと攻撃力・必殺技威力が上がる。</dd></div>
+      <div class="def"><dt>生命力</dt><dd>HPの増加量が増える。</dd></div>
+      <div class="def"><dt>器用さ</dt><dd>盗賊・忍者系で高いと攻撃力・必殺技威力が上がる。命中率にも影響。</dd></div>
+      <div class="def"><dt>速さ</dt><dd>回避率に大きく影響。高いと攻撃がほとんど当たらなくなる。</dd></div>
+      <div class="def"><dt>魅力</dt><dd>必殺技の威力に影響することがある。</dd></div>
+      <div class="def"><dt>カルマ</dt><dd>必殺技の発動率に影響する。</dd></div>
+      <div class="def"><dt>命中率</dt><dd>器用さで決まる。上がると回避率の高い相手にも当てやすい（上限なし）。</dd></div>
+      <div class="def"><dt>回避率</dt><dd>速さで決まる。上がると攻撃を避けやすい（最大50%）。</dd></div>
+      <div class="def"><dt>必殺率</dt><dd>必殺技の発動確率。ジョブLvとカルマを鍛えると上がる（最大75%）。</dd></div>
+      <div class="def"><dt>称号</dt><dd>特定の場所へ行くために必要になる。</dd></div>
+    </dl>
+  </section>
+
+  <!-- ===== 街の施設 ===== -->
+  <section id="town">
+    <div class="sec-head"><span class="ico">🏙️</span><h2>街の施設</h2></div>
+    <dl class="deflist">
+      <div class="def"><dt>🏨 宿屋</dt><dd>レベル×1ギルで体力回復。チャンピオンとしての体力も回復でき、こまめに使うと連勝記録を伸ばせる。</dd></div>
+      <div class="def"><dt>⚔️ 武器屋</dt><dd>職業で装備可能な武器を購入。基本は高価なほど強力（職業により同価格でも攻撃力が異なる）。攻撃力↑で与ダメージ増。</dd></div>
+      <div class="def"><dt>🛡️ 防具屋</dt><dd>職業で装備可能な防具を購入。基本は高価なほど強力。防御力↑で被ダメージ減。</dd></div>
+      <div class="def"><dt>💍 装飾品店</dt><dd>職業で装備可能な装飾品を購入。職業により同価格でも効果が大きく異なる。</dd></div>
+      <div class="def"><dt>📦 アイテム倉庫</dt><dd>所持アイテムの保管・管理。購入した武具はまずここへ送られる。</dd></div>
+      <div class="def"><dt>🏦 銀行</dt><dd>お金を預けられる。戦闘に敗れても預金は減らない。こまめな貯金が強化への近道。</dd></div>
+      <div class="def"><dt>🛩️ 飛空艇</dt><dd>持ち物を預けられ、HPも満タンになる。</dd></div>
+    </dl>
+  </section>
+
+  <!-- ===== 冒険エリア ===== -->
+  <section id="field">
+    <div class="sec-head"><span class="ico">🗺️</span><h2>街の外・冒険エリア</h2></div>
+    <div class="notice info">
+      <h4>⚠️ 共通の注意</h4>
+      <ul><li>修行・冒険の戦闘に<b>敗れるとお金が100分の1</b>になってしまいます。こまめな銀行通いを！</li></ul>
+    </div>
+    <dl class="deflist">
+      <div class="def"><dt>⛪ 転職の神殿</dt><dd>職業を変える。職業ごとの特性により、戦闘で強力な必殺技が発動する。</dd></div>
+      <div class="def"><dt>🌲 周辺の探索</dt><dd>比較的低レベルの敵が出現。まずはここで修行してレベルを上げよう。</dd></div>
+      <div class="def"><dt>🏰 幻影の城</dt><dd>ランダムで一定時間出現。低レベルの敵に加え、まれに財宝を発見して序盤で大金を得られる。</dd></div>
+      <div class="def"><dt>🐉 レジェンドプレイス</dt><dd>ボスが連続出現し、徐々に強くなる。攻略すると攻略者としてランキング登録される。</dd></div>
+      <div class="def"><dt>🌀 異世界</dt><dd>世界を守る神々が出現。非常に強いが、貰えるお金も高額。あなたの強さは神を超えられるか。</dd></div>
+      <div class="def"><dt>🏆 天下一武道会</dt><dd>登録者中レベル上位者へ順に勝ち抜き戦を挑む。全て勝ち抜くとかなりの賞金が貰える。</dd></div>
+      <div class="def"><dt>📝 掲示板 / ✉️ 郵便局</dt><dd>掲示板で冒険者同士が語り合い、郵便局で個別メッセージを送れる。</dd></div>
+      <div class="def"><dt>🐤 チョコボ牧場</dt><dd>チョコボを捕獲・育成・配合し、レースや王者決定戦に出走できる。</dd></div>
+    </dl>
+  </section>
+
+  <!-- ===== 注意事項 ===== -->
+  <section id="rules">
+    <div class="sec-head"><span class="ico">📜</span><h2>先に読んでね</h2></div>
+    <div class="notice">
+      <h4>注意事項</h4>
+      <ul>
+        <li>1人で2人以上のキャラクター登録を禁止します。</li>
+        <li>違法サイトのURLを設定したキャラクターの登録を禁止します。</li>
+        <li>ブラウザの更新ボタン等の連打を禁止します。</li>
+        <li>上記に該当する場合、連絡なしに管理人の独断で削除することがあります。</li>
+      </ul>
+    </div>
+    <div class="notice info">
+      <h4>免責事項</h4>
+      <ul>
+        <li>プログラムのバグ等でキャラクターが消失しても、当サイトは一切責任を負いません。</li>
+        <li>本ゲームを原因とするトラブルには関与しません。</li>
+        <li>他者への中傷やモラルに反する行為があった場合、ID抹消・アクセス制限を行うことがあります。</li>
+      </ul>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <p style="margin:0;color:var(--muted);font-size:13px">
+        <b style="color:var(--text)">著作権</b><br>
+        ファイナルファンタジーは株式会社スクウェア・エニックスの登録商標であり、著作権は同社に帰属します。<br>
+        本プログラムは D.Takamiya(CUMRO) 氏の原作を GUN 氏が改造し、jun-k 氏がカスタマイズ、Emilia 氏が職業追加を行い、いく が整理・拡張したものです。<br>
+        <b>FFA</b> は <b>F</b>ree <b>F</b>ight <b>A</b>dventure（フリーファイトアドベンチャー）の略です。
+      </p>
+    </div>
+  </section>
+
+  <footer>FFA改 Vips Ver 3.00 — 遊び方マニュアル</footer>
+</div>
+
+<a href="#top" class="top-link" title="トップへ戻る">↑</a>
+</body>
+</html>

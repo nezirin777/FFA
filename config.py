@@ -63,7 +63,7 @@ Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
 # ==========================================
 
 # ヘルプ関連
-Config["help_text"] = "html/ffhelp.html"  # ヘルプファイルのパス
+Config["help_text"] = "html/manual.html"  # ヘルプ(遊び方マニュアル)のパス
 Config["help_text_url"] = "ヘルプ"  # ヘルプリンクの表示文字列
 
 Config["main_title"] = "FFA改 Vips Ver 3.00"  # ゲームのメインタイトル
@@ -365,7 +365,7 @@ Config["chara_jobs"] = [
     "歌姫",
     "ナイトメアマイスター",
 ]
-Config["jobs_html_path"] = "html/syokugyou.html"
+Config["jobs_html_path"] = "html/manual.html#jobs"  # 職業説明(統合マニュアルの職業セクションへ)
 
 # 幻影闘技場レベル制限
 Config["genei_level_low"] = 100
