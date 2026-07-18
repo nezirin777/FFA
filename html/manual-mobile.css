@@ -1,0 +1,19 @@
+/* ======================================================= */
+/*  manual-mobile.css — 遊び方マニュアル モバイル補正       */
+/*  責務: @media(max-width:768px) の上書きのみ (ガイドライン準拠) */
+/* ======================================================= */
+
+@media screen and (max-width:768px){
+  body{ font-size:14px; }
+
+  /* 横幅・余白の圧縮 */
+  .content-lg{ padding-inline:var(--space-m); }
+  .manual-hero{ padding:40px var(--space-m) 28px; }
+
+  /* セクション見出しの補足はモバイルで省略 */
+  .manual-section__sub{ display:none; }
+
+  /* PCで多列のグリッドを縦積みに */
+  .manual-job-grid{ grid-template-columns:1fr; }
+  .manual-def-grid{ grid-template-columns:1fr; }
+}
