@@ -1,0 +1,232 @@
+/* ======================================================= */
+/*  manual.css — 遊び方マニュアル デスクトップ基準スタイル    */
+/*  フロントエンド設計ガイドライン準拠 (@media は manual-mobile.css) */
+/*  プロパティ順: 枠組み → 位置 → サイズ → 余白 → 装飾 → その他 */
+/* ======================================================= */
+
+/* ====================================== */
+/* 0. Foundation / Reset                  */
+/* ====================================== */
+:root{
+  /* 背景・面 */
+  --bg:#05060f; --bg-2:#0c1023; --panel:#121734; --panel-2:#171d40;
+  --border:#2b356b; --border-soft:#222a55;
+  /* テキスト */
+  --text:#c9d1ff; --muted:#8b93c8; --heading:#eaf0ff;
+  /* セマンティックカラー */
+  --blue:#64b5f6; --gold:#ffd15a; --red:#ff6b7a; --green:#5fe08a; --purple:#b388ff;
+  /* 余白・角丸 */
+  --space-xs:2px; --space-s:5px; --space-m:10px; --space-l:20px; --space-xl:32px;
+  --radius-s:8px; --radius-m:12px; --radius-l:14px;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+  font-size:15px; line-height:1.75;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(99,102,241,.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(179,136,255,.12), transparent 55%),
+    linear-gradient(180deg,var(--bg),var(--bg-2));
+  background-attachment:fixed;
+}
+a{ color:var(--blue); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+
+/* ====================================== */
+/* 1. Layout Core (整列のみ・枠/余白なし)  */
+/* ====================================== */
+.layout-stack{ display:flex; flex-direction:column; gap:var(--space-m); }
+.layout-cluster{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-m); }
+
+/* ====================================== */
+/* 2. Width System (最大幅・中央寄せのみ)  */
+/* ====================================== */
+.content-lg{ width:100%; max-width:960px; margin-inline:auto; padding-inline:var(--space-l); }
+
+/* ====================================== */
+/* 3. Card Core (汎用コンポーネント)       */
+/* ====================================== */
+.card{
+  border:1px solid var(--border-soft); border-radius:var(--radius-l);
+  padding:var(--space-l) 22px;
+  background:linear-gradient(180deg,var(--panel),rgba(18,23,52,.7));
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+/* ====================================== */
+/* 4. Badge Core (汎用コンポーネント)      */
+/* ====================================== */
+.badge{
+  display:inline-block;
+  padding:2px 8px; border-radius:999px;
+  font-size:11px; font-weight:700; white-space:nowrap;
+}
+
+/* ====================================== */
+/* 5. Data Table Core                     */
+/* ====================================== */
+.table-wrapper{ overflow-x:auto; border:1px solid var(--border-soft); border-radius:var(--radius-l); }
+.data-table{ width:100%; min-width:520px; border-collapse:collapse; font-size:14px; }
+.data-table thead th{
+  position:sticky; top:0; z-index:1;
+  padding:11px 14px;
+  border-bottom:2px solid var(--border);
+  background:var(--panel-2); color:var(--heading);
+  font-weight:700; text-align:left; white-space:nowrap;
+}
+.data-table tbody td{ padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top; }
+.data-table tbody tr:nth-child(even){ background:rgba(255,255,255,.02); }
+.data-table tbody tr:hover{ background:rgba(100,181,246,.07); }
+.data-table__name{ color:#fff; font-weight:700; white-space:nowrap; }
+
+/* ====================================== */
+/* 6. Modifier (バリエーション)            */
+/* ====================================== */
+/* Rate badge (発動率) — .badge と併用 */
+.badge--rate-high{ background:rgba(95,224,138,.15); color:var(--green); }
+.badge--rate-mid{ background:rgba(255,209,90,.15); color:var(--gold); }
+.badge--rate-low{ background:rgba(255,107,122,.15); color:var(--red); }
+.badge--rate-special{ background:rgba(179,136,255,.15); color:var(--purple); }
+/* Notice modifier */
+.notice--info{ border-left-color:var(--blue); background:rgba(100,181,246,.06); }
+.notice--info .notice__title{ color:var(--blue); }
+
+/* ====================================== */
+/* 7. Utility (最小限)                     */
+/* ====================================== */
+.u-text-center{ text-align:center; }
+.u-mt-s{ margin-top:var(--space-s); }
+.u-mt-m{ margin-top:var(--space-m); }
+.u-mb-m{ margin-bottom:var(--space-m); }
+.text-gold{ color:var(--gold); font-weight:700; }
+.text-red{ color:var(--red); font-weight:700; }
+.text-muted{ color:var(--muted); }
+.text-strong{ color:var(--text); font-weight:700; }
+.hidden{ display:none !important; }
+
+/* ====================================== */
+/* 8. Manual: Hero                        */
+/* ====================================== */
+.manual-hero{
+  padding:56px var(--space-l) 40px;
+  border-bottom:1px solid var(--border-soft);
+  background:linear-gradient(180deg, rgba(99,102,241,.14), transparent);
+  text-align:center;
+}
+.manual-hero__eyebrow{ margin:0 0 12px; color:var(--purple); font-size:12px; letter-spacing:.35em; }
+.manual-hero h1{
+  margin:0;
+  font-size:clamp(28px,6vw,46px); font-weight:800; letter-spacing:.04em;
+  background:linear-gradient(90deg,var(--gold),#fff3c4,var(--gold));
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(255,209,90,.15);
+}
+.manual-hero__lead{ max-width:640px; margin:14px auto 0; color:var(--muted); }
+
+/* ====================================== */
+/* 9. Manual: Table of Contents           */
+/* ====================================== */
+.manual-toc{
+  position:sticky; top:0; z-index:20;
+  margin-bottom:34px;
+  border-bottom:1px solid var(--border-soft);
+  background:rgba(8,10,26,.82); backdrop-filter:blur(10px);
+}
+.manual-toc__list{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:8px;
+  max-width:960px; margin-inline:auto; padding:12px 16px;
+}
+.manual-toc a{
+  display:inline-block;
+  padding:6px 13px;
+  border:1px solid var(--border-soft); border-radius:999px;
+  background:var(--panel);
+  color:var(--text); font-size:13px; font-weight:600;
+}
+.manual-toc a:hover{ border-color:var(--blue); background:var(--panel-2); color:#fff; text-decoration:none; }
+
+/* ====================================== */
+/* 10. Manual: Section 見出し             */
+/* ====================================== */
+.manual-section{ margin-bottom:40px; scroll-margin-top:72px; }
+.manual-section__head{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.manual-section__icon{ font-size:24px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+.manual-section__head h2{ margin:0; color:var(--heading); font-size:22px; font-weight:800; letter-spacing:.02em; }
+.manual-section__sub{ margin-left:auto; color:var(--muted); font-size:13px; text-align:right; }
+.manual-lead{ max-width:74ch; margin:0 0 14px; color:var(--muted); }
+
+/* ====================================== */
+/* 11. Manual: Steps (遊び方)             */
+/* ====================================== */
+.manual-steps{ margin:0; padding-left:0; list-style:none; counter-reset:step; }
+.manual-steps li{ position:relative; padding:8px 0 8px 44px; border-bottom:1px dashed var(--border-soft); }
+.manual-steps li:last-child{ border-bottom:0; }
+.manual-steps li::before{
+  counter-increment:step; content:counter(step);
+  position:absolute; left:0; top:8px;
+  display:grid; place-items:center; width:28px; height:28px;
+  border-radius:50%;
+  background:linear-gradient(180deg,var(--gold),#e0a838);
+  color:#08122a; font-size:13px; font-weight:800;
+}
+
+/* ====================================== */
+/* 12. Manual: Job cards (職業)           */
+/* ====================================== */
+.manual-job-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+.job-card{
+  display:flex; flex-direction:column; gap:var(--space-m);
+  border:1px solid var(--border-soft); border-radius:var(--radius-l);
+  padding:16px 18px;
+  background:linear-gradient(180deg,var(--panel),rgba(18,23,52,.6));
+}
+.job-card:hover{ border-color:var(--border); }
+.job-card__name{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; color:#fff; font-size:17px; }
+.job-card__tier{ padding:2px 8px; border-radius:999px; background:rgba(179,136,255,.18); color:var(--purple); font-size:11px; font-weight:700; }
+.job-card__tier--advanced{ background:rgba(255,209,90,.16); color:var(--gold); }
+.job-card__tier--secret{ background:rgba(255,107,122,.16); color:var(--red); }
+.job-card__desc{ margin:0; color:var(--muted); font-size:13.5px; }
+.job-card__req{ display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; }
+.job-card__stat{ padding:3px 8px; border:1px solid var(--border-soft); border-radius:var(--radius-s); background:var(--bg-2); color:var(--text); font-size:12px; }
+.job-card__stat b{ color:var(--gold); }
+.job-card__stat--level{ border-color:transparent; background:rgba(95,224,138,.12); color:var(--green); }
+.job-card__stat--prereq{ border-color:transparent; background:rgba(100,181,246,.12); color:var(--blue); }
+.job-card__moves{ margin-top:auto; padding-top:8px; border-top:1px solid var(--border-soft); font-size:13px; }
+.job-card__moves-label{ display:block; margin-bottom:4px; color:var(--muted); font-size:11px; letter-spacing:.1em; }
+.move-badge{ display:inline-block; margin:2px 4px 2px 0; padding:2px 8px; border-radius:6px; background:rgba(100,181,246,.1); color:var(--blue); font-size:12.5px; }
+.move-badge--master{ background:rgba(255,209,90,.13); color:var(--gold); }
+
+/* ====================================== */
+/* 13. Manual: Definition cards (パラメータ/施設) */
+/* ====================================== */
+.manual-def-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+.def-card{ border:1px solid var(--border-soft); border-radius:var(--radius-m); padding:14px 16px; background:var(--panel); }
+.def-card dt{ margin:0 0 4px; color:var(--gold); font-size:14.5px; font-weight:700; }
+.def-card dd{ margin:0; color:var(--muted); font-size:13.5px; }
+
+/* ====================================== */
+/* 14. Manual: Notice (注意/免責)         */
+/* ====================================== */
+.notice{ margin:0 0 14px; padding:14px 18px; border-left:4px solid var(--red); border-radius:0 var(--radius-m) var(--radius-m) 0; background:rgba(255,107,122,.06); }
+.notice h4{ margin:0 0 8px; color:var(--red); font-size:15px; }
+.notice ul{ margin:0; padding-left:18px; }
+.notice li{ margin:4px 0; color:var(--muted); font-size:13.5px; }
+
+/* ====================================== */
+/* 15. Manual: Divider / Footer / TopLink */
+/* ====================================== */
+.section-divider{ height:0; margin:var(--space-l) 0; border:0; border-top:1px solid var(--border-soft); }
+.manual-fineprint{ margin:0; color:var(--muted); font-size:13px; }
+.manual-footer{ margin-top:40px; padding-top:30px; border-top:1px solid var(--border-soft); color:var(--muted); font-size:12px; text-align:center; }
+.manual-top-link{
+  position:fixed; right:18px; bottom:18px; z-index:30;
+  display:grid; place-items:center; width:44px; height:44px;
+  border:1px solid var(--border); border-radius:50%;
+  background:var(--panel-2); color:var(--blue);
+  font-size:18px; box-shadow:0 6px 18px rgba(0,0,0,.4);
+}
+.manual-top-link:hover{ background:var(--panel); text-decoration:none; }
