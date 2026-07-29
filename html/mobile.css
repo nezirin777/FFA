@@ -169,6 +169,25 @@
   .battle-back-actions a {
     width: 100%;
   }
+
+  .battle-container--result .battle-hp-bar-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-s);
+  }
+
+  .battle-container--result .battle-turn-card {
+    padding: var(--space-s);
+  }
+
+  .battle-container--result .battle-hp-label {
+    flex-wrap: wrap;
+  }
+
+  .battle-container--result .battle-damage {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
+  }
   
   .farm-grid {
     grid-template-columns: 1fr;
@@ -210,5 +229,13 @@
 
   .ff-battle-commands {
     grid-template-columns: 1fr;
+  }
+
+  .ff-bbs-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ff-bbs-submit {
+    width: 100%;
   }
 }

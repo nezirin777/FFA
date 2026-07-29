@@ -1,0 +1,33 @@
+{
+  "item": {
+    "weapon": {
+      "name": "ファルシオン",
+      "dmg": 4900,
+      "effect": 50
+    },
+    "armor": {
+      "name": "レインボードレス",
+      "def": 2900,
+      "effect": 30
+    },
+    "accessory": {
+      "name": "ウォールリング",
+      "effect_id": 6,
+      "bonus": {
+        "str": 0,
+        "int": 0,
+        "dex": 0,
+        "vit": 0,
+        "agi": 0,
+        "mnd": 0,
+        "lck": 0,
+        "lp": 0
+      },
+      "attrib": 0,
+      "spare1": 0,
+      "spare2": 0,
+      "spare3": 0,
+      "description": ""
+    }
+  }
+}

@@ -13,12 +13,12 @@
         now = Date.parse(now) / 1000;
         var x = parseInt(counts - (now - start), 10);
         var val = x > 0 ? x : 0;
-        
+
         var timers = document.querySelectorAll(".cooldown-timer");
         timers.forEach(function(timer) {
             timer.textContent = val;
         });
-        
+
         if (x <= 0) {
             var actionIds = ["monster", "genei", "boss", "isekiai", "battle"];
             actionIds.forEach(function(id) {
@@ -41,8 +41,8 @@
     <!-- 上部ナビゲーション -->
     <div class="ff-menu">
         <span>【メニュー】</span>
-        <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> / 
-        <a href="{{ config.ranking_script }}">能力別ランキング</a> / 
+        <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> /
+        <a href="{{ config.ranking_script }}">能力別ランキング</a> /
         <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> /
         <a href="{{ config.img_all_list }}" target="_blank">アイコン画像一覧</a> /
         <a href="{{ config.help_text }}" target="_blank">ヘルプ</a>
@@ -91,7 +91,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     <div class="ff-accessory-effects">
                         <b>装飾効果:</b> Force +
                         力+{{ item.accessory.bonus.str }} 魔+{{ item.accessory.bonus.int }} 技+{{ item.accessory.bonus.dex }} 体+{{ item.accessory.bonus.vit }}
@@ -217,7 +217,7 @@
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="⚔️ 武器屋"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '武器の購入と手持ち装備 of 売却ができますクポ。'"
+                                   onmouseover="document.getElementById('facility-desc').innerText = '武器の購入と手持ち装備の売却ができますクポ。'"
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 防具屋 -->
@@ -241,7 +241,7 @@
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="📈 成長・設定"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'キャラクターのアイコン画像やコメントなどの設定を変更しますクポ。'"
+                                   onmouseover="document.getElementById('facility-desc').innerText = 'キャラアイコン画像やコメントなどの設定を変更しますクポ。'"
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 銀行 -->
@@ -257,7 +257,7 @@
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="📦 倉庫"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '手持ちの武器・防具・装飾品を預けたり引き出したりできますクポ。'"
+                                   onmouseover="document.getElementById('facility-desc').innerText = '武器・防具・装飾品を預けたり引き出したりできますクポ。'"
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 郵便局 -->
@@ -269,13 +269,9 @@
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 掲示板 -->
-                        <form action="{{ config.bbs_script }}" method="POST">
-                            <input type="hidden" name="s" value="{{ csrf_token }}">
-                            <input type="hidden" name="id" value="{{ chara.id }}">
-                            <input type="submit" class="btn facility-btn" value="📝 掲示板"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '冒険者みんなが書き込める掲示板クポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
-                        </form>
+                        <a href="#ff-bbs" class="btn facility-btn"
+                           onmouseover="document.getElementById('facility-desc').innerText = '冒険者みんなが書き込める掲示板クポ。'"
+                           onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">📝 掲示板</a>
                         <!-- 転職の神殿 -->
                         <form action="{{ config.tensyoku_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
@@ -312,28 +308,24 @@
                         <!-- モンスターと戦う -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">⚔️ モンスター</span>
-                            {% if not chara.weapon_id %}
-                                <small class="red">※武器を装備してください</small>
-                            {% else %}
-                                <div id="action-form-monster" style="{% if ztime > 0 %}display: none;{% endif %}">
-                                    <form action="{{ config.monster_script }}" method="POST" class="ff-monster-form">
-                                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                                        <input type="hidden" name="mode" value="monster">
-                                        <input type="hidden" name="id" value="{{ chara.id }}">
-                                        <select class="form-control ff-monster-select" name="mons_file">
-                                            <option value="monster0">初級モンスター</option>
-                                            <option value="monster1">中級モンスター</option>
-                                            <option value="monster2">上級モンスター</option>
-                                            <option value="monster3">超級モンスター</option>
-                                        </select>
-                                        <input type="submit" class="btn ff-action-btn" value="戦闘開始">
-                                    </form>
-                                </div>
-                                {% if ztime > 0 %}
-                                <div id="cooldown-text-monster">
-                                    <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
-                                </div>
-                                {% endif %}
+                            <div id="action-form-monster" style="{% if ztime > 0 %}display: none;{% endif %}">
+                                <form action="{{ config.monster_script }}" method="POST" class="ff-monster-form">
+                                    <input type="hidden" name="s" value="{{ csrf_token }}">
+                                    <input type="hidden" name="mode" value="monster">
+                                    <input type="hidden" name="id" value="{{ chara.id }}">
+                                    <select class="form-control ff-monster-select" name="mons_file">
+                                        <option value="monster0">初級モンスター</option>
+                                        <option value="monster1">中級モンスター</option>
+                                        <option value="monster2">上級モンスター</option>
+                                        <option value="monster3">超級モンスター</option>
+                                    </select>
+                                    <input type="submit" class="btn ff-action-btn" value="戦闘開始">
+                                </form>
+                            </div>
+                            {% if ztime > 0 %}
+                            <div id="cooldown-text-monster">
+                                <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
+                            </div>
                             {% endif %}
                         </div>
 
@@ -341,22 +333,18 @@
                         {% if chara.last_time % 5 == 0 %}
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🏰 幻影の城</span>
-                            {% if not chara.weapon_id %}
-                                <small class="red">※武器を装備してください</small>
-                            {% else %}
-                                <div id="action-form-genei" style="{% if ztime > 0 %}display: none;{% endif %}">
-                                    <form action="{{ config.monster_script }}" method="POST">
-                                        <input type="hidden" name="s" value="{{ csrf_token }}">
-                                        <input type="hidden" name="mode" value="genei">
-                                        <input type="hidden" name="id" value="{{ chara.id }}">
-                                        <input type="submit" class="btn ff-action-btn" value="城へ挑む">
-                                    </form>
-                                </div>
-                                {% if ztime > 0 %}
-                                <div id="cooldown-text-genei">
-                                    <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
-                                </div>
-                                {% endif %}
+                            <div id="action-form-genei" style="{% if ztime > 0 %}display: none;{% endif %}">
+                                <form action="{{ config.monster_script }}" method="POST">
+                                    <input type="hidden" name="s" value="{{ csrf_token }}">
+                                    <input type="hidden" name="mode" value="genei">
+                                    <input type="hidden" name="id" value="{{ chara.id }}">
+                                    <input type="submit" class="btn ff-action-btn" value="城へ挑む">
+                                </form>
+                            </div>
+                            {% if ztime > 0 %}
+                            <div id="cooldown-text-genei">
+                                <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
+                            </div>
                             {% endif %}
                         </div>
                         {% endif %}
@@ -364,8 +352,8 @@
                         <!-- 伝説の戦い -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🐉 伝説の戦い</span>
-                            {% if not chara.weapon_id or chara.boss_flag != config.boss_cooldown %}
-                                <small class="red">※条件を満たしていません (要武器・ボス撃破)</small>
+                            {% if chara.boss_flag != config.boss_cooldown %}
+                                <small class="red">※条件を満たしていません (ボス撃破)</small>
                             {% else %}
                                 <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form action="{{ config.legend_script }}" method="POST" class="ff-boss-form">
@@ -435,12 +423,59 @@
     <br>
     <hr>
 
+    <!-- 冒険者の掲示板 -->
+    <div id="ff-bbs" class="ff-bbs-section">
+        <div class="ff-section-header">
+            <h3 class="yellow">【冒険者の掲示板】</h3>
+            <span class="note-text">最新 {{ config.max_lines }} 件を表示</span>
+        </div>
+
+        <div class="card ff-bbs-compose-card">
+            <div class="card__body">
+                <form action="{{ config.bbs_script }}" method="POST" class="ff-bbs-form">
+                    <input type="hidden" name="s" value="{{ csrf_token }}">
+                    <input type="hidden" name="id" value="{{ chara.id }}">
+                    <input type="hidden" name="mode" value="post">
+                    <input type="hidden" name="return_to" value="main">
+                    <label class="form-label" for="bbs-message-main">{{ chara.name }} として書き込む</label>
+                    <div class="ff-bbs-input-row">
+                        <textarea id="bbs-message-main" name="message" class="form-control ff-bbs-textarea" rows="2" maxlength="200" placeholder="メッセージを入力してくださいクポ" required></textarea>
+                        <button type="submit" class="btn ff-bbs-submit">書き込む</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layout-stack layout-stack--sm">
+            {% for p in bbs_posts %}
+            <div class="card ff-bbs-post-card">
+                <div class="card__body">
+                    <div class="ff-bbs-post-head">
+                        {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
+                        <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="" class="ff-bbs-avatar" width="32" height="32">
+                        {% endif %}
+                        <div class="ff-bbs-post-meta">
+                            <b class="yellow">{{ p.name }}</b>
+                            <span class="note-text">（{{ p.time }}）</span>
+                        </div>
+                    </div>
+                    <div class="ff-bbs-message">{{ p.message }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card u-text-center">
+                <div class="card__body">まだ書き込みがありませんクポ。</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <!-- あなた宛てのメッセージ -->
     <div class="ff-messages-section">
         <div class="ff-messages-header">
             <h3 class="yellow">【あなた宛のメッセージ】</h3>
         </div>
-        
+
         <div class="layout-stack layout-stack--sm">
             {% for msg in personal_messages %}
             <div class="card ff-message-card">

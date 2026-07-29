@@ -35,16 +35,22 @@ def main():
     # === 投稿処理 ===
     if mode == "post":
         message = params.get("message", "").strip()
+        return_to = params.get("return_to", "").strip()
+        return_url = (
+            f"{config.Config['main_script']}&id={user_id}#ff-bbs"
+            if return_to == "main"
+            else f"{config.Config['bbs_script']}&id={user_id}"
+        )
 
         if not message:
-            common.show_error("本文を入力してください。")
+            common.redirect_with_flash(return_url, "本文を入力してください。", "error")
         if len(message) > 200:
-            common.show_error("本文は200文字以内で入力してください。")
+            common.redirect_with_flash(return_url, "本文は200文字以内で入力してください。", "error")
 
         # 禁止ワードチェック
         for word in config.Config['ban_words']:
             if word in message:
-                common.show_error(f"入力に禁止語「{word}」が含まれています。")
+                common.redirect_with_flash(return_url, f"入力に禁止語「{word}」が含まれています。", "error")
 
         # 投稿の read-modify-write をアトミックにするための排他ロック。
         # bbs_load / bbs_regist は内部で "bbs" ロックを使うため、外側は別名 "bbs_post" を使う
@@ -68,8 +74,7 @@ def main():
             common.release_lock("bbs_post")
 
         # 投稿後は一覧へ戻す（再送信・二重投稿防止のためリダイレクト）
-        from sub_def.utils import redirect
-        redirect(f"{config.Config['bbs_script']}&id={user_id}")
+        common.redirect_with_flash(return_url, "掲示板に書き込みました。", "success")
         return
 
     # === 一覧表示 ===

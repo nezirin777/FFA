@@ -103,31 +103,32 @@ def main():
         # 銀行預金初期化 (もしなければ0)
         if "bank" not in chara:
             chara["bank"] = 0
+
+        bank_url = f"{config.Config['bank_script']}&id={user_id}"
             
         # 1. 預け入れ (bank_sell)
         if mode == "bank_sell":
             azuke_str = params.get("azuke", "").strip()
             if azuke_str == "":
-                common.release_lock(user_id)
-                common.show_error("金額を入力してください。")
+                common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
                 
             if not azuke_str.isdigit():
-                common.release_lock(user_id)
-                common.show_error("金額は半角数値で入力してください。")
+                common.redirect_with_flash(bank_url, "金額は半角数値で入力してください。", "error")
                 
             azuke_val = int(azuke_str)
             if azuke_val <= 0:
-                common.release_lock(user_id)
-                common.show_error("マイナスの値は預け入れできません。")
+                common.redirect_with_flash(bank_url, "マイナスの値は預け入れできません。", "error")
                 
             azukeru_gold = azuke_val * 1000
             if azukeru_gold > chara["gold"]:
-                common.release_lock(user_id)
-                common.show_error("所持金を超えています。")
+                common.redirect_with_flash(bank_url, "所持金を超えています。", "error")
                 
             if azukeru_gold + chara["bank"] > config.Config['max_bank']:
-                common.release_lock(user_id)
-                common.show_error(f"銀行の最大預金上限（{config.Config['max_bank']}ゴールド）を超えてしまいます。")
+                common.redirect_with_flash(
+                    bank_url,
+                    f"銀行の最大預金上限（{config.Config['max_bank']}ゴールド）を超えてしまいます。",
+                    "error",
+                )
                 
             # ゴールド更新
             chara["bank"] += azukeru_gold
@@ -140,38 +141,36 @@ def main():
             # 保存
             common.chara_regist(user_id, chara)
             
-            # 結果表示
-            context = {
-                "chara": chara,
-                "msg": f"{azukeru_gold}ゴールドお預かりいたしました。",
-                "user_id": user_id
-            }
-            common.render_template("bank_result.html", context)
+            # 結果はトーストで通知し、銀行画面へ戻す
+            common.redirect_with_flash(
+                bank_url,
+                f"{azukeru_gold}ゴールドお預かりいたしました。",
+                "success",
+            )
             
         # 2. 引き出し (bank_buy)
         elif mode == "bank_buy":
             dasu_str = params.get("dasu", "").strip()
             if dasu_str == "":
-                common.release_lock(user_id)
-                common.show_error("金額を入力してください。")
+                common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
                 
             if not dasu_str.isdigit():
-                common.release_lock(user_id)
-                common.show_error("金額は半角数値で入力してください。")
+                common.redirect_with_flash(bank_url, "金額は半角数値で入力してください。", "error")
                 
             dasu_val = int(dasu_str)
             if dasu_val <= 0:
-                common.release_lock(user_id)
-                common.show_error("マイナスの値は引き出しできません。")
+                common.redirect_with_flash(bank_url, "マイナスの値は引き出しできません。", "error")
                 
             dasuru_gold = dasu_val * 1000
             if dasuru_gold > chara["bank"]:
-                common.release_lock(user_id)
-                common.show_error("預金額を超えています。")
+                common.redirect_with_flash(bank_url, "預金額を超えています。", "error")
                 
             if dasuru_gold + chara["gold"] > config.Config['max_gold']:
-                common.release_lock(user_id)
-                common.show_error(f"所持金の最大上限（{config.Config['max_gold']}ゴールド）を超えてしまいます。")
+                common.redirect_with_flash(
+                    bank_url,
+                    f"所持金の最大上限（{config.Config['max_gold']}ゴールド）を超えてしまいます。",
+                    "error",
+                )
                 
             # ゴールド更新
             chara["bank"] -= dasuru_gold
@@ -184,13 +183,12 @@ def main():
             # 保存
             common.chara_regist(user_id, chara)
             
-            # 結果表示
-            context = {
-                "chara": chara,
-                "msg": f"{dasuru_gold}ゴールドお引き出しいたしました。",
-                "user_id": user_id
-            }
-            common.render_template("bank_result.html", context)
+            # 結果はトーストで通知し、銀行画面へ戻す
+            common.redirect_with_flash(
+                bank_url,
+                f"{dasuru_gold}ゴールドお引き出しいたしました。",
+                "success",
+            )
             
         # 3. 銀行初期画面 (表示)
         else:

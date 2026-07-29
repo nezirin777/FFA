@@ -103,8 +103,11 @@ def main():
         
         # 5. 所持金不足チェック
         if chara["gold"] < yado_daix:
-            common.release_lock(user_id)
-            common.show_error("宿代が足りません！")
+            common.redirect_with_flash(
+                f"{config.Config['main_script']}&id={user_id}",
+                f"宿代 {yado_daix} G に対して所持金が足りません！",
+                "error",
+            )
             
         # 6. 回復処理と所持金減算
         chara["hp"] = chara["max_hp"]
@@ -119,12 +122,12 @@ def main():
     # 8. 王者HPの更新 (王者が宿に泊まった場合)
     update_winner_hp(user_id, chara["max_hp"])
     
-    # 9. 画面描画
-    context = {
-        "chara": chara,
-        "yado_daix": yado_daix
-    }
-    common.render_template("shop.html", context)
+    # 9. 街へ戻して結果はトーストで通知
+    common.redirect_with_flash(
+        f"{config.Config['main_script']}&id={user_id}",
+        f"宿代として {yado_daix} G を支払い、体力が全回復しました！",
+        "success",
+    )
 
 if __name__ == "__main__":
     main()

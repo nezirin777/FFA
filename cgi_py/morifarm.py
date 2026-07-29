@@ -96,7 +96,7 @@ def main():
     
     # チョコボデータのロード
     choco_raw = common.choco_load(user_id)
-    has_choco = choco_raw is not None
+    has_choco = common.is_choco_owned(choco_raw)
 
     # お見合い用・野生用画像ランク
     rank_imgs = [
@@ -240,6 +240,9 @@ def main():
 
     elif mode == "choco_buy":
         # === 野生チョコボ購入・捕獲処理 ===
+        if has_choco:
+            common.show_error("既にチョコボを飼育しています。新しいチョコボを迎える前に、今のチョコボを野に放してください。")
+
         item_no = common.to_int(in_params.get("item_no", "-1"), -1)
         
         # 野生チョコボリストから対象のチョコボを検索
@@ -286,6 +289,7 @@ def main():
         common.get_lock(f"choco_{user_id}")
         try:
             common.choco_regist(user_id, choco_data)
+            common.choco_g1_regist(user_id, {})
         finally:
             common.release_lock(f"choco_{user_id}")
             
@@ -607,6 +611,7 @@ def main():
         common.get_lock(f"choco_{user_id}")
         try:
             common.choco_regist(user_id, new_choco)
+            common.choco_g1_regist(user_id, {})
         finally:
             common.release_lock(f"choco_{user_id}")
             
@@ -714,12 +719,10 @@ def main():
         finally:
             common.release_lock(user_id)
             
-        # チョコボデータの物理削除
+        # チョコボデータを統合JSON上で未所持状態へ戻す
         common.get_lock(f"choco_{user_id}")
         try:
-            path = os.path.join(config.Config['save_dir'], user_id, "chocolog.json")
-            if os.path.exists(path):
-                os.remove(path)
+            common.choco_delete(user_id)
         finally:
             common.release_lock(f"choco_{user_id}")
             
@@ -814,19 +817,6 @@ def main():
 
     elif mode == "yadoya":
         # === 宿屋（寿命回復）処理 ===
-        common.get_lock(user_id)
-        try:
-            # ギルを消費する
-            chara = common.chara_load(user_id) # 最新データを読み込み
-            if chara["gold"] < 5000:
-                common.show_error("ゴールドが足りません。（5,000ゴールド必要です）")
-                
-            chara["gold"] -= 5000
-            common.chara_regist(user_id, chara)
-        finally:
-            common.release_lock(user_id)
-            
-        # チョコボデータ回復
         common.get_lock(f"choco_{user_id}")
         try:
             choco = common.choco_load(user_id)
@@ -834,8 +824,21 @@ def main():
                 common.show_error("チョコボデータが見つかりません。")
                 
             clife = choco.get("life", 1000)
-            if clife == 1000:
+            if clife >= 1000:
                 common.show_error("チョコボは既に絶好調（体力最大）です。")
+
+            common.get_lock(user_id)
+            try:
+                # チョコボを休ませられることを確認してからギルを消費する
+                chara = common.chara_load(user_id) # 最新データを読み込み
+                if chara["gold"] < 5000:
+                    common.show_error("ゴールドが足りません。（5,000ゴールド必要です）")
+
+                chara["gold"] -= 5000
+                common.chara_regist(user_id, chara)
+                context["chara"] = chara
+            finally:
+                common.release_lock(user_id)
                 
             # 寿命のランダム回復
             clife += random.randint(200, 499)

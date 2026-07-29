@@ -137,31 +137,32 @@ def main():
             
         job_idx = chara["job"]
         job_name = config.Config['chara_jobs'][job_idx]
+        shop_url = f"{config.Config['shop_acs_script']}&id={user_id}"
         
         # 1. 購入処理
         if mode == "buy":
             item_no = params.get("item_no", "").strip()
             if not item_no:
                 common.release_lock(user_id)
-                common.show_error("購入する商品が選択されていません。")
+                common.redirect_with_flash(shop_url, "購入する商品が選択されていません。", "error")
                 
             shop_items = load_shop_items(job_idx)
             selected_item = next((i for i in shop_items if str(i["no"]) == item_no), None)
             
             if not selected_item:
                 common.release_lock(user_id)
-                common.show_error("指定された商品は販売されていません。")
+                common.redirect_with_flash(shop_url, "指定された商品は販売されていません。", "error")
                 
             # 所持金チェック
             if chara["gold"] < selected_item["gold"]:
                 common.release_lock(user_id)
-                common.show_error("所持金が足りません。")
+                common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
             souko = common.souko_load(user_id, "acs")
             if len(souko) >= config.Config['max_accessories']:
                 common.release_lock(user_id)
-                common.show_error(f"装飾品倉庫がいっぱいです！(最大 {config.Config['max_accessories']} 個)")
+                common.redirect_with_flash(shop_url, f"装飾品倉庫がいっぱいです！(最大 {config.Config['max_accessories']} 個)", "error")
                 
             # 購入処理実行
             chara["gold"] -= selected_item["gold"]
@@ -186,16 +187,12 @@ def main():
             common.souko_regist(user_id, "acs", souko)
             common.release_lock(user_id)
             
-            # 取引結果表示
-            result_msg = (
-                f"装飾品 <b>{selected_item['name']}</b> を <b>{selected_item['gold']}</b> G で購入しました！<br>"
-                "購入した装飾品は倉庫に送られました。ステータス画面から装備を整えてください。"
+            # 取引結果はトーストで通知し、装飾品店へ戻す
+            common.redirect_with_flash(
+                shop_url,
+                f"装飾品 {selected_item['name']} を {selected_item['gold']} G で購入しました。購入した装飾品は倉庫に送られました。",
+                "success",
             )
-            common.render_template("shop_result.html", {
-                "chara": chara,
-                "result_msg": result_msg,
-                "back_url": config.Config['shop_acs_script']
-            })
             return
             
         # 2. 売却（下取り）処理
@@ -203,7 +200,7 @@ def main():
             equipped_id = chara.get("accessory_id", 0)
             if not equipped_id or equipped_id == 0:
                 common.release_lock(user_id)
-                common.show_error("売却できる装飾品を装備していません。")
+                common.redirect_with_flash(shop_url, "売却できる装飾品を装備していません。", "error")
                 
             # マスタから装飾品の情報を取得して価格を決定
             master_item = get_acs_master(equipped_id)
@@ -233,16 +230,12 @@ def main():
             common.item_regist(user_id, item)
             common.release_lock(user_id)
             
-            # 取引結果表示
-            result_msg = (
-                f"装備していた装飾品 <b>{master_item['name']}</b> を下取りに出しました。<br>"
-                f"売却額 <b>{sell_gold}</b> G を手に入れました！"
+            # 取引結果はトーストで通知し、装飾品店へ戻す
+            common.redirect_with_flash(
+                shop_url,
+                f"装備していた装飾品 {master_item['name']} を下取りに出しました。売却額 {sell_gold} G を手に入れました！",
+                "success",
             )
-            common.render_template("shop_result.html", {
-                "chara": chara,
-                "result_msg": result_msg,
-                "back_url": config.Config['shop_acs_script']
-            })
             return
             
         # 3. 装飾品店画面表示 (mode == "")

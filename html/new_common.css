@@ -81,6 +81,170 @@ input:invalid {
 
 .hidden { display: none !important; }
 
+body.ui-locked {
+  cursor: wait;
+}
+
+#toast-container {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding: 20px;
+  pointer-events: none;
+}
+
+#toast-container.toast-top-center {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#toast-container.toast-center {
+  justify-content: center;
+  align-items: center;
+}
+
+#toast-container.toast-bottom-center {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#toast-container.toast-bottom-left {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+#toast-container.toast-bottom-right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.toast {
+  width: min(360px, calc(100vw - 40px));
+  border: 1px solid var(--dark);
+  border-left: 4px solid var(--sky-blue);
+  border-radius: var(--radius-m);
+  background-color: rgba(5, 5, 26, 0.96);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  padding: var(--space-m);
+  line-height: 1.5;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+  animation: toast-in 0.18s ease-out;
+}
+
+.toast--success {
+  border-left-color: var(--green);
+}
+
+.toast--error {
+  border-left-color: var(--red);
+}
+
+.toast--warning {
+  border-left-color: var(--yellow);
+}
+
+.toast--info {
+  border-left-color: var(--sky-blue);
+}
+
+.toast--fade-out {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 17, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-m);
+  min-width: 220px;
+  max-width: calc(100vw - 32px);
+  border: 1px solid var(--link-color);
+  border-radius: var(--radius-m);
+  background-color: rgba(5, 5, 26, 0.96);
+  color: var(--white);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  padding: var(--space-l);
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(170, 170, 255, 0.25);
+  border-top-color: var(--yellow);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.overlay-text {
+  color: var(--yellow);
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10030;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 17, 0.72);
+}
+
+.modal-box {
+  width: min(420px, calc(100vw - 32px));
+  border: 1px solid var(--link-color);
+  border-radius: var(--radius-m);
+  background-color: rgba(5, 5, 26, 0.98);
+  color: var(--white);
+  padding: var(--space-l);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-m);
+  margin-top: var(--space-m);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* テキストカラーのユーティリティ */
 .sky_blue { color: var(--sky-blue); font-size: 100%; font-weight: bold; }
 .blue { color: var(--blue); font-size: 100%; font-weight: bold; }
@@ -181,126 +345,3 @@ input:invalid {
   color: var(--red);
 }
 
-/* === UI周り（トースト・モーダル・スピナー） === */
-#toast-container {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  display: flex;
-  pointer-events: none;
-  padding: 20px;
-}
-
-#toast-container.toast-center {
-  justify-content: center;
-  align-items: center;
-}
-
-#toast-container.toast-top-center {
-  justify-content: center;
-  align-items: flex-start;
-}
-
-#toast-container.toast-bottom-center {
-  justify-content: center;
-  align-items: flex-end;
-}
-
-#toast-container.toast-bottom-left {
-  justify-content: flex-start;
-  align-items: flex-end;
-}
-
-#toast-container.toast-bottom-right {
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-.toast {
-  min-width: 260px;
-  max-width: 480px;
-  padding: 14px 18px;
-  background: rgba(30, 30, 30, 0.95);
-  backdrop-filter: blur(6px);
-  border-radius: 12px;
-  color: #fff;
-  font-size: 20px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-  animation: toastIn 0.25s ease;
-  white-space: pre-wrap;
-
-  &.success { background: rgba(0, 180, 0, 0.9); }
-  &.error { background: rgba(200, 0, 0, 0.9); }
-  &.info { background: white; }
-  &.fade-out { opacity: 0; transform: translateY(-10px) scale(0.95); transition: all 0.2s ease; }
-}
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 9998;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(3px);
-
-  & .overlay-content { text-align: center; }
-  & .overlay-text { margin-top: 10px; color: #fff; font-size: 14px; }
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #ccc;
-  border-top: 5px solid #4af;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &.hidden { display: none; }
-  & .modal-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); }
-  & .modal-box {
-    position: relative;
-    z-index: 1;
-    background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
-    color: #fff;
-    padding: var(--space-l);
-    border-radius: var(--radius-l);
-    min-width: 280px;
-    max-width: 90%;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    animation: modalIn 0.2s ease;
-  }
-}
-
-@keyframes modalIn {
-  from { transform: translateY(10px) scale(0.95); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  & button { min-width: 90px; padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; }
-  & #confirm-ok { background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; }
-  & #confirm-cancel { background: #444; color: #ddd; }
-}

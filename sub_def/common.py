@@ -350,6 +350,17 @@ def show_error(msg: str, context: dict | None = None) -> NoReturn:
     from sub_def.utils import show_error as utils_show_error
     utils_show_error(msg, context)
 
+def redirect_with_flash(
+    url: str,
+    message: str,
+    toast_type: str = "success",
+    duration: int = 3500,
+    extra_headers: list[str] | None = None,
+) -> NoReturn:
+    """トースト通知を積んでから指定URLへリダイレクトします。"""
+    from sub_def.utils import redirect_with_flash as utils_redirect_with_flash
+    utils_redirect_with_flash(url, message, toast_type, duration, extra_headers)
+
 def to_int(value, default=0):
     """ユーザー入力を安全に整数化する。変換不能なら default を返す（非数値入力によるクラッシュ防止）。"""
     try:
@@ -398,15 +409,35 @@ def get_time_str(t=None):
     return time.strftime(f"%Y/%m/%d({wday_str}) %H:%M:%S", lt)
 
 # === 8. チョコボおよび農場王者データのロード・セーブ ===
+_CHOCO_REQUIRED_KEYS = {
+    "no", "max", "life", "train", "run", "win",
+    "c0", "c1", "c2", "c3", "c4", "c5", "c6",
+}
+
+def is_choco_owned(choco_data):
+    """現在飼育中のチョコボとして扱える実体データかを判定します。"""
+    return isinstance(choco_data, dict) and _CHOCO_REQUIRED_KEYS.issubset(choco_data.keys())
+
 def choco_load(user_id):
-    """チョコボデータをロードします"""
+    """チョコボデータをロードします。未所持・空データは None に正規化します。"""
     data = load_user_all(user_id)
-    return data.get("choco") if data else None
+    if not data:
+        return None
+    choco_data = data.get("choco")
+    return choco_data if is_choco_owned(choco_data) else None
 
 def choco_regist(user_id, choco_data):
     """チョコボデータを保存します"""
     data = load_user_all(user_id) or {}
     data["choco"] = choco_data
+    save_user_unified(user_id, data)
+
+def choco_delete(user_id, reset_g1=True):
+    """飼育中チョコボを未所持状態へ戻します。"""
+    data = load_user_all(user_id) or {}
+    data["choco"] = {}
+    if reset_g1:
+        data["choco_g1"] = {}
     save_user_unified(user_id, data)
 
 def farm_winner_load():

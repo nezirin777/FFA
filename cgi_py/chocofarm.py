@@ -86,10 +86,10 @@ def main():
     
     # チョコボデータのロード
     choco_raw = common.choco_load(user_id)
-    has_choco = choco_raw is not None
+    has_choco = common.is_choco_owned(choco_raw)
 
     # 重賞履歴のロード
-    g1_raw = common.choco_g1_load(user_id)
+    g1_raw = common.choco_g1_load(user_id) if has_choco else None
     
     # 歴代王者データのロード
     winner_raw = common.farm_winner_load()

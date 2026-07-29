@@ -1,0 +1,33 @@
+{
+  "item": {
+    "weapon": {
+      "name": "ミスリルロッド",
+      "dmg": 640,
+      "effect": 10
+    },
+    "armor": {
+      "name": "魔術師の服",
+      "def": 340,
+      "effect": 10
+    },
+    "accessory": {
+      "name": "アルテミスの指輪",
+      "effect_id": 0,
+      "bonus": {
+        "str": 20,
+        "int": 20,
+        "dex": 20,
+        "vit": 20,
+        "agi": 20,
+        "mnd": 20,
+        "lck": 0,
+        "lp": 0
+      },
+      "attrib": 0,
+      "spare1": 0,
+      "spare2": 0,
+      "spare3": 0,
+      "description": ""
+    }
+  }
+}

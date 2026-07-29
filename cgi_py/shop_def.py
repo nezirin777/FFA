@@ -108,31 +108,32 @@ def main():
             
         job_idx = chara["job"]
         job_name = config.Config['chara_jobs'][job_idx]
+        shop_url = f"{config.Config['shop_def_script']}&id={user_id}"
         
         # 1. 購入処理
         if mode == "buy":
             item_no = params.get("item_no", "").strip()
             if not item_no:
                 common.release_lock(user_id)
-                common.show_error("購入する商品が選択されていません。")
+                common.redirect_with_flash(shop_url, "購入する商品が選択されていません。", "error")
                 
             shop_items = load_shop_items(job_idx)
             selected_item = next((i for i in shop_items if str(i["no"]) == item_no), None)
             
             if not selected_item:
                 common.release_lock(user_id)
-                common.show_error("指定された商品は販売されていません。")
+                common.redirect_with_flash(shop_url, "指定された商品は販売されていません。", "error")
                 
             # 所持金チェック
             if chara["gold"] < selected_item["gold"]:
                 common.release_lock(user_id)
-                common.show_error("所持金が足りません。")
+                common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
             souko = common.souko_load(user_id, "def")
             if len(souko) >= config.Config['max_defenses']:
                 common.release_lock(user_id)
-                common.show_error(f"防具倉庫がいっぱいです！(最大 {config.Config['max_defenses']} 個)")
+                common.redirect_with_flash(shop_url, f"防具倉庫がいっぱいです！(最大 {config.Config['max_defenses']} 個)", "error")
                 
             # 購入処理実行
             chara["gold"] -= selected_item["gold"]
@@ -153,16 +154,12 @@ def main():
             common.souko_regist(user_id, "def", souko)
             common.release_lock(user_id)
             
-            # 取引結果表示
-            result_msg = (
-                f"防具 <b>{selected_item['name']}</b> を <b>{selected_item['gold']}</b> G で購入しました！<br>"
-                "購入した防具は倉庫に送られました。ステータス画面から装備を整えてください。"
+            # 取引結果はトーストで通知し、防具屋へ戻す
+            common.redirect_with_flash(
+                shop_url,
+                f"防具 {selected_item['name']} を {selected_item['gold']} G で購入しました。購入した防具は倉庫に送られました。",
+                "success",
             )
-            common.render_template("shop_result.html", {
-                "chara": chara,
-                "result_msg": result_msg,
-                "back_url": config.Config['shop_def_script']
-            })
             return
             
         # 2. 売却（下取り）処理
@@ -170,7 +167,7 @@ def main():
             equipped_id = chara.get("armor_id", 0)
             if not equipped_id or equipped_id == 0:
                 common.release_lock(user_id)
-                common.show_error("売却できる防具を装備していません。")
+                common.redirect_with_flash(shop_url, "売却できる防具を装備していません。", "error")
                 
             # マスタから防具の情報を取得して価格を決定
             master_item = get_def_master(equipped_id)
@@ -192,16 +189,12 @@ def main():
             common.item_regist(user_id, item)
             common.release_lock(user_id)
             
-            # 取引結果表示
-            result_msg = (
-                f"装備していた防具 <b>{master_item['name']}</b> を下取りに出しました。<br>"
-                f"売却額 <b>{sell_gold}</b> G を手に入れました！"
+            # 取引結果はトーストで通知し、防具屋へ戻す
+            common.redirect_with_flash(
+                shop_url,
+                f"装備していた防具 {master_item['name']} を下取りに出しました。売却額 {sell_gold} G を手に入れました！",
+                "success",
             )
-            common.render_template("shop_result.html", {
-                "chara": chara,
-                "result_msg": result_msg,
-                "back_url": config.Config['shop_def_script']
-            })
             return
             
         # 3. 防具屋画面表示 (mode == "")

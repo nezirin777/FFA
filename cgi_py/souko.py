@@ -146,6 +146,7 @@ def main():
         souko_item = common.souko_load(user_id, "item")
         souko_def = common.souko_load(user_id, "def")
         souko_acs = common.souko_load(user_id, "acs")
+        souko_url = f"{config.Config['souko_script']}&id={user_id}"
         
         # 処理実行フラグ (保存が必要か)
         modified = False
@@ -156,7 +157,7 @@ def main():
             if equipped_id and equipped_id != 0:
                 if len(souko_item) >= config.Config['max_items']:
                     common.release_lock(user_id)
-                    common.show_error("武器倉庫がいっぱいです！外せません。")
+                    common.redirect_with_flash(souko_url, "武器倉庫がいっぱいです！外せません。", "error")
                 
                 master = get_item_master(equipped_id, "item")
                 if not master:
@@ -216,7 +217,7 @@ def main():
             if equipped_id and equipped_id != 0:
                 if len(souko_def) >= config.Config['max_defenses']:
                     common.release_lock(user_id)
-                    common.show_error("防具倉庫がいっぱいです！外せません。")
+                    common.redirect_with_flash(souko_url, "防具倉庫がいっぱいです！外せません。", "error")
                 
                 master = get_item_master(equipped_id, "def")
                 if not master:
@@ -271,7 +272,7 @@ def main():
             if equipped_id and equipped_id != 0:
                 if len(souko_acs) >= config.Config['max_accessories']:
                     common.release_lock(user_id)
-                    common.show_error("装飾品倉庫がいっぱいです！外せません。")
+                    common.redirect_with_flash(souko_url, "装飾品倉庫がいっぱいです！外せません。", "error")
                 
                 master = get_item_master(equipped_id, "acs")
                 if not master:

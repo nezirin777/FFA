@@ -3,7 +3,7 @@
 {% block title %}戦闘結果 - {{ enemy_name }}戦 - {{ config.main_title }}{% endblock %}
 
 {% block content %}
-<div class="battle-container">
+<div class="battle-container battle-container--result">
     <div class="battle-header">
         <h1>{{ chara.name }} vs {{ enemy_name }}</h1>
         <p class="battle-subtitle">
@@ -26,32 +26,38 @@
             <!-- HP状況バー -->
             <div class="battle-hp-bar-container">
                 <div class="battle-hp-bar-wrapper">
-                    <span>{{ chara.name }}: HP {{ log.player_hp }} / {{ log.player_max_hp }}</span>
+                    <span class="battle-hp-label battle-hp-label--player">
+                        <span class="battle-hp-name">{{ chara.name }}</span>
+                        <span class="battle-hp-value">HP {{ log.player_hp }} / {{ log.player_max_hp }}</span>
+                    </span>
                     <div class="battle-hp-bar-outer">
                         {% set p_pct = (log.player_hp / log.player_max_hp * 100) | int %}
                         <div class="battle-hp-bar-inner battle-hp-bar-inner--player" style="width: {{ p_pct if p_pct <= 100 else 100 }}%;"></div>
                     </div>
                 </div>
                 <div class="battle-hp-bar-wrapper">
-                    <span>{{ enemy_name }}: HP {{ log.enemy_hp }} / {{ log.enemy_max_hp }}</span>
+                    <span class="battle-hp-label battle-hp-label--enemy">
+                        <span class="battle-hp-name">{{ enemy_name }}</span>
+                        <span class="battle-hp-value">HP {{ log.enemy_hp }} / {{ log.enemy_max_hp }}</span>
+                    </span>
                     <div class="battle-hp-bar-outer">
                         {% set e_pct = (log.enemy_hp / log.enemy_max_hp * 100) | int %}
-                        <div class="battle-hp-bar-inner" style="width: {{ e_pct if e_pct <= 100 else 100 }}%;"></div>
+                        <div class="battle-hp-bar-inner battle-hp-bar-inner--enemy" style="width: {{ e_pct if e_pct <= 100 else 100 }}%;"></div>
                     </div>
                 </div>
             </div>
 
             <!-- 行動内容 -->
-            <div class="battle-action-desc">
-                {{ log.com1 | safe }}
+            <div class="battle-action-desc battle-action-desc--player">
+                <span class="battle-action-text battle-action-text--player">{{ log.com1 | safe }}</span>
                 {% if log.dmg1 > 0 %}
-                <span class="yellow font-weight-bold">(➔ {{ enemy_name }} に {{ log.dmg1 }} のダメージ)</span>
+                <span class="battle-damage battle-damage--player">(➔ {{ enemy_name }} に {{ log.dmg1 }} のダメージ)</span>
                 {% endif %}
             </div>
             <div class="battle-action-desc battle-action-desc--enemy">
-                {{ log.com2 | safe }}
+                <span class="battle-action-text battle-action-text--enemy">{{ log.com2 | safe }}</span>
                 {% if log.dmg2 > 0 %}
-                <span class="red font-weight-bold">(➔ {{ chara.name }} に {{ log.dmg2 }} の被ダメージ)</span>
+                <span class="battle-damage battle-damage--enemy">(➔ {{ chara.name }} に {{ log.dmg2 }} の被ダメージ)</span>
                 {% endif %}
             </div>
         </div>

@@ -1,0 +1,162 @@
+[
+  {
+    "id": 67,
+    "name": "異次元の結晶",
+    "gold": 250000000,
+    "effect_id": 15,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0,
+    "spare3": 0
+  },
+  {
+    "id": 75,
+    "name": "反魂香",
+    "gold": 15000000000,
+    "effect_id": 23,
+    "bonus": {
+      "str": 300,
+      "int": 300,
+      "dex": 300,
+      "vit": 300,
+      "agi": 300,
+      "mnd": 300,
+      "lck": 300,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0,
+    "spare3": 0
+  },
+  {
+    "id": 72,
+    "name": "オリハルコンメダル",
+    "gold": 15000000000,
+    "effect_id": 20,
+    "bonus": {
+      "str": 300,
+      "int": 300,
+      "dex": 300,
+      "vit": 300,
+      "agi": 300,
+      "mnd": 300,
+      "lck": 300,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 999,
+    "spare3": 0
+  },
+  {
+    "id": 55,
+    "name": "無敵の指輪",
+    "gold": 6000000000,
+    "effect_id": 3,
+    "bonus": {
+      "str": 0,
+      "int": 0,
+      "dex": 0,
+      "vit": 0,
+      "agi": 0,
+      "mnd": 0,
+      "lck": 0,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0,
+    "spare3": 0
+  },
+  {
+    "id": 71,
+    "name": "封印球",
+    "gold": 15000000000,
+    "effect_id": 19,
+    "bonus": {
+      "str": 300,
+      "int": 300,
+      "dex": 300,
+      "vit": 300,
+      "agi": 300,
+      "mnd": 300,
+      "lck": 300,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0,
+    "spare3": 0
+  },
+  {
+    "id": 78,
+    "name": "オニオンネックレス",
+    "gold": 555000000000,
+    "effect_id": 20,
+    "bonus": {
+      "str": 2000,
+      "int": 2000,
+      "dex": 2000,
+      "vit": 2000,
+      "agi": 2000,
+      "mnd": 2000,
+      "lck": 2000,
+      "lp": 0
+    },
+    "attrib": 30,
+    "spare1": 30,
+    "spare2": 999,
+    "spare3": 0
+  },
+  {
+    "id": 77,
+    "name": "ルナ・ブレスレット",
+    "gold": 15000000000,
+    "effect_id": 24,
+    "bonus": {
+      "str": 300,
+      "int": 300,
+      "dex": 300,
+      "vit": 300,
+      "agi": 300,
+      "mnd": 300,
+      "lck": 300,
+      "lp": 0
+    },
+    "attrib": 30,
+    "spare1": 30,
+    "spare2": 30,
+    "spare3": 0
+  },
+  {
+    "id": 87,
+    "name": "ガイアフォースの結晶",
+    "gold": 999999999999,
+    "effect_id": 24,
+    "bonus": {
+      "str": 9999,
+      "int": 9999,
+      "dex": 9999,
+      "vit": 9999,
+      "agi": 9999,
+      "mnd": 9999,
+      "lck": 9999,
+      "lp": 0
+    },
+    "attrib": 0,
+    "spare1": 0,
+    "spare2": 0,
+    "spare3": 0
+  }
+]

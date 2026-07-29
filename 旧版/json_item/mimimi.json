@@ -1,0 +1,33 @@
+{
+  "item": {
+    "weapon": {
+      "name": "神剣・グラビティースレイブ",
+      "dmg": 499000,
+      "effect": 90
+    },
+    "armor": {
+      "name": "Vanqishing",
+      "def": 99500,
+      "effect": 99
+    },
+    "accessory": {
+      "name": "blessings",
+      "effect_id": 22,
+      "bonus": {
+        "str": 3500,
+        "int": 3500,
+        "dex": 3500,
+        "vit": 3500,
+        "agi": 3500,
+        "mnd": 3500,
+        "lck": 3500,
+        "lp": 0
+      },
+      "attrib": 350,
+      "spare1": 350,
+      "spare2": 350,
+      "spare3": 0,
+      "description": ""
+    }
+  }
+}
