@@ -20,8 +20,12 @@ Config["souko_folder"] = "save_data"  # 倉庫データディレクトリの相�
 
 # 管理者パスワード・秘密鍵は環境変数から取得することを推奨（本番では必ず設定すること）。
 # 環境変数が未設定の場合は下記の既定値にフォールバックする（開発用。公開運用では変更必須）。
-Config["admin_password"] = os.environ.get("FFA_ADMIN_PASSWORD", "1111")  # 管理者用パスワード
-Config["secret_key"] = os.environ.get("FFA_SECRET_KEY", "ffa_secret_key_vips_ver3")  # クッキー暗号化・署名用の秘密鍵
+Config["admin_password"] = os.environ.get(
+    "FFA_ADMIN_PASSWORD", "1111"
+)  # 管理者用パスワード
+Config["secret_key"] = os.environ.get(
+    "FFA_SECRET_KEY", "ffa_secret_key_vips_ver3"
+)  # クッキー暗号化・署名用の秘密鍵
 Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無効)
 Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
 Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
@@ -48,8 +52,8 @@ Config["base_exp"] = 30  # 戦闘で得られる基本経験値
 Config["base_hp"] = 500  # キャラクター作成時の初期HP
 Config["level_up_coeff"] = 300  # レベルアップに必要な経験値の係数 (レベル乗算用)
 
-Config["battle_cooldown"] = 30  # 通常対戦(対人)のクールダウン秒数
-Config["monster_cooldown"] = 30  # モンスター修行のクールダウン秒数
+Config["battle_cooldown"] = 20  # 通常対戦(対人)のクールダウン秒数
+Config["monster_cooldown"] = 20  # モンスター修行のクールダウン秒数
 Config["boss_cooldown"] = 10  # ボス戦のクールダウン秒数
 
 Config["level_diff_limit"] = 15  # 通常戦闘で対戦相手を選べるレベル差制限
@@ -64,7 +68,7 @@ Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
 
 # ヘルプ関連
 Config["help_text"] = "html/manual.html"  # ヘルプ(遊び方マニュアル)のパス
-Config["help_text_url"] = "ヘルプ"  # ヘルプリンクの表示文字列
+Config["help_text_url"] = "プレイマニュアル"  # ヘルプリンクの表示文字列
 
 Config["main_title"] = "FFA改 Vips Ver 3.00"  # ゲームのメインタイトル
 
@@ -76,7 +80,6 @@ Config["script_select"] = "login.py?mode=select_battle"
 Config["scripto"] = "others.py"
 
 
-
 # ==========================================
 # 5. メッセージ・お知らせ設定 (Notices & Messages)
 # ==========================================
@@ -86,7 +89,6 @@ Config["telop_message"] = (
 Config["admin_message"] = (  # ログイン画面の管理者お知らせ事項 (HTML)
     "<font color=red>\n"
     "・１人で２人以上のキャラクターの登録を禁止します。<br>\n"
-    "・違法サイトのＵＲＬのキャラクターの登録は禁止します。<br>\n"
     "・ブラウザの更新ボタン等を押すことを禁止します。<br>\n"
     "・上記に該当するキャラクターは連絡等をなしに管理人の独断により削除することがあります。</font><br>"
 )
@@ -365,7 +367,9 @@ Config["chara_jobs"] = [
     "歌姫",
     "ナイトメアマイスター",
 ]
-Config["jobs_html_path"] = "html/manual.html#jobs"  # 職業説明(統合マニュアルの職業セクションへ)
+Config["jobs_html_path"] = (
+    "html/manual.html#jobs"  # 職業説明(統合マニュアルの職業セクションへ)
+)
 
 # 幻影闘技場レベル制限
 Config["genei_level_low"] = 100
@@ -383,4 +387,3 @@ Config["all_data_file"] = "alldata.json"
 # Mapped aliases for compatibility with legacy templates
 Config["chara_syoku"] = Config["chara_jobs"]
 Config["chara_img"] = Config["chara_images"]
-

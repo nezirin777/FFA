@@ -14,6 +14,17 @@
     </h1>
     <p class="others-subtitle">Final Fantasy Adventure の世界へようこそ</p>
 
+    <!-- 共有メニュー-->
+    <div class="others-footer-menu">
+      <div class="u-text-center">
+        <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> |
+        <a href="{{ config.ranking_script }}">能力別ランキング</a> |
+        <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a> |
+        <a href="https://oktaviacgi-games.com/" target="_blank">おくたのCGIげーむす</a>
+      </div>
+    </div>
+    <hr class="section-divider">
+
     <!-- ログイン・新規登録・テストプレイ エリア (レスポンシブグリッド) -->
     <div class="others-main-grid">
         <!-- 新規キャラ登録 -->
@@ -95,7 +106,7 @@
     </div>
 
     <br>
-    
+
     <!-- 現在の冒険者一覧 -->
     <div class="others-guest-box">
         {{ guests_html|safe }}
@@ -109,7 +120,7 @@
             <p class="u-text-left u-mb-m">
                 現在の最高連勝記録は、<b>{{ winner.max_win_name }}</b> さんの <b>{{ winner.max_win_count }}</b> 連勝です。
             </p>
-            
+
             <div class="champ-card">
                 <div class="others-champ-layout">
                     <!-- チャンプの顔グラ & 基本情報 -->
@@ -127,7 +138,7 @@
                             <tr><td>勝率:</td><td class="yellow">{{ win_ratio }}% ({{ winner.win_count }}勝)</td></tr>
                         </table>
                     </div>
-                    
+
                     <!-- チャンプのステータス詳細 -->
                     <div class="others-champ-info-box">
                         <table class="champ-info-table">
@@ -135,9 +146,9 @@
                             <tr><td>防具:</td><td><b>{{ winner.equipped_item.armor.name }}</b> (DEF:{{ winner.equipped_item.armor.def }})</td></tr>
                             <tr><td>飾り:</td><td><b>{{ winner.equipped_item.accessory.name }}</b></td></tr>
                         </table>
-                        
+
                         <hr class="section-divider">
-                        
+
                         <table class="champ-info-table">
                             <tr>
                                 <td>力:</td><td>{{ winner.str }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.str }}px;"></div></div></td>
@@ -156,9 +167,9 @@
                                 <td>運:</td><td>{{ winner.lck }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.lck }}px;"></div></div></td>
                             </tr>
                         </table>
-                        
+
                         <hr class="section-divider">
-                        
+
                         <table class="champ-info-table">
                             <tr>
                                 <td>物理命中率:</td><td>{{ hit_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--green" style="width:{{ bw.hit }}px;"></div></div></td>
@@ -194,18 +205,20 @@
 
     <!-- 共有メニューと管理者コントロール (レスポンシブ) -->
     <hr class="section-divider">
-    
+
     <div class="others-footer-menu">
         <div class="u-text-center">
-            <a href="{{ config.ranking_script }}">能力別ランキング</a> | 
-            <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a>
+            <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> |
+            <a href="{{ config.ranking_script }}">能力別ランキング</a> |
+            <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a> |
+            <a href="https://oktaviacgi-games.com/" target="_blank">おくたのCGIげーむす</a>
         </div>
-        
+
         <div class="card others-notice-card">
             <div class="card__header">🚨 連絡事項・禁止事項</div>
             <div class="card__body">{{ config.admin_message|safe }}</div>
         </div>
-        
+
         <div class="u-text-center">
             <form action="{{ config.admin_script }}" method="POST">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
