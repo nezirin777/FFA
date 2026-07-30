@@ -24,13 +24,13 @@
         <div class="card__header">現在の装備品（下取り）</div>
         <div class="card__body">
             <div class="table-wrapper">
-                <table class="shop-table shop-table--sell">
+                <table class="shop-table shop-table--sell{% if performance_label | default('性能') == '説明' %} shop-table--descriptive{% endif %}">
                     <thead>
                         <tr>
                             <th>操作</th>
                             <th>状態</th>
                             <th>名前</th>
-                            <th>性能</th>
+                            <th>{{ performance_label | default('性能') }}</th>
                             <th>下取り価格</th>
                         </tr>
                     </thead>
@@ -69,13 +69,13 @@
             <div class="card__header">販売商品リスト</div>
             <div class="card__body">
                 <div class="table-wrapper">
-                    <table class="shop-table">
+                    <table class="shop-table{% if performance_label | default('性能') == '説明' %} shop-table--descriptive{% endif %}">
                         <thead>
                             <tr>
                                 <th>選択</th>
                                 <th>No.</th>
                                 <th>商品名</th>
-                                <th>性能</th>
+                                <th>{{ performance_label | default('性能') }}</th>
                                 <th>販売価格</th>
                             </tr>
                         </thead>

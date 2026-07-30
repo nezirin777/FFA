@@ -368,6 +368,44 @@ def to_int(value, default=0):
     except (ValueError, TypeError):
         return default
 
+_acs_master_cache = None
+
+def acs_master_get(acs_id):
+    """装飾品マスタから指定IDのデータを返します。"""
+    global _acs_master_cache
+    try:
+        acs_id = int(acs_id)
+    except (ValueError, TypeError):
+        return None
+    if acs_id <= 0:
+        return None
+
+    if _acs_master_cache is None:
+        path = os.path.join(BASE_DIR, Config["acs_file"])
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                _acs_master_cache = json.load(f)
+        except Exception:
+            _acs_master_cache = []
+
+    for item in _acs_master_cache:
+        if item.get("no") == acs_id:
+            return item
+    return None
+
+def accessory_description(accessory, acs_id=0):
+    """保存データに説明がない旧データでも、マスタからアクセ説明文を補完します。"""
+    if not accessory:
+        return ""
+    desc = str(accessory.get("description", "")).strip()
+    if desc:
+        return desc
+
+    master = acs_master_get(acs_id or accessory.get("id") or accessory.get("no"))
+    if master:
+        return str(master.get("description", "")).strip()
+    return ""
+
 def parse_cookie_user(cookie_str):
     """クッキー文字列 "id<>user_id,pass<>password" から ID とパスワードを抽出します。"""
     if not cookie_str:

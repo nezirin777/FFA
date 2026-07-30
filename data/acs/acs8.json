@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力ボーナス（小）"
   },
   {
     "no": 2,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力ボーナス（中）"
   },
   {
     "no": 3,
@@ -54,7 +56,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力ボーナス（大）"
   },
   {
     "no": 13,
@@ -73,7 +76,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "速さボーナス（小）"
   },
   {
     "no": 14,
@@ -92,7 +96,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "速さボーナス（中）"
   },
   {
     "no": 15,
@@ -111,7 +116,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "速さボーナス（大）"
   },
   {
     "no": 28,
@@ -130,7 +136,8 @@
     },
     "attrib": 0,
     "spare1": 10,
-    "spare2": 0
+    "spare2": 0,
+    "description": "回避率ボーナス（小）"
   },
   {
     "no": 29,
@@ -149,7 +156,8 @@
     },
     "attrib": 0,
     "spare1": 20,
-    "spare2": 0
+    "spare2": 0,
+    "description": "回避率ボーナス（中）"
   },
   {
     "no": 30,
@@ -168,7 +176,8 @@
     },
     "attrib": 0,
     "spare1": 30,
-    "spare2": 0
+    "spare2": 0,
+    "description": "回避率ボーナス（大）"
   },
   {
     "no": 47,
@@ -187,7 +196,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（大）"
   },
   {
     "no": 48,
@@ -206,7 +216,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（極大）"
   },
   {
     "no": 49,
@@ -225,7 +236,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（超大）"
   },
   {
     "no": 56,
@@ -244,7 +256,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（小）"
   },
   {
     "no": 59,
@@ -263,7 +276,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（1.5倍）"
   },
   {
     "no": 60,
@@ -282,7 +296,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（2倍）"
   },
   {
     "no": 61,
@@ -301,7 +316,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（3倍）"
   },
   {
     "no": 62,
@@ -320,6 +336,7 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "稀にオーラの効果"
   }
 ]

@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力ボーナス（大）"
   },
   {
     "no": 6,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能ボーナス（大）"
   },
   {
     "no": 9,
@@ -54,7 +56,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "信仰心ボーナス（大）"
   },
   {
     "no": 12,
@@ -73,7 +76,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "生命力ボーナス（大）"
   },
   {
     "no": 15,
@@ -92,7 +96,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "速さボーナス（大）"
   },
   {
     "no": 34,
@@ -111,7 +116,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、生命力ボーナス（小）"
   },
   {
     "no": 35,
@@ -130,7 +136,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、生命力ボーナス（中）"
   },
   {
     "no": 37,
@@ -149,7 +156,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（小）"
   },
   {
     "no": 38,
@@ -168,7 +176,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（中）"
   },
   {
     "no": 39,
@@ -187,7 +196,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（大）"
   },
   {
     "no": 45,
@@ -206,7 +216,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（中）"
   },
   {
     "no": 46,
@@ -225,7 +236,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（大）"
   },
   {
     "no": 47,
@@ -244,7 +256,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（大）"
   },
   {
     "no": 48,
@@ -263,7 +276,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（極大）"
   },
   {
     "no": 49,
@@ -282,7 +296,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "力、カルマボーナス（超大）"
   },
   {
     "no": 50,
@@ -301,7 +316,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（大）"
   },
   {
     "no": 51,
@@ -320,7 +336,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（極大）"
   },
   {
     "no": 52,
@@ -339,7 +356,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（超大）"
   },
   {
     "no": 53,
@@ -358,7 +376,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "毎ターンＨＰ回復（中）"
   },
   {
     "no": 54,
@@ -377,7 +396,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "毎ターンＨＰ回復（大）"
   },
   {
     "no": 58,
@@ -396,7 +416,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（大）"
   },
   {
     "no": 59,
@@ -415,7 +436,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（1.5倍）"
   },
   {
     "no": 60,
@@ -434,7 +456,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（2倍）"
   },
   {
     "no": 61,
@@ -453,7 +476,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（3倍）"
   },
   {
     "no": 64,
@@ -472,7 +496,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "稀にホーリーの効果"
   },
   {
     "no": 65,
@@ -491,7 +516,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "稀にメテオの効果"
   },
   {
     "no": 77,
@@ -510,6 +536,7 @@
     },
     "attrib": 30,
     "spare1": 30,
-    "spare2": 30
+    "spare2": 30,
+    "description": "？？？？の効果を打ち消す＆オールボーナス（極大）"
   }
 ]

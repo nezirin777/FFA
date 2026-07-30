@@ -93,9 +93,12 @@
                     </div>
 
                     <div class="ff-accessory-effects">
-                        <b>装飾効果:</b> Force +
-                        力+{{ item.accessory.bonus.str }} 魔+{{ item.accessory.bonus.int }} 技+{{ item.accessory.bonus.dex }} 体+{{ item.accessory.bonus.vit }}
-                        速+{{ item.accessory.bonus.agi }} 精+{{ item.accessory.bonus.mnd }} 運+{{ item.accessory.bonus.lck }} 魅+{{ item.accessory.bonus.lp }}
+                        <b>装飾効果:</b>
+                        {{ accessory_description or '効果なし' }}
+                        <span class="small-text">
+                            （力+{{ item.accessory.bonus.str }} 魔+{{ item.accessory.bonus.int }} 技+{{ item.accessory.bonus.dex }} 体+{{ item.accessory.bonus.vit }}
+                            速+{{ item.accessory.bonus.agi }} 精+{{ item.accessory.bonus.mnd }} 運+{{ item.accessory.bonus.lck }} 魅+{{ item.accessory.bonus.lp }}）
+                        </span>
                     </div>
 
                     <table class="ff-chara-table">

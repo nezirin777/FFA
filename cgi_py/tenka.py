@@ -142,7 +142,7 @@ def load_aite_equipped_item(aite_id):
             "accessory": {
                 "name": "なし", "effect_id": 0,
                 "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0
+                "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
             }
         }
     return item

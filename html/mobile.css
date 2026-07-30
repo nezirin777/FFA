@@ -53,6 +53,16 @@
   .others-champ-guide-grid {
     grid-template-columns: 1fr;
   }
+
+  .others-champ-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-m);
+  }
+
+  .others-champ-avatar-box,
+  .others-champ-info-box {
+    width: 100%;
+  }
   
   .ff-grid {
     grid-template-columns: 1fr;

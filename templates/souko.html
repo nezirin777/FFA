@@ -27,7 +27,7 @@
                     <tr>
                         <th class="souko-col-part">部位</th>
                         <th class="souko-col-name">装備名</th>
-                        <th class="souko-col-status">性能</th>
+                        <th class="souko-col-status">性能/説明</th>
                         <th class="souko-col-action">操作</th>
                     </tr>
                 </thead>
@@ -192,47 +192,33 @@
         <!-- 装飾品倉庫 -->
         <div class="card">
             <div class="card__header"><b>装飾品倉庫 (最大8)</b></div>
-            <div class="table-wrapper">
-                <table class="souko-table">
-                    <thead>
-                        <tr>
-                            <th class="souko-col-action">装備</th>
-                            <th class="souko-col-action">破棄</th>
-                            <th class="souko-col-name">装飾品名</th>
-                            <th class="souko-col-status">効果</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for a in souko_acs %}
-                        <tr>
-                            <td>
-                                <form action="login.py?mode=souko" method="POST">
-                                    <input type="hidden" name="s" value="{{ csrf_token }}">
-                                    <input type="hidden" name="id" value="{{ chara.id }}">
-                                    <input type="hidden" name="item_no" value="{{ loop.index0 }}">
-                                    <input type="hidden" name="mode" value="acs_soubi">
-                                    <input type="submit" class="btn btn--sm" value="装備">
-                                </form>
-                            </td>
-                            <td>
-                                <form action="login.py?mode=souko" method="POST">
-                                    <input type="hidden" name="s" value="{{ csrf_token }}">
-                                    <input type="hidden" name="id" value="{{ chara.id }}">
-                                    <input type="hidden" name="item_no" value="{{ loop.index0 }}">
-                                    <input type="hidden" name="mode" value="acs_delete">
-                                    <input type="submit" class="btn btn--danger btn--sm" value="破棄">
-                                </form>
-                            </td>
-                            <td class="souko-item-name-left">{{ a.name }}</td>
-                            <td class="souko-item-power">{{ a.bonus_str }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="souko-empty-msg">保管中の装飾品はありません</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="souko-acs-list">
+                {% for a in souko_acs %}
+                <div class="souko-acs-row">
+                    <div class="souko-acs-actions">
+                        <form action="login.py?mode=souko" method="POST">
+                            <input type="hidden" name="s" value="{{ csrf_token }}">
+                            <input type="hidden" name="id" value="{{ chara.id }}">
+                            <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                            <input type="hidden" name="mode" value="acs_soubi">
+                            <input type="submit" class="btn btn--sm" value="装備">
+                        </form>
+                        <form action="login.py?mode=souko" method="POST">
+                            <input type="hidden" name="s" value="{{ csrf_token }}">
+                            <input type="hidden" name="id" value="{{ chara.id }}">
+                            <input type="hidden" name="item_no" value="{{ loop.index0 }}">
+                            <input type="hidden" name="mode" value="acs_delete">
+                            <input type="submit" class="btn btn--danger btn--sm" value="破棄">
+                        </form>
+                    </div>
+                    <div class="souko-acs-main">
+                        <div class="souko-acs-name">{{ a.name }}</div>
+                        <div class="souko-acs-desc">{{ a.bonus_str }}</div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="souko-empty-msg">保管中の装飾品はありません</div>
+                {% endfor %}
             </div>
         </div>
     </div>

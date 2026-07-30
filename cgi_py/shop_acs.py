@@ -82,7 +82,8 @@ def get_acs_master(acs_id):
                     "attrib": item.get("attrib", 0),
                     "spare1": item.get("spare1", 0),
                     "spare2": item.get("spare2", 0),
-                    "spare3": 0
+                    "spare3": item.get("spare3", 0),
+                    "description": item.get("description", "")
                 }
     except Exception:
         pass
@@ -97,7 +98,8 @@ def load_shop_items(job_idx):
         with open(path, "r", encoding="utf-8") as f:
             items = json.load(f)
         for item in items:
-            item["spare3"] = 0
+            item["spare3"] = item.get("spare3", 0)
+            item["description"] = item.get("description", "")
         return items
     except Exception:
         return []
@@ -178,7 +180,8 @@ def main():
                 "attrib": selected_item["attrib"],
                 "spare1": selected_item["spare1"],
                 "spare2": selected_item["spare2"],
-                "spare3": selected_item["spare3"]
+                "spare3": selected_item["spare3"],
+                "description": selected_item.get("description", "")
             }
             souko.append(new_acs)
             
@@ -222,7 +225,8 @@ def main():
                 "attrib": 0,
                 "spare1": 0,
                 "spare2": 0,
-                "spare3": 0
+                "spare3": 0,
+                "description": ""
             }
             
             # 保存
@@ -250,7 +254,7 @@ def main():
                 equipped_item = {
                     "id": equipped_id,
                     "name": master_item["name"],
-                    "power": format_bonus(master_item["bonus"]),
+                    "power": master_item.get("description") or format_bonus(master_item["bonus"]),
                     "sell_gold": int(master_item["gold"] / 3) * 2
                 }
             else:
@@ -268,7 +272,7 @@ def main():
                 shop_items.append({
                     "no": r_item["no"],
                     "name": r_item["name"],
-                    "power": format_bonus(r_item["bonus"]),
+                    "power": r_item.get("description") or format_bonus(r_item["bonus"]),
                     "gold": r_item["gold"]
                 })
             
@@ -285,6 +289,7 @@ def main():
                 "shop_msg": shop_msg,
                 "equipped_item": equipped_item,
                 "shop_items": shop_items,
+                "performance_label": "説明",
                 "post_url": config.Config['shop_acs_script']
             }
             common.render_template("shop_trade.html", context)

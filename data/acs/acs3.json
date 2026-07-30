@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "器用さボーナス（小）"
   },
   {
     "no": 17,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "器用さボーナス（中）"
   },
   {
     "no": 18,
@@ -54,7 +56,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "器用さボーナス（大）"
   },
   {
     "no": 22,
@@ -73,7 +76,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "カルマボーナス（小）"
   },
   {
     "no": 23,
@@ -92,7 +96,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "カルマボーナス（中）"
   },
   {
     "no": 24,
@@ -111,7 +116,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "カルマボーナス（大）"
   },
   {
     "no": 40,
@@ -130,7 +136,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "速さ、器用さボーナス（小）"
   },
   {
     "no": 43,
@@ -149,7 +156,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極小）"
   },
   {
     "no": 71,
@@ -168,6 +176,7 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極大）＆？？？？"
   }
 ]

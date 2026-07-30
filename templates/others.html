@@ -125,12 +125,11 @@
                 <div class="others-champ-layout">
                     <!-- チャンプの顔グラ & 基本情報 -->
                     <div class="others-champ-avatar-box">
-                        <img class="champ-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
-                        <b>{{ winner.name }}</b><br>
-                        <span>{{ winner.sex == 1 and '男' or '女' }} / {{ config.chara_jobs[winner.job] }}</span><br>
-                        <span class="yellow">ジョブLv: {{ winner.job_level }}</span><br>
-                        <br>
-                        <table class="champ-info-table">
+                        <img class="others-champ-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" alt="{{ winner.name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';">
+                        <b>{{ winner.name }}</b>
+                        <span>{{ winner.sex == 1 and '男' or '女' }} / {{ config.chara_jobs[winner.job] }}</span>
+                        <span class="yellow">ジョブLv: {{ winner.job_level }}</span>
+                        <table class="others-champ-info-table">
                             <tr><td>クラス:</td><td class="yellow">{{ winner_class }}</td></tr>
                             <tr><td>レベル:</td><td class="yellow">Lv.{{ winner.level }}</td></tr>
                             <tr><td>HP:</td><td class="yellow">{{ winner.hp }}/{{ winner.max_hp }}</td></tr>
@@ -141,7 +140,7 @@
 
                     <!-- チャンプのステータス詳細 -->
                     <div class="others-champ-info-box">
-                        <table class="champ-info-table">
+                        <table class="others-champ-info-table">
                             <tr><td>武器:</td><td><b>{{ winner.equipped_item.weapon.name }}</b> (ATK:{{ winner.equipped_item.weapon.dmg }})</td></tr>
                             <tr><td>防具:</td><td><b>{{ winner.equipped_item.armor.name }}</b> (DEF:{{ winner.equipped_item.armor.def }})</td></tr>
                             <tr><td>飾り:</td><td><b>{{ winner.equipped_item.accessory.name }}</b></td></tr>
@@ -149,7 +148,7 @@
 
                         <hr class="section-divider">
 
-                        <table class="champ-info-table">
+                        <table class="others-champ-info-table">
                             <tr>
                                 <td>力:</td><td>{{ winner.str }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.str }}px;"></div></div></td>
                                 <td>魔力:</td><td>{{ winner.int }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.int }}px;"></div></div></td>
@@ -170,7 +169,7 @@
 
                         <hr class="section-divider">
 
-                        <table class="champ-info-table">
+                        <table class="others-champ-info-table">
                             <tr>
                                 <td>物理命中率:</td><td>{{ hit_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--green" style="width:{{ bw.hit }}px;"></div></div></td>
                             </tr>

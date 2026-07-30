@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "生命力ボーナス（小）"
   },
   {
     "no": 11,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "生命力ボーナス（中）"
   },
   {
     "no": 12,
@@ -54,7 +56,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "生命力ボーナス（大）"
   },
   {
     "no": 37,
@@ -73,7 +76,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（小）"
   },
   {
     "no": 38,
@@ -92,7 +96,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（中）"
   },
   {
     "no": 39,
@@ -111,7 +116,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（大）"
   },
   {
     "no": 43,
@@ -130,7 +136,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極小）"
   },
   {
     "no": 44,
@@ -149,7 +156,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（小）"
   },
   {
     "no": 45,
@@ -168,7 +176,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（中）"
   },
   {
     "no": 46,
@@ -187,7 +196,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（大）"
   },
   {
     "no": 50,
@@ -206,7 +216,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（大）"
   },
   {
     "no": 51,
@@ -225,7 +236,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（極大）"
   },
   {
     "no": 56,
@@ -244,7 +256,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（小）"
   },
   {
     "no": 57,
@@ -263,7 +276,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（中）"
   },
   {
     "no": 58,
@@ -282,6 +296,7 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（大）"
   }
 ]

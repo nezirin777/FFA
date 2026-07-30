@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "魅力ボーナス（小）"
   },
   {
     "no": 20,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "魅力ボーナス（中）"
   },
   {
     "no": 21,
@@ -54,7 +56,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "魅力ボーナス（大）"
   },
   {
     "no": 46,
@@ -73,7 +76,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（大）"
   },
   {
     "no": 52,
@@ -92,7 +96,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "知能、信仰心ボーナス（超大）"
   },
   {
     "no": 54,
@@ -111,7 +116,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "毎ターンＨＰ回復（大）"
   },
   {
     "no": 55,
@@ -130,7 +136,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "毎ターンＨＰ回復（極大）"
   },
   {
     "no": 58,
@@ -149,7 +156,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "ダメージ軽減（大）"
   },
   {
     "no": 61,
@@ -168,7 +176,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "攻撃力増大（3倍）"
   },
   {
     "no": 66,
@@ -187,7 +196,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "稀にアルテマの効果"
   },
   {
     "no": 67,
@@ -206,7 +216,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "稀にデジョンの効果"
   },
   {
     "no": 68,
@@ -225,7 +236,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（中）＆？？？？"
   },
   {
     "no": 72,
@@ -244,7 +256,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 999
+    "spare2": 999,
+    "description": "オールボーナス（極大）＆？？？？"
   },
   {
     "no": 74,
@@ -263,6 +276,7 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極大）＆？？？？"
   }
 ]

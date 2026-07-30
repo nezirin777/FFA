@@ -81,7 +81,8 @@ DEFAULT_WINNER = {
             "attrib": 0,
             "spare1": 0,
             "spare2": 0,
-            "spare3": 0
+            "spare3": 0,
+            "description": ""
         }
     },
     "unused30": 0,

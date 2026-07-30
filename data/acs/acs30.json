@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（？？？？）＆？？？？"
   },
   {
     "no": 86,
@@ -35,7 +36,8 @@
     },
     "attrib": 100,
     "spare1": 100,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（？？？？）＆？？？？"
   },
   {
     "no": 87,
@@ -54,6 +56,7 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極悪）"
   }
 ]

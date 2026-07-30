@@ -16,7 +16,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極大）＆？？？？"
   },
   {
     "no": 74,
@@ -35,7 +36,8 @@
     },
     "attrib": 0,
     "spare1": 0,
-    "spare2": 0
+    "spare2": 0,
+    "description": "オールボーナス（極大）＆？？？？"
   },
   {
     "no": 77,
@@ -54,6 +56,7 @@
     },
     "attrib": 30,
     "spare1": 30,
-    "spare2": 30
+    "spare2": 30,
+    "description": "？？？？の効果を打ち消す＆オールボーナス（極大）"
   }
 ]

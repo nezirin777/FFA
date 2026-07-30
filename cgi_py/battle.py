@@ -112,7 +112,8 @@ DEFAULT_WINNER = {
             "attrib": 0,
             "spare1": 0,
             "spare2": 0,
-            "spare3": 0
+            "spare3": 0,
+            "description": ""
         }
     },
     "unused30": 0,
@@ -276,7 +277,8 @@ def main():
                             "attrib": int(item["accessory"].get("attrib", 0)),
                             "spare1": int(item["accessory"].get("spare1", 0)),
                             "spare2": int(item["accessory"].get("spare2", 0)),
-                            "spare3": 0
+                            "spare3": int(item["accessory"].get("spare3", 0)),
+                            "description": common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
                         }
                     },
                     "unused30": int(chara.get("unused30", 0)),

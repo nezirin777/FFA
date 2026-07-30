@@ -95,7 +95,8 @@ def get_item_master(item_id, item_type):
                     "attrib": item.get("attrib", 0),
                     "spare1": item.get("spare1", 0),
                     "spare2": item.get("spare2", 0),
-                    "spare3": item.get("spare3", 0)
+                    "spare3": item.get("spare3", 0),
+                    "description": item.get("description", "")
                 }
             else:
                 return {
@@ -279,7 +280,8 @@ def main():
                     master = {
                         "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
                         "bonus": item["accessory"]["bonus"], "attrib": item["accessory"]["attrib"],
-                        "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"], "spare3": item["accessory"]["spare3"]
+                        "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"],
+                        "spare3": item["accessory"].get("spare3", 0), "description": item["accessory"].get("description", "")
                     }
                     
                 souko_acs.append(master)
@@ -288,7 +290,7 @@ def main():
                     "name": "なし",
                     "effect_id": 0,
                     "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0
+                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
                 }
                 modified = True
                 
@@ -304,19 +306,22 @@ def main():
                         master = {
                             "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
                             "bonus": item["accessory"]["bonus"], "attrib": item["accessory"]["attrib"],
-                            "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"], "spare3": item["accessory"]["spare3"]
+                            "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"],
+                            "spare3": item["accessory"].get("spare3", 0), "description": item["accessory"].get("description", "")
                         }
                     souko_acs.append(master)
                 
                 chara["accessory_id"] = target["id"]
+                target_description = target.get("description") or common.accessory_description(target, target.get("id"))
                 item["accessory"] = {
                     "name": target["name"],
-                    "effect_id": target["effect_id"],
+                    "effect_id": target.get("effect_id", 0),
                     "bonus": target["bonus"],
-                    "attrib": target["attrib"],
-                    "spare1": target["spare1"],
-                    "spare2": target["spare2"],
-                    "spare3": target["spare3"]
+                    "attrib": target.get("attrib", 0),
+                    "spare1": target.get("spare1", 0),
+                    "spare2": target.get("spare2", 0),
+                    "spare3": target.get("spare3", 0),
+                    "description": target_description
                 }
                 modified = True
                 
@@ -338,11 +343,11 @@ def main():
         
         # 5. 画面描画
         # 装飾品ボーナスの表示整形
-        acs_bonus_str = format_bonus(item["accessory"]["bonus"])
+        acs_bonus_str = common.accessory_description(item["accessory"], chara.get("accessory_id", 0)) or format_bonus(item["accessory"]["bonus"])
         
         # 倉庫アクセサリーリストの上昇ステータス文字列化
         for a in souko_acs:
-            a["bonus_str"] = format_bonus(a["bonus"])
+            a["bonus_str"] = common.accessory_description(a, a.get("id", 0)) or format_bonus(a["bonus"])
             
         context = {
             "chara": chara,
