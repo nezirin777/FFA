@@ -130,6 +130,16 @@ def validate_input(params):
     for player in all_players:
         if player.get("name") == c_name:
             return "同一名のキャラクターが既に存在します。"
+
+    # 同一IP/ホストからの複数登録チェック（旧版互換）
+    if Config.get("single_account_per_host", True):
+        remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
+        exempt_ids = set(Config.get("single_account_exempt_ids", ["test"]))
+        for player in all_players:
+            if player.get("id") in exempt_ids:
+                continue
+            if player.get("host") == remote_addr:
+                return "同一IPから登録されたキャラクターがすでに存在します。"
             
     return None
 

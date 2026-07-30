@@ -28,6 +28,8 @@ Config["secret_key"] = os.environ.get(
 )  # クッキー暗号化・署名用の秘密鍵
 Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無効)
 Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
+Config["single_account_per_host"] = True  # 同一IP/ホストからの複数キャラクター登録を禁止する
+Config["single_account_exempt_ids"] = ["test"]  # 同一IPチェックの対象外にする特殊ID
 Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
 
 
