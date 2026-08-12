@@ -109,7 +109,11 @@ def get_rankings_cache():
             pass
             
     # 24時間キャッシュ
-    if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+    cache_is_current = bool(
+        cache_data and cache_data.get("players") and
+        all("cha" in player and "karma" in player for player in cache_data["players"])
+    )
+    if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
         common.get_lock("system_rank_cache")
         try:
             # 二重更新チェック
@@ -119,7 +123,11 @@ def get_rankings_cache():
                         cache_data = json.load(f)
                 except:
                     pass
-            if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+            cache_is_current = bool(
+                cache_data and cache_data.get("players") and
+                all("cha" in player and "karma" in player for player in cache_data["players"])
+            )
+            if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
                 cache_data = build_rankings_cache()
         finally:
             common.release_lock("system_rank_cache")
@@ -129,21 +137,22 @@ def get_rankings_cache():
 def calculate_stats(chara, item):
     """キャラクターの命中・回避・必殺などの表示用ステータスを計算します"""
     # 命中・回避・必殺
-    hit_ritu = int((chara.get("agi", 10) / 10) + 51)
+    # 現行キー: dex=器用さ, agi=速さ, karma=カルマ
+    hit_ritu = int((chara.get("dex", 10) / 10) + 51)
     if hit_ritu > 150:
         hit_ritu = 150
         
-    kaihi_ritu = int(chara.get("mnd", 10) / 20)
+    kaihi_ritu = int(chara.get("agi", 10) / 20)
     if kaihi_ritu > 50:
         kaihi_ritu = 50
         
-    waza_ritu = int(chara.get("lp", 0) / 15) + 10 + chara.get("job_level", 0)
+    waza_ritu = int(chara.get("karma", 0) / 15) + 10 + chara.get("job_level", 0)
     if waza_ritu > 75:
         waza_ritu = 75
 
-    ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("spare1", 0)
-    cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("spare3", 0)
-    waza_plus = item.get("accessory", {}).get("spare2", 0)
+    ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("hit_rate", 0)
+    cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("evasion_rate", 0)
+    waza_plus = item.get("accessory", {}).get("special_rate", 0)
 
     # 削除までの残り日数算出 (最終更新時間 + limit日数 - 現在時刻)
     now = int(time.time())
@@ -163,12 +172,12 @@ def calculate_stats(chara, item):
         
     bw_str = int(chara.get("str", 10) / divpm)
     bw_int = int(chara.get("int", 10) / divpm)
-    bw_dex = int(chara.get("dex", 10) / divpm)
-    bw_vit = int(chara.get("vit", 10) / divpm)
-    bw_agi = int(chara.get("agi", 10) / divpm)
     bw_mnd = int(chara.get("mnd", 10) / divpm)
-    bw_lck = int(chara.get("lck", 10) / divpm)
-    bw_lp = int(chara.get("lp", 0) / divpm)
+    bw_vit = int(chara.get("vit", 10) / divpm)
+    bw_dex = int(chara.get("dex", 10) / divpm)
+    bw_agi = int(chara.get("agi", 10) / divpm)
+    bw_cha = int(chara.get("cha", 10) / divpm)
+    bw_karma = int(chara.get("karma", 0) / divpm)
     
     bw_hit = int((hit_ritu + ci_plus) * 0.5)
     bw_kaihi = int((kaihi_ritu + cd_plus) * 0.5)
@@ -178,8 +187,8 @@ def calculate_stats(chara, item):
         "hit_ritu": hit_ritu, "kaihi_ritu": kaihi_ritu, "waza_ritu": waza_ritu,
         "ci_plus": ci_plus, "cd_plus": cd_plus, "waza_plus": waza_plus,
         "left_days": left_days, "win_ratio": win_ratio,
-        "bw_str": bw_str, "bw_int": bw_int, "bw_dex": bw_dex, "bw_vit": bw_vit,
-        "bw_agi": bw_agi, "bw_mnd": bw_mnd, "bw_lck": bw_lck, "bw_lp": bw_lp,
+        "bw_str": bw_str, "bw_int": bw_int, "bw_mnd": bw_mnd, "bw_vit": bw_vit,
+        "bw_dex": bw_dex, "bw_agi": bw_agi, "bw_cha": bw_cha, "bw_karma": bw_karma,
         "bw_hit": bw_hit, "bw_kaihi": bw_kaihi, "bw_waza": bw_waza
     }
 
@@ -204,8 +213,8 @@ def main():
                 "armor": {"name": "衣服", "def": 0, "effect": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
                 }
             }
 
@@ -274,8 +283,8 @@ def main():
                 "armor": {"name": "衣服", "def": 0, "effect": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
                 }
             }
             stats = calculate_stats(p, p_item)

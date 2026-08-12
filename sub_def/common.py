@@ -43,6 +43,7 @@ FFA Python/CGI 共通モジュール (common.py)
 
 import os
 import sys
+from sub_def import lock_state
 import json
 import time
 import urllib.parse
@@ -175,11 +176,16 @@ def get_lock(lock_name, timeout=10):
     """
     os.makedirs(Config['lock_dir'], exist_ok=True)
     lock_path = os.path.join(Config['lock_dir'], f"{lock_name}.lock")
+
+    if lock_state.is_owned(lock_path):
+        lock_state.enter(lock_path)
+        return True
     
     start_time = time.time()
     while True:
         try:
             os.mkdir(lock_path)
+            lock_state.enter(lock_path)
             return True
         except FileExistsError:
             if time.time() - start_time > timeout:
@@ -191,14 +197,21 @@ def release_lock(lock_name):
     排他ロックを解除（ディレクトリ削除）します。
     """
     lock_path = os.path.join(Config['lock_dir'], f"{lock_name}.lock")
+    if not lock_state.is_owned(lock_path):
+        return
     try:
-        os.rmdir(lock_path)
+        if lock_state.leave(lock_path):
+            os.rmdir(lock_path)
     except FileNotFoundError:
         pass
 
 # === 4. セーブデータのロード・セーブ ===
 # sub_def のアトミック I/O モジュールを読み込み、データの整合性を一元保証 (ガイドライン2.1に準拠)
 from sub_def.file_ops import load_user_all, save_user_all as save_user_unified
+
+# 現行の能力値キー。旧版の配列順を意味として固定し、表示名と内部キーを一致させる。
+STAT_KEYS = ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")
+ACCESSORY_RATE_KEYS = ("hit_rate", "evasion_rate", "special_rate")
 
 def chara_load(user_id):
     """キャラクターの基本ステータスをロードします (統合JSONデータから読み出し)"""
@@ -442,7 +455,8 @@ def get_time_str(t=None):
     if t is None:
         t = time.time()
     lt = time.localtime(t)
-    wdays = ["日", "月", "火", "水", "木", "金", "土"]
+    # Python の tm_wday は月曜=0、旧版 Perl の localtime は日曜=0。
+    wdays = ["月", "火", "水", "木", "金", "土", "日"]
     wday_str = wdays[lt.tm_wday]
     return time.strftime(f"%Y/%m/%d({wday_str}) %H:%M:%S", lt)
 

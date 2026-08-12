@@ -95,27 +95,25 @@ def build_rankings(players):
     rank_int = extract_top(players, "int")
     
     # 5. 信仰心
-    # Perlの$chara[9]に対応。Python側でインデックス9は'dex'にマッピングされています。
-    # よって、信仰心部門は 'dex' キーでソートします。
-    rank_mnd = extract_top(players, "dex")
+    # Perlの$chara[9]に対応。Python側でインデックス9は'mnd'にマッピングされています。
+    # 信仰心部門は 'mnd' キーでソートします。
+    rank_mnd = extract_top(players, "mnd")
     
     # 6. 生命力 (vit)
     rank_vit = extract_top(players, "vit")
     
     # 7. 器用さ
-    # Perlの$chara[11]に対応。Python側でインデックス11は'agi'にマッピングされています。
-    # よって、器用さ部門は 'agi' キーでソートします。
-    rank_dex = extract_top(players, "agi")
+    # 器用さ部門は 'dex' キーでソートします。
+    rank_dex = extract_top(players, "dex")
     
     # 8. 速さ
-    # Perlの$chara[12]に対応。Python側でインデックス12は'mnd'にマッピングされています。
-    # よって、速さ部門は 'mnd' キーでソートします。
-    rank_agi = extract_top(players, "mnd")
+    # 速さ部門は 'agi' キーでソートします。
+    rank_agi = extract_top(players, "agi")
     
-    # 9. 魅力 (lck)
-    rank_lck = extract_top(players, "lck")
-    # 10. カルマ (lp)
-    rank_lp = extract_top(players, "lp")
+    # 9. 魅力 (cha)
+    rank_cha = extract_top(players, "cha")
+    # 10. カルマ (karma)
+    rank_karma = extract_top(players, "karma")
     
     # 11. 勝率
     # 総対人戦数が1000（Perlの1000戦以上）または100戦以上？ 
@@ -126,8 +124,10 @@ def build_rankings(players):
     for p in players:
         total_battles = p.get("unused21", 0)
         wins = p.get("unused22", 0)
-        if total_battles >= 1000:
-            ratio = round((wins / total_battles) * 100, 2)
+        # 旧版は1000戦を超えたキャラクターだけを対象にし、
+        # 勝率は小数第3位以下を切り捨てていた。
+        if total_battles > 1000:
+            ratio = int(wins * 10000 / total_battles) / 100
             win_players.append({
                 "id": p["id"],
                 "name": p["name"],
@@ -148,8 +148,8 @@ def build_rankings(players):
         "vit": rank_vit,
         "dex": rank_dex,
         "agi": rank_agi,
-        "lck": rank_lck,
-        "lp": rank_lp,
+        "cha": rank_cha,
+        "karma": rank_karma,
         "win_ratio": rank_win_ratio
     }
 
@@ -169,7 +169,9 @@ def get_rank_cache():
             
     # キャッシュが無効（24時間経過）または存在しない場合は再構築
     # 24時間 = 86400秒
-    if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+    required = {"level", "hp", "str", "int", "mnd", "vit", "dex", "agi", "cha", "karma", "win_ratio"}
+    cache_is_current = bool(cache_data and required.issubset(cache_data.get("rankings", {})))
+    if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
         common.get_lock("rank_cache")
         try:
             # ロック取得後に再チェック（他プロセスが更新した可能性があるため）
@@ -181,7 +183,8 @@ def get_rank_cache():
                 except:
                     pass
             
-            if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+            cache_is_current = bool(cache_data and required.issubset(cache_data.get("rankings", {})))
+            if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
                 players = get_all_players()
                 rankings = build_rankings(players)
                 cache_data = {

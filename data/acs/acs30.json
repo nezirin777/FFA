@@ -7,17 +7,17 @@
     "bonus": {
       "str": 3500,
       "int": 3500,
-      "dex": 3500,
-      "vit": 3500,
-      "agi": 3500,
       "mnd": 3500,
-      "lck": 3500,
-      "lp": 0
+      "vit": 3500,
+      "dex": 3500,
+      "agi": 3500,
+      "cha": 3500,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（？？？？）＆？？？？"
+    "description": "オールボーナス（？？？？）＆？？？？",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 86,
@@ -27,17 +27,17 @@
     "bonus": {
       "str": 3500,
       "int": 3500,
-      "dex": 3500,
-      "vit": 3500,
-      "agi": 3500,
       "mnd": 3500,
-      "lck": 3500,
-      "lp": 0
+      "vit": 3500,
+      "dex": 3500,
+      "agi": 3500,
+      "cha": 3500,
+      "karma": 0
     },
-    "attrib": 100,
-    "spare1": 100,
-    "spare2": 0,
-    "description": "オールボーナス（？？？？）＆？？？？"
+    "description": "オールボーナス（？？？？）＆？？？？",
+    "hit_rate": 100,
+    "evasion_rate": 100,
+    "special_rate": 0
   },
   {
     "no": 87,
@@ -47,16 +47,16 @@
     "bonus": {
       "str": 9999,
       "int": 9999,
-      "dex": 9999,
-      "vit": 9999,
-      "agi": 9999,
       "mnd": 9999,
-      "lck": 9999,
-      "lp": 0
+      "vit": 9999,
+      "dex": 9999,
+      "agi": 9999,
+      "cha": 9999,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（極悪）"
+    "description": "オールボーナス（極悪）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   }
 ]

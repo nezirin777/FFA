@@ -85,6 +85,28 @@ def load_syoku_ini():
     except Exception:
         return []
 
+def get_job_requirements(target_data):
+    """
+    転職条件を現在のキャラクターキーに揃えて返します。
+
+    旧版 syoku.ini の条件列は
+    str, int, mnd(信仰心), vit, dex(器用さ), agi(速さ), cha(魅力), karma(カルマ)
+    の順。
+    """
+    return {
+        "str": target_data.get("req_str", 0),
+        "int": target_data.get("req_int", 0),
+        "mnd": target_data.get("req_mnd", 0),
+        "vit": target_data.get("req_vit", 0),
+        "dex": target_data.get("req_dex", 0),
+        "agi": target_data.get("req_agi", 0),
+        "cha": target_data.get("req_cha", 0),
+        "karma": target_data.get("req_karma", 0),
+    }
+
+def meets_job_requirements(chara, requirements):
+    return all(int(chara.get(key, 0)) >= int(value) for key, value in requirements.items())
+
 def main():
     if config.Config['maintenance_mode']:
         common.show_error("現在メンテナンス中です。しばらくお待ちください。")
@@ -143,21 +165,12 @@ def main():
             
             # 転職先職業の必要条件チェック
             target_data = syoku_ini[target_syoku]
-            a = target_data["req_str"]
-            b = target_data["req_int"]
-            c = target_data["req_mnd"]
-            d = target_data["req_vit"]
-            e = target_data["req_dex"]
-            f = target_data["req_agi"]
-            g = target_data["req_lck"]
-            h = target_data["req_level"]
+            requirements = get_job_requirements(target_data)
             
             # 特性値の条件確認
-            if not (chara["str"] >= a and chara["int"] >= b and chara["mnd"] >= c and 
-                    chara["vit"] >= d and chara["dex"] >= e and chara["agi"] >= f and 
-                    chara["lck"] >= g and chara["level"] >= h):
+            if not meets_job_requirements(chara, requirements):
                 common.release_lock(user_id)
-                common.show_error("まだ転職条件（能力値・レベル）を満たしていません。")
+                common.show_error("まだ転職条件（能力値・カルマ）を満たしていません。")
                 
             # 熟練度要件の確認
             syoku_require = target_data["job_reqs"]
@@ -181,24 +194,24 @@ def main():
             if chara["job_level"] < 20:
                 chara["str"] = int(chara["str"]) - int(chara["str"] / 10)
                 chara["int"] = int(chara["int"]) - int(chara["int"] / 10)
-                chara["mnd"] = int(chara["mnd"]) - int(chara["mnd"] / 10)
-                chara["vit"] = int(chara["vit"]) - int(chara["vit"] / 10)
-                chara["dex"] = int(chara["dex"]) - int(chara["dex"] / 10)
                 chara["agi"] = int(chara["agi"]) - int(chara["agi"] / 10)
-                chara["lck"] = int(chara["lck"]) - int(chara["lck"] / 10)
+                chara["vit"] = int(chara["vit"]) - int(chara["vit"] / 10)
+                chara["mnd"] = int(chara["mnd"]) - int(chara["mnd"] / 10)
+                chara["dex"] = int(chara["dex"]) - int(chara["dex"] / 10)
+                chara["cha"] = int(chara["cha"]) - int(chara["cha"] / 10)
                 
-                # カルマ（LP）の減少 (力/5を引く)
-                chara["lp"] = int(chara["lp"]) - int(chara["str"] / 5)
+                # カルマの減少 (力/5を引く)
+                chara["karma"] = int(chara["karma"]) - int(chara["str"] / 5)
                 
                 # 最低限界値の保証
                 if chara["str"] < 9: chara["str"] = 9
                 if chara["int"] < 8: chara["int"] = 8
-                if chara["mnd"] < 8: chara["mnd"] = 8
                 if chara["vit"] < 9: chara["vit"] = 9
+                if chara["mnd"] < 8: chara["mnd"] = 8
                 if chara["dex"] < 9: chara["dex"] = 9
                 if chara["agi"] < 8: chara["agi"] = 8
-                if chara["lck"] < 8: chara["lck"] = 8
-                if chara["lp"] < 1: chara["lp"] = 1
+                if chara["cha"] < 8: chara["cha"] = 8
+                if chara["karma"] < 1: chara["karma"] = 1
                 
                 msg_penalty = "※転職先の熟練度が低いため、能力値が10%減少しました。"
                 
@@ -223,19 +236,10 @@ def main():
                 if i == chara["job"]:
                     continue # 現在の職業は除外
                     
-                a = target_data["req_str"]
-                b = target_data["req_int"]
-                c = target_data["req_mnd"]
-                d = target_data["req_vit"]
-                e = target_data["req_dex"]
-                f = target_data["req_agi"]
-                g = target_data["req_lck"]
-                h = target_data["req_level"]
+                requirements = get_job_requirements(target_data)
                 
                 # 条件チェック
-                if (chara["str"] >= a and chara["int"] >= b and chara["mnd"] >= c and 
-                    chara["vit"] >= d and chara["dex"] >= e and chara["agi"] >= f and 
-                    chara["lck"] >= g and chara["level"] >= h):
+                if meets_job_requirements(chara, requirements):
                     
                     # 熟練度要件のチェック
                     syoku_require = target_data["job_reqs"]

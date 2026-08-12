@@ -55,9 +55,7 @@ for path in INPUT_DIR.glob("*.cgi"):
                 "attrib": to_int(cols[16]),
                 "spare1": to_int(cols[17]),
                 "spare2": to_int(cols[18]),
-                "spare3": to_int(cols[19]),
-                # 必要なら保持
-                "description": cols[20],
+                "description": cols[19],
             },
         }
     }

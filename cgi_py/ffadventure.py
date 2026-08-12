@@ -137,8 +137,8 @@ def main():
             "armor": {"name": "衣服", "def": 0, "effect": 0},
             "accessory": {
                 "name": "なし", "effect_id": 0,
-                "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
             }
         }
         

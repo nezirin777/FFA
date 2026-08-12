@@ -72,17 +72,16 @@ def get_acs_master(acs_id):
                     "bonus": {
                         "str": item.get("bonus", {}).get("str", 0),
                         "int": item.get("bonus", {}).get("int", 0),
-                        "dex": item.get("bonus", {}).get("dex", 0),
-                        "vit": item.get("bonus", {}).get("vit", 0),
-                        "agi": item.get("bonus", {}).get("agi", 0),
                         "mnd": item.get("bonus", {}).get("mnd", 0),
-                        "lck": item.get("bonus", {}).get("lck", 0),
-                        "lp": item.get("bonus", {}).get("lp", 0)
+                        "vit": item.get("bonus", {}).get("vit", 0),
+                        "dex": item.get("bonus", {}).get("dex", 0),
+                        "agi": item.get("bonus", {}).get("agi", 0),
+                        "cha": item.get("bonus", {}).get("cha", 0),
+                        "karma": item.get("bonus", {}).get("karma", 0)
                     },
-                    "attrib": item.get("attrib", 0),
-                    "spare1": item.get("spare1", 0),
-                    "spare2": item.get("spare2", 0),
-                    "spare3": item.get("spare3", 0),
+                    "hit_rate": item.get("hit_rate", 0),
+                    "evasion_rate": item.get("evasion_rate", 0),
+                    "special_rate": item.get("special_rate", 0),
                     "description": item.get("description", "")
                 }
     except Exception:
@@ -98,7 +97,6 @@ def load_shop_items(job_idx):
         with open(path, "r", encoding="utf-8") as f:
             items = json.load(f)
         for item in items:
-            item["spare3"] = item.get("spare3", 0)
             item["description"] = item.get("description", "")
         return items
     except Exception:
@@ -107,8 +105,9 @@ def load_shop_items(job_idx):
 def format_bonus(bonus_dict):
     """ステータス上昇ボーナスを表示用に文字列化します。"""
     parts = []
-    keys = [("str", "力"), ("int", "魔"), ("dex", "技"), ("vit", "体"), 
-            ("agi", "速"), ("mnd", "精"), ("lck", "運"), ("lp", "魅")]
+    # 旧版の列順: 力, 知能, 信仰心, 生命力, 器用さ, 速さ, 魅力, カルマ
+    keys = [("str", "力"), ("int", "知"), ("mnd", "信"), ("vit", "生"),
+            ("dex", "器"), ("agi", "速"), ("cha", "魅"), ("karma", "カ")]
     for k, name in keys:
         val = bonus_dict.get(k, 0)
         if val != 0:
@@ -177,10 +176,9 @@ def main():
                 "gold": selected_item["gold"],
                 "effect_id": selected_item["effect_id"],
                 "bonus": selected_item["bonus"],
-                "attrib": selected_item["attrib"],
-                "spare1": selected_item["spare1"],
-                "spare2": selected_item["spare2"],
-                "spare3": selected_item["spare3"],
+                "hit_rate": selected_item["hit_rate"],
+                "evasion_rate": selected_item["evasion_rate"],
+                "special_rate": selected_item["special_rate"],
                 "description": selected_item.get("description", "")
             }
             souko.append(new_acs)
@@ -221,11 +219,10 @@ def main():
             item["accessory"] = {
                 "name": "なし",
                 "effect_id": 0,
-                "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                "attrib": 0,
-                "spare1": 0,
-                "spare2": 0,
-                "spare3": 0,
+                "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                "hit_rate": 0,
+                "evasion_rate": 0,
+                "special_rate": 0,
                 "description": ""
             }
             

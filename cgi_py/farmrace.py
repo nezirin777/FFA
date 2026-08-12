@@ -69,6 +69,27 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
 
+
+def _legacy_rand(limit):
+    """旧版 Perl の int(rand(x)) と同じく、上限を含めず整数を返す。"""
+    # Perl は x が小数でも、先に rand(x) を計算してから int() する。
+    # 先に int(x) へ丸めると、1.5 のような上限で値1が欠落する。
+    limit = float(limit)
+    return int(random.random() * limit) if limit > 0 else 0
+
+
+def _legacy_rand_float(limit):
+    """旧版 Perl の rand(x)（整数化しない実数値）に合わせる。"""
+    limit = float(limit)
+    return random.random() * limit if limit > 0 else 0.0
+
+
+def _legacy_rand_plus(limit):
+    """旧版 Perl の int(rand(x) + x) に合わせる。"""
+    limit = float(limit)
+    return int(random.random() * limit + limit) if limit > 0 else 0
+
+
 # Windows等で標準出力をUTF-8にするための設定
 def main():
     # CGIパラメータ解析
@@ -188,8 +209,10 @@ def main():
     step = 0
     win = False
     syasin = False
+    start_move = [0, 0]
     
-    while step < 100:
+    # 旧版 farmrace.cgi の $turn = 20 に合わせる。
+    while step < 20:
         step += 1
         step_comment = ""
         kdmg = 0
@@ -198,29 +221,38 @@ def main():
         # 1. スタート処理
         if step == 1:
             # プレイヤーのスタートダッシュ
-            if random.randint(0, kisyou) <= random.randint(0, int(c3 * 2 / 3)):
-                kdmg = int(random.randint(0, int(c0 / (tyousei * 4))) + c0 / (tyousei * 4))
+            if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3 * 2 / 3):
+                start_move[0] = _legacy_rand_plus(c0 / (tyousei * 4))
+                kdmg = start_move[0]
                 step_comment += f'<span class="red">{cname}はスタートで出遅れましたクポ！</span> '
                 ksyoumou = heri * kdmg * 3 * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
-            elif random.randint(0, tiryoku) <= random.randint(0, int(c5 * 2 / 3)):
-                kdmg = int(random.randint(0, int(c0 * 1.5 / tyousei)))
+            elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5 * 2 / 3):
+                # 旧版 farmrace.cgi: rand(c0*0.75/tyousei) + c0*0.75/tyousei
+                base = c0 * 0.75 / tyousei
+                start_move[0] = int(random.random() * max(0.0, base) + base)
+                kdmg = start_move[0]
                 step_comment += f'<span class="green">{cname}は好スタート！</span> '
                 ksyoumou = heri * (kdmg / 2) * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             else:
-                kdmg = int(random.randint(0, int(c0 / (tyousei * 2))) + c0 / (tyousei * 2))
+                start_move[0] = _legacy_rand_plus(c0 / (tyousei * 2))
+                kdmg = start_move[0]
                 ksyoumou = heri * kdmg * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
                 
             # 王者のスタートダッシュ
-            if random.randint(0, kisyou) <= random.randint(0, int(wc3 * 2 / 3)):
-                wdmg = int(random.randint(0, int(wc0 / (tyousei * 4))) + wc0 / (tyousei * 4))
+            if _legacy_rand_float(kisyou) <= _legacy_rand_float(wc3 * 2 / 3):
+                start_move[1] = _legacy_rand_plus(wc0 / (tyousei * 4))
+                wdmg = start_move[1]
                 step_comment += f'<span class="red-light">王者{wcname}はスタートで出遅れたクポ！</span> '
                 wsyoumou = heri * wdmg * 3 * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
-            elif random.randint(0, tiryoku) <= random.randint(0, int(wc5 * 2 / 3)):
-                wdmg = int(random.randint(0, int(wc0 * 1.5 / tyousei)))
+            elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(wc5 * 2 / 3):
+                base = wc0 * 0.75 / tyousei
+                start_move[1] = int(random.random() * max(0.0, base) + base)
+                wdmg = start_move[1]
                 step_comment += f'<span class="yellow">王者{wcname}は好スタートを切ったクポ！</span> '
                 wsyoumou = heri * (wdmg / 2) * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             else:
-                wdmg = int(random.randint(0, int(wc0 / (tyousei * 2))) + wc0 / (tyousei * 2))
+                start_move[1] = _legacy_rand_plus(wc0 / (tyousei * 2))
+                wdmg = start_move[1]
                 wsyoumou = heri * wdmg * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
                 
             ksyoumou = ksyoumou / 2
@@ -236,43 +268,76 @@ def main():
             else:
                 step_comment += f"<br>スタート！王者 {wcname} がハナを奪うクポ！"
 
-        # 2. 中盤・終盤の移動
+        elif step == 2:
+            # === 中盤区間 ===
+            k_middle = _legacy_rand(c0 / 4) + int(c0 * 3 / 4) - kinryoku + start_move[0]
+            w_middle = _legacy_rand(wc0 / 4) + int(wc0 * 3 / 4) - kinryoku + start_move[1]
+            knokori = max(400, 1000 - k_middle)
+            wnokori = max(400, 1000 - w_middle)
+
+            if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3 / 4):
+                ksyoumou = heri * (1400 + k_middle - start_move[0]) * 3 * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
+                knokori = int(knokori * 0.9)
+                step_comment += f'<span class="yellow">{cname}は積極的に前へ進みましたクポ！</span> '
+            elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5 / 3):
+                ksyoumou = heri * (1400 + k_middle - start_move[0]) * (kisyou / max(1, c3)) * (c2 / max(1, nebari)) / 2
+            else:
+                ksyoumou = heri * (1400 + k_middle - start_move[0]) * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
+
+            if _legacy_rand_float(kisyou) <= _legacy_rand_float(wc3 / 4):
+                wsyoumou = heri * (1400 + w_middle - start_move[1]) * 3 * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
+                wnokori = int(wnokori * 0.9)
+            elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(wc5 / 3):
+                wsyoumou = heri * (1400 + w_middle - start_move[1]) * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari)) / 2
+            else:
+                wsyoumou = heri * (1400 + w_middle - start_move[1]) * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
+
+            ksyoumou *= 3 / 4
+            wsyoumou *= 3 / 4
+            khp_flg -= ksyoumou
+            whp_flg -= wsyoumou
+            if knokori < wnokori:
+                step_comment += f"<br>中盤を通過、先頭は {cname} クポ！"
+            else:
+                step_comment += f"<br>中盤を通過、王者 {wcname} が先頭クポ！"
+
+        # 3. 終盤の移動
         else:
             # プレイヤーの移動力
-            kdmg = (random.randint(0, c0) + random.randint(0, c6) + random.randint(0, c6) + random.randint(0, c6)) / lastspart
+            kdmg = (_legacy_rand(c0) + _legacy_rand(c6) + _legacy_rand(c6) + _legacy_rand(c6)) / lastspart
             ksyoumou = heri * kdmg * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             
             if khp_flg <= 0:
-                if random.randint(0, nebari) < random.randint(0, c2):
-                    kdmg = kdmg * 1.2
+                if _legacy_rand_float(nebari) < _legacy_rand_float(c2):
+                    kdmg = kdmg * 1.5
                     ksyoumou = ksyoumou * 0.5
                 else:
                     kdmg = kdmg / 3
                     if step % 4 == 0:
                         step_comment += f'<span class="red">{cname}はバテています...</span> '
-            elif (random.randint(0, seriai) < random.randint(0, c4)) or (khp_flg / max(1, c1) >= 0.4):
+            elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4)) or (khp_flg / max(1, c1) >= 0.4):
                 ksyoumou = ksyoumou * 2
-                kdmg = kdmg * 2.2
+                kdmg = kdmg * 2.5
                 if step % 4 == 0:
                     step_comment += f'<span class="green">{cname}のラストスパート！</span> '
                     
             kdmg = int(kdmg)
             
             # 王者の移動力
-            wdmg = (random.randint(0, wc0) + random.randint(0, wc6) + random.randint(0, wc6) + random.randint(0, wc6)) / lastspart
+            wdmg = (_legacy_rand(wc0) + _legacy_rand(wc6) + _legacy_rand(wc6) + _legacy_rand(wc6)) / lastspart
             wsyoumou = heri * wdmg * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             
             if whp_flg <= 0:
-                if random.randint(0, nebari) < random.randint(0, wc2):
-                    wdmg = wdmg * 1.2
+                if _legacy_rand_float(nebari) < _legacy_rand_float(wc2):
+                    wdmg = wdmg * 1.5
                     wsyoumou = wsyoumou * 0.5
                 else:
                     wdmg = wdmg / 3
                     if step % 4 == 0:
                         step_comment += f'<span class="red-light">王者{wcname}がバテてきたクポ！</span> '
-            elif (random.randint(0, seriai) < random.randint(0, wc4)) or (whp_flg / max(1, wc1) >= 0.4):
+            elif (_legacy_rand_float(seriai) < _legacy_rand_float(wc4)) or (whp_flg / max(1, wc1) > 0.5):
                 wsyoumou = wsyoumou * 2
-                wdmg = wdmg * 2.2
+                wdmg = wdmg * 2.5
                 if step % 4 == 0:
                     step_comment += f'<span class="yellow">王者{wcname}のラストスパート！</span> '
                     
@@ -317,7 +382,7 @@ def main():
 
     # 写真判定
     if syasin:
-        if random.randint(0, c0) > random.randint(0, wc0):
+        if _legacy_rand_float(c0) > _legacy_rand_float(wc0):
             win = True
         else:
             win = False
@@ -357,7 +422,8 @@ def main():
             "type": choco.get("type", 0),
             "run": crun,
             "win": cwin,
-            "max": choco_max + 80, # 限界値を+80した値
+            # 旧版は勝利前の cmax を王者記録へ保存し、その後に本人の cmax だけ +80 する。
+            "max": choco_max,
             "c0": choco_c0, "c1": choco_c1, "c2": choco_c2, "c3": choco_c3, "c4": choco_c4, "c5": choco_c5, "c6": choco_c6,
             "ren": 1,
             "lname": wcname,
@@ -370,13 +436,13 @@ def main():
         
         # パラメータ上昇
         choco_max += 80
-        c0_up = random.randint(1, 6)
-        c1_up = random.randint(1, 6)
-        c2_up = random.randint(1, 6)
-        c3_up = random.randint(1, 6)
-        c4_up = random.randint(1, 6)
-        c5_up = random.randint(1, 6)
-        c6_up = random.randint(1, 6)
+        c0_up = _legacy_rand(6) + 1
+        c1_up = _legacy_rand(6) + 1
+        c2_up = _legacy_rand(6) + 1
+        c3_up = _legacy_rand(6) + 1
+        c4_up = _legacy_rand(6) + 1
+        c5_up = _legacy_rand(6) + 1
+        c6_up = _legacy_rand(6) + 1
         
         choco_c0 += c0_up
         choco_c1 += c1_up
@@ -387,7 +453,7 @@ def main():
         choco_c6 += c6_up
         
         # 奪取賞金：王者の最大値 * 王者連勝数 * 10,000 G
-        gold = max(1, wcmax) * max(1, wcren) * 10000
+        gold = max(0, wcmax) * max(0, wcren) * 10000
         
         comment = f"<strong>🏆 見事に勝利し、新王者になりましたクポ！</strong><br>{cname}は見事王座を勝ち取りました！"
         agari = f"新王者ボーナス：能力値が大きく上昇しました！<br>（瞬発力+{c0_up}, 持久力+{c1_up}, 粘り強さ+{c2_up}, 落ち着き+{c3_up}, 闘争心+{c4_up}, 知力+{c5_up}, 切れ味+{c6_up}）"
@@ -432,9 +498,7 @@ def main():
         choco_c6 += 1
         
         # 参加賞：王者の最大値 * 王者連勝数 / 1,000 G
-        gold = int(max(1, wcmax) * max(1, wcren) / 1000)
-        if gold < 10:
-            gold = 10
+        gold = int(max(0, wcmax) * max(0, wcren) / 1000)
             
         comment = f"<strong>👑 王者{wcname}が防衛しました。</strong><br>あと一歩及びませんでしたクポ……防衛されて悔しいクポ！"
         agari = "参加賞：能力値が全体的に +1 上昇しましたクポ。"
@@ -537,11 +601,11 @@ def main():
         common.release_lock(user_id)
         
     # チョコボ
-    common.get_lock(f"choco_{user_id}")
+    common.get_lock(user_id)
     try:
         common.choco_regist(user_id, choco)
     finally:
-        common.release_lock(f"choco_{user_id}")
+        common.release_lock(user_id)
 
     # 王者データの保存
     common.get_lock("farm_winner")

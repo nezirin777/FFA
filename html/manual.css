@@ -193,7 +193,6 @@ a:hover{ text-decoration:underline; }
 .job-card__req{ display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; }
 .job-card__stat{ padding:3px 8px; border:1px solid var(--border-soft); border-radius:var(--radius-s); background:var(--bg-2); color:var(--text); font-size:12px; }
 .job-card__stat b{ color:var(--gold); }
-.job-card__stat--level{ border-color:transparent; background:rgba(95,224,138,.12); color:var(--green); }
 .job-card__stat--prereq{ border-color:transparent; background:rgba(100,181,246,.12); color:var(--blue); }
 .job-card__moves{ margin-top:auto; padding-top:8px; border-top:1px solid var(--border-soft); font-size:13px; }
 .job-card__moves-label{ display:block; margin-bottom:4px; color:var(--muted); font-size:11px; letter-spacing:.1em; }

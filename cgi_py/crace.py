@@ -72,6 +72,42 @@ except ImportError:
 # 重賞レースのモード (O(1) メンバーシップテスト用定数、線形探索を回避して高速化)
 _HEAVY_RACES: frozenset[str] = frozenset({"race7", "race8"})
 
+
+def _legacy_rand(limit):
+    """旧版 Perl の int(rand(x)) と同じく、上限を含めず整数を返す。"""
+    # Perl は x が小数でも、先に rand(x) を計算してから int() する。
+    # 先に int(x) へ丸めると、1.5 のような上限で値1が欠落する。
+    limit = float(limit)
+    return int(random.random() * limit) if limit > 0 else 0
+
+
+def _legacy_rand_float(limit):
+    """旧版 Perl の rand(x)（整数化しない実数値）に合わせる。"""
+    limit = float(limit)
+    return random.random() * limit if limit > 0 else 0.0
+
+
+def _legacy_rand_plus(limit):
+    """旧版 Perl の int(rand(x) + x) に合わせる。"""
+    limit = float(limit)
+    return int(random.random() * limit + limit) if limit > 0 else 0
+
+
+def _scheduled_major_race(total_turns, mode, sex):
+    """旧版牧場画面と同じ、G1/G2の開催枠からレース番号を求める。"""
+    if mode == "race7":
+        slot = total_turns % 400
+        if slot % 40 != 0:
+            return None
+        return 10 if slot == 360 and sex else 11 if slot == 360 else slot // 40 + 1
+    if mode == "race8":
+        slot = total_turns % 600
+        if slot % 60 != 0:
+            return None
+        return 22 if slot == 540 and sex else 21 if slot == 540 else 12 + slot // 60
+    return None
+
+
 # Windows等で標準出力をUTF-8にするための設定
 def load_rivals(ribal_path, count=4):
     """ライバルファイルを読み込み、ランダムに count 頭取得します。"""
@@ -213,8 +249,9 @@ def main():
             8: "チョコボキング", 9: "チョコボステークス", 10: "キングスカップ", 11: "クイーンカップ"
         }
         racename = g1_names.get(race_id, "G1重賞")
-        # 周期チェック
-        if (crun + ctrain) % 40 != 0:
+        # 旧版と同じ開催枠・性別限定のレースだけ許可する。
+        scheduled_race = _scheduled_major_race(crun + ctrain, mode, csex)
+        if scheduled_race != race_id:
             common.show_error("現在はそのG1レースの開催日ではありません。", back_ctx)
     elif mode == "race8":
         # G2（海外）レース
@@ -227,8 +264,8 @@ def main():
             21: "チョコボオークス", 22: "チョコボキングス"
         }
         racename = g2_names.get(race_id, "海外重賞")
-        # 周期チェック
-        if (crun + ctrain) % 60 != 0:
+        scheduled_race = _scheduled_major_race(crun + ctrain, mode, csex)
+        if scheduled_race != race_id:
             common.show_error("現在はその海外レースの開催日ではありません。", back_ctx)
     elif mode == "race_dendo":
         # 殿堂レース
@@ -258,6 +295,8 @@ def main():
         ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
         
     rivals = load_rivals(ribal_path, count=4)
+    # 旧版の賞金計算は、抽選された1頭目のライバルの限界値を参照する。
+    rival_reward_max = rivals[0].get("max", 0) if rivals else 0
 
     # 出走メンバーのパラメータ配列構築
     # インデックス 0: プレイヤー自身, 1..4: ライバル
@@ -325,8 +364,11 @@ def main():
     # レースのループ
     step = 0
     winner_idx = -1
+    photo_rival_idx = None
+    start_move = [0] * 5
     
-    while step < 100: # 最大100ステップで必ずゴールする設計にする
+    # 旧版は 1..5000 のループで、能力が低い場合も途中で処理を打ち切らない。
+    while step < 5000:
         step += 1
         step_comment = ""
         
@@ -338,20 +380,23 @@ def main():
             # === スタートダッシュ ===
             for n in range(5):
                 # 出遅れ判定
-                if random.randint(0, kisyou) <= random.randint(0, int(c3[n] * 2 / 3)):
-                    dmg[n] = int(random.randint(0, int(c0[n] / (tyousei * 4))) + c0[n] / (tyousei * 4))
+                if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3[n] * 2 / 3):
+                    start_move[n] = _legacy_rand_plus(c0[n] / (tyousei * 4))
+                    dmg[n] = start_move[n]
                     if n == 0:
                         step_comment += f'<span class="red">{names[n]}はスタートで出遅れましたクポ！</span> '
                     syoumou[n] = heri * dmg[n] * 3 * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 好スタート判定
-                elif random.randint(0, tiryoku) <= random.randint(0, int(c5[n] * 2 / 3)):
-                    dmg[n] = int(random.randint(0, int(c0[n] * 1.5 / tyousei)))
+                elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5[n] * 2 / 3):
+                    start_move[n] = _legacy_rand(c0[n] * 1.5 / tyousei)
+                    dmg[n] = start_move[n]
                     if n == 0:
                         step_comment += f'<span class="green">{names[n]}は素晴らしいスタートを切りましたクポ！</span> '
                     syoumou[n] = heri * (dmg[n] / 2) * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 普通スタート
                 else:
-                    dmg[n] = int(random.randint(0, int(c0[n] / (tyousei * 2))) + c0[n] / (tyousei * 2))
+                    start_move[n] = _legacy_rand_plus(c0[n] / (tyousei * 2))
+                    dmg[n] = start_move[n]
                     syoumou[n] = heri * dmg[n] * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                     
                 syoumou[n] = syoumou[n] / 2
@@ -361,28 +406,72 @@ def main():
             # スタート後の順位
             sorted_runners = sorted(range(5), key=lambda x: positions[x])
             step_comment += f"<br>スタート！先頭は {names[sorted_runners[0]]} クポ！"
-            
+        elif step == 2:
+            # === 中盤区間 ===
+            # 旧版ではスタート後に1000m区間へ切り替え、脚力とスタート差を
+            # 合成して残距離を再計算していた。この区間を省くと旧版より
+            # 終盤へ早く到達し、スタミナ・能力値の影響が変わってしまう。
+            middle_remaining = [0] * 5
+            for n in range(5):
+                middle_move = (
+                    _legacy_rand(c0[n] / 4)
+                    + int(c0[n] * 3 / 4)
+                    - kinryoku
+                    + start_move[n]
+                )
+                middle_remaining[n] = max(400, 1000 - middle_move)
+
+                if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3[n] / 4):
+                    syoumou[n] = (
+                        heri * (1400 + middle_move - start_move[n]) * 3
+                        * (kisyou / max(1, c3[n]))
+                        * (c2[n] / max(1, nebari))
+                    )
+                    middle_remaining[n] = int(middle_remaining[n] * 0.9)
+                    if n == 0:
+                        step_comment += f'<span class="yellow">{names[n]}は積極的に前へ進みましたクポ！</span> '
+                elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5[n] / 3):
+                    syoumou[n] = (
+                        heri * (1400 + middle_move - start_move[n])
+                        * (kisyou / max(1, c3[n]))
+                        * (c2[n] / max(1, nebari)) / 2
+                    )
+                    if n == 0:
+                        step_comment += f'<span class="yellow">{names[n]}は軽いコース取りで進みましたクポ！</span> '
+                else:
+                    syoumou[n] = (
+                        heri * (1400 + middle_move - start_move[n])
+                        * (kisyou / max(1, c3[n]))
+                        * (c2[n] / max(1, nebari))
+                    )
+
+                syoumou[n] *= 3 / 4
+                positions[n] = middle_remaining[n]
+                hp_flg[n] -= syoumou[n]
+
+            sorted_runners = sorted(range(5), key=lambda x: positions[x])
+            step_comment += f"<br>中盤を通過、先頭は {names[sorted_runners[0]]} クポ！"
         else:
             # === 中盤・終盤の移動 ===
             for n in range(5):
                 # 基礎移動力
-                base_dmg = (random.randint(0, c0[n]) + random.randint(0, c6[n]) + random.randint(0, c6[n]) + random.randint(0, c6[n])) / lastspart
+                base_dmg = (_legacy_rand(c0[n]) + _legacy_rand(c6[n]) + _legacy_rand(c6[n]) + _legacy_rand(c6[n])) / lastspart
                 syoumou_base = heri * base_dmg * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 
                 # スタミナ切れ（バテ）の判定
                 if hp_flg[n] <= 0:
                     # 粘り強さでカバーできるか
-                    if random.randint(0, nebari) < random.randint(0, c2[n]):
-                        base_dmg = base_dmg * 1.2
+                    if _legacy_rand_float(nebari) < _legacy_rand_float(c2[n]):
+                        base_dmg = base_dmg * 1.5
                         syoumou_base = syoumou_base * 0.5
                     else:
                         base_dmg = base_dmg / 3
                         if n == 0 and step % 4 == 0:
                             step_comment += f'<span class="red">{names[n]}は完全にバテていますクポ...</span> '
                 # ラストスパート（終盤かつ闘争心/スタミナで加速）
-                elif (random.randint(0, seriai) < random.randint(0, c4[n])) or (hp_flg[n] / max(1, c1[n]) >= 0.4):
+                elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4[n])) or (hp_flg[n] / max(1, c1[n]) >= 0.4):
                     syoumou_base = syoumou_base * 2
-                    base_dmg = base_dmg * 2.2
+                    base_dmg = base_dmg * 2.5
                     if n == 0 and step % 4 == 0:
                         step_comment += f'<span class="yellow">{names[n]}のラストスパートクポ！</span> '
                         
@@ -414,13 +503,23 @@ def main():
         
         # ゴール判定
         if any(pos <= 0 for pos in positions):
-            # 誰かがゴールイン
-            # 最も残り距離が少ない（またはマイナスが大きい）ものを勝者とする
-            winner_idx = sorted_runners[0]
+            # 旧版はプレイヤーとライバルが同時にゴールした場合だけ写真判定。
+            crossed_rivals = [idx for idx in range(1, 5) if positions[idx] <= 0]
+            if positions[0] <= 0 and crossed_rivals:
+                photo_rival_idx = crossed_rivals[0]
+            elif positions[0] <= 0:
+                winner_idx = 0
+            else:
+                crossed_rivals.sort(key=lambda idx: positions[idx])
+                winner_idx = crossed_rivals[0] if crossed_rivals else sorted_runners[0]
             break
 
     # === 勝敗判定と結果処理 ===
-    win = (winner_idx == 0)
+    if photo_rival_idx is not None:
+        win = _legacy_rand_float(c4[0]) > _legacy_rand_float(c4[photo_rival_idx])
+        winner_idx = 0 if win else photo_rival_idx
+    else:
+        win = (winner_idx == 0)
     agari = ""
     senzai = ""
     genkai = ""
@@ -446,13 +545,13 @@ def main():
         choco_max += 80
         
         # 全ステータスが 1〜6 上昇
-        c0_up = random.randint(1, 6)
-        c1_up = random.randint(1, 6)
-        c2_up = random.randint(1, 6)
-        c3_up = random.randint(1, 6)
-        c4_up = random.randint(1, 6)
-        c5_up = random.randint(1, 6)
-        c6_up = random.randint(1, 6)
+        c0_up = _legacy_rand(6) + 1
+        c1_up = _legacy_rand(6) + 1
+        c2_up = _legacy_rand(6) + 1
+        c3_up = _legacy_rand(6) + 1
+        c4_up = _legacy_rand(6) + 1
+        c5_up = _legacy_rand(6) + 1
+        c6_up = _legacy_rand(6) + 1
         
         choco_c0 += c0_up
         choco_c1 += c1_up
@@ -462,10 +561,8 @@ def main():
         choco_c5 += c5_up
         choco_c6 += c6_up
         
-        # 賞金計算
-        # X = choco_max / 1000 + 1。Xの1.3乗 * 1000 G
-        gold_factor = (int(choco_max / 1000) + 1) ** 1.3
-        gold = int(gold_factor * 1000)
+        # 旧版の式をそのまま維持する（指数13は旧版ソースのリテラル）。
+        gold = int((int(rival_reward_max / 1000) + 1) ** 13)
         
         comment = f"<strong>🏆 見事に1着でゴールインクポ！</strong><br>{names[0]}は見事な走りでしたクポ！さすがクポ！"
         agari = f"勝利ボーナス：能力値が全体的に上昇しましたクポ！<br>（瞬発力+{c0_up}, 持久力+{c1_up}, 粘り強さ+{c2_up}, 落ち着き+{c3_up}, 闘争心+{c4_up}, 知力+{c5_up}, 切れ味+{c6_up}）"
@@ -576,10 +673,8 @@ def main():
         choco_c5 += 1
         choco_c6 += 1
         
-        # 参加賞
-        gold = int(choco_max / 1000)
-        if gold < 10:
-            gold = 10
+        # 旧版はライバルの限界値 / 1000 の整数値を参加賞とする。
+        gold = int(rival_reward_max / 1000)
             
         winner_name = names[winner_idx]
         comment = f"<strong>🏁 {winner_name}が1着でゴールイン。</strong><br>{names[0]}は敗れてしまいましたクポ……次こそは頑張るクポ！"
@@ -682,11 +777,11 @@ def main():
     finally:
         common.release_lock(user_id)
         
-    common.get_lock(f"choco_{user_id}")
+    common.get_lock(user_id)
     try:
         common.choco_regist(user_id, choco)
     finally:
-        common.release_lock(f"choco_{user_id}")
+        common.release_lock(user_id)
 
     # フロントエンド用出走者データ
     runners_data = []

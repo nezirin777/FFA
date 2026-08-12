@@ -56,12 +56,12 @@ DEFAULT_WINNER = {
     "img": 0,
     "str": 10,
     "int": 10,
-    "dex": 10,
-    "vit": 10,
-    "agi": 10,
     "mnd": 10,
-    "lck": 10,
-    "lp": 0,
+    "vit": 10,
+    "dex": 10,
+    "agi": 10,
+    "cha": 10,
+    "karma": 0,
     "job": 0,
     "hp": 1000,
     "max_hp": 1000,
@@ -76,12 +76,11 @@ DEFAULT_WINNER = {
             "name": "なし",
             "effect_id": 0,
             "bonus": {
-                "str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0
+                "str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0
             },
-            "attrib": 0,
-            "spare1": 0,
-            "spare2": 0,
-            "spare3": 0,
+            "hit_rate": 0,
+            "evasion_rate": 0,
+            "special_rate": 0,
             "description": ""
         }
     },
@@ -184,31 +183,35 @@ def main():
     bw = {
         "str": get_bar_width(winner["str"]),
         "int": get_bar_width(winner["int"]),
-        "dex": get_bar_width(winner["dex"]),
-        "vit": get_bar_width(winner["vit"]),
-        "agi": get_bar_width(winner["agi"]),
         "mnd": get_bar_width(winner["mnd"]),
-        "lck": get_bar_width(winner["lck"]),
-        "lp": get_bar_width(winner["lp"])
+        "vit": get_bar_width(winner["vit"]),
+        "dex": get_bar_width(winner["dex"]),
+        "agi": get_bar_width(winner["agi"]),
+        "cha": get_bar_width(winner["cha"]),
+        "karma": get_bar_width(winner["karma"])
     }
     
     # 命中率・回避率・必殺率の計算
+    # 現行キー: dex=器用さ, agi=速さ, karma=カルマ
     hit_base = int(winner["dex"] / 10) + 51
     hit_base = min(hit_base, 150)
     
     kaihi_base = int(winner["agi"] / 20)
     kaihi_base = min(kaihi_base, 50)
     
-    waza_base = int(winner["lp"] / 15) + 10 + winner["job_level"]
+    waza_base = int(winner["karma"] / 15) + 10 + winner["job_level"]
     waza_base = min(waza_base, 75)
     
     weapon_effect = winner["equipped_item"]["weapon"]["effect"]
     armor_effect = winner["equipped_item"]["armor"]["effect"]
-    acs_lp = winner["equipped_item"]["accessory"]["bonus"]["lp"]
+    accessory = winner["equipped_item"]["accessory"]
+    acs_hit = accessory.get("hit_rate", 0)
+    acs_kaihi = accessory.get("evasion_rate", 0)
+    acs_waza = accessory.get("special_rate", 0)
     
-    bw_hit = int(0.5 * (hit_base + weapon_effect))
-    bw_kaihi = int(0.5 * (kaihi_base + armor_effect))
-    bw_waza = int(waza_base + acs_lp)
+    bw_hit = int(0.5 * (hit_base + weapon_effect + acs_hit))
+    bw_kaihi = int(0.5 * (kaihi_base + armor_effect + acs_kaihi))
+    bw_waza = int(waza_base + acs_waza)
     
     bw["hit"] = min(max(bw_hit, 1), 100)
     bw["kaihi"] = min(max(bw_kaihi, 1), 100)

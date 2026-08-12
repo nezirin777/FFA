@@ -36,6 +36,16 @@
                 <button type="submit" class="btn btn--danger">一括削除を実行</button>
             </form>
         </div>
+        <div class="admin-menu-card">
+            <h3>テストユーザーの復元</h3>
+            <p class="admin-menu-card__desc">削除・破損した保護ユーザーを、固定バックアップから復元します。</p>
+            <form action="admin.py" method="POST" onsubmit="return confirm('保護ユーザーをバックアップから復元しますか？');">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="pass" value="{{ pass }}">
+                <input type="hidden" name="mode" value="restore_protected">
+                <button type="submit" class="btn">保護ユーザーを復元</button>
+            </form>
+        </div>
     </div>
 
     <!-- 2. 全キャラクター表示 -->
@@ -138,32 +148,32 @@
                 <td><input type="number" name="str" class="admin-form-input" value="{{ chara.str }}" required></td>
             </tr>
             <tr>
-                <td><strong>魔力 (INT)</strong></td>
+                <td><strong>知能 (INT)</strong></td>
                 <td><input type="number" name="int" class="admin-form-input" value="{{ chara.int }}" required></td>
             </tr>
             <tr>
-                <td><strong>信仰心 (DEX)</strong></td>
-                <td><input type="number" name="dex" class="admin-form-input" value="{{ chara.dex }}" required></td>
+                <td><strong>信仰心 (MND)</strong></td>
+                <td><input type="number" name="mnd" class="admin-form-input" value="{{ chara.mnd }}" required></td>
             </tr>
             <tr>
                 <td><strong>生命力 (VIT)</strong></td>
                 <td><input type="number" name="vit" class="admin-form-input" value="{{ chara.vit }}" required></td>
             </tr>
             <tr>
-                <td><strong>素早さ (AGI)</strong></td>
+                <td><strong>器用さ (DEX)</strong></td>
+                <td><input type="number" name="dex" class="admin-form-input" value="{{ chara.dex }}" required></td>
+            </tr>
+            <tr>
+                <td><strong>速さ (AGI)</strong></td>
                 <td><input type="number" name="agi" class="admin-form-input" value="{{ chara.agi }}" required></td>
             </tr>
             <tr>
-                <td><strong>知性 (MND)</strong></td>
-                <td><input type="number" name="mnd" class="admin-form-input" value="{{ chara.mnd }}" required></td>
+                <td><strong>魅力 (CHA)</strong></td>
+                <td><input type="number" name="cha" class="admin-form-input" value="{{ chara.cha }}" required></td>
             </tr>
             <tr>
-                <td><strong>運 (LCK)</strong></td>
-                <td><input type="number" name="lck" class="admin-form-input" value="{{ chara.lck }}" required></td>
-            </tr>
-            <tr>
-                <td><strong>LP / カルマ</strong></td>
-                <td><input type="number" name="lp" class="admin-form-input" value="{{ chara.lp }}" required></td>
+                <td><strong>カルマ (KARMA)</strong></td>
+                <td><input type="number" name="karma" class="admin-form-input" value="{{ chara.karma }}" required></td>
             </tr>
             <tr>
                 <td><strong>自己紹介コメント</strong></td>

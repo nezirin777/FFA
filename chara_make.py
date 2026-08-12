@@ -232,17 +232,17 @@ def main():
             
         # 職業ごとの初期ステータス割り振り
         if syoku == 1: # 戦士
-            n_str, n_int, n_dex, n_vit, n_agi, n_mnd, n_lck = 9, 14, 10, 9, 11, 8, 10
-            lp = 5
+            n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 9, 14, 10, 9, 11, 8, 10
+            karma = 5
         elif syoku == 2: # ナイト
-            n_str, n_int, n_dex, n_vit, n_agi, n_mnd, n_lck = 9, 10, 12, 9, 11, 8, 12
-            lp = 5
+            n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 9, 10, 12, 9, 11, 8, 12
+            karma = 5
         elif syoku == 3: # シーフ
-            n_str, n_int, n_dex, n_vit, n_agi, n_mnd, n_lck = 11, 8, 8, 11, 13, 8, 12
-            lp = 5
+            n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 11, 8, 8, 11, 13, 8, 12
+            karma = 5
         else: # 見習い戦士
-            n_str, n_int, n_dex, n_vit, n_agi, n_mnd, n_lck = 13, 8, 8, 13, 11, 10, 8
-            lp = 5
+            n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 13, 8, 8, 13, 11, 10, 8
+            karma = 5
             
         now = int(time.time())
         remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
@@ -261,18 +261,18 @@ def main():
             "img": chara_img_idx,
             "str": n_str,
             "int": n_int,
-            "dex": n_dex,
-            "vit": n_vit,
-            "agi": n_agi,
             "mnd": n_mnd,
-            "lck": n_lck,
+            "vit": n_vit,
+            "dex": n_dex,
+            "agi": n_agi,
+            "cha": n_cha,
             "job": syoku,
             "hp": 500,
             "max_hp": 500,
             "exp": 0,
             "level": 1,
             "gold": 5000,
-            "lp": lp,
+            "karma": karma,
             "unused21": 0,
             "unused22": 0,
             "comment": "よろしくお願いします！",
@@ -305,12 +305,11 @@ def main():
                 "name": "なし",
                 "effect_id": 0,
                 "bonus": {
-                    "str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0
+                    "str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0
                 },
-                "attrib": 0,
-                "spare1": 0,
-                "spare2": 0,
-                "spare3": 0,
+                "hit_rate": 0,
+                "evasion_rate": 0,
+                "special_rate": 0,
                 "description": ""
             }
         }

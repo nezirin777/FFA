@@ -150,20 +150,20 @@
 
                         <table class="others-champ-info-table">
                             <tr>
-                                <td>力:</td><td>{{ winner.str }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.str }}px;"></div></div></td>
-                                <td>魔力:</td><td>{{ winner.int }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.int }}px;"></div></div></td>
+                                <td>力:</td><td>{{ winner.str }} + {{ winner.equipped_item.accessory.bonus.str }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.str }}px;"></div></div></td>
+                                <td>知能:</td><td>{{ winner.int }} + {{ winner.equipped_item.accessory.bonus.int }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.int }}px;"></div></div></td>
                             </tr>
                             <tr>
-                                <td>信仰心:</td><td>{{ winner.mnd }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.mnd }}px;"></div></div></td>
-                                <td>生命力:</td><td>{{ winner.vit }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.vit }}px;"></div></div></td>
+                                <td>信仰心:</td><td>{{ winner.mnd }} + {{ winner.equipped_item.accessory.bonus.mnd }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.mnd }}px;"></div></div></td>
+                                <td>生命力:</td><td>{{ winner.vit }} + {{ winner.equipped_item.accessory.bonus.vit }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.vit }}px;"></div></div></td>
                             </tr>
                             <tr>
-                                <td>器用さ:</td><td>{{ winner.dex }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.dex }}px;"></div></div></td>
-                                <td>速さ:</td><td>{{ winner.agi }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.agi }}px;"></div></div></td>
+                                <td>器用さ:</td><td>{{ winner.dex }} + {{ winner.equipped_item.accessory.bonus.dex }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.dex }}px;"></div></div></td>
+                                <td>速さ:</td><td>{{ winner.agi }} + {{ winner.equipped_item.accessory.bonus.agi }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.agi }}px;"></div></div></td>
                             </tr>
                             <tr>
-                                <td>魅力:</td><td>{{ winner.lp }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.lp }}px;"></div></div></td>
-                                <td>運:</td><td>{{ winner.lck }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.lck }}px;"></div></div></td>
+                                <td>魅力:</td><td>{{ winner.cha }} + {{ winner.equipped_item.accessory.bonus.cha }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.cha }}px;"></div></div></td>
+                                <td>カルマ:</td><td>{{ winner.karma }} + {{ winner.equipped_item.accessory.bonus.karma }} <div class="bar-bg others-champ-bar"><div class="bar-fill" style="width:{{ bw.karma }}px;"></div></div></td>
                             </tr>
                         </table>
 

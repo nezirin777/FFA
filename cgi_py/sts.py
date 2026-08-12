@@ -159,32 +159,32 @@ def main():
                 "armor": {"name": "衣服", "def": 0, "effect": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
                 }
             }
 
         # 命中率、回避率、必殺率の計算
-        # 信仰心 -> dex, 器用さ -> agi, 速さ -> mnd にマッピングされていることに注意
-        # 命中率 = 器用さ(agi) / 10 + 51
-        hit_ritu = int((chara.get("agi", 10) / 10) + 51)
+        # 能力値は mnd=信仰心, dex=器用さ, agi=速さとして扱う。
+        # 命中率 = 器用さ(dex) / 10 + 51
+        hit_ritu = int((chara.get("dex", 10) / 10) + 51)
         if hit_ritu > 150:
             hit_ritu = 150
             
-        # 回避率 = 速さ(mnd) / 20
-        kaihi_ritu = int(chara.get("mnd", 10) / 20)
+        # 回避率 = 速さ(agi) / 20
+        kaihi_ritu = int(chara.get("agi", 10) / 20)
         if kaihi_ritu > 50:
             kaihi_ritu = 50
             
-        # 必殺率 = カルマ(lp) / 15 + 10 + ジョブレベル(job_level)
-        waza_ritu = int(chara.get("lp", 0) / 15) + 10 + chara.get("job_level", 0)
+        # 必殺率 = カルマ(karma) / 15 + 10 + ジョブレベル(job_level)
+        waza_ritu = int(chara.get("karma", 0) / 15) + 10 + chara.get("job_level", 0)
         if waza_ritu > 75:
             waza_ritu = 75
 
         # 装備品補正値
-        ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("spare1", 0) # 命中補正
-        cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("spare3", 0) # 回避補正
-        waza_plus = item.get("accessory", {}).get("spare2", 0) # 必殺補正
+        ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("hit_rate", 0) # 命中補正
+        cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("evasion_rate", 0) # 回避補正
+        waza_plus = item.get("accessory", {}).get("special_rate", 0) # 必殺補正
 
         # 作戦（戦術）の取得
         tac_name = "普通に戦う"
@@ -229,12 +229,12 @@ def main():
             
         bw_str = int(chara.get("str", 10) / divpm)
         bw_int = int(chara.get("int", 10) / divpm)
-        bw_dex = int(chara.get("dex", 10) / divpm) # 信仰心
+        bw_mnd = int(chara.get("mnd", 10) / divpm) # 信仰心
         bw_vit = int(chara.get("vit", 10) / divpm) # 生命力
-        bw_agi = int(chara.get("agi", 10) / divpm) # 器用さ
-        bw_mnd = int(chara.get("mnd", 10) / divpm) # 速さ
-        bw_lck = int(chara.get("lck", 10) / divpm) # 魅力
-        bw_lp = int(chara.get("lp", 0) / divpm)
+        bw_dex = int(chara.get("dex", 10) / divpm) # 器用さ
+        bw_agi = int(chara.get("agi", 10) / divpm) # 速さ
+        bw_cha = int(chara.get("cha", 10) / divpm) # 魅力
+        bw_karma = int(chara.get("karma", 0) / divpm)
         
         bw_hit = int((hit_ritu + ci_plus) * 0.5)
         bw_kaihi = int((kaihi_ritu + cd_plus) * 0.5)
@@ -286,8 +286,8 @@ def main():
             "esex": "男" if chara.get("sex") == 1 else "女",
             "next_ex": chara.get("level", 1) * config.Config['level_up_coeff'],
             # バー幅
-            "bw_str": bw_str, "bw_int": bw_int, "bw_dex": bw_dex, "bw_vit": bw_vit,
-            "bw_agi": bw_agi, "bw_mnd": bw_mnd, "bw_lck": bw_lck, "bw_lp": bw_lp,
+            "bw_str": bw_str, "bw_int": bw_int, "bw_mnd": bw_mnd, "bw_vit": bw_vit,
+            "bw_dex": bw_dex, "bw_agi": bw_agi, "bw_cha": bw_cha, "bw_karma": bw_karma,
             "bw_hit": bw_hit, "bw_kaihi": bw_kaihi, "bw_waza": bw_waza
         }
         common.render_template("sts.html", context)

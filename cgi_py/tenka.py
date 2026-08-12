@@ -111,6 +111,8 @@ def get_tenka_data():
         try:
             with open(tenka_path, "r", encoding="utf-8") as f:
                 tenka_data = json.load(f)
+            if tenka_data and isinstance(tenka_data.get("members"), list):
+                tenka_data["members"] = list(tenka_data["members"])
         except:
             pass
             
@@ -123,6 +125,8 @@ def get_tenka_data():
                 try:
                     with open(tenka_path, "r", encoding="utf-8") as f:
                         tenka_data = json.load(f)
+                    if tenka_data and isinstance(tenka_data.get("members"), list):
+                        tenka_data["members"] = list(tenka_data["members"])
                 except:
                     pass
             if not tenka_data or now - tenka_data.get("last_updated", 0) > 86400:
@@ -141,8 +145,8 @@ def load_aite_equipped_item(aite_id):
             "armor": {"name": "衣服", "def": 0, "effect": 0},
             "accessory": {
                 "name": "なし", "effect_id": 0,
-                "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
             }
         }
     return item
@@ -207,6 +211,10 @@ def main():
         # aite_idx = config.Config['tenka_count'] + chara["boss_flag"] - config.Config['boss_cooldown'] - 1
         boss_flag = chara.get("boss_flag", 0)
         aite_idx = config.Config['tenka_count'] + boss_flag - config.Config['boss_cooldown'] - 1
+        requested_round = common.to_int(in_params.get("no", "1"), 1)
+        expected_round = config.Config['tenka_count'] - aite_idx
+        if requested_round != expected_round:
+            common.show_error("天下一武道会の対戦データが不正です。最初から入り直してください。")
         
         if aite_idx < 0 or aite_idx >= len(members):
             common.show_error("キャラデータ不整合、または対戦相手が見つかりません。")
@@ -228,6 +236,8 @@ def main():
         # シミュレータ起動
         # 対人戦なので is_player_enemy=True に設定
         simulator = battle_logic.BattleSimulator("battle", chara, item, winner, is_player_enemy=True)
+        # 天下一の賞金を盗み技の基準額として使う。
+        simulator.state.gold_base = gold_reward
         win, battle_logs = simulator.simulate() # 1: プレイヤー勝利, 0: プレイヤー敗北, 2: 引き分け
         
         # 残りHP、経験値計算
@@ -244,9 +254,15 @@ def main():
         if win == 1:
             # 勝利
             exp_gained = max(10, int(winner.get("level", 1) * 2))
-            chara["gold"] += gold_reward
+            total_reward = max(
+                0,
+                gold_reward + simulator.state.gold_reward_bonus - simulator.state.gold_reward_penalty,
+            )
+            chara["gold"] += total_reward
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
+            if chara["gold"] < 0:
+                chara["gold"] = 0
                 
             chara["boss_flag"] = boss_flag - 1 # 1段階勝ち抜け
             chara["battle_limit"] = config.Config['battle_limit']

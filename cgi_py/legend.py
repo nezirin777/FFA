@@ -184,7 +184,7 @@ def main():
 
         if win == 1:
             chara["unused22"] += 1
-            gold_gained = enemy_data["gold"] + random.randint(0, enemy_data["gold"]) + 1
+            gold_gained = enemy_data["gold"] + random.randrange(max(1, int(enemy_data["gold"]))) + 1
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']

@@ -204,8 +204,8 @@ def main():
         # 5. 戦闘実行 (BattleSimulator)
         simulator = battle_logic.BattleSimulator(mode, chara, item, enemy_data, is_player_enemy=False)
         if is_genei:
-            # 幻影闘技場の場合、敵のHPは2倍
-            monster_hp = (random.randrange(max(1, enemy_data["rand"])) + enemy_data["sp"]) * 2
+            # 旧版どおり、乱数分に基礎SPの2倍を加える。
+            monster_hp = random.randrange(max(1, enemy_data["rand"])) + enemy_data["sp"] * 2
             simulator.state.mhp = simulator.state.mhp_flg = monster_hp
         
         # 戦闘シミュレート開始
@@ -226,7 +226,11 @@ def main():
 
         # 勝敗処理
         if win == 1:
-            gold_gained = enemy_data["gold"]
+            # 旧版 sentoukeka 相当: 基本報酬 + 1〜基本報酬の範囲。
+            base_gold = max(0, int(enemy_data["gold"]))
+            gold_gained = base_gold + random.randrange(max(1, base_gold)) + 1
+            gold_gained += simulator.state.gold_reward_bonus
+            gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
             exp_gained = enemy_data["ex"]
             
             # 幻影闘技場のお宝追加判定
@@ -241,10 +245,14 @@ def main():
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
+            if chara["gold"] < 0:
+                chara["gold"] = 0
             
             comment += f'<span class="green u-text-large">戦闘に勝利しました！</span><br>'
             comment += f'経験値 {exp_gained} と {gold_gained} ゴールドを獲得しました。<br>'
         elif win == 0:
+            # 旧版の敗北時処理は所持金を1%にする。
+            chara["gold"] = int(chara["gold"] / 100)
             comment += f'<span class="red u-text-large">戦闘に敗北しました・・・</span><br>'
         else:
             comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'

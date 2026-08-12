@@ -7,17 +7,17 @@
     "bonus": {
       "str": 50,
       "int": 0,
-      "dex": 0,
-      "vit": 50,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 50,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "力、生命力ボーナス（大）"
+    "description": "力、生命力ボーナス（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 47,
@@ -27,17 +27,17 @@
     "bonus": {
       "str": 100,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 100
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 100
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "力、カルマボーナス（大）"
+    "description": "力、カルマボーナス（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 48,
@@ -47,17 +47,17 @@
     "bonus": {
       "str": 200,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 200
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 200
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "力、カルマボーナス（極大）"
+    "description": "力、カルマボーナス（極大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 49,
@@ -67,17 +67,17 @@
     "bonus": {
       "str": 500,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 500
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 500
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "力、カルマボーナス（超大）"
+    "description": "力、カルマボーナス（超大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 53,
@@ -87,17 +87,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "毎ターンＨＰ回復（中）"
+    "description": "毎ターンＨＰ回復（中）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 54,
@@ -107,17 +107,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "毎ターンＨＰ回復（大）"
+    "description": "毎ターンＨＰ回復（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 55,
@@ -127,17 +127,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "毎ターンＨＰ回復（極大）"
+    "description": "毎ターンＨＰ回復（極大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 58,
@@ -147,17 +147,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "ダメージ軽減（大）"
+    "description": "ダメージ軽減（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 61,
@@ -167,17 +167,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "攻撃力増大（3倍）"
+    "description": "攻撃力増大（3倍）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 62,
@@ -187,17 +187,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にオーラの効果"
+    "description": "稀にオーラの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 63,
@@ -207,17 +207,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にケアルガの効果"
+    "description": "稀にケアルガの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 64,
@@ -227,17 +227,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にホーリーの効果"
+    "description": "稀にホーリーの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 65,
@@ -247,17 +247,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にメテオの効果"
+    "description": "稀にメテオの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 66,
@@ -267,17 +267,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にアルテマの効果"
+    "description": "稀にアルテマの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 67,
@@ -287,17 +287,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "稀にデジョンの効果"
+    "description": "稀にデジョンの効果",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 71,
@@ -307,17 +307,17 @@
     "bonus": {
       "str": 300,
       "int": 300,
-      "dex": 300,
-      "vit": 300,
-      "agi": 300,
       "mnd": 300,
-      "lck": 300,
-      "lp": 0
+      "vit": 300,
+      "dex": 300,
+      "agi": 300,
+      "cha": 300,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（極大）＆？？？？"
+    "description": "オールボーナス（極大）＆？？？？",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 75,
@@ -327,16 +327,16 @@
     "bonus": {
       "str": 300,
       "int": 300,
-      "dex": 300,
-      "vit": 300,
-      "agi": 300,
       "mnd": 300,
-      "lck": 300,
-      "lp": 0
+      "vit": 300,
+      "dex": 300,
+      "agi": 300,
+      "cha": 300,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（極大）＆？？？？"
+    "description": "オールボーナス（極大）＆？？？？",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   }
 ]

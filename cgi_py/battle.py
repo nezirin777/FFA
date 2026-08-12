@@ -87,12 +87,12 @@ DEFAULT_WINNER = {
     "img": 0,
     "str": 10,
     "int": 10,
-    "dex": 10,
-    "vit": 10,
-    "agi": 10,
     "mnd": 10,
-    "lck": 10,
-    "lp": 0,
+    "vit": 10,
+    "dex": 10,
+    "agi": 10,
+    "cha": 10,
+    "karma": 0,
     "job": 0,
     "hp": 1000,
     "max_hp": 1000,
@@ -107,12 +107,11 @@ DEFAULT_WINNER = {
             "name": "なし",
             "effect_id": 0,
             "bonus": {
-                "str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0
+                "str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0
             },
-            "attrib": 0,
-            "spare1": 0,
-            "spare2": 0,
-            "spare3": 0,
+            "hit_rate": 0,
+            "evasion_rate": 0,
+            "special_rate": 0,
             "description": ""
         }
     },
@@ -196,6 +195,8 @@ def main():
 
             # 3. 戦闘実行 (BattleSimulator - 対人戦)
             simulator = battle_logic.BattleSimulator("battle", chara, item, winner, is_player_enemy=True)
+            # 対人戦の賞金は旧版 winner[50]。盗み技の基準額にする。
+            simulator.state.gold_base = max(0, int(winner.get("gold", 0)))
             win, logs = simulator.simulate()
 
             # 4. 戦闘結果の集計と更新
@@ -218,7 +219,8 @@ def main():
                 restored_whp = winner["max_hp"]
             winner["hp"] = restored_whp
 
-            gold_gained = winner["gold"]
+            gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
+            gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
             exp_gained = config.Config['base_exp'] # 対人戦の基本経験値
 
             if win == 1 or win == 2:
@@ -226,6 +228,15 @@ def main():
                 chara["gold"] += gold_gained
                 if chara["gold"] > config.Config['max_gold']:
                     chara["gold"] = config.Config['max_gold']
+                if chara["gold"] < 0:
+                    chara["gold"] = 0
+
+                # 旧版は新王者の賞金を、旧王者の連勝数・挑戦者レベル・賞金係数から再計算する。
+                new_winner_gold = int(
+                    winner.get("win_count", 0)
+                    * chara.get("level", 1)
+                    * config.Config["prize_money"]
+                )
 
                 # 新しい王者レコードを組み立てる
                 winner = {
@@ -237,12 +248,12 @@ def main():
                     "img": int(chara["img"]),
                     "str": int(chara["str"]),
                     "int": int(chara["int"]),
-                    "dex": int(chara["dex"]),
-                    "vit": int(chara["vit"]),
-                    "agi": int(chara["agi"]),
                     "mnd": int(chara["mnd"]),
-                    "lck": int(chara["lck"]),
-                    "lp": int(chara["lp"]),
+                    "vit": int(chara["vit"]),
+                    "dex": int(chara["dex"]),
+                    "agi": int(chara["agi"]),
+                    "cha": int(chara["cha"]),
+                    "karma": int(chara["karma"]),
                     "job": int(chara["job"]),
                     "hp": int(chara["hp"]),
                     "max_hp": int(chara["max_hp"]),
@@ -267,17 +278,16 @@ def main():
                             "bonus": {
                                 "str": int(item["accessory"]["bonus"]["str"]),
                                 "int": int(item["accessory"]["bonus"]["int"]),
-                                "dex": int(item["accessory"]["bonus"]["dex"]),
-                                "vit": int(item["accessory"]["bonus"]["vit"]),
-                                "agi": int(item["accessory"]["bonus"]["agi"]),
                                 "mnd": int(item["accessory"]["bonus"]["mnd"]),
-                                "lck": int(item["accessory"]["bonus"]["lck"]),
-                                "lp": int(item["accessory"]["bonus"]["lp"])
+                                "vit": int(item["accessory"]["bonus"]["vit"]),
+                                "dex": int(item["accessory"]["bonus"]["dex"]),
+                                "agi": int(item["accessory"]["bonus"]["agi"]),
+                                "cha": int(item["accessory"]["bonus"]["cha"]),
+                                "karma": int(item["accessory"]["bonus"]["karma"])
                             },
-                            "attrib": int(item["accessory"].get("attrib", 0)),
-                            "spare1": int(item["accessory"].get("spare1", 0)),
-                            "spare2": int(item["accessory"].get("spare2", 0)),
-                            "spare3": int(item["accessory"].get("spare3", 0)),
+                            "hit_rate": int(item["accessory"].get("hit_rate", 0)),
+                            "evasion_rate": int(item["accessory"].get("evasion_rate", 0)),
+                            "special_rate": int(item["accessory"].get("special_rate", 0)),
                             "description": common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
                         }
                     },
@@ -296,13 +306,15 @@ def main():
                     "max_win_name": winner.get("max_win_name", "無名の剣士"),
                     "max_win_site": winner.get("max_win_site", "不明"),
                     "max_win_url": winner.get("max_win_url", ""),
-                    "gold": gold_gained
+                    "gold": new_winner_gold
                 }
                 
                 comment += f'<span class="green u-text-large">見事に勝利し、新王者になりました！</span><br>'
                 comment += f'経験値 {exp_gained} と賞金 {gold_gained} ゴールドを獲得しました。<br>'
             else:
                 # 挑戦者の敗北 ➔ 王者の防衛成功
+                # 旧版の敗北時処理は挑戦者の所持金を半分にする。
+                chara["gold"] = max(0, int(chara["gold"] / 2))
                 winner["win_count"] += 1
                 
                 if winner["win_count"] > winner["max_win_count"]:
@@ -316,6 +328,13 @@ def main():
                 winner["hp"] += int(winner["max_hp"] / 10)
                 if winner["hp"] > winner["max_hp"]:
                     winner["hp"] = winner["max_hp"]
+
+                # 防衛成功時は王者側の次回賞金を連勝数分だけ積み上げる。
+                winner["gold"] = int(winner.get("gold", 0)) + int(
+                    winner["win_count"]
+                    * chara.get("level", 1)
+                    * config.Config["prize_money"]
+                )
                     
                 # 最後の挑戦者情報として自分を記録
                 winner["last_challenger"] = {

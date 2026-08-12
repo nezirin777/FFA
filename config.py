@@ -30,6 +30,9 @@ Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無
 Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
 Config["single_account_per_host"] = True  # 同一IP/ホストからの複数キャラクター登録を禁止する
 Config["single_account_exempt_ids"] = ["test"]  # 同一IPチェックの対象外にする特殊ID
+# テスト・検証用として自動削除と通常の管理画面削除から保護するID
+Config["protected_user_ids"] = ["test"]
+Config["protected_user_backup_dir"] = os.path.join(BASE_DIR, "data", "protected_users")
 Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
 
 
@@ -44,7 +47,7 @@ Config["session_expiry"] = 1800  # 暗号化セッション(FFAPY_SESSION)の有
 # ==========================================
 Config["max_level"] = 99999  # キャラクターの最大レベル
 Config["max_hp"] = 99999999  # キャラクターの最大HP
-Config["max_param"] = 99999  # 力・魔力などの最大能力値
+Config["max_param"] = 99999  # 力・知能などの最大能力値
 Config["max_gold"] = 999999999999  # 所持金の最大値
 Config["max_bank"] = 999999999999000  # 銀行預金の最大値
 
@@ -61,6 +64,9 @@ Config["boss_cooldown"] = 10  # ボス戦のクールダウン秒数
 Config["level_diff_limit"] = 15  # 通常戦闘で対戦相手を選べるレベル差制限
 Config["battle_limit"] = 9999  # 1日の最大対戦回数制限
 Config["max_turns"] = 150  # 1戦闘における最大ターン数 (引き分け判定用)
+# 旧版 wbattle.pl の初手逆転必殺判定
+Config["level_sa"] = 15
+Config["gyakuten"] = 100
 Config["master_tac_limit"] = 1  # 転職後の戦術（タクティクス）クリア設定 (1: クリアする)
 Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
 
@@ -381,6 +387,7 @@ Config["genei_level_max"] = 1000
 # メッセージログ表示限界数・その他
 Config["max_lines"] = 5
 Config["max_messages"] = 20
+Config["message_max_length"] = 40  # 旧版 mes_size 相当（送受信メッセージ本文の最大文字数）
 Config["max_all_lines"] = 5
 Config["max_all_messages"] = 20
 Config["comeback_factor"] = 100

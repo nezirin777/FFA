@@ -7,17 +7,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 25,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 25,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "器用さボーナス（小）"
+    "description": "器用さボーナス（小）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 17,
@@ -27,17 +27,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 50,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 50,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "器用さボーナス（中）"
+    "description": "器用さボーナス（中）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 18,
@@ -47,17 +47,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 100,
       "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "vit": 0,
+      "dex": 100,
+      "agi": 0,
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "器用さボーナス（大）"
+    "description": "器用さボーナス（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 22,
@@ -67,17 +67,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 25
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 25
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "カルマボーナス（小）"
+    "description": "カルマボーナス（小）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 23,
@@ -87,17 +87,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 50
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 50
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "カルマボーナス（中）"
+    "description": "カルマボーナス（中）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 24,
@@ -107,17 +107,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
-      "vit": 0,
-      "agi": 0,
       "mnd": 0,
-      "lck": 0,
-      "lp": 100
+      "vit": 0,
+      "dex": 0,
+      "agi": 0,
+      "cha": 0,
+      "karma": 100
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "カルマボーナス（大）"
+    "description": "カルマボーナス（大）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 40,
@@ -127,17 +127,17 @@
     "bonus": {
       "str": 0,
       "int": 0,
-      "dex": 0,
+      "mnd": 0,
       "vit": 0,
+      "dex": 10,
       "agi": 10,
-      "mnd": 10,
-      "lck": 0,
-      "lp": 0
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "速さ、器用さボーナス（小）"
+    "description": "速さ、器用さボーナス（小）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 43,
@@ -147,17 +147,17 @@
     "bonus": {
       "str": 5,
       "int": 5,
-      "dex": 5,
+      "mnd": 5,
       "vit": 5,
+      "dex": 0,
       "agi": 0,
-      "mnd": 0,
-      "lck": 0,
-      "lp": 0
+      "cha": 0,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（極小）"
+    "description": "オールボーナス（極小）",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   },
   {
     "no": 71,
@@ -167,16 +167,16 @@
     "bonus": {
       "str": 300,
       "int": 300,
-      "dex": 300,
-      "vit": 300,
-      "agi": 300,
       "mnd": 300,
-      "lck": 300,
-      "lp": 0
+      "vit": 300,
+      "dex": 300,
+      "agi": 300,
+      "cha": 300,
+      "karma": 0
     },
-    "attrib": 0,
-    "spare1": 0,
-    "spare2": 0,
-    "description": "オールボーナス（極大）＆？？？？"
+    "description": "オールボーナス（極大）＆？？？？",
+    "hit_rate": 0,
+    "evasion_rate": 0,
+    "special_rate": 0
   }
 ]

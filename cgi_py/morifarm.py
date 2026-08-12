@@ -286,12 +286,12 @@ def main():
         }
         
         # 排他ロックをかけて登録
-        common.get_lock(f"choco_{user_id}")
+        common.get_lock(user_id)
         try:
             common.choco_regist(user_id, choco_data)
             common.choco_g1_regist(user_id, {})
         finally:
-            common.release_lock(f"choco_{user_id}")
+            common.release_lock(user_id)
             
         context["mode"] = "main" # メインに戻すための演出
         context["has_choco"] = True
@@ -374,7 +374,8 @@ def main():
             cy_blood = random.randint(0, 9)
             cy_ran_hit = True
             
-        birth = random.randint(0, max(0, cfblood + cy_blood))
+        birth_limit = cfblood + cy_blood
+        birth = random.randrange(birth_limit) if birth_limit > 0 else 0
         if cf_ran_hit:
             cfblood = 0
         if cy_ran_hit:
@@ -385,7 +386,9 @@ def main():
         if cftrain > 1000:
             birth += 1
             
-        prebirth = random.randint(0, max(0, cy_fatherrank + cy_motherrank)) + random.randint(0, max(0, cffblood + cfmblood))
+        prebirth_a = cy_fatherrank + cy_motherrank
+        prebirth_b = cffblood + cfmblood
+        prebirth = (random.randrange(prebirth_a) if prebirth_a > 0 else 0) + (random.randrange(prebirth_b) if prebirth_b > 0 else 0)
         if cfwin > 100:
             prebirth += 2
         if cftrain > 500:
@@ -512,14 +515,14 @@ def main():
             else: cblood = 0
             
         # 最大限界値 cmaxmax の決定
-        if cblood == 7: cmaxmax = 5500 + random.randint(0, 1499)
-        elif cblood == 6: cmaxmax = 5500 + random.randint(0, 999)
-        elif cblood == 5: cmaxmax = 4500 + random.randint(0, 1999)
-        elif cblood == 4: cmaxmax = 3500 + random.randint(0, 2499)
-        elif cblood == 3: cmaxmax = 3000 + random.randint(0, 2999)
-        elif cblood == 2: cmaxmax = 2500 + random.randint(0, 2999)
-        elif cblood == 1: cmaxmax = 2000 + random.randint(0, 3499)
-        else: cmaxmax = random.randint(0, 6999)
+        if cblood == 7: cmaxmax = 5500 + random.randrange(1500)
+        elif cblood == 6: cmaxmax = 5500 + random.randrange(1000)
+        elif cblood == 5: cmaxmax = 4500 + random.randrange(2000)
+        elif cblood == 4: cmaxmax = 3500 + random.randrange(2500)
+        elif cblood == 3: cmaxmax = 3000 + random.randrange(3000)
+        elif cblood == 2: cmaxmax = 2500 + random.randrange(3000)
+        elif cblood == 1: cmaxmax = 2000 + random.randrange(3500)
+        else: cmaxmax = random.randrange(7000)
         
         # 性別決定 (1: オス, 0: メス)
         csex = random.randint(0, 1)
@@ -608,12 +611,12 @@ def main():
             "mblood": cy_blood
         }
         
-        common.get_lock(f"choco_{user_id}")
+        common.get_lock(user_id)
         try:
             common.choco_regist(user_id, new_choco)
             common.choco_g1_regist(user_id, {})
         finally:
-            common.release_lock(f"choco_{user_id}")
+            common.release_lock(user_id)
             
         # お見合い結果の情報をcontextに格納
         choco_info = {
@@ -681,7 +684,7 @@ def main():
                 warikomi_idx = random.randint(0, len(lines) - 1)
                 
             # ID割り当て
-            warikomi_no = lines[warikomi_idx]["no"] if lines else random.randint(1, 99)
+            warikomi_no = lines[warikomi_idx]["no"] if lines else random.randrange(99)
             
             new_entry = {
                 "no": warikomi_no,
@@ -708,23 +711,13 @@ def main():
         finally:
             common.release_lock(list_type)
             
-        # プレイヤー所持金の加算
-        chara["gold"] += cfgold
-        if chara["gold"] > config.Config['max_gold']:
-            chara["gold"] = config.Config['max_gold']
-            
+        # チョコボデータを統合JSON上で未所持状態へ戻す
         common.get_lock(user_id)
         try:
-            common.chara_regist(user_id, chara)
+            # 旧版は現役データだけを削除し、重賞履歴は保持していた。
+            common.choco_delete(user_id, reset_g1=False)
         finally:
             common.release_lock(user_id)
-            
-        # チョコボデータを統合JSON上で未所持状態へ戻す
-        common.get_lock(f"choco_{user_id}")
-        try:
-            common.choco_delete(user_id)
-        finally:
-            common.release_lock(f"choco_{user_id}")
             
         # 完了画面表示
         context["choco"] = {
@@ -766,11 +759,11 @@ def main():
             
         # 名前更新して保存
         choco_raw["name"] = st_name
-        common.get_lock(f"choco_{user_id}")
+        common.get_lock(user_id)
         try:
             common.choco_regist(user_id, choco_raw)
         finally:
-            common.release_lock(f"choco_{user_id}")
+            common.release_lock(user_id)
             
         context["mode"] = "main"
         context["has_choco"] = True
@@ -817,7 +810,7 @@ def main():
 
     elif mode == "yadoya":
         # === 宿屋（寿命回復）処理 ===
-        common.get_lock(f"choco_{user_id}")
+        common.get_lock(user_id)
         try:
             choco = common.choco_load(user_id)
             if not choco:
@@ -827,18 +820,14 @@ def main():
             if clife >= 1000:
                 common.show_error("チョコボは既に絶好調（体力最大）です。")
 
-            common.get_lock(user_id)
-            try:
-                # チョコボを休ませられることを確認してからギルを消費する
-                chara = common.chara_load(user_id) # 最新データを読み込み
-                if chara["gold"] < 5000:
-                    common.show_error("ゴールドが足りません。（5,000ゴールド必要です）")
+            # チョコボを休ませられることを確認してからギルを消費する
+            chara = common.chara_load(user_id) # 最新データを読み込み
+            if chara["gold"] < 5000:
+                common.show_error("ゴールドが足りません。（5,000ゴールド必要です）")
 
-                chara["gold"] -= 5000
-                common.chara_regist(user_id, chara)
-                context["chara"] = chara
-            finally:
-                common.release_lock(user_id)
+            chara["gold"] -= 5000
+            common.chara_regist(user_id, chara)
+            context["chara"] = chara
                 
             # 寿命のランダム回復
             clife += random.randint(200, 499)
@@ -852,7 +841,7 @@ def main():
             
             common.choco_regist(user_id, choco)
         finally:
-            common.release_lock(f"choco_{user_id}")
+            common.release_lock(user_id)
             
         common.render_template("morifarm.html", context)
 

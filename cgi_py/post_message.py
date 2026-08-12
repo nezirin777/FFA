@@ -204,10 +204,13 @@ def main():
                     common.release_lock(user_id)
                     common.show_error("メッセージ内容に不適切な表現が含まれています。")
                     
-            # 文字数制限チェック (1000文字以内)
-            if len(mes) > 1000:
+            # 旧版 mes_size と同じく、本文は最大文字数で制限する。
+            max_message_length = config.Config["message_max_length"]
+            if len(mes) > max_message_length:
                 common.release_lock(user_id)
-                common.show_error(f"メッセージが長すぎます（現在 {len(mes)} 文字、最大 1000 文字）。")
+                common.show_error(
+                    f"メッセージが長すぎます（現在 {len(mes)} 文字、最大 {max_message_length} 文字）。"
+                )
                 
             # 相手の受信制限チェック
             aite_ban = load_message_ban(aite_id)

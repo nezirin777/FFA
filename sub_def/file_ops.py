@@ -79,11 +79,11 @@ def load_user_all(user_id: str) -> dict[str, Any] | None:
     user_dir = _user_path(user_id)
     file_path = os.path.join(user_dir, "user_all.json")
     # ユーザー名単位の排他ロックを掛けて安全にロード
-    return load_data_with_lock(file_path, f"user_{user_id}")
+    return load_data_with_lock(file_path, user_id)
 
 def save_user_all(user_id: str, data: dict[str, Any]) -> None:
     """統合されたユーザーデータをアトミックに保存します。"""
     user_dir = _user_path(user_id)
     file_path = os.path.join(user_dir, "user_all.json")
     # ユーザー名単位の排他ロックを掛けて安全にアトミック保存
-    save_data_atomically(data, file_path, f"user_{user_id}")
+    save_data_atomically(data, file_path, user_id)

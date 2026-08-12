@@ -38,6 +38,7 @@ if hasattr(sys.stdin, 'reconfigure'):
 import os
 import time
 import shutil
+import json
 
 # 共通モジュールと設定モジュールのインポート
 try:
@@ -63,6 +64,57 @@ def get_all_players():
                 players.append(chara)
     return players
 
+
+def get_protected_user_ids():
+    """自動削除・通常の個別削除から保護するユーザーIDを返します。"""
+    return set(config.Config.get("protected_user_ids", []))
+
+
+def protected_backup_path(user_id):
+    backup_dir = config.Config.get(
+        "protected_user_backup_dir",
+        os.path.join(config.BASE_DIR, "data", "protected_users"),
+    )
+    return os.path.join(backup_dir, user_id, "user_all.json")
+
+
+def is_valid_user_file(file_path, user_id):
+    """復元元として使える統合ユーザーデータか確認します。"""
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        return isinstance(data, dict) and data.get("chara", {}).get("id") == user_id
+    except (OSError, json.JSONDecodeError, AttributeError):
+        return False
+
+
+def restore_protected_users():
+    """欠落・破損した保護ユーザーを、固定バックアップから復元します。"""
+    restored = []
+    unavailable = []
+
+    for user_id in sorted(get_protected_user_ids()):
+        source = protected_backup_path(user_id)
+        if not is_valid_user_file(source, user_id):
+            unavailable.append(user_id)
+            continue
+
+        target = os.path.join(config.Config["save_dir"], user_id, "user_all.json")
+        if is_valid_user_file(target, user_id):
+            continue
+
+        common.get_lock(user_id)
+        try:
+            if is_valid_user_file(target, user_id):
+                continue
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            shutil.copy2(source, target)
+            restored.append(user_id)
+        finally:
+            common.release_lock(user_id)
+
+    return restored, unavailable
+
 def main():
     # パラメータの取得
     params = common.decode_params()
@@ -75,7 +127,7 @@ def main():
 
     # データ改変・削除を伴う操作はCSRFトークン検証を必須とする
     method = os.environ.get("REQUEST_METHOD", "GET").upper()
-    if method == "POST" and mode in ("save", "del_chara", "del_noplay"):
+    if method == "POST" and mode in ("save", "del_chara", "del_noplay", "restore_protected"):
         from sub_def.crypto import get_session, token_check
         token_check(params, get_session())
 
@@ -84,6 +136,30 @@ def main():
         context = {
             "pass": admin_pass,
             "mode": mode
+        }
+        common.render_template("admin.html", context)
+        return
+
+    # 1.5 保護ユーザー復元
+    elif mode == "restore_protected":
+        restored, unavailable = restore_protected_users()
+        players = get_all_players()
+        for p in players:
+            p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
+
+        message_parts = []
+        if restored:
+            message_parts.append(f"保護ユーザーを復元しました: {', '.join(restored)}")
+        if unavailable:
+            message_parts.append(f"復元元が見つかりません: {', '.join(unavailable)}")
+        if not message_parts:
+            message_parts.append("復元が必要な保護ユーザーはいませんでした。")
+
+        context = {
+            "pass": admin_pass,
+            "players": players,
+            "mode": "kanri_all",
+            "message": " / ".join(message_parts),
         }
         common.render_template("admin.html", context)
         return
@@ -145,12 +221,12 @@ def main():
             chara["max_hp"] = int(params.get("max_hp", chara["max_hp"]))
             chara["str"] = int(params.get("str", chara["str"]))
             chara["int"] = int(params.get("int", chara["int"]))
-            chara["dex"] = int(params.get("dex", chara["dex"]))
-            chara["vit"] = int(params.get("vit", chara["vit"]))
-            chara["agi"] = int(params.get("agi", chara["agi"]))
             chara["mnd"] = int(params.get("mnd", chara["mnd"]))
-            chara["lck"] = int(params.get("lck", chara["lck"]))
-            chara["lp"] = int(params.get("lp", chara["lp"]))
+            chara["vit"] = int(params.get("vit", chara["vit"]))
+            chara["dex"] = int(params.get("dex", chara["dex"]))
+            chara["agi"] = int(params.get("agi", chara["agi"]))
+            chara["cha"] = int(params.get("cha", chara["cha"]))
+            chara["karma"] = int(params.get("karma", chara["karma"]))
             chara["job"] = int(params.get("job", chara["job"]))
             chara["job_level"] = int(params.get("job_level", chara["job_level"]))
             chara["comment"] = params.get("comment", chara["comment"]).strip()
@@ -177,6 +253,19 @@ def main():
         target_id = params.get("target_id", "").strip()
         if not target_id:
             common.show_error("対象IDが不足しています。")
+
+        if target_id in get_protected_user_ids():
+            players = get_all_players()
+            for p in players:
+                p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
+            context = {
+                "pass": admin_pass,
+                "players": players,
+                "mode": "kanri_all",
+                "message": f"保護ユーザー「{target_id}」は削除できません。",
+            }
+            common.render_template("admin.html", context)
+            return
             
         user_dir = os.path.join(config.Config['save_dir'], target_id)
         if os.path.exists(user_dir) and os.path.isdir(user_dir):
@@ -202,11 +291,15 @@ def main():
         
         deleted_count = 0
         deleted_names = []
+        protected_count = 0
         
         for p in players:
             ltime = now - p.get("last_time", 0)
             if ltime > limit_seconds:
                 user_id = p["id"]
+                if user_id in get_protected_user_ids():
+                    protected_count += 1
+                    continue
                 user_dir = os.path.join(config.Config['save_dir'], user_id)
                 if os.path.exists(user_dir) and os.path.isdir(user_dir):
                     shutil.rmtree(user_dir)
@@ -217,7 +310,12 @@ def main():
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
             
-        msg = f"放置キャラクターを一括削除しました (削除数: {deleted_count}人: {', '.join(deleted_names)})" if deleted_count > 0 else "放置キャラクターはいませんでした。"
+        if deleted_count > 0:
+            msg = f"放置キャラクターを一括削除しました (削除数: {deleted_count}人: {', '.join(deleted_names)})"
+        else:
+            msg = "放置キャラクターはいませんでした。"
+        if protected_count:
+            msg += f" 保護ユーザー {protected_count}人は対象外にしました。"
         context = {
             "pass": admin_pass,
             "players": players,

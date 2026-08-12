@@ -134,6 +134,10 @@ def main():
 
     # === 20ターンのトレーニング実行 ===
     turn = 20
+    # 旧版は訓練開始時に1問だけ作り、知力訓練の成功ターンで同じ問題を表示していた。
+    mae = random.randrange(1000)
+    usiro = random.randrange(1000)
+    kotae = mae * usiro
     success = 0
     lose = 0
     turns_data = []
@@ -157,9 +161,6 @@ def main():
             if not is_success:
                 msg = '<span class="red">居眠りしているクポ...</span>'
             else:
-                mae = random.randint(10, 99)
-                usiro = random.randint(10, 99)
-                kotae = mae * usiro
                 msg = f'<span class="green">難解な問題を解いたクポ！ ({mae} × {usiro} = {kotae})</span>'
         elif syurui == 6: # 切れ味
             msg = '<span class="red">坂道から転げ落ちているクポ！</span>' if not is_success else '<span class="green">疾風のように駆け上がったクポ！</span>'
@@ -454,11 +455,11 @@ def main():
     finally:
         common.release_lock(user_id)
 
-    common.get_lock(f"choco_{user_id}")
+    common.get_lock(user_id)
     try:
         common.choco_regist(user_id, choco)
     finally:
-        common.release_lock(f"choco_{user_id}")
+        common.release_lock(user_id)
 
     # テンプレートへの受け渡しコンテキスト
     context = {

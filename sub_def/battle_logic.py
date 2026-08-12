@@ -52,10 +52,11 @@ import random
 import time
 import json
 import html
+import copy
 try:
-    from . import skills
+    from . import common, skills
 except ImportError:
-    import skills
+    import common, skills
 try:
     import config
 except ImportError:
@@ -63,6 +64,15 @@ except ImportError:
 
 # O(1)メンバーシップテストのための定数定義 (ガイドライン2.4に準拠し、線形探索を回避して高速化)
 _SPECIAL_MODES: frozenset[str] = frozenset({"isekiai", "genei"})
+_ACCESSORY_BONUS_STATS = common.STAT_KEYS
+
+def _with_accessory_bonus(chara, accessory):
+    """旧版 acs_add 相当。戦闘用コピーにだけ通常ステータスボーナスを加算する。"""
+    effective = copy.deepcopy(chara)
+    bonus = (accessory or {}).get("bonus", {})
+    for key in _ACCESSORY_BONUS_STATS:
+        effective[key] = int(effective.get(key, 0)) + int(bonus.get(key, 0))
+    return effective
 
 class BattleState:
     """
@@ -107,6 +117,12 @@ class BattleState:
             
         # プレイヤー状態
         self.khp = chara["hp"]
+
+        # 戦闘中の金銭変動。旧版の盗み技は戦闘後の報酬を増減させる。
+        self.player_gold = max(0, int(chara.get("gold", 0)))
+        self.gold_base = max(0, int(self.mgold))
+        self.gold_reward_bonus = 0
+        self.gold_reward_penalty = 0
         
         # ターンごとの計算用
         self.dmg1 = 0 # プレイヤーから敵へのダメージ
@@ -145,6 +161,14 @@ class BattleState:
         self.a_kaihiup = 0
         self.a_wazaup = 0
 
+    def available_gold(self):
+        return self.player_gold
+
+    def penalize_reward(self, amount):
+        amount = max(0, int(amount))
+        self.gold_reward_penalty += amount
+        return amount
+
 def get_job_dmg(job, chara, weapon_dmg):
     """
     職業に応じたプレイヤーの基礎ダメージを算出します (battle.pl の syokuzero〜syokuthirty に相当)
@@ -153,56 +177,73 @@ def get_job_dmg(job, chara, weapon_dmg):
         val = chara.get(attr, 1)
         return random.randrange(max(1, int(val)))
 
-    # 7=str, 8=int, 9=dex, 10=vit, 11=agi, 12=mnd, 13=lck
+    # 7=str, 8=int, 9=mnd, 10=vit, 11=dex, 12=agi, 13=cha
     if job == 0: return r("str") + weapon_dmg
     elif job == 1: return r("int") + weapon_dmg
-    elif job == 2: return r("dex") + weapon_dmg
-    elif job == 3: return r("vit") + weapon_dmg
+    elif job == 2: return r("mnd") + weapon_dmg
+    # 旧版 syokuthree は chara[11]（器用さ）を参照する。
+    elif job == 3: return r("dex") + weapon_dmg
     elif job == 4: return r("int") + weapon_dmg
     elif job == 5: return r("int") + weapon_dmg
-    elif job == 6: return r("dex") + r("lck") + weapon_dmg
-    elif job == 7: return r("int") + r("lck") + weapon_dmg
+    elif job == 6: return r("mnd") + r("cha") + weapon_dmg
+    elif job == 7: return r("int") + r("cha") + weapon_dmg
     elif job == 8: return r("str") + r("vit") + weapon_dmg
-    elif job == 9: return r("int") + r("dex") + weapon_dmg
-    elif job == 10: return r("str") + r("dex") + weapon_dmg
+    elif job == 9: return r("int") + r("mnd") + weapon_dmg
+    elif job == 10: return r("str") + r("mnd") + weapon_dmg
     elif job == 11: return r("str") + r("int") + weapon_dmg
     elif job == 12: return r("str") + r("vit") + weapon_dmg
-    elif job == 13: return r("str") + r("agi") + weapon_dmg
+    elif job == 13: return r("str") + r("dex") + weapon_dmg
     elif job == 14: return r("str") + r("int") + weapon_dmg
     elif job == 15: return r("str") + r("int") + weapon_dmg
-    elif job == 16: return r("str") + r("agi") + weapon_dmg
-    elif job == 17: return r("int") + r("dex") + r("lck") + weapon_dmg
-    elif job == 18:
-        # 学者 (全パラメータの合計)
-        total = sum(int(chara.get(k, 0)) for k in ["str", "int", "dex", "vit", "agi", "mnd", "lck", "lp"])
-        return random.randrange(max(1, total)) + weapon_dmg
-    elif job == 19:
-        # バーサーカー (力のみ極大)
-        return r("str") * 2 + weapon_dmg
-    elif job >= 20 and job <= 29:
-        # 上級職: 各種能力値を複合したダメージ
-        return r("str") + r("int") + r("dex") + weapon_dmg
+    elif job == 16: return r("str") + r("dex") + weapon_dmg
+    elif job == 17: return r("int") + r("mnd") + r("cha") + weapon_dmg
+    # 旧版の syokueighteen〜syokuthirty を、能力値の意味を保ったまま移植する。
+    # 旧版の [7..13] は str,int,信仰心,vit,器用さ,速さ,魅力、[20] はカルマ。
+    def all_stats():
+        return (
+            r("str") + r("int") + r("mnd") + r("vit") +
+            r("dex") + r("agi") + r("cha") + int(chara.get("karma", 0))
+        )
+
+    if job in (18, 19, 20, 21, 28, 29, 30):
+        return all_stats() + weapon_dmg
+    elif job in (22, 26, 27):
+        return all_stats() * 2 + weapon_dmg
+    elif job == 23:
+        return r("str") + weapon_dmg
+    elif job == 24:
+        return (r("vit") + r("dex") + r("agi") + r("cha") + int(chara.get("karma", 0))) * 2 + weapon_dmg
+    elif job == 25:
+        return (
+            r("str") + r("int") + r("mnd") + r("vit") +
+            r("dex") * 5 + r("agi") + r("cha") + int(chara.get("karma", 0))
+        ) * 2 + weapon_dmg
     else:
-        # その他/マスター職
-        total_kiso = r("str") + r("int") + r("dex") + r("vit") + r("agi") + r("mnd") + r("lck")
-        return int(total_kiso * 1.5) + weapon_dmg
+        return all_stats() + weapon_dmg
 
 class BattleSimulator:
     """
     戦闘実行シミュレーター。
     """
     def __init__(self, mode, chara, item, enemy_data, is_player_enemy=False):
-        self.state = BattleState(mode, chara, item, enemy_data, is_player_enemy)
+        # 現行キー形式のデータをコピーして戦闘用の補正を適用する。
+        effective_item = copy.deepcopy(item)
+        effective_chara = copy.deepcopy(chara)
+        effective_chara = _with_accessory_bonus(effective_chara, effective_item.get("accessory", {}))
+        effective_enemy = copy.deepcopy(enemy_data)
+        if is_player_enemy:
+            enemy_accessory = effective_enemy.get("equipped_item", {}).get("accessory", {})
+            effective_enemy = _with_accessory_bonus(effective_enemy, enemy_accessory)
+        self.state = BattleState(mode, effective_chara, effective_item, effective_enemy, is_player_enemy)
         self.battle_logs = []
         
     def simulate(self):
         s = self.state
         
-        # アクセサリーによるパッシブ補正 (acs_add 相当)
-        # 命中率や回避率などの上昇値を設定
-        s.a_hitup = int(s.item["accessory"]["bonus"]["dex"])
-        s.a_kaihiup = int(s.item["accessory"]["bonus"]["agi"])
-        s.a_wazaup = int(s.item["accessory"]["bonus"]["lp"])
+        # アクセサリーによる特殊補正 (旧版 acs: hitup, kaihiup, wazaup)
+        s.a_hitup = int(s.item["accessory"].get("hit_rate", 0))
+        s.a_kaihiup = int(s.item["accessory"].get("evasion_rate", 0))
+        s.a_wazaup = int(s.item["accessory"].get("special_rate", 0))
         
         win = 2 # デフォルト引き分け
         
@@ -219,6 +260,9 @@ class BattleSimulator:
                 s.com2 = f"{s.mname}の攻撃！"
             else:
                 s.dmg2 = s.mdmg + random.randrange(max(1, s.mrand))
+                # 旧版 genei は各ターン開始時に、防具の防御力を敵攻撃へ加算していた。
+                if s.mode == "genei":
+                    s.dmg2 += s.item["armor"]["def"]
                 s.com2 = f"{s.mname}の攻撃！"
                 
             s.clit1 = ""
@@ -234,14 +278,18 @@ class BattleSimulator:
             s.huin = 0
             
             # === 2. プレイヤー必殺技発動判定 (tyosenwaza / hissatu) ===
-            s.waza_ritu = int(s.chara["lp"] / 15) + 10 + s.chara["job_level"]
+            s.waza_ritu = int(s.chara["karma"] / 15) + 10 + s.chara["job_level"]
             if s.waza_ritu > 75: s.waza_ritu = 75
             s.waza_ritu += s.a_wazaup
             if s.waza_ritu > 95: s.waza_ritu = 95
 
             # 対人戦の相手(王者)側の必殺率。プレイヤー側と同じ式で算出する。
-            # モンスター戦では winner に lp/job_level が無いため 0 起点となり、実際には mons_ritu が使われる。
-            s.wwaza_ritu = int(s.winner.get("lp", 0) / 15) + 10 + s.winner.get("job_level", 0)
+            # モンスター戦では winner に karma/job_level が無いため 0 起点となり、実際には mons_ritu が使われる。
+            s.wwaza_ritu = int(s.winner.get("karma", 0) / 15) + 10 + s.winner.get("job_level", 0)
+            if s.wwaza_ritu > 75: s.wwaza_ritu = 75
+            if s.is_player_enemy:
+                # 旧版 winwaza の winner[36]（アクセサリー必殺率補正）。
+                s.wwaza_ritu += int(s.winner_item["accessory"].get("special_rate", 0))
             if s.wwaza_ritu > 95: s.wwaza_ritu = 95
             # 特殊技の追加ダメージ枠(旧版で未実装だった変数)。既定 0。
             s.wd_dmg = 0
@@ -262,60 +310,133 @@ class BattleSimulator:
             
             # === 3. 敵スキル発動判定 ===
             if s.is_player_enemy:
+                # 旧版 wbattle.pl の winwaza 相当。王者側にもHPピンチ時の
+                # リミットブレイク判定がある。
+                if int(s.winner["max_hp"] / 10) > s.mhp and random.randrange(4) > 1:
+                    s.wwaza_ritu += 999
+                    s.com2 += "<br><font class=\"red\" size=4><b>LIMIT BREAK!!</b></font>"
                 # 敵プレイヤーの必殺技
                 skills.run_skill("wtech", s.winner["job"], "hissatu", s)
             else:
                 # 敵モンスターのスキル (mons_X.mons_waza)
                 skills.run_skill("mons", s.monstac, "mons_waza", s)
                 
-            # === 4. アクセサリー効果の発動 (acs_waza / wacs_waza) ===
-            skills.run_skill("acstech", s.item["accessory"]["effect_id"], "hissatu", s)
+            # === 4. 職業の後発効果とアクセサリー効果 (acs_waza / wacs_waza) ===
+            # 旧版では必殺技(hissatu)とは別に、通常攻撃後の atowaza と
+            # アクセサリー固有効果の acskouka をこの順で実行していた。
+            skills.run_skill("tech", s.chara["job"], "atowaza", s)
+            skills.run_skill("acstech", s.item["accessory"]["effect_id"], "acskouka", s)
             if s.is_player_enemy:
-                skills.run_skill("wacstech", s.winner_item["accessory"]["effect_id"], "hissatu", s)
+                skills.run_skill("wtech", s.winner["job"], "watowaza", s)
+                skills.run_skill("wacstech", s.winner_item["accessory"]["effect_id"], "wacskouka", s)
+            else:
+                skills.run_skill("mons", s.monstac, "mons_atowaza", s)
+
+            # 旧版 wbattle.pl battle_clt の初手逆転必殺判定。
+            if s.is_player_enemy and s.i == 1:
+                level_sa = int(config.Config.get("level_sa", 15))
+                gyakuten = int(config.Config.get("gyakuten", 100))
+                player_weapon_dmg = s.item["weapon"]["dmg"]
+                winner_weapon_dmg = s.winner_item["weapon"]["dmg"]
+                if (
+                    int(s.winner.get("level", 0)) - int(s.chara.get("level", 0)) >= level_sa
+                    or player_weapon_dmg < winner_weapon_dmg
+                ):
+                    s.dmg1 = s.dmg1 * gyakuten
+                    s.sake2 -= 999999
+                    s.winner_item["weapon"]["dmg"] = 0
+                    s.com1 += "<font color=\"blue\" size=5>逆転必殺技発動！！</font><br>"
+                if (
+                    int(s.chara.get("level", 0)) - int(s.winner.get("level", 0)) >= level_sa
+                    or s.winner_item["weapon"]["dmg"] < s.item["armor"]["def"]
+                ):
+                    s.dmg2 = s.dmg2 * 100
+                    s.sake1 -= 999999
+                    s.com2 += "<font color=\"red\" size=5>逆転必殺技発動！！</font><br>"
                 
             # === 5. クリティカル判定 (mons_clt / clt) ===
             kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
             if kclt_ritu > random.randrange(100):
                 s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
-                s.dmg1 = s.dmg1 * 3
+                if s.is_player_enemy:
+                    # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
+                    s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["dmg"]
+                else:
+                    s.dmg1 = s.dmg1 * 3
                 
             if s.is_player_enemy:
                 mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
                 if mclt_ritu > random.randrange(100):
                     s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
-                    s.dmg2 = s.dmg2 * 3
+                    # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
+                    s.dmg2 = s.dmg2 * 2 + s.item["armor"]["def"]
             else:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0
                 if mclt_ritu > random.randrange(200):
                     s.com2 += f"<br><span class=\"red\"><b>クリティカルヒット！！</b></span>"
                     s.dmg2 = s.dmg2 + s.item["armor"]["def"] # 防御無視相当の加算
                     
-            # === 6. 防御力による減算・回避判定 (mons_kaihi) ===
-            # 防護効果
-            ci_plus = s.item["weapon"]["effect"] + s.item["accessory"]["attrib"]
-            cd_plus = s.item["armor"]["effect"] + s.item["accessory"]["spare1"]
-            
-            # 命中率・回避率
-            hit_ritu = int(s.chara["agi"] / 10) + 51 + ci_plus
-            sake1 = int(s.chara["mnd"] / 20) + cd_plus + s.sake1
-            sake2 = s.mkahi - hit_ritu + s.sake2
-            
-            # 防御力による被ダメ減算
+            # === 6. 防御力による減算・回避判定 ===
+            ci_plus = s.item["weapon"]["effect"] + s.item["accessory"]["hit_rate"]
+            cd_plus = s.item["armor"]["effect"] + s.item["accessory"]["evasion_rate"]
+            hit_ritu = int(s.chara["dex"] / 10) + 51 + ci_plus
+
+            if s.is_player_enemy:
+                # 対人戦は旧版 wbattle.pl の双方計算を使う。
+                winner_ci_plus = (
+                    s.winner_item["weapon"]["effect"] +
+                    s.winner_item["accessory"]["hit_rate"]
+                )
+                winner_cd_plus = (
+                    s.winner_item["armor"]["effect"] +
+                    s.winner_item["accessory"]["evasion_rate"]
+                )
+                winner_hit_ritu = int(s.winner["dex"] / 10) + 51 + winner_ci_plus
+                winner_kaihi_ritu = int(s.winner["agi"] / 20)
+                if winner_kaihi_ritu > 50:
+                    winner_kaihi_ritu = 50
+                winner_kaihi_ritu += winner_cd_plus
+                player_kaihi_ritu = int(s.chara["agi"] / 20)
+                if player_kaihi_ritu > 50:
+                    player_kaihi_ritu = 50
+                player_kaihi_ritu += cd_plus
+                sake1 = 100 - int(winner_hit_ritu - player_kaihi_ritu) + s.sake1
+                sake2 = 100 - int(hit_ritu - winner_kaihi_ritu) + s.sake2
+            else:
+                # モンスター戦は旧版 mbattle.pl の計算を使う。
+                sake1 = int(s.chara["agi"] / 20) + cd_plus + s.sake1
+                sake2 = s.mkahi - hit_ritu + s.sake2
+
+            # 被ダメージの防御力減算。対人戦は相手防具にも同じ処理を行う。
             if s.dmg2 < 0:
                 pass
             elif s.dmg2 < s.item["armor"]["def"]:
-                s.dmg2 = 0
+                s.dmg2 = 1 if s.is_player_enemy else 0
             else:
                 s.dmg2 = s.dmg2 - s.item["armor"]["def"]
-                
+
+            if s.is_player_enemy:
+                if s.dmg1 < 0:
+                    pass
+                elif s.dmg1 < s.winner_item["armor"]["def"]:
+                    s.dmg1 = 1
+                else:
+                    s.dmg1 = s.dmg1 - s.winner_item["armor"]["def"]
+
             # 上級職による防御ボーナス
             if s.chara["job"] > 17:
                 s.dmg2 = int(s.dmg2 / 4)
             elif s.chara["job"] > 7:
                 s.dmg2 = int(s.dmg2 / 2)
-                
+            if s.is_player_enemy:
+                if s.winner["job"] > 17:
+                    s.dmg1 = int(s.dmg1 / 4)
+                elif s.winner["job"] > 7:
+                    s.dmg1 = int(s.dmg1 / 2)
+
             # プレイヤー回避判定
-            if sake1 > random.randrange(300):
+            evade_roll_max = 100 if s.is_player_enemy else 300
+            if sake1 > random.randrange(evade_roll_max):
                 s.dmg2 = 0
                 s.com2 += f"<br><span class=\"red u-text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
@@ -351,7 +472,10 @@ class BattleSimulator:
             self.battle_logs.append(turn_log)
             
             # === 9. 勝敗判定 (winlose) ===
-            if s.mhp <= 0:
+            if s.is_player_enemy and s.mhp <= 0 and s.khp <= 0:
+                win = 2 # 旧版 wbattle.pl の相打ち
+                break
+            elif s.mhp <= 0:
                 win = 1 # プレイヤー勝利
                 break
             elif s.khp <= 0:
@@ -390,17 +514,17 @@ def process_levelup(chara, exp_gained, syoku_master=None):
         pass
         
     job_idx = chara.get("job", 0)
-    sy_limits = [0] * 8 # str, int, dex, vit, agi, mnd, lck, lp
+    sy_limits = [0] * 8 # str, int, mnd, vit, dex, agi, cha, karma
     if job_idx < len(jobs):
         job_data = jobs[job_idx]
         sy_limits[0] = job_data.get("limit_str", 0)
         sy_limits[1] = job_data.get("limit_int", 0)
-        sy_limits[2] = job_data.get("limit_dex", 0)
+        sy_limits[2] = job_data.get("limit_mnd", 0)
         sy_limits[3] = job_data.get("limit_vit", 0)
-        sy_limits[4] = job_data.get("limit_agi", 0)
-        sy_limits[5] = job_data.get("limit_mnd", 0)
-        sy_limits[6] = job_data.get("limit_lck", 0)
-        sy_limits[7] = job_data.get("limit_lp", 0)
+        sy_limits[4] = job_data.get("limit_dex", 0)
+        sy_limits[5] = job_data.get("limit_agi", 0)
+        sy_limits[6] = job_data.get("limit_cha", 0)
+        sy_limits[7] = job_data.get("limit_karma", 0)
 
     # レベルアップ基本係数
     lv_up_coeff = config.Config['level_up_coeff']
@@ -419,7 +543,7 @@ def process_levelup(chara, exp_gained, syoku_master=None):
             chara["max_hp"] = config.Config['max_hp']
             
         # ステータス上昇判定 (50%の確率で上昇)
-        attrs = ["str", "int", "dex", "vit", "agi", "mnd", "lck"]
+        attrs = ["str", "int", "mnd", "vit", "dex", "agi", "cha"]
         for idx, attr in enumerate(attrs):
             limit_val = sy_limits[idx]
             if limit_val > 0 and random.randrange(2) == 0:
@@ -428,13 +552,13 @@ def process_levelup(chara, exp_gained, syoku_master=None):
                 if chara[attr] > config.Config['max_param']:
                     chara[attr] = config.Config['max_param']
                     
-        # LP上昇判定
-        limit_lp = sy_limits[7]
-        if limit_lp > 0 and random.randrange(2) == 0:
-            up_lp = random.randint(0, limit_lp - 1) + 1
-            chara["lp"] += up_lp
-            if chara["lp"] > config.Config['max_param']:
-                chara["lp"] = config.Config['max_param']
+        # カルマ上昇判定
+        limit_karma = sy_limits[7]
+        if limit_karma > 0 and random.randrange(2) == 0:
+            up_karma = random.randint(0, limit_karma - 1) + 1
+            chara["karma"] += up_karma
+            if chara["karma"] > config.Config['max_param']:
+                chara["karma"] = config.Config['max_param']
 
     if lvup_count > 0:
         comment += f'<font class=red size=5>レベルが {lvup_count} 上がりました！</font><br>'

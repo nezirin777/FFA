@@ -3,6 +3,7 @@ FFA Python/CGI - ディレクトリ作成によるMutex排他ロッククラス 
 """
 import os
 import time
+from . import lock_state
 
 class exLock:
     def __init__(self, lock_path: str, timeout: int = 15):
@@ -14,8 +15,13 @@ class exLock:
         """ロック（ディレクトリ作成）を試みます。タイムアウトまで待機します。"""
         start_time = time.time()
         while True:
+            if lock_state.is_owned(self.lock_path):
+                lock_state.enter(self.lock_path)
+                self.locked = True
+                return True
             try:
                 os.mkdir(self.lock_path)
+                lock_state.enter(self.lock_path)
                 self.locked = True
                 return True
             except FileExistsError:
@@ -29,7 +35,8 @@ class exLock:
         """ロックを解除（ディレクトリ削除）します。"""
         if self.locked:
             try:
-                os.rmdir(self.lock_path)
+                if lock_state.leave(self.lock_path):
+                    os.rmdir(self.lock_path)
                 self.locked = False
             except FileNotFoundError:
                 # 既に解除されている場合は無視

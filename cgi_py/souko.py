@@ -85,17 +85,16 @@ def get_item_master(item_id, item_type):
                     "bonus": {
                         "str": bonus.get("str", 0),
                         "int": bonus.get("int", 0),
-                        "dex": bonus.get("dex", 0),
-                        "vit": bonus.get("vit", 0),
-                        "agi": bonus.get("agi", 0),
                         "mnd": bonus.get("mnd", 0),
-                        "lck": bonus.get("lck", 0),
-                        "lp": bonus.get("lp", 0)
+                        "vit": bonus.get("vit", 0),
+                        "dex": bonus.get("dex", 0),
+                        "agi": bonus.get("agi", 0),
+                        "cha": bonus.get("cha", 0),
+                        "karma": bonus.get("karma", 0)
                     },
-                    "attrib": item.get("attrib", 0),
-                    "spare1": item.get("spare1", 0),
-                    "spare2": item.get("spare2", 0),
-                    "spare3": item.get("spare3", 0),
+                    "hit_rate": item.get("hit_rate", 0),
+                    "evasion_rate": item.get("evasion_rate", 0),
+                    "special_rate": item.get("special_rate", 0),
                     "description": item.get("description", "")
                 }
             else:
@@ -111,8 +110,9 @@ def get_item_master(item_id, item_type):
 def format_bonus(bonus_dict):
     """アクセサリーの能力値上昇を表示用の文字列に変換します。"""
     parts = []
-    keys = [("str", "力"), ("int", "魔"), ("dex", "技"), ("vit", "体"), 
-            ("agi", "速"), ("mnd", "精"), ("lck", "運"), ("lp", "魅")]
+    # 旧版の列順: 力, 知能, 信仰心, 生命力, 器用さ, 速さ, 魅力, カルマ
+    keys = [("str", "力"), ("int", "知"), ("mnd", "信"), ("vit", "生"),
+            ("dex", "器"), ("agi", "速"), ("cha", "魅"), ("karma", "カ")]
     for k, name in keys:
         val = bonus_dict.get(k, 0)
         if val != 0:
@@ -279,9 +279,9 @@ def main():
                 if not master:
                     master = {
                         "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
-                        "bonus": item["accessory"]["bonus"], "attrib": item["accessory"]["attrib"],
-                        "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"],
-                        "spare3": item["accessory"].get("spare3", 0), "description": item["accessory"].get("description", "")
+                        "bonus": item["accessory"]["bonus"], "hit_rate": item["accessory"]["hit_rate"],
+                        "evasion_rate": item["accessory"]["evasion_rate"], "special_rate": item["accessory"]["special_rate"],
+                        "description": item["accessory"].get("description", "")
                     }
                     
                 souko_acs.append(master)
@@ -289,8 +289,8 @@ def main():
                 item["accessory"] = {
                     "name": "なし",
                     "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "dex": 0, "vit": 0, "agi": 0, "mnd": 0, "lck": 0, "lp": 0},
-                    "attrib": 0, "spare1": 0, "spare2": 0, "spare3": 0, "description": ""
+                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
                 }
                 modified = True
                 
@@ -305,9 +305,9 @@ def main():
                     if not master:
                         master = {
                             "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
-                            "bonus": item["accessory"]["bonus"], "attrib": item["accessory"]["attrib"],
-                            "spare1": item["accessory"]["spare1"], "spare2": item["accessory"]["spare2"],
-                            "spare3": item["accessory"].get("spare3", 0), "description": item["accessory"].get("description", "")
+                            "bonus": item["accessory"]["bonus"], "hit_rate": item["accessory"]["hit_rate"],
+                            "evasion_rate": item["accessory"]["evasion_rate"], "special_rate": item["accessory"]["special_rate"],
+                            "description": item["accessory"].get("description", "")
                         }
                     souko_acs.append(master)
                 
@@ -317,10 +317,9 @@ def main():
                     "name": target["name"],
                     "effect_id": target.get("effect_id", 0),
                     "bonus": target["bonus"],
-                    "attrib": target.get("attrib", 0),
-                    "spare1": target.get("spare1", 0),
-                    "spare2": target.get("spare2", 0),
-                    "spare3": target.get("spare3", 0),
+                    "hit_rate": target.get("hit_rate", 0),
+                    "evasion_rate": target.get("evasion_rate", 0),
+                    "special_rate": target.get("special_rate", 0),
                     "description": target_description
                 }
                 modified = True

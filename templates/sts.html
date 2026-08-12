@@ -148,7 +148,7 @@
                             <span class="bar-val">{{ chara.str }} <span class="sts-text-muted">+ {{ item.weapon.dmg }}</span></span>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_str }}%;"></div></div>
                         </td>
-                        <th>魔力<br><span class="sts-param-sublabel">(魔法効果)</span></th>
+                        <th>知能<br><span class="sts-param-sublabel">(魔法効果)</span></th>
                         <td>
                             <span class="bar-val">{{ chara.int }} <span class="sts-text-muted">+ {{ item.accessory.bonus.int }}</span></span>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_int }}%;"></div></div>
@@ -157,9 +157,8 @@
                     <tr>
                         <th>信仰心<br><span class="sts-param-sublabel">(魔法防御)</span></th>
                         <td>
-                            <!-- 信仰心マッピング -> dex -->
-                            <span class="bar-val">{{ chara.dex }} <span class="sts-text-muted">+ {{ item.accessory.bonus.dex }}</span></span>
-                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_dex }}%;"></div></div>
+                            <span class="bar-val">{{ chara.mnd }} <span class="sts-text-muted">+ {{ item.accessory.bonus.mnd }}</span></span>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_mnd }}%;"></div></div>
                         </td>
                         <th>生命力<br><span class="sts-param-sublabel">(被ダメ軽減)</span></th>
                         <td>
@@ -170,27 +169,25 @@
                     <tr>
                         <th>器用さ<br><span class="sts-param-sublabel">(命中貢献)</span></th>
                         <td>
-                            <!-- 器用さマッピング -> agi -->
-                            <span class="bar-val">{{ chara.agi }} <span class="sts-text-muted">+ {{ item.accessory.bonus.agi }}</span></span>
-                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_agi }}%;"></div></div>
+                            <span class="bar-val">{{ chara.dex }} <span class="sts-text-muted">+ {{ item.accessory.bonus.dex }}</span></span>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_dex }}%;"></div></div>
                         </td>
                         <th>速さ<br><span class="sts-param-sublabel">(回避貢献)</span></th>
                         <td>
-                            <!-- 速さマッピング -> mnd -->
-                            <span class="bar-val">{{ chara.mnd }} <span class="sts-text-muted">+ {{ item.accessory.bonus.mnd }}</span></span>
-                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_mnd }}%;"></div></div>
+                            <span class="bar-val">{{ chara.agi }} <span class="sts-text-muted">+ {{ item.accessory.bonus.agi }}</span></span>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_agi }}%;"></div></div>
                         </td>
                     </tr>
                     <tr>
                         <th>魅力<br><span class="sts-param-sublabel">(クリティカル)</span></th>
                         <td>
-                            <span class="bar-val">{{ chara.lck }} <span class="sts-text-muted">+ {{ item.accessory.bonus.lck }}</span></span>
-                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_lck }}%;"></div></div>
+                            <span class="bar-val">{{ chara.cha }} <span class="sts-text-muted">+ {{ item.accessory.bonus.cha }}</span></span>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_cha }}%;"></div></div>
                         </td>
                         <th>カルマ<br><span class="sts-param-sublabel">(カルマ値)</span></th>
                         <td>
-                            <span class="bar-val">{{ chara.lp }}</span>
-                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_lp }}%;"></div></div>
+                            <span class="bar-val">{{ chara.karma }} <span class="sts-text-muted">+ {{ item.accessory.bonus.karma }}</span></span>
+                            <div class="bar-container"><div class="bar-fill" style="width: {{ bw_karma }}%;"></div></div>
                         </td>
                     </tr>
                     <tr>
