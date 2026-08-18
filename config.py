@@ -32,8 +32,12 @@ Config["single_account_per_host"] = True  # 同一IP/ホストからの複数キ
 Config["single_account_exempt_ids"] = ["test"]  # 同一IPチェックの対象外にする特殊ID
 # テスト・検証用として自動削除と通常の管理画面削除から保護するID
 Config["protected_user_ids"] = ["test"]
-Config["protected_user_backup_dir"] = os.path.join(BASE_DIR, "data", "protected_users")
+Config["protected_user_backup_dir"] = os.path.join(
+    Config["save_dir"], "protected_users"
+)
 Config["active_time"] = 120  # アクティブプレイヤーとしてみなす判定秒数
+# チャンプデータはプレイ中に更新されるセーブデータとして保存する。
+Config["winner_file"] = os.path.join(Config["save_dir"], "winner.json")
 
 
 # ==========================================
@@ -169,7 +173,6 @@ Config["vote_image"] = "アイコン一覧"
 # ==========================================
 # 8. マスタデータ・定義ファイル設定 (Master Data Files)
 # ==========================================
-Config["winner_file"] = "data/winner.json"  # 王者（チャンプ）データファイル
 Config["syoku_file"] = "data/syoku.json"  # 職業マスタデータファイル
 Config["tac_file"] = "data/tac/tac.json"  # 戦術マスタデータファイル
 Config["tac_folder"] = "data/tac"  # 戦術データフォルダ

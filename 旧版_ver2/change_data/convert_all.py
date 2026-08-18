@@ -648,7 +648,7 @@ def parse_args() -> argparse.Namespace:
         "--winner-output",
         type=Path,
         default=None,
-        help="winner.jsonだけ別の場所へ出力する (省略時はshared-output内)",
+        help="winner.jsonだけ別の場所へ出力する (省略時はshared-output内。運用時はsave_data/winner.jsonを指定)",
     )
     parser.add_argument(
         "--dry-run",

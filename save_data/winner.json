@@ -1,0 +1,63 @@
+{
+  "id": "abura",
+  "name": "せあぶら",
+  "sex": 0,
+  "img": 23,
+  "str": 72104,
+  "int": 68458,
+  "mnd": 70298,
+  "vit": 73562,
+  "dex": 67895,
+  "agi": 67758,
+  "cha": 70810,
+  "karma": 49263,
+  "job": 30,
+  "hp": 99999999,
+  "max_hp": 99999999,
+  "level": 4511,
+  "battle_count": 23660,
+  "battle_win_count": 21654,
+  "comment": "",
+  "equipped_item": {
+    "weapon": {
+      "name": "神剣・グラビティースレイブ",
+      "dmg": 499000,
+      "effect": 90
+    },
+    "armor": {
+      "name": "フォースフィールド",
+      "def": 64500,
+      "effect": 499
+    },
+    "accessory": {
+      "name": "ケアルガの結晶",
+      "effect_id": 11,
+      "bonus": {
+        "str": 0,
+        "int": 0,
+        "mnd": 0,
+        "vit": 0,
+        "dex": 0,
+        "agi": 0,
+        "cha": 0,
+        "karma": 0
+      },
+      "description": "稀にケアルガの効果",
+      "hit_rate": 0,
+      "evasion_rate": 0,
+      "special_rate": 0
+    }
+  },
+  "unused30": 80,
+  "host": "",
+  "job_level": 60,
+  "last_challenger": {
+    "id": "",
+    "name": "傲尘"
+  },
+  "win_count": 20,
+  "max_win_count": 395,
+  "max_win_id": "VM8GiB8pi41Zq5K9gZfuQ3WR7XVM6YYooF",
+  "max_win_name": "驚愕ヌコ",
+  "gold": 5847500
+}

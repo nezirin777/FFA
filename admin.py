@@ -73,7 +73,7 @@ def get_protected_user_ids():
 def protected_backup_path(user_id):
     backup_dir = config.Config.get(
         "protected_user_backup_dir",
-        os.path.join(config.BASE_DIR, "data", "protected_users"),
+        os.path.join(config.Config["save_dir"], "protected_users"),
     )
     return os.path.join(backup_dir, user_id, "user_all.json")
 

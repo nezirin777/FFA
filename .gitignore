@@ -8,7 +8,10 @@ images/
 追加/
 移植計画書/
 
-save_data/
+save_data/*
+!save_data/winner.json
+!save_data/protected_users/
+!save_data/protected_users/**
 **/banklog/*.*
 **/charalog/*.*
 **/charalog2/*.*
