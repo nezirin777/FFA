@@ -92,28 +92,8 @@ def main():
     g1_raw = common.choco_g1_load(user_id) if has_choco else None
     
     # 歴代王者データのロード
-    winner_raw = common.farm_winner_load()
-    if not winner_raw:
-        # 初期ダミー王者
-        winner_raw = {
-            "id": "admin",
-            "pass": "",
-            "breader": "管理者",
-            "site": "",
-            "url": "",
-            "name": "ゴールドボコ",
-            "no": 1,
-            "type": 0,
-            "run": 0,
-            "win": 0,
-            "max": 10,
-            "c0": 10, "c1": 10, "c2": 10, "c3": 10, "c4": 10, "c5": 10, "c6": 10,
-            "ren": 0,
-            "lname": "なし",
-            "lsite": "",
-            "lurl": "",
-            "lbreader": "なし"
-        }
+    winner_view = common.farm_winner_view()
+    winner_raw = winner_view["raw"]
 
     # アルファベット能力ランク画像
     rank_imgs = [
@@ -311,26 +291,11 @@ def main():
         choco_win = choco_info.get("win", 0)
         choco_age = choco_raw.get("age", 0)
 
-    winner_name = winner_raw.get("name", "なし")
-    winner_win = winner_raw.get("ren", 0)
-    
-    wwin = winner_raw.get("win", 0)
-    if wwin == 0: winner_class = "新馬"
-    elif wwin < 5: winner_class = "５００万"
-    elif wwin < 15: winner_class = "９００万"
-    elif wwin < 30: winner_class = "１６００万"
-    elif wwin < 50: winner_class = "オープン"
-    elif wwin < 75: winner_class = "グレードⅣ"
-    elif wwin < 105: winner_class = "グレードⅢ"
-    elif wwin < 140: winner_class = "グレードⅡ"
-    else: winner_class = "グレードⅠ"
-    
-    winner_kyori = winner_raw.get("max", 0)
-    
-    winner_img = ""
-    w_img_idx = winner_raw.get("no", 0)
-    if 0 <= w_img_idx < len(config.Config.get('choco_images', [])):
-        winner_img = config.Config['choco_images'][w_img_idx]
+    winner_name = winner_view["name"]
+    winner_win = winner_view["streak"]
+    winner_class = winner_view["class_name"]
+    winner_kyori = winner_view["distance"]
+    winner_img = winner_view["image"]
 
     trophy_names = []
     if trophies:
@@ -350,6 +315,7 @@ def main():
         "has_choco": has_choco,
         "choco": choco_info,
         "winner": winner_raw,
+        "winner_view": winner_view,
         "trophies": trophy_names,
         "trophies_count": len(trophy_names),
         "rank_imgs": rank_imgs,

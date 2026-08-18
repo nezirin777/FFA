@@ -144,6 +144,8 @@ def main():
         
     # 5. 王者データの取得
     winner = get_winner()
+    # チョコボチャンプは人間側のチャンプとは別の共有セーブデータです。
+    choco_winner = common.farm_winner_view()
     
     # 6. 行動制限時間・待機時間の計算
     now = int(time.time())
@@ -212,6 +214,7 @@ def main():
         "chara": chara,
         "item": item,
         "winner": winner,
+        "choco_winner": choco_winner,
         "ztime": ztime,
         "esex": esex,
         "next_ex": next_ex,

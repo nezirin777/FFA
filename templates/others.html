@@ -116,7 +116,7 @@
         {{ guests_html|safe }}
     </div>
 
-    <!-- メイングリッド (チャンプステータス & 遊び方ガイド) -->
+    <!-- 上段: 人間チャンプとチョコボチャンプ -->
     <div class="others-champ-guide-grid">
         <!-- 左カラム: チャンプデータ -->
         <div>
@@ -173,40 +173,81 @@
                             </tr>
                         </table>
 
-                        <hr class="section-divider">
-
-                        <table class="others-champ-info-table">
-                            <tr>
-                                <td>物理命中率:</td><td>{{ hit_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--green" style="width:{{ bw.hit }}px;"></div></div></td>
-                            </tr>
-                            <tr>
-                                <td>物理回避率:</td><td>{{ kaihi_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--red" style="width:{{ bw.kaihi }}px;"></div></div></td>
-                            </tr>
-                            <tr>
-                                <td>必殺奥義率:</td><td>{{ waza_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--yellow" style="width:{{ bw.waza }}px;"></div></div></td>
-                            </tr>
-                        </table>
+                        <div class="others-stat-panel">
+                            <div class="others-stat-panel-title">戦闘率</div>
+                            <table class="others-champ-info-table others-stat-table">
+                                <tr>
+                                    <td>物理命中率:</td><td>{{ hit_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--green" style="width:{{ bw.hit }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>物理回避率:</td><td>{{ kaihi_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--red" style="width:{{ bw.kaihi }}px;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>必殺奥義率:</td><td>{{ waza_base }}% <div class="bar-bg others-stat-bar"><div class="bar-fill bar-fill--yellow" style="width:{{ bw.waza }}px;"></div></div></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 右カラム: 遊び方ガイド -->
-        <div>
-            <h2 class="others-section-title">📖 遊び方・ルール</h2>
-            <div class="others-guide-box">
-                <ol class="others-guide-list">
-                    <li>まず、右上の「<b>新規キャラクター作成</b>」ボタンを押して、キャラクターを作成します。</li>
-                    <li>作成後、このページの左上にあるログインフォームからIDとパスワードを入力してログインし、個人用のステータス・メイン画面に入ります。</li>
-                    <li>メイン画面から「戦闘（対人戦・モンスター修行）」、「ショップでの売買」、「倉庫整理」などの行動を選択してゲームを進めます。</li>
-                    <li>一度キャラクターを作成したら、次回以降はログインして前回の続きから遊べます。新規登録は<b>1人につき1キャラクターのみ</b>です。</li>
-                    <li>キャラクターの初期能力値振り分けは非常に重要です。レベルアップ時に能力値が上昇することは稀なため、初期の割り割りは慎重に行ってください。</li>
-                    <li><b>{{ config.delete_limit_days }}日以上</b>戦闘を行わずに放置すると、データ削除対象となり削除されることがありますのでご注意ください。</li>
-                    <li>一度戦闘を行うと、再戦闘までに <b>{{ config.battle_cooldown }}秒</b> のクールダウン時間が必要です。</li>
-                </ol>
+        <!-- 右カラム: チョコボチャンプ -->
+        <section class="others-choco-champ" aria-labelledby="others-choco-champ-title">
+            <h2 id="others-choco-champ-title" class="others-section-title">🐤 現在のチョコボチャンプ</h2>
+            <div class="farm-winner-board">
+                <div class="farm-winner-img">
+                    {% if choco_winner.image %}
+                    <img src="{{ config.img_farm }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
+                    {% else %}
+                    🐤
+                    {% endif %}
+                </div>
+                <div class="farm-winner-details">
+                    <div class="farm-winner-name">{{ choco_winner.owner }}の{{ choco_winner.name }}</div>
+                    <div class="farm-winner-record">クラス: {{ choco_winner.class_name }} / 距離: {{ choco_winner.distance }}m</div>
+                    <div class="farm-winner-record">出走 {{ choco_winner.run }}戦 / 勝数 {{ choco_winner.win }}勝 / 連勝 {{ choco_winner.streak }}勝</div>
+                    <div class="farm-winner-record">前回王者: {{ choco_winner.last_owner }} {{ choco_winner.last_name }}</div>
+                </div>
+                <div class="farm-winner-streak">
+                    {{ choco_winner.streak }}<br><small>連勝中</small>
+                </div>
             </div>
-        </div>
+            <div class="farm-winner-abilities" aria-label="チョコボチャンプの能力ランク">
+                {% for ability in choco_winner.abilities %}
+                <div class="farm-winner-ability">
+                    <span>{{ ability.label }}</span>
+                    <img src="{{ config.img_farm }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
+                    <b>{{ ability.value }}</b>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
     </div>
+
+    <!-- 遊び方・ルール -->
+    <section class="others-guide-section">
+        <h2 class="others-section-title">📖 遊び方・ルール</h2>
+        <div class="others-guide-box">
+            <ol class="others-guide-list">
+                <li>まず、右上の「<b>新規キャラクター作成</b>」ボタンを押して、キャラクターを作成します。</li>
+                <li>作成後、このページの左上にあるログインフォームからIDとパスワードを入力してログインし、個人用のステータス・メイン画面に入ります。</li>
+                <li>メイン画面から「戦闘（対人戦・モンスター修行）」、「ショップでの売買」、「倉庫整理」などの行動を選択してゲームを進めます。</li>
+                <li>一度キャラクターを作成したら、次回以降はログインして前回の続きから遊べます。新規登録は<b>1人につき1キャラクターのみ</b>です。</li>
+                <li>キャラクターの初期能力値振り分けは非常に重要です。レベルアップ時に能力値が上昇することは稀なため、初期の割り割りは慎重に行ってください。</li>
+                <li><b>{{ config.delete_limit_days }}日以上</b>戦闘を行わずに放置すると、データ削除対象となり削除されることがありますのでご注意ください。</li>
+                <li>一度戦闘を行うと、再戦闘までに <b>{{ config.battle_cooldown }}秒</b> のクールダウン時間が必要です。</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- 連絡・禁止事項 -->
+    <section class="others-notice-section">
+        <div class="card others-notice-card">
+            <div class="card__header">🚨 連絡事項・禁止事項</div>
+            <div class="card__body">{{ config.admin_message|safe }}</div>
+        </div>
+    </section>
 
     <!-- 共有メニューと管理者コントロール (レスポンシブ) -->
     <hr class="section-divider">
@@ -217,11 +258,6 @@
             <a href="{{ config.ranking_script }}">能力別ランキング</a> |
             <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a> |
             <a href="https://oktaviacgi-games.com/" target="_blank">おくたのCGIげーむす</a>
-        </div>
-
-        <div class="card others-notice-card">
-            <div class="card__header">🚨 連絡事項・禁止事項</div>
-            <div class="card__body">{{ config.admin_message|safe }}</div>
         </div>
 
         <div class="u-text-center">

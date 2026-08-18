@@ -71,6 +71,26 @@
                 {{ guest_list_html | safe }}
             </div>
         </div>
+
+        <!-- チョコボチャンプ -->
+        <div class="card card--warning ff-choco-winner-card">
+            <div class="ff-choco-winner-heading">チョコボチャンプ</div>
+            <div class="ff-choco-winner-wrapper">
+                <a href="{{ config.chocofarm_script }}&id={{ chara.id }}" title="チョコボ牧場で詳細を見る">
+                    {% if choco_winner.image %}
+                    <img class="ff-choco-winner-avatar" src="{{ config.img_farm }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
+                    {% else %}
+                    <span class="ff-choco-winner-placeholder">🐤</span>
+                    {% endif %}
+                </a>
+                <div class="ff-choco-winner-details">
+                    <b>{{ choco_winner.owner }}の{{ choco_winner.name }}</b>
+                    <span>クラス: {{ choco_winner.class_name }} / 距離: {{ choco_winner.distance }}m</span>
+                    <span>出走 {{ choco_winner.run }}戦 / 勝数 {{ choco_winner.win }}勝 / 連勝 {{ choco_winner.streak }}勝</span>
+                </div>
+                <a class="ff-choco-winner-link" href="{{ config.chocofarm_script }}&id={{ chara.id }}">牧場で詳細</a>
+            </div>
+        </div>
     </div>
 
     <hr>

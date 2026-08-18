@@ -150,6 +150,8 @@ def main():
     
     # チャンプデータの読み込み
     winner = get_winner()
+    # 公開トップにも、牧場と同じチョコボチャンプ情報を表示する。
+    choco_winner = common.farm_winner_view()
     
     # クラス名算出
     class_flg = int(winner["job_level"] / 10)
@@ -237,6 +239,7 @@ def main():
         "chara_name": chara_name,
         "test_playable": test_playable,
         "winner": winner,
+        "choco_winner": choco_winner,
         "winner_class": winner_class,
         "win_ratio": win_ratio,
         "battle_count": battle_count,

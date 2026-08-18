@@ -17,13 +17,24 @@
             {% endif %}
         </div>
         <div class="farm-winner-details">
-            <div class="farm-winner-title">Chocobo Champion</div>
-            <div class="farm-winner-name">{{ winner_name }}</div>
+            <div class="farm-winner-title">現在のチョコボチャンプ</div>
+            <div class="farm-winner-name">{{ winner_view.owner }}の{{ winner_name }}</div>
             <div class="farm-winner-record">クラス: {{ winner_class }} / 距離: {{ winner_kyori }}m</div>
+            <div class="farm-winner-record">出走 {{ winner_view.run }}戦 / 勝数 {{ winner_view.win }}勝</div>
+            <div class="farm-winner-record">前回王者: {{ winner_view.last_owner }} {{ winner_view.last_name }}</div>
         </div>
         <div class="farm-winner-streak">
             {{ winner_win }}<br><small>連勝中</small>
         </div>
+    </div>
+    <div class="farm-winner-abilities" aria-label="チョコボチャンプの能力ランク">
+        {% for ability in winner_view.abilities %}
+        <div class="farm-winner-ability">
+            <span>{{ ability.label }}</span>
+            <img src="{{ config.img_farm }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
+            <b>{{ ability.value }}</b>
+        </div>
+        {% endfor %}
     </div>
 
     <div class="farm-grid">

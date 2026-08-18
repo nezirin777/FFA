@@ -59,6 +59,10 @@
     gap: var(--space-m);
   }
 
+  .others-stat-table td:first-child {
+    width: 6.5em;
+  }
+
   .others-champ-avatar-box,
   .others-champ-info-box {
     width: 100%;
@@ -66,6 +70,24 @@
   
   .ff-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ff-choco-winner-wrapper {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .ff-choco-winner-link {
+    width: 100%;
+    text-align: right;
+  }
+
+  .farm-winner-board {
+    align-items: flex-start;
+  }
+
+  .farm-winner-abilities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   
   .ff-status-split-grid {

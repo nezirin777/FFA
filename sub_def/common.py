@@ -509,6 +509,99 @@ def farm_winner_load():
     file_path = os.path.join(Config['save_dir'], "farm_winner.json")
     return load_data_with_lock(file_path, "farm_winner")
 
+def farm_winner_view(winner_data=None):
+    """チョコボチャンプを各画面で共通表示するためのデータを作成します。"""
+    if winner_data is None:
+        winner_data = farm_winner_load()
+    winner = dict(winner_data) if isinstance(winner_data, dict) else {}
+    if not winner:
+        winner = {
+            "id": "admin",
+            "breader": "管理者",
+            "name": "ゴールドボコ",
+            "no": 1,
+            "type": 0,
+            "run": 0,
+            "win": 0,
+            "max": 10,
+            "c0": 10,
+            "c1": 10,
+            "c2": 10,
+            "c3": 10,
+            "c4": 10,
+            "c5": 10,
+            "c6": 10,
+            "ren": 0,
+            "lname": "なし",
+            "lbreader": "なし",
+        }
+
+    def as_int(value, default=0):
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return default
+
+    win_count = as_int(winner.get("win"))
+    class_names = (
+        "新馬", "５００万", "９００万", "１６００万", "オープン",
+        "グレードⅣ", "グレードⅢ", "グレードⅡ", "グレードⅠ",
+    )
+    if win_count == 0:
+        class_name = class_names[0]
+    elif win_count < 5:
+        class_name = class_names[1]
+    elif win_count < 15:
+        class_name = class_names[2]
+    elif win_count < 30:
+        class_name = class_names[3]
+    elif win_count < 50:
+        class_name = class_names[4]
+    elif win_count < 75:
+        class_name = class_names[5]
+    elif win_count < 105:
+        class_name = class_names[6]
+    elif win_count < 140:
+        class_name = class_names[7]
+    else:
+        class_name = class_names[8]
+
+    rank_images = (
+        "e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif", "a.gif",
+        "a.gif", "s.gif", "s.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif",
+        "ss.gif",
+    )
+    ability_labels = ("スピード", "スタミナ", "粘り", "落ち着き", "闘争心", "賢さ", "反射神経")
+    abilities = []
+    for index, label in enumerate(ability_labels):
+        value = as_int(winner.get(f"c{index}"), 10)
+        rank_index = min(len(rank_images) - 1, max(0, value // 100))
+        abilities.append({"label": label, "value": value, "image": rank_images[rank_index]})
+
+    image_index = as_int(winner.get("no"))
+    images = Config.get("choco_images", [])
+    image = images[image_index] if 0 <= image_index < len(images) else ""
+    winner["run"] = as_int(winner.get("run"))
+    winner["win"] = win_count
+    winner["ren"] = as_int(winner.get("ren"))
+    winner["max"] = as_int(winner.get("max"))
+
+    return {
+        "raw": winner,
+        "id": winner.get("id", ""),
+        "owner": winner.get("breader") or winner.get("id", "不明"),
+        "name": winner.get("name", "名無しのチョコボ"),
+        "image": image,
+        "class_name": class_name,
+        "distance": winner["max"],
+        "run": winner["run"],
+        "win": winner["win"],
+        "streak": winner["ren"],
+        "last_name": winner.get("lname") or "なし",
+        "last_owner": winner.get("lbreader") or "なし",
+        "abilities": abilities,
+    }
+
 def farm_winner_regist(winner_data):
     """農場王者データを保存します"""
     from sub_def.file_ops import save_data_atomically
