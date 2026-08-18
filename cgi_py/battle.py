@@ -80,8 +80,6 @@ def parse_cookie_user(cookie_str):
 
 DEFAULT_WINNER = {
     "id": "sys",
-    "site": "サイト",
-    "url": "URL",
     "name": "無名の剣士",
     "sex": 1,
     "img": 0,
@@ -97,8 +95,8 @@ DEFAULT_WINNER = {
     "hp": 1000,
     "max_hp": 1000,
     "level": 1,
-    "unused21": 0,
-    "unused22": 0,
+    "battle_count": 0,
+    "battle_win_count": 0,
     "comment": "無名",
     "equipped_item": {
         "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
@@ -120,16 +118,12 @@ DEFAULT_WINNER = {
     "job_level": 0,
     "last_challenger": {
         "id": "sys",
-        "name": "無名の剣士",
-        "site": "サイト",
-        "url": "URL"
+        "name": "無名の剣士"
     },
     "win_count": 0,
     "max_win_count": 0,
     "max_win_id": "sys",
     "max_win_name": "無名の剣士",
-    "max_win_site": "サイト",
-    "max_win_url": "URL",
     "gold": 100
 }
 
@@ -177,7 +171,14 @@ def main():
             else:
                 try:
                     with open(winner_path, "r", encoding="utf-8") as f:
-                        winner = json.load(f)
+                        winner = common.decode_html_entities(json.load(f))
+                        winner.pop("site", None)
+                        winner.pop("url", None)
+                        winner.pop("max_win_site", None)
+                        winner.pop("max_win_url", None)
+                        if isinstance(winner.get("last_challenger"), dict):
+                            winner["last_challenger"].pop("site", None)
+                            winner["last_challenger"].pop("url", None)
                 except Exception:
                     winner = DEFAULT_WINNER
             
@@ -223,6 +224,11 @@ def main():
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
             exp_gained = config.Config['base_exp'] # 対人戦の基本経験値
 
+            # 旧版の対人戦績は結果分岐より先に挑戦者へ反映する。
+            chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
+            if win == 1:
+                chara["win_count"] = int(chara.get("win_count", 0)) + 1
+
             if win == 1 or win == 2:
                 # 挑戦者の勝利または引き分け ➔ 挑戦者が新しい王者になる！
                 chara["gold"] += gold_gained
@@ -241,8 +247,6 @@ def main():
                 # 新しい王者レコードを組み立てる
                 winner = {
                     "id": chara["id"],
-                    "site": chara["site"],
-                    "url": chara["url"],
                     "name": chara["name"],
                     "sex": int(chara["sex"]),
                     "img": int(chara["img"]),
@@ -258,8 +262,8 @@ def main():
                     "hp": int(chara["hp"]),
                     "max_hp": int(chara["max_hp"]),
                     "level": int(chara["level"]),
-                    "unused21": int(chara.get("unused21", 0)),
-                    "unused22": int(chara.get("unused22", 0)),
+                    "battle_count": int(chara.get("battle_count", 0)),
+                    "battle_win_count": int(chara.get("win_count", 0)),
                     "comment": chara["comment"],
                     "equipped_item": {
                         "weapon": {
@@ -296,16 +300,12 @@ def main():
                     "job_level": int(chara["job_level"]),
                     "last_challenger": {
                         "id": winner.get("id", "sys"),
-                        "name": winner.get("name", "無名の剣士"),
-                        "site": winner.get("site", "サイト"),
-                        "url": winner.get("url", "URL")
+                        "name": winner.get("name", "無名の剣士")
                     },
                     "win_count": 1, # 連勝回数を1にリセット
                     "max_win_count": int(winner.get("max_win_count", 0)),
                     "max_win_id": winner.get("max_win_id", "sys"),
                     "max_win_name": winner.get("max_win_name", "無名の剣士"),
-                    "max_win_site": winner.get("max_win_site", "不明"),
-                    "max_win_url": winner.get("max_win_url", ""),
                     "gold": new_winner_gold
                 }
                 
@@ -321,8 +321,6 @@ def main():
                     winner["max_win_count"] = winner["win_count"]
                     winner["max_win_id"] = winner["id"]
                     winner["max_win_name"] = winner["name"]
-                    winner["max_win_site"] = winner.get("site", "不明")
-                    winner["max_win_url"] = winner.get("url", "")
                 
                 # 防衛成功につき、王者のHPを最大HPの10%分回復
                 winner["hp"] += int(winner["max_hp"] / 10)
@@ -339,9 +337,7 @@ def main():
                 # 最後の挑戦者情報として自分を記録
                 winner["last_challenger"] = {
                     "id": chara["id"],
-                    "name": chara["name"],
-                    "site": chara["site"],
-                    "url": chara["url"]
+                    "name": chara["name"]
                 }
                 
                 comment += f'<span class="red u-text-large">王者の防衛に阻まれ、敗北しました・・・</span><br>'

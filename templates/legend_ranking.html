@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}レジェンドプレイス攻略者一覧 - {{ config.main_title }}{% endblock %}
+
+{% block content %}
+<div class="system-container system-container--lg">
+    <div class="system-header-title">レジェンドプレイス攻略者一覧</div>
+    <div class="system-subtitle">レジェンドプレイスを攻略し、称号を獲得した冒険者たちです。</div>
+
+    <div class="system-player-list">
+        {% for p in players %}
+        <div class="system-player-card">
+            <div class="system-rank-badge">#{{ loop.index }}</div>
+            <div class="system-player-img-box">
+                <a href="login.py?mode=chara_sts&id={{ p.id }}">
+                    {% if p.img >= 0 and p.img < chara_img|length %}
+                    <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" class="system-player-img" alt="{{ p.name }}">
+                    {% endif %}
+                </a><br>
+                <a href="login.py?mode=chara_sts&id={{ p.id }}" class="system-player-name-link">{{ p.name }}</a>
+            </div>
+            <div class="system-player-info-grid">
+                <table class="system-info-sub-table">
+                    <tr><td class="label">攻略称号</td><td class="yellow">{{ p.title_name }}</td></tr>
+                    <tr><td class="label">レベル</td><td class="green">Lv {{ p.level }}</td></tr>
+                    <tr><td class="label">攻略回数</td><td>{{ p.title }}階層</td></tr>
+                </table>
+                <table class="system-info-sub-table">
+                    <tr><td class="label">戦闘回数</td><td>{{ p.battle_count }}回</td></tr>
+                    <tr><td class="label">勝利数</td><td>{{ p.win_count }}勝</td></tr>
+                    <tr><td class="label">職業</td><td>{{ config.chara_jobs[p.job] }}</td></tr>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="system-empty-msg">まだ攻略者はいません。</div>
+        {% endfor %}
+    </div>
+
+    <div class="system-footer-nav u-text-center">
+        <a href="login.py?mode=main" class="btn">街へ戻る</a>
+    </div>
+</div>
+{% endblock %}

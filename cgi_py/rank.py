@@ -79,8 +79,7 @@ def build_rankings(players):
             top_10.append({
                 "id": p["id"],
                 "name": p["name"],
-                "site": p.get("site", "無名"),
-                "url": p.get("url", "http://"),
+                "img": p.get("img", 0),
                 "val": val
             })
         return top_10
@@ -122,8 +121,8 @@ def build_rankings(players):
     # 基本の1000戦でフィルタリングします。
     win_players = []
     for p in players:
-        total_battles = p.get("unused21", 0)
-        wins = p.get("unused22", 0)
+        total_battles = p.get("battle_count", 0)
+        wins = p.get("win_count", 0)
         # 旧版は1000戦を超えたキャラクターだけを対象にし、
         # 勝率は小数第3位以下を切り捨てていた。
         if total_battles > 1000:
@@ -131,8 +130,7 @@ def build_rankings(players):
             win_players.append({
                 "id": p["id"],
                 "name": p["name"],
-                "site": p.get("site", "無名"),
-                "url": p.get("url", "http://"),
+                "img": p.get("img", 0),
                 "val": ratio,
                 "total_battles": total_battles
             })
@@ -163,14 +161,17 @@ def get_rank_cache():
         try:
             import json
             with open(cache_path, "r", encoding="utf-8") as f:
-                cache_data = json.load(f)
+                cache_data = common.decode_html_entities(json.load(f))
         except:
             pass
             
     # キャッシュが無効（24時間経過）または存在しない場合は再構築
     # 24時間 = 86400秒
     required = {"level", "hp", "str", "int", "mnd", "vit", "dex", "agi", "cha", "karma", "win_ratio"}
-    cache_is_current = bool(cache_data and required.issubset(cache_data.get("rankings", {})))
+    cache_is_current = bool(
+        cache_data and required.issubset(cache_data.get("rankings", {})) and
+        all("img" in row for rows in cache_data.get("rankings", {}).values() for row in rows)
+    )
     if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
         common.get_lock("rank_cache")
         try:
@@ -179,11 +180,14 @@ def get_rank_cache():
                 try:
                     import json
                     with open(cache_path, "r", encoding="utf-8") as f:
-                        cache_data = json.load(f)
+                        cache_data = common.decode_html_entities(json.load(f))
                 except:
                     pass
             
-            cache_is_current = bool(cache_data and required.issubset(cache_data.get("rankings", {})))
+            cache_is_current = bool(
+                cache_data and required.issubset(cache_data.get("rankings", {})) and
+                all("img" in row for rows in cache_data.get("rankings", {}).values() for row in rows)
+            )
             if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
                 players = get_all_players()
                 rankings = build_rankings(players)
@@ -212,7 +216,8 @@ def main():
     context = {
         "rankings": cache_data["rankings"],
         "total_players": cache_data["total_players"],
-        "update_time": update_time_str
+        "update_time": update_time_str,
+        "chara_img": config.Config["chara_images"]
     }
     common.render_template("rank.html", context)
 

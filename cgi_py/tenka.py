@@ -110,7 +110,7 @@ def get_tenka_data():
     if os.path.exists(tenka_path):
         try:
             with open(tenka_path, "r", encoding="utf-8") as f:
-                tenka_data = json.load(f)
+                tenka_data = common.decode_html_entities(json.load(f))
             if tenka_data and isinstance(tenka_data.get("members"), list):
                 tenka_data["members"] = list(tenka_data["members"])
         except:
@@ -124,7 +124,7 @@ def get_tenka_data():
             if os.path.exists(tenka_path):
                 try:
                     with open(tenka_path, "r", encoding="utf-8") as f:
-                        tenka_data = json.load(f)
+                        tenka_data = common.decode_html_entities(json.load(f))
                     if tenka_data and isinstance(tenka_data.get("members"), list):
                         tenka_data["members"] = list(tenka_data["members"])
                 except:
@@ -157,7 +157,7 @@ def load_tenka_logs():
     if os.path.exists(log_path):
         try:
             with open(log_path, "r", encoding="utf-8") as f:
-                return json.load(f)
+                return common.decode_html_entities(json.load(f))
         except:
             pass
     return []

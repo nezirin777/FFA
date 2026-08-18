@@ -104,14 +104,18 @@ def get_rankings_cache():
     if os.path.exists(cache_path):
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
-                cache_data = json.load(f)
+                cache_data = common.decode_html_entities(json.load(f))
         except:
             pass
             
     # 24時間キャッシュ
     cache_is_current = bool(
         cache_data and cache_data.get("players") and
-        all("cha" in player and "karma" in player for player in cache_data["players"])
+        all(
+            "cha" in player and "karma" in player
+            and "battle_count" in player and "win_count" in player
+            for player in cache_data["players"]
+        )
     )
     if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
         common.get_lock("system_rank_cache")
@@ -120,12 +124,16 @@ def get_rankings_cache():
             if os.path.exists(cache_path):
                 try:
                     with open(cache_path, "r", encoding="utf-8") as f:
-                        cache_data = json.load(f)
+                        cache_data = common.decode_html_entities(json.load(f))
                 except:
                     pass
             cache_is_current = bool(
                 cache_data and cache_data.get("players") and
-                all("cha" in player and "karma" in player for player in cache_data["players"])
+                all(
+                    "cha" in player and "karma" in player
+                    and "battle_count" in player and "win_count" in player
+                    for player in cache_data["players"]
+                )
             )
             if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
                 cache_data = build_rankings_cache()
@@ -161,8 +169,8 @@ def calculate_stats(chara, item):
     left_days = max(0, int((delete_time - now) / (24 * 60 * 60)))
 
     # 勝率
-    battle_count = chara.get("unused21", 0)
-    win_count = chara.get("unused22", 0)
+    battle_count = int(chara.get("battle_count", 0))
+    win_count = int(chara.get("win_count", 0))
     win_ratio = int((win_count / battle_count) * 100) if battle_count > 0 else 0
 
     # パラメータバー幅計算 (最大パラメータ幅 100px とする)
@@ -187,6 +195,7 @@ def calculate_stats(chara, item):
         "hit_ritu": hit_ritu, "kaihi_ritu": kaihi_ritu, "waza_ritu": waza_ritu,
         "ci_plus": ci_plus, "cd_plus": cd_plus, "waza_plus": waza_plus,
         "left_days": left_days, "win_ratio": win_ratio,
+        "battle_count": battle_count, "win_count": win_count,
         "bw_str": bw_str, "bw_int": bw_int, "bw_mnd": bw_mnd, "bw_vit": bw_vit,
         "bw_dex": bw_dex, "bw_agi": bw_agi, "bw_cha": bw_cha, "bw_karma": bw_karma,
         "bw_hit": bw_hit, "bw_kaihi": bw_kaihi, "bw_waza": bw_waza

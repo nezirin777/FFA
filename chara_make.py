@@ -172,9 +172,6 @@ def main():
         if err:
             common.show_error(err)
             
-        site = params.get("site", "").strip()
-        url = params.get("url", "").strip()
-        
         # 画像番号のチェック
         chara_img_idx_str = params.get("chara", "").strip()
         try:
@@ -195,8 +192,6 @@ def main():
             "sex": int(params.get("sex", "1")),
             "syoku": int(params.get("syoku", "0")),
             "chara": chara_img_idx,
-            "site": site,
-            "url": url,
             "passchange": params.get("passchange", "").strip(),
             "intgold": 5000,
             "chara_img_name": Config['chara_images'][chara_img_idx]
@@ -218,9 +213,6 @@ def main():
         c_name = params.get("c_name", "").strip()
         sex = int(params.get("sex", "1"))
         syoku = int(params.get("syoku", "0"))
-        
-        site = params.get("site", "").strip()
-        url = params.get("url", "").strip()
         
         chara_img_idx_str = params.get("chara", "").strip()
         try:
@@ -254,8 +246,6 @@ def main():
         new_chara = {
             "id": user_id,
             "pass": hashed_pass,
-            "site": site,
-            "url": url,
             "name": c_name,
             "sex": sex,
             "img": chara_img_idx,
@@ -273,8 +263,8 @@ def main():
             "level": 1,
             "gold": 5000,
             "karma": karma,
-            "unused21": 0,
-            "unused22": 0,
+            "battle_count": 0,
+            "win_count": 0,
             "comment": "よろしくお願いします！",
             "weapon_id": 0,
             "battle_limit": Config['battle_limit'],

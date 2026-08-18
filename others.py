@@ -66,8 +66,8 @@ DEFAULT_WINNER = {
     "hp": 1000,
     "max_hp": 1000,
     "level": 1,
-    "unused21": 0,
-    "unused22": 0,
+    "battle_count": 0,
+    "battle_win_count": 0,
     "comment": "無名",
     "equipped_item": {
         "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
@@ -108,7 +108,7 @@ def get_winner():
         return DEFAULT_WINNER
     try:
         with open(winner_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return common.decode_html_entities(json.load(f))
     except Exception:
         return DEFAULT_WINNER
 
@@ -167,9 +167,9 @@ def main():
     winner_class = class_marks[class_flg]
     
     # 勝率算出
-    win_count = winner["win_count"]
-    total_count = winner["level"]
-    win_ratio = int((win_count / total_count) * 100) if total_count > 0 else 0
+    battle_count = int(winner.get("battle_count", 0))
+    battle_win_count = int(winner.get("battle_win_count", 0))
+    win_ratio = int((battle_win_count / battle_count) * 100) if battle_count > 0 else 0
         
     # バーのピクセル幅計算
     divpm = int(Config['max_param'] / 100)
@@ -239,6 +239,8 @@ def main():
         "winner": winner,
         "winner_class": winner_class,
         "win_ratio": win_ratio,
+        "battle_count": battle_count,
+        "battle_win_count": battle_win_count,
         "bw": bw,
         "hit_base": hit_base,
         "kaihi_base": kaihi_base,

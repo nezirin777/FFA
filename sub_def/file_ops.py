@@ -5,6 +5,7 @@ import os
 import json
 import tempfile
 import sys
+import html
 from typing import Any
 
 # パス解決のための親ディレクトリ参照
@@ -65,7 +66,23 @@ def load_data_with_lock(file_path: str, lock_name: str) -> Any:
         if not os.path.exists(file_path):
             return None
         with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+
+        def normalize(value: Any) -> Any:
+            if isinstance(value, str):
+                return html.unescape(value)
+            if isinstance(value, list):
+                return [normalize(item) for item in value]
+            if isinstance(value, dict):
+                return {key: normalize(item) for key, item in value.items()}
+            return value
+
+        data = normalize(data)
+        if isinstance(data, dict) and isinstance(data.get("chara"), dict):
+            # 旧版のサイト名/URLは現行のキャラクター仕様では使用しない。
+            data["chara"].pop("site", None)
+            data["chara"].pop("url", None)
+        return data
     finally:
         lock.unlock()
 
@@ -83,6 +100,9 @@ def load_user_all(user_id: str) -> dict[str, Any] | None:
 
 def save_user_all(user_id: str, data: dict[str, Any]) -> None:
     """統合されたユーザーデータをアトミックに保存します。"""
+    if isinstance(data.get("chara"), dict):
+        data["chara"].pop("site", None)
+        data["chara"].pop("url", None)
     user_dir = _user_path(user_id)
     file_path = os.path.join(user_dir, "user_all.json")
     # ユーザー名単位の排他ロックを掛けて安全にアトミック保存

@@ -747,7 +747,7 @@ def main():
         if os.path.exists(rireki_path):
             with open(rireki_path, "r", encoding="utf-8") as f:
                 try:
-                    rireki = json.load(f)
+                    rireki = common.decode_html_entities(json.load(f))
                     for r in rireki:
                         if r.get("name") == st_name:
                             common.show_error("その名前は殿堂入りチョコボで既に使われています。別の名前にしてください。")

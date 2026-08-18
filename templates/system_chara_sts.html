@@ -19,13 +19,7 @@
                 <div class="system-card__title">👤 アバター & 装備</div>
                 <div class="system-avatar-wrapper u-text-center">
                     <img class="system-avatar-img" src="{{ config.img_path }}/{{ config.chara_images[chara.img] }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';"><br>
-                    <span class="note-text system-avatar-note">
-                        {% if chara.url %}
-                            <a href="{{ chara.url }}" target="_blank" class="yellow system-avatar-link">{{ chara.site }}</a>
-                        {% else %}
-                            {{ chara.site }}
-                        {% endif %}
-                    </span>
+                    <span class="note-text system-avatar-note">キャラクター画像</span>
                 </div>
                 <table class="system-stat-table">
                     <tr><th>武器</th><td>{{ item.weapon.name }}</td></tr>
@@ -73,7 +67,7 @@
                         <th>力</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_str }}%;"></div></div>
-                            <span>{{ chara.str }} <span class="note-text">+ {{ item.weapon.dmg }}</span></span>
+                            <span>{{ chara.str }} <span class="note-text">+ {{ item.accessory.bonus.str }}</span></span>
                         </td>
                         <th>知能</th>
                         <td>

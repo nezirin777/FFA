@@ -96,7 +96,7 @@ def load_message_ban(user_id):
     try:
         import json
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return common.decode_html_entities(json.load(f))
     except:
         return {"all_limit": False, "list": []}
 
@@ -118,7 +118,7 @@ def load_message_sent(user_id):
     try:
         import json
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return common.decode_html_entities(json.load(f))
     except:
         return []
 

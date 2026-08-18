@@ -47,6 +47,7 @@ from sub_def import lock_state
 import json
 import time
 import urllib.parse
+import html
 from typing import NoReturn
 from http import cookies
 from jinja2 import Environment, FileSystemLoader
@@ -212,6 +213,16 @@ from sub_def.file_ops import load_user_all, save_user_all as save_user_unified
 # 現行の能力値キー。旧版の配列順を意味として固定し、表示名と内部キーを一致させる。
 STAT_KEYS = ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")
 ACCESSORY_RATE_KEYS = ("hit_rate", "evasion_rate", "special_rate")
+
+def decode_html_entities(value):
+    """旧版データ内のHTMLエンティティを再帰的に文字へ戻します。"""
+    if isinstance(value, str):
+        return html.unescape(value)
+    if isinstance(value, list):
+        return [decode_html_entities(item) for item in value]
+    if isinstance(value, dict):
+        return {key: decode_html_entities(item) for key, item in value.items()}
+    return value
 
 def chara_load(user_id):
     """キャラクターの基本ステータスをロードします (統合JSONデータから読み出し)"""

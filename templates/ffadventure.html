@@ -53,7 +53,9 @@
         <!-- 王者データ -->
         <div class="card card--primary ff-winner-card">
             <div class="ff-winner-wrapper">
-                <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" width="48" height="48">
+                <a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}">
+                    <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" width="48" height="48" alt="{{ winner.name }}">
+                </a>
                 <div>
                     <b>現王者：<a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}"><span class="yellow">{{ winner.name }}</span></a> （{{ winner.win_count }}連勝中）</b>
                     <br>
@@ -163,25 +165,37 @@
                     <table class="ff-chara-table">
                         <tr>
                             <th>力 (Str)</th>
-                            <td><b>{{ chara.str }}</b></td>
+                            <td><b>{{ chara.str }} + {{ item.accessory.bonus.str }}</b></td>
                             <th>知能 (Int)</th>
-                            <td><b>{{ chara.int }}</b></td>
+                            <td><b>{{ chara.int }} + {{ item.accessory.bonus.int }}</b></td>
                         </tr>
                         <tr>
                             <th>信仰心 (Mnd)</th>
-                            <td><b>{{ chara.mnd }}</b></td>
+                            <td><b>{{ chara.mnd }} + {{ item.accessory.bonus.mnd }}</b></td>
                             <th>生命力 (Vit)</th>
-                            <td><b>{{ chara.vit }}</b></td>
+                            <td><b>{{ chara.vit }} + {{ item.accessory.bonus.vit }}</b></td>
                         </tr>
                         <tr>
                             <th>器用さ (Dex)</th>
-                            <td><b>{{ chara.dex }}</b></td>
+                            <td><b>{{ chara.dex }} + {{ item.accessory.bonus.dex }}</b></td>
                             <th>速さ (Agi)</th>
-                            <td><b>{{ chara.agi }}</b></td>
+                            <td><b>{{ chara.agi }} + {{ item.accessory.bonus.agi }}</b></td>
                         </tr>
                         <tr>
                             <th>魅力 (Cha)</th>
-                            <td><b>{{ chara.cha }}</b></td>
+                            <td><b>{{ chara.cha }} + {{ item.accessory.bonus.cha }}</b></td>
+                            <th>カルマ (Karma)</th>
+                            <td><b>{{ chara.karma }} + {{ item.accessory.bonus.karma }}</b></td>
+                        </tr>
+                        <tr>
+                            <th>命中率</th>
+                            <td><b>{{ hit_ritu }}% + {{ ci_plus }}%</b></td>
+                            <th>回避率</th>
+                            <td><b>{{ kaihi_ritu }}% + {{ cd_plus }}%</b></td>
+                        </tr>
+                        <tr>
+                            <th>必殺率</th>
+                            <td><b>{{ waza_ritu }}% + {{ waza_plus }}%</b></td>
                             <td colspan="2">
                                 <form action="{{ config.tactics_script }}" method="POST">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
@@ -189,11 +203,6 @@
                                     <input type="submit" class="btn" value="作戦変更">
                                 </form>
                             </td>
-                        </tr>
-                        <tr>
-                            <th>カルマ (Karma)</th>
-                            <td><b>{{ chara.karma }}</b></td>
-                            <td colspan="2"></td>
                         </tr>
                     </table>
                 </div>
@@ -313,19 +322,19 @@
                     <div class="ff-battle-commands">
                         <!-- モンスターと戦う -->
                         <div class="ff-battle-row">
-                            <span class="ff-battle-label">⚔️ モンスター</span>
+                            <span class="ff-battle-label">⚔️ モンスターと闘う</span>
                             <div id="action-form-monster" style="{% if ztime > 0 %}display: none;{% endif %}">
                                 <form action="{{ config.monster_script }}" method="POST" class="ff-monster-form">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="mode" value="monster">
                                     <input type="hidden" name="id" value="{{ chara.id }}">
                                     <select class="form-control ff-monster-select" name="mons_file">
-                                        <option value="monster0">初級モンスター</option>
-                                        <option value="monster1">中級モンスター</option>
-                                        <option value="monster2">上級モンスター</option>
-                                        <option value="monster3">超級モンスター</option>
+                                        <option value="monster0">その辺に出かける（弱い敵が出現！）</option>
+                                        <option value="monster1">近くの洞窟（強い敵が出現！）</option>
+                                        <option value="monster2">ダークダンジョン（かなり強い敵が出現！）</option>
+                                        <option value="monster3">ミシディアの塔（鬼のような敵が出現！）</option>
                                     </select>
-                                    <input type="submit" class="btn ff-action-btn" value="戦闘開始">
+                                    <input type="submit" class="btn ff-action-btn" value="モンスターと闘う">
                                 </form>
                             </div>
                             {% if ztime > 0 %}
@@ -338,13 +347,14 @@
                         <!-- 幻影の城 -->
                         {% if chara.last_time % 5 == 0 %}
                         <div class="ff-battle-row">
-                            <span class="ff-battle-label">🏰 幻影の城</span>
+                            <span class="ff-battle-label">🏰 突然の出現</span>
                             <div id="action-form-genei" style="{% if ztime > 0 %}display: none;{% endif %}">
                                 <form action="{{ config.monster_script }}" method="POST">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="mode" value="genei">
                                     <input type="hidden" name="id" value="{{ chara.id }}">
-                                    <input type="submit" class="btn ff-action-btn" value="城へ挑む">
+                                <input type="submit" class="btn ff-action-btn" value="幻影の城へ">
+                                <small>※財宝が眠ると言われる「幻影の城」にいけます。</small>
                                 </form>
                             </div>
                             {% if ztime > 0 %}
@@ -355,11 +365,11 @@
                         </div>
                         {% endif %}
 
-                        <!-- 伝説の戦い -->
+                        <!-- レジェンドプレイス -->
                         <div class="ff-battle-row">
-                            <span class="ff-battle-label">🐉 伝説の戦い</span>
-                            {% if chara.boss_flag != config.boss_cooldown %}
-                                <small class="red">※条件を満たしていません (ボス撃破)</small>
+                            <span class="ff-battle-label">🐉 レジェンドプレイス</span>
+                            {% if not chara.battle_count or chara.boss_flag != config.boss_cooldown %}
+                                <small class="red">※一度チャンプに挑戦してください</small>
                             {% else %}
                                 <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">
                                     <form action="{{ config.legend_script }}" method="POST" class="ff-boss-form">
@@ -367,18 +377,18 @@
                                         <input type="hidden" name="mode" value="boss">
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <select class="form-control ff-boss-select" name="boss_file">
-                                            <option value="0">戦士の墓 (王者を倒す)</option>
+                                            <option value="0">うわさのほこら（初心者を口を開けて・・）</option>
                                             {% if chara.title > 0 %}
-                                                <option value="1">いにしえの神殿 (王者を龍が守る)</option>
+                                                <option value="1">古の神殿（熟練者も命を落とすという・・）</option>
                                             {% endif %}
                                             {% if chara.title > 1 %}
-                                                <option value="2">覇者の道 (覇者を従える)</option>
+                                                <option value="2">勇者の洞窟（伝説の勇者が訪れたという・・）</option>
                                             {% endif %}
                                             {% if chara.title > 2 %}
-                                                <option value="3">ガイアフォース (限界を超える力)</option>
+                                                <option value="3">ガイアフォース（神のみが入ることを許されている・・）</option>
                                             {% endif %}
                                         </select>
-                                        <input type="submit" class="btn ff-action-btn" value="挑む">
+                                        <input type="submit" class="btn ff-action-btn" value="伝説に挑む">
                                     </form>
                                 </div>
                                 {% if ztime > 0 %}
@@ -387,6 +397,7 @@
                                 </div>
                                 {% endif %}
                             {% endif %}
+                            <a href="login.py?mode=legend&view=ranking" class="btn btn--sm">攻略者一覧</a>
                         </div>
 
                         <!-- 異世界 -->

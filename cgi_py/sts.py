@@ -98,20 +98,8 @@ def main():
             common.show_error("テストキャラはステータス変更はできません", back_ctx)
 
         # パラメータ取得
-        site = in_params.get("site", "").strip()
-        url = in_params.get("url", "").strip()
         waza = in_params.get("waza", "").strip()
         chara_img_idx = in_params.get("chara", "0").strip()
-
-        # デフォルト値
-        if not site:
-            site = "いくのCGIのHP"
-        if not url:
-            url = "http://www.eriicu.com"
-
-        # URLスキーム検証: href に埋め込まれるため http(s):// 以外(javascript: 等)を拒否
-        if not (url.startswith("http://") or url.startswith("https://")):
-            common.show_error("ホームページURLは http:// または https:// で始まる必要があります。", back_ctx)
 
         # コメント長さ制限
         if len(waza) > 100:
@@ -119,7 +107,7 @@ def main():
 
         # 禁止ワードチェック
         for word in config.Config['ban_words']:
-            if word in waza or word in site:
+            if word in waza:
                 common.show_error(f"入力に禁止語「{word}」が含まれています", back_ctx)
 
         # 画像インデックスチェック
@@ -131,8 +119,6 @@ def main():
             chara_img_idx = 0
 
         # データ更新
-        chara["site"] = site
-        chara["url"] = url
         chara["img"] = chara_img_idx
         chara["comment"] = waza  # Perl版の $chara[23] (技発動コメント) は Python では 'comment' にマッピング
 

@@ -125,7 +125,9 @@
                 <div class="others-champ-layout">
                     <!-- チャンプの顔グラ & 基本情報 -->
                     <div class="others-champ-avatar-box">
-                        <img class="others-champ-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" alt="{{ winner.name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';">
+                        <a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}">
+                            <img class="others-champ-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" alt="{{ winner.name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';">
+                        </a>
                         <b>{{ winner.name }}</b>
                         <span>{{ winner.sex == 1 and '男' or '女' }} / {{ config.chara_jobs[winner.job] }}</span>
                         <span class="yellow">ジョブLv: {{ winner.job_level }}</span>
@@ -134,7 +136,7 @@
                             <tr><td>レベル:</td><td class="yellow">Lv.{{ winner.level }}</td></tr>
                             <tr><td>HP:</td><td class="yellow">{{ winner.hp }}/{{ winner.max_hp }}</td></tr>
                             <tr><td>賞金:</td><td class="yellow">{{ winner.gold }} G</td></tr>
-                            <tr><td>勝率:</td><td class="yellow">{{ win_ratio }}% ({{ winner.win_count }}勝)</td></tr>
+                            <tr><td>勝率:</td><td class="yellow">{{ win_ratio }}% ({{ battle_win_count }}勝 / {{ battle_count }}戦)</td></tr>
                         </table>
                     </div>
 

@@ -30,7 +30,6 @@
                         <tr><td><b>性別:</b></td><td>{{ sex == 1 and '男' or '女' }}</td></tr>
                         <tr><td><b>初期職業:</b></td><td><span class="chara-make-confirm-value">{{ config.chara_jobs[syoku] }}</span></td></tr>
                         <tr><td><b>初期ゴールド:</b></td><td><span class="chara-make-confirm-value yellow">{{ intgold }}</span> Gold</td></tr>
-                        <tr><td><b>ホームページ:</b></td><td><a href="{{ url }}" target="_blank">{{ site }}</a></td></tr>
                         <tr><td><b>パスワード変更用単語:</b></td><td><span class="chara-make-confirm-value">{{ passchange }}</span></td></tr>
                     </table>
                 </div>
@@ -52,8 +51,6 @@
             <input type="hidden" name="id" value="{{ in.id }}">
             <input type="hidden" name="pass" value="{{ in.pass }}">
             <input type="hidden" name="passchange" value="{{ passchange }}">
-            <input type="hidden" name="site" value="{{ site }}">
-            <input type="hidden" name="url" value="{{ url }}">
             <input type="hidden" name="c_name" value="{{ c_name }}">
             <input type="hidden" name="sex" value="{{ sex }}">
             <input type="hidden" name="chara" value="{{ chara }}">
@@ -67,8 +64,6 @@
             <input type="hidden" name="id" value="{{ in.id }}">
             <input type="hidden" name="pass" value="{{ in.pass }}">
             <input type="hidden" name="passchange" value="{{ passchange }}">
-            <input type="hidden" name="site" value="{{ site }}">
-            <input type="hidden" name="url" value="{{ url }}">
             <input type="hidden" name="c_name" value="{{ c_name }}">
             <input type="hidden" name="sex" value="{{ sex }}">
             <input type="hidden" name="chara" value="{{ chara }}">

@@ -119,7 +119,7 @@ def load_rivals(ribal_path, count=4):
     if ribal_path.endswith('.json'):
         with open(ribal_path, "r", encoding="utf-8") as f:
             try:
-                rivals = json.load(f)
+                rivals = common.decode_html_entities(json.load(f))
             except:
                 pass
     else:
@@ -596,7 +596,7 @@ def main():
                 if os.path.exists(rireki_path):
                     try:
                         with open(rireki_path, "r", encoding="utf-8") as f:
-                            rireki_data = json.load(f)
+                            rireki_data = common.decode_html_entities(json.load(f))
                     except:
                         pass
                 

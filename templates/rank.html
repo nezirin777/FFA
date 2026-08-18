@@ -24,7 +24,7 @@
                 <thead>
                     <tr>
                         <th>位</th>
-                        <th>なまえ</th>
+                        <th>画像 / なまえ</th>
                         <th>記録</th>
                     </tr>
                 </thead>
@@ -35,10 +35,15 @@
                             {{ loop.index }}
                         </td>
                         <td>
+                            <a href="login.py?mode=chara_sts&id={{ p.id }}" class="rank-avatar-link">
+                                {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
+                                <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" class="rank-avatar" alt="{{ p.name }}">
+                                {% endif %}
+                            </a><br>
                             <a href="login.py?mode=chara_sts&id={{ p.id }}" class="rank-name-link">{{ p.name }}</a>
                         </td>
                         <td class="rank-val">
-                            {{ p.val }}{{ unit }}
+                            {{ p.val }}{{ unit }}{% if p.total_battles %} ({{ p.total_battles }}戦){% endif %}
                         </td>
                     </tr>
                     {% else %}

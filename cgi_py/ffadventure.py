@@ -86,7 +86,7 @@ def get_winner():
         return default_winner
     try:
         with open(winner_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            data = common.decode_html_entities(json.load(f))
         return {
             "id": data.get("id", "sys"),
             "name": data.get("name", "無名の剣士"),
@@ -197,6 +197,15 @@ def main():
     bbs_posts = common.bbs_load()[:config.Config['max_lines']]
     personal_messages = common.message_load(user_id)[:config.Config['max_lines']]
     accessory_description = common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
+
+    # 街の基本能力値欄でも、旧版と同じく装備補正を併記する。
+    accessory = item.get("accessory", {})
+    hit_ritu = min(150, int(chara.get("dex", 10) / 10) + 51)
+    kaihi_ritu = min(50, int(chara.get("agi", 10) / 20))
+    waza_ritu = min(75, int(chara.get("karma", 0) / 15) + 10 + chara.get("job_level", 0))
+    ci_plus = item.get("weapon", {}).get("effect", 0) + accessory.get("hit_rate", 0)
+    cd_plus = item.get("armor", {}).get("effect", 0) + accessory.get("evasion_rate", 0)
+    waza_plus = accessory.get("special_rate", 0)
     
     # 9. 画面描画
     context = {
@@ -214,7 +223,13 @@ def main():
         "bbs_posts": bbs_posts,
         "chara_img": config.Config['chara_images'],
         "personal_messages": personal_messages,
-        "accessory_description": accessory_description
+        "accessory_description": accessory_description,
+        "hit_ritu": hit_ritu,
+        "kaihi_ritu": kaihi_ritu,
+        "waza_ritu": waza_ritu,
+        "ci_plus": ci_plus,
+        "cd_plus": cd_plus,
+        "waza_plus": waza_plus,
     }
     
     common.render_template("ffadventure.html", context)

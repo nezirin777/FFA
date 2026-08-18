@@ -153,7 +153,7 @@ def get_rank_cache():
     if os.path.exists(cache_path):
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
-                cache_data = json.load(f)
+                cache_data = common.decode_html_entities(json.load(f))
         except:
             pass
             
@@ -165,7 +165,7 @@ def get_rank_cache():
             if os.path.exists(cache_path):
                 try:
                     with open(cache_path, "r", encoding="utf-8") as f:
-                        cache_data = json.load(f)
+                        cache_data = common.decode_html_entities(json.load(f))
                 except:
                     pass
             if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
@@ -241,7 +241,7 @@ def main():
         if os.path.exists(rireki_path):
             try:
                 with open(rireki_path, "r", encoding="utf-8") as f:
-                    rireki_data = json.load(f)
+                    rireki_data = common.decode_html_entities(json.load(f))
             except:
                 pass
                 

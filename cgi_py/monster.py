@@ -85,7 +85,7 @@ def load_monsters(file_path):
         return []
     try:
         with open(full_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return common.decode_html_entities(json.load(f))
     except Exception:
         return []
 
@@ -150,12 +150,15 @@ def main():
             enemy_list = load_monsters(mons_map[file_key])
 
         elif mode == "genei":
-            # 幻影闘技場
+            # 幻影の城
             is_genei = True
+            if int(chara.get("battle_count", 0)) <= 0:
+                common.release_lock(user_id)
+                common.show_error("一度チャンプに挑戦してください。")
             # 最終行動時間 (last_time) が5の倍数でなければエラー
             if chara["last_time"] % 5 != 0:
                 common.release_lock(user_id)
-                common.show_error("幻影闘技場はまだ開かれていません。(最終行動秒数 % 5 == 0の時のみ入場可能)")
+                common.show_error("もう消えてしまって行けませんでした。")
             
             # レベルによる切り替え
             lvl = chara["level"]
@@ -233,14 +236,14 @@ def main():
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
             exp_gained = enemy_data["ex"]
             
-            # 幻影闘技場のお宝追加判定
+            # 幻影の城のお宝追加判定
             if is_genei:
                 if random.randrange(3) == 0:
                     otakara = (random.randrange(1000) + 1) * enemy_data["gold"]
                     gold_gained += otakara
-                    comment += f'<br><b><span class="red u-text-large">宝箱を発見！ {otakara} ゴールドを獲得しました！！</span></b><br>'
+                    comment += f'<br><b><span class="red u-text-large">財宝({otakara}Ｇ)を発見した！！！！</span></b><br>'
                 else:
-                    comment += '<br><b><span class="gray u-text-large">宝箱は空っぽだった・・・</span></b><br>'
+                    comment += '<br><b><span class="gray u-text-large">辺りに財宝は見つからなかった・・・。</span></b><br>'
 
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
@@ -257,6 +260,11 @@ def main():
         else:
             comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'
 
+        # 旧版では通常修行・幻影の城・異世界のいずれも戦闘回数へ集計する。
+        chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
+        if win == 1:
+            chara["win_count"] = int(chara.get("win_count", 0)) + 1
+
         # レベルアップ処理
         syoku = common.syoku_load(user_id)
         if syoku is None:
@@ -266,7 +274,7 @@ def main():
         comment += lv_comment
 
         # バトル回数を減算
-        if mode == "monster" and chara["battle_limit"] > 0:
+        if chara["battle_limit"] > 0:
             chara["battle_limit"] -= 1
 
         # 最終行動時間を更新

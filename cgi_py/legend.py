@@ -37,7 +37,7 @@
 #    http://icus.s13.xrea.com/cgi-bin/cbbs/cbbs.cgi　		#
 #---------------------------------------------------------------#
 """
-FFA Python/CGI - 伝説の戦い・ボス戦闘スクリプト (legend.py)
+FFA Python/CGI - レジェンドプレイス戦闘スクリプト (legend.py)
 """
 
 import sys
@@ -85,10 +85,30 @@ def load_monsters(file_path):
         return []
     try:
         with open(full_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return common.decode_html_entities(json.load(f))
     except Exception:
         return []
 
+def get_legend_players():
+    """レジェンドプレイスを1階層以上攻略したキャラクターを取得する。"""
+    players = []
+    save_dir = config.Config["save_dir"]
+    if not os.path.exists(save_dir):
+        return players
+    for user_id in os.listdir(save_dir):
+        if not os.path.isdir(os.path.join(save_dir, user_id)):
+            continue
+        chara = common.chara_load(user_id)
+        if not chara or int(chara.get("title", 0)) <= 0:
+            continue
+        title_index = min(int(chara.get("title", 0)), len(config.Config["titles"]) - 1)
+        chara = dict(chara)
+        chara["title_name"] = config.Config["titles"][title_index]
+        chara["battle_count"] = int(chara.get("battle_count", 0))
+        chara["win_count"] = int(chara.get("win_count", 0))
+        players.append(chara)
+    players.sort(key=lambda p: (-int(p.get("title", 0)), -int(p.get("level", 0)), p.get("name", "")))
+    return players
 def main():
     # 1. メンテナンスチェック
     if config.Config['maintenance_mode']:
@@ -96,6 +116,13 @@ def main():
 
     # 2. パラメータの取得
     params = common.decode_params()
+    if params.get("view") == "ranking":
+        common.render_template("legend_ranking.html", {
+            "players": get_legend_players(),
+            "chara_img": config.Config["chara_images"]
+        })
+        return
+
     user_id = params.get("id", "").strip()
     boss_file_param = params.get("boss_file", "0")
 
@@ -113,10 +140,21 @@ def main():
         if not chara:
             common.release_lock(user_id)
             common.show_error("キャラクターが見つかりません。")
-            
+
         if c_id != user_id or c_pass != chara["pass"]:
             common.release_lock(user_id)
             common.show_error("パスワード認証に失敗しました。")
+
+        chara["battle_count"] = int(chara.get("battle_count", 0))
+        chara["win_count"] = int(chara.get("win_count", 0))
+
+        if int(chara.get("battle_count", 0)) <= 0:
+            common.release_lock(user_id)
+            common.show_error("一度チャンプに挑戦してください。")
+
+        if int(chara.get("boss_flag", 0)) != int(config.Config["boss_cooldown"]):
+            common.release_lock(user_id)
+            common.show_error("まだレジェンドプレイスへ挑戦できません。")
 
         if chara["battle_limit"] <= 0:
             common.release_lock(user_id)
@@ -183,7 +221,7 @@ def main():
         exp_gained = enemy_data["ex"]
 
         if win == 1:
-            chara["unused22"] += 1
+            chara["win_count"] += 1
             gold_gained = enemy_data["gold"] + random.randrange(max(1, int(enemy_data["gold"]))) + 1
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
@@ -192,7 +230,7 @@ def main():
             chara["boss_flag"] -= 1
             if chara["boss_flag"] <= 0:
                 # 階層クリア！
-                comment += f'<b><span class="yellow u-text-large">{chara["name"]} は伝説のプレイスを攻略しました！新称号を獲得しました！</span></b><br>'
+                comment += f'<b><span class="yellow u-text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
                 
                 # 全体メッセージに投稿
                 all_msgs = common.all_message_load()
@@ -200,7 +238,7 @@ def main():
                     "id": "sys",
                     "name": "【天の声】",
                     "time": common.get_time_str(),
-                    "message": f"{chara['name']} が伝説のプレイス (エリア {boss_file_idx}) をクリアし、新たな称号を獲得しました！",
+                    "message": f"{chara['name']}さんが新たにレジェンドプレイスを攻略され、称号が上がりました！",
                     "host": "system"
                 }
                 all_msgs.insert(0, new_msg)
@@ -210,18 +248,18 @@ def main():
                     chara["title"] = boss_file_idx + 1
                 chara["boss_flag"] = config.Config['boss_cooldown']
             else:
-                comment += f'<b><font size=5>{chara["name"]} は勝利しました！残り {chara["boss_flag"]} 体・・・</font></b><br>'
+                comment += f'<b><font size=5>{chara["name"]} は、戦闘に勝利した！！HPが少し回復した♪ 残り {chara["boss_flag"]} 体・・・</font></b><br>'
         elif win == 2:
             # 引き分け
             exp_gained = int(exp_gained / 2)
             chara["boss_flag"] = config.Config['boss_cooldown']
-            comment += f'<b><font size=5>{chara["name"]} は引き分けました。ボス攻略は最初からやり直しです。</font></b><br>'
+            comment += f'<b><font size=5>{chara["name"]} は、逃げ出した・・・♪</font></b><br>'
         else:
             # 敗北
             exp_gained = 1
             chara["boss_flag"] = config.Config['boss_cooldown']
             chara["gold"] = int(chara["gold"] / 100) # ゴールド激減
-            comment += f'<b><font size=5>{chara["name"]} は敗北しました。ボス攻略は最初からやり直しです。</font></b><br>'
+            comment += f'<b><font size=5>{chara["name"]} は、戦闘に負けた・・・。</font></b><br>'
 
         # 戦闘後の残りHP復元
         restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
@@ -232,7 +270,7 @@ def main():
         chara["hp"] = restored_hp
 
         # 共通処理
-        chara["unused21"] += 1 # 戦闘回数カウンタ
+        chara["battle_count"] += 1 # 戦闘回数カウンタ
         chara["battle_limit"] -= 1
 
         # レベルアップ処理
