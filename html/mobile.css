@@ -224,6 +224,10 @@
   .farm-grid {
     grid-template-columns: 1fr;
   }
+
+  .dendo-table {
+    min-width: 680px;
+  }
   
   .farm-winner-board {
     flex-direction: column;

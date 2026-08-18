@@ -188,6 +188,26 @@ def main():
     types = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
     
     formatted_dendo = []
+
+    def class_name_from_wins(win_count):
+        if win_count == 0:
+            return "新馬"
+        if win_count < 5:
+            return "５００万"
+        if win_count < 15:
+            return "９００万"
+        if win_count < 30:
+            return "１６００万"
+        if win_count < 50:
+            return "オープン"
+        if win_count < 75:
+            return "グレードⅣ"
+        if win_count < 105:
+            return "グレードⅢ"
+        if win_count < 140:
+            return "グレードⅡ"
+        return "グレードⅠ"
+
     for dc in dendo_list:
         # トロフィー文字列
         trophy_list = dc.get("trophies", [])
@@ -207,6 +227,7 @@ def main():
         else:
             trophy_str = "なし"
             
+        win_count = int(dc.get("win", 0) or 0)
         formatted_dendo.append({
             "name": dc.get("name", "名無し"),
             "breader": dc.get("breader", "不明"),
@@ -214,9 +235,10 @@ def main():
             "sex": dc.get("sex", 0),
             "type": dc.get("type", 0),
             "run": dc.get("run", 0),
-            "win": dc.get("win", 0),
+            "win": win_count,
             "train": dc.get("train", 0),
             "max": dc.get("max", 10),
+            "maxmax": dc.get("maxmax", dc.get("max", 0)),
             "gold": dc.get("gold", 0),
             "father": dc.get("father", "不明"),
             "mother": dc.get("mother", "不明"),
@@ -227,6 +249,10 @@ def main():
             "c4_t": min(len(rank_imgs) - 1, int(dc.get("c4", 10) / 100)),
             "c5_t": min(len(rank_imgs) - 1, int(dc.get("c5", 10) / 100)),
             "c6_t": min(len(rank_imgs) - 1, int(dc.get("c6", 10) / 100)),
+            "speed": dc.get("c0", 10),
+            "stamina": dc.get("c1", 10),
+            "class_name": class_name_from_wins(win_count),
+            "age": dc.get("maxmax", dc.get("max", 0)),
             "trophy_str": trophy_str
         })
 
@@ -234,6 +260,7 @@ def main():
         "chara": chara,
         "chara_log": chara_log,
         "dendo_list": formatted_dendo,
+        "legends": formatted_dendo,
         "rank_imgs": rank_imgs,
         "types": types,
         "registered_msg": registered_msg
