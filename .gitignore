@@ -9,12 +9,12 @@ images/
 移植計画書/
 
 save_data/
-**/banklog/
-**/charalog/
-**/charalog2/
-**/item/
-**/souko/
-**/syoku/
-**/sousin/
+**/banklog/*.*
+**/charalog/*.*
+**/charalog2/*.*
+**/item/*.*
+**/souko/**/*
+**/syoku/*.*
+**/sousin/*.*
 
 **/change_data/**/
