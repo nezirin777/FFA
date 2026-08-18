@@ -8,12 +8,13 @@ images/
 追加/
 移植計画書/
 
-旧版/banklog/
-旧版/charalog/
-旧版/charalog2/
-旧版/item/
-旧版/souko/
-旧版/syoku/
-旧版/sousin/
+save_data/
+**/banklog/
+**/charalog/
+**/charalog2/
+**/item/
+**/souko/
+**/syoku/
+**/sousin/
 
 **/change_data/**/
