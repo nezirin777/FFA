@@ -43,6 +43,7 @@
         <span>【メニュー】</span>
         <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> /
         <a href="{{ config.ranking_script }}">能力別ランキング</a> /
+        <a href="{{ config.legend_script }}&view=ranking">レジェンドプレイス攻略者一覧</a> /
         <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> /
         <a href="{{ config.img_all_list }}" target="_blank">アイコン画像一覧</a> /
         <a href="{{ config.help_text }}" target="_blank">プレイマニュアル</a>
@@ -82,7 +83,9 @@
                 <div class="card__body layout-stack">
                     <div class="ff-chara-header">
                         <div class="ff-chara-avatar-box">
-                            <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[chara.img] }}" width="48" height="48"><br>
+                            <a href="{{ config.system_script }}?mode=chara_sts&id={{ chara.id }}" title="キャラクターの詳細ステータスを表示">
+                                <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[chara.img] }}" width="48" height="48" alt="{{ chara.name }}">
+                            </a><br>
                             <span class="small-text">{{ esex }}</span>
                         </div>
                         <div class="ff-chara-equip-box">
@@ -397,7 +400,6 @@
                                 </div>
                                 {% endif %}
                             {% endif %}
-                            <a href="login.py?mode=legend&view=ranking" class="btn btn--sm">攻略者一覧</a>
                         </div>
 
                         <!-- 異世界 -->
@@ -469,7 +471,9 @@
                 <div class="card__body">
                     <div class="ff-bbs-post-head">
                         {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
-                        <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="" class="ff-bbs-avatar" width="32" height="32">
+                        <a href="{{ config.system_script }}?mode=chara_sts&id={{ p.id }}" title="{{ p.name }}のステータスを表示">
+                            <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="{{ p.name }}" class="ff-bbs-avatar" width="32" height="32">
+                        </a>
                         {% endif %}
                         <div class="ff-bbs-post-meta">
                             <b class="yellow">{{ p.name }}</b>
