@@ -181,6 +181,7 @@ Config["armor_file"] = "data/armor/armor.json"  # 防具マスタ
 Config["max_armors"] = 8
 
 Config["accessory_file"] = "data/accessory/accessory.json"  # 装飾品マスタ
+Config["chocobo_file"] = "data/chocobofile.json"  # 野生チョコボのマスターデータ
 Config["max_accessories"] = 8
 
 # モンスター・ボス出現マスタ
@@ -381,6 +382,7 @@ Config["genei_level_max"] = 1000
 # メッセージログ表示限界数・その他
 Config["max_lines"] = 20
 Config["max_all_messages"] = 20
+Config["max_choco_partner_list"] = 100  # お見合い候補リストの最大件数
 
 # Mapped aliases for compatibility with legacy templates
 Config["chara_syoku"] = Config["chara_jobs"]

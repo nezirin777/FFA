@@ -597,14 +597,20 @@ def farm_winner_regist(winner_data):
     file_path = os.path.join(Config['save_dir'], "farm_winner.json")
     save_data_atomically(winner_data, file_path, "farm_winner")
 
+def choco_master_load():
+    """野生チョコボの購入用マスターデータをロードします。"""
+    from sub_def.file_ops import load_data_with_lock
+    file_path = os.path.join(BASE_DIR, Config["chocobo_file"])
+    return load_data_with_lock(file_path, "chocobo_master") or []
+
 def choco_list_load(list_type):
-    """お見合い用・野生チョコボリスト('chocoboms', 'chocoboos', 'chocobofile')をロードします"""
+    """引退チョコボのお見合いリストをロードします。"""
     from sub_def.file_ops import load_data_with_lock
     file_path = os.path.join(Config['save_dir'], f"{list_type}.json")
     return load_data_with_lock(file_path, f"choco_list_{list_type}") or []
 
 def choco_list_regist(list_type, data):
-    """お見合い用・野生チョコボリスト('chocoboms', 'chocoboos', 'chocobofile')を保存します"""
+    """引退チョコボのお見合いリストを保存します。"""
     from sub_def.file_ops import save_data_atomically
     file_path = os.path.join(Config['save_dir'], f"{list_type}.json")
     save_data_atomically(data, file_path, f"choco_list_{list_type}")
@@ -619,6 +625,5 @@ def choco_g1_regist(user_id, g1_data):
     data = load_user_all(user_id) or {}
     data["choco_g1"] = g1_data
     save_user_unified(user_id, data)
-
 
 

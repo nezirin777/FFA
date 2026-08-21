@@ -197,6 +197,7 @@ def main():
     
     # 8. 掲示板の取得
     bbs_posts = common.bbs_load()[:config.Config['max_lines']]
+    all_messages = common.all_message_load()[:config.Config['max_all_messages']]
     accessory_description = common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
 
     # 街の基本能力値欄でも、旧版と同じく装備補正を併記する。
@@ -223,6 +224,7 @@ def main():
         "hp_percent": hp_percent,
         "guest_list_html": guest_list_html,
         "bbs_posts": bbs_posts,
+        "all_messages": all_messages,
         "chara_img": config.Config['chara_images'],
         "accessory_description": accessory_description,
         "hit_ritu": hit_ritu,

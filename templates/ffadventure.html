@@ -502,5 +502,31 @@
         </div>
     </div>
 
+    <!-- 全体システムニュース -->
+    <div id="ff-system-news" class="ff-system-news-section">
+        <div class="ff-section-header">
+            <h3 class="yellow">【全体ニュース】</h3>
+            <span class="note-text">ゲーム内イベントのお知らせ</span>
+        </div>
+
+        <div class="layout-stack layout-stack--sm">
+            {% for news in all_messages %}
+            <div class="card ff-system-news-card">
+                <div class="card__body">
+                    <div class="ff-system-news-meta">
+                        <b class="yellow">{{ news.name or "システム" }}</b>
+                        {% if news.time %}<span class="note-text">（{{ news.time }}）</span>{% endif %}
+                    </div>
+                    <div class="ff-system-news-message">{{ news.message }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card u-text-center">
+                <div class="card__body">現在、全体ニュースはありません。</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}

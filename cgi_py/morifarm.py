@@ -182,8 +182,8 @@ def main():
 
     elif mode == "choco_shop":
         # === 野生チョコボ探索・購入画面 ===
-        # chocobofile.json をロード
-        choco_list = common.choco_list_load("chocobofile")
+        # 購入用の野生チョコボマスターをロード
+        choco_list = common.choco_master_load()
         
         # ランダムに5頭ほど抽出して表示
         hakken = random.randint(1, 5)
@@ -205,9 +205,10 @@ def main():
             common.show_error("親となるチョコボに名前が付いていません。名前を付けてからお見合いしてください。")
             
         # 性別に応じて相手側のリストを読み込み
-        # 自身がオス(1)なら相手はメス(chocoboos)、自身がメス(0)なら相手はオス(chocoboms)
+        # chocoboms はメス、chocoboos はオスの引退チョコボを保持する。
+        # 自身がオス(1)ならメス、自身がメス(0)ならオスを相手にする。
         cfsex = choco_raw.get("sex", 0)
-        list_type = "chocoboos" if cfsex == 1 else "chocoboms"
+        list_type = "chocoboms" if cfsex == 1 else "chocoboos"
         
         choco_list = common.choco_list_load(list_type)
         
@@ -246,7 +247,7 @@ def main():
         item_no = common.to_int(in_params.get("item_no", "-1"), -1)
         
         # 野生チョコボリストから対象のチョコボを検索
-        choco_list = common.choco_list_load("chocobofile")
+        choco_list = common.choco_master_load()
         target_choco = None
         for cy in choco_list:
             if cy.get("no") == item_no:
@@ -337,7 +338,7 @@ def main():
         cfbreader = choco_raw.get("breader", "")
         
         # 相手側リストをロード
-        list_type = "chocoboos" if cfsex == 1 else "chocoboms"
+        list_type = "chocoboms" if cfsex == 1 else "chocoboos"
         partner_list = common.choco_list_load(list_type)
         partner = None
         for cy in partner_list:
@@ -656,8 +657,8 @@ def main():
         cfno = choco_raw.get("no", 0)
         cfbreader = choco_raw.get("breader", "")
         
-        # 殿堂お見合いリストの更新
-        # オスならメスのお見合いリスト(chocoboos)、メスならオスのお見合いリスト(chocoboms)に登録する
+        # 引退チョコボ自身の性別に対応するお見合いリストを更新する。
+        # chocoboms はメス、chocoboos はオスの引退チョコボを保持する。
         list_type = "chocoboos" if cfsex == 1 else "chocoboms"
         
         common.get_lock(list_type)
@@ -702,10 +703,15 @@ def main():
                 "breader": cfbreader
             }
             
-            if hit and warikomi_idx < len(lines):
+            if lines:
+                # 候補が見つからない場合も既存枠を置き換え、リストを肥大化させない。
                 lines[warikomi_idx] = new_entry
             else:
-                lines.insert(0, new_entry)
+                # 初期データが空の場合だけ、最初の1件として登録する。
+                lines = [new_entry]
+
+            max_items = config.Config.get("max_choco_partner_list", 100)
+            lines = lines[:max_items]
                 
             common.choco_list_regist(list_type, lines)
         finally:
