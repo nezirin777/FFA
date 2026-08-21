@@ -16,7 +16,6 @@ Config["lock_dir"] = os.path.join(BASE_DIR, "lock")  # 排他制御用ロック�
 Config["template_dir"] = os.path.join(
     BASE_DIR, "templates"
 )  # HTMLテンプレートディレクトリ
-Config["souko_folder"] = "save_data"  # 倉庫データディレクトリの相対パス
 
 # 管理者パスワード・秘密鍵は環境変数から取得することを推奨（本番では必ず設定すること）。
 # 環境変数が未設定の場合は下記の既定値にフォールバックする（開発用。公開運用では変更必須）。
@@ -28,7 +27,9 @@ Config["secret_key"] = os.environ.get(
 )  # クッキー暗号化・署名用の秘密鍵
 Config["maintenance_mode"] = 0  # メンテナンスモード (1: 有効, 0: 無効)
 Config["delete_limit_days"] = 60  # 未戦闘によるキャラクター自動削除の制限日数 (日)
-Config["single_account_per_host"] = True  # 同一IP/ホストからの複数キャラクター登録を禁止する
+Config["single_account_per_host"] = (
+    True  # 同一IP/ホストからの複数キャラクター登録を禁止する
+)
 Config["single_account_exempt_ids"] = ["test"]  # 同一IPチェックの対象外にする特殊ID
 # テスト・検証用として自動削除と通常の管理画面削除から保護するID
 Config["protected_user_ids"] = ["test"]
@@ -58,14 +59,12 @@ Config["max_bank"] = 999999999999000  # 銀行預金の最大値
 Config["inn_cost"] = 10  # 宿屋の宿泊費の基本係数 (レベル乗算用)
 Config["prize_money"] = 500  # 対戦で得られる賞金の基本額
 Config["base_exp"] = 30  # 戦闘で得られる基本経験値
-Config["base_hp"] = 500  # キャラクター作成時の初期HP
 Config["level_up_coeff"] = 300  # レベルアップに必要な経験値の係数 (レベル乗算用)
 
 Config["battle_cooldown"] = 20  # 通常対戦(対人)のクールダウン秒数
 Config["monster_cooldown"] = 20  # モンスター修行のクールダウン秒数
 Config["boss_cooldown"] = 10  # ボス戦のクールダウン秒数
 
-Config["level_diff_limit"] = 15  # 通常戦闘で対戦相手を選べるレベル差制限
 Config["battle_limit"] = 9999  # 1日の最大対戦回数制限
 Config["max_turns"] = 150  # 1戦闘における最大ターン数 (引き分け判定用)
 # 旧版 wbattle.pl の初手逆転必殺判定
@@ -87,7 +86,6 @@ Config["main_title"] = "FFA改 Vips Ver 3.00"  # ゲームのメインタイト�
 # テンプレート互換用スクリプトエイリアス
 Config["script"] = "login.py"
 Config["script_pass"] = "login.py?mode=passchange"
-Config["script_post"] = "login.py?mode=post_message"
 Config["script_select"] = "login.py?mode=select_battle"
 Config["scripto"] = "others.py"
 
@@ -98,7 +96,7 @@ Config["scripto"] = "others.py"
 Config["telop_message"] = (
     "<font color=yellow>ごゆっくりお楽しみください</font>管理人より♪"  # 画面上部テロップメッセージ
 )
-Config["admin_message"] = (  # ログイン画面の管理者お知らせ事項 (HTML)
+Config["admin_message"] = (  # 公開トップの管理者お知らせ事項 (HTML)
     "<font color=red>\n"
     "・１人で２人以上のキャラクターの登録を禁止します。<br>\n"
     "・ブラウザの更新ボタン等を押すことを禁止します。<br>\n"
@@ -156,7 +154,6 @@ Config["chocorank_script"] = "login.py?mode=chocorank"
 Config["farmrace_script"] = "login.py?mode=farmrace"
 
 # コミュニケーション・ランキング
-Config["post_message_script"] = "login.py?mode=post_message"
 Config["bbs_script"] = "login.py?mode=bbs"  # プレイヤー掲示板
 Config["max_bbs_posts"] = 50  # 掲示板に保持する最大投稿数
 Config["ranking_script"] = "login.py?mode=rank"
@@ -388,13 +385,8 @@ Config["genei_level_high"] = 500
 Config["genei_level_max"] = 1000
 
 # メッセージログ表示限界数・その他
-Config["max_lines"] = 5
-Config["max_messages"] = 20
-Config["message_max_length"] = 40  # 旧版 mes_size 相当（送受信メッセージ本文の最大文字数）
-Config["max_all_lines"] = 5
+Config["max_lines"] = 20
 Config["max_all_messages"] = 20
-Config["comeback_factor"] = 100
-Config["all_data_file"] = "alldata.json"
 
 # Mapped aliases for compatibility with legacy templates
 Config["chara_syoku"] = Config["chara_jobs"]

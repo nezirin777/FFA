@@ -327,7 +327,6 @@ def main():
             "item": new_item,
             "syoku": new_syoku,
             "login_log": [],
-            "message": [],
             "souko_item": [],
             "souko_def": [],
             "souko_acs": [],

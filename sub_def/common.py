@@ -244,11 +244,6 @@ def login_log_load(user_id):
     data = load_user_all(user_id)
     return data.get("login_log", []) if data else []
 
-def message_load(user_id):
-    """個人メッセージをロードします (統合JSONデータから読み出し)"""
-    data = load_user_all(user_id)
-    return data.get("message", []) if data else []
-
 def all_message_load():
     """全体メッセージをロードします (共有ファイル排他ロード)"""
     from sub_def.file_ops import load_data_with_lock
@@ -279,12 +274,6 @@ def login_log_regist(user_id, log_data):
     """ログイン履歴を保存します"""
     data = load_user_all(user_id) or {}
     data["login_log"] = log_data
-    save_user_unified(user_id, data)
-
-def message_regist(user_id, msg_data):
-    """個人メッセージを保存します"""
-    data = load_user_all(user_id) or {}
-    data["message"] = msg_data
     save_user_unified(user_id, data)
 
 def all_message_regist(msg_data):

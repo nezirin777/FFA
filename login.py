@@ -75,7 +75,6 @@ FUNCTION_MAP = {
     "isekiai": "cgi_py.monster",       # (修行サブモード: 異世界)
     "legend": "cgi_py.legend",
     "boss": "cgi_py.legend",           # (伝説サブモード: ボス挑戦)
-    "post_message": "cgi_py.post_message",
     "bbs": "cgi_py.bbs",
     "chocofarm": "cgi_py.chocofarm",
     "morifarm": "cgi_py.morifarm",

@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FFA コマンドフローチャート</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090d18; --panel:#111a2c; --panel2:#17233b; --line:#2b3b5d; --text:#e8eefc; --muted:#93a2bd; --accent:#5cc8ff; --entry:#38bdf8; --check:#f87171; --data:#4ade80; --logic:#c084fc; --util:#fbbf24; --out:#34d399; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text); }
+    body { font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.55; }
+    button,input { font:inherit; } button { color:inherit; }
+    .page { min-height:100vh; padding:28px; }
+    .hero { max-width:1600px; margin:0 auto 22px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px; }
+    .eyebrow { color:var(--accent); font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin:4px 0; font-size:clamp(24px,3vw,38px); line-height:1.2; }
+    .hero p { margin:0; color:var(--muted); }
+    .tools { display:flex; align-items:center; justify-content:flex-end; gap:9px; flex-wrap:wrap; }
+    .search { width:min(360px,72vw); padding:10px 13px; border:1px solid var(--line); border-radius:8px; outline:0; background:var(--panel); color:var(--text); }
+    .search:focus { border-color:var(--accent); box-shadow:0 0 0 3px #5cc8ff22; }
+    .stat { padding:7px 10px; border:1px solid var(--line); border-radius:7px; background:#17233bb3; color:var(--muted); font-size:12px; white-space:nowrap; }
+    .stat strong { color:var(--text); font-size:15px; }
+    .shell { max-width:1600px; min-height:730px; margin:auto; display:grid; grid-template-columns:255px minmax(0,1fr) 215px; overflow:hidden; border:1px solid var(--line); border-radius:12px; background:var(--panel); box-shadow:0 16px 40px #0000004a; }
+    .sidebar,.legend { background:#0f182b; }
+    .sidebar { overflow:auto; border-right:1px solid var(--line); }
+    .legend { padding:22px 16px; border-left:1px solid var(--line); }
+    .side-title,.legend-title { padding:17px 16px 8px; color:#667894; font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .flow-button { width:100%; padding:9px 12px 9px 17px; border:0; border-left:3px solid transparent; background:transparent; color:var(--muted); text-align:left; cursor:pointer; line-height:1.35; }
+    .flow-button:hover { background:#5cc8ff12; color:var(--text); }
+    .flow-button.active { border-left-color:var(--accent); background:#5cc8ff1c; color:var(--accent); }
+    .flow-button small { display:block; margin-top:2px; color:#667894; font:11px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace; overflow-wrap:anywhere; }
+    .content { min-width:0; overflow:auto; padding:28px 30px 42px; }
+    .content-head { display:flex; justify-content:space-between; gap:18px; margin-bottom:26px; padding-bottom:19px; border-bottom:1px solid var(--line); }
+    .content-head h2 { margin:3px 0 0; color:var(--accent); font-size:26px; line-height:1.25; }
+    .content-head p { margin:7px 0 0; color:var(--muted); }
+    .chips { display:flex; justify-content:flex-end; align-content:flex-start; gap:7px; flex-wrap:wrap; }
+    .chip { display:inline-flex; padding:4px 7px; border:1px solid #385175; border-radius:5px; background:#5cc8ff0f; color:#b9d9ef; font:12px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .section { margin:0 0 38px; }
+    .section-title { display:flex; align-items:center; gap:10px; margin-bottom:15px; color:#8294b4; font-size:14px; }
+    .section-title::before,.section-title::after { content:""; height:1px; flex:1; background:var(--line); }
+    .section-title span { padding:4px 13px; border:1px solid var(--line); border-radius:15px; white-space:nowrap; }
+    .step { display:flex; min-width:0; }
+    .rail-col { width:38px; flex:0 0 38px; display:flex; flex-direction:column; align-items:center; }
+    .dot { width:16px; height:16px; margin-top:25px; border-radius:50%; }
+    .rail { width:3px; min-height:23px; flex:1; background:#33445f; }
+    .step-body { min-width:0; flex:1; padding:0 0 15px 7px; }
+    .step-box { padding:12px 15px; border:1px solid #c084fc44; border-radius:9px; background:#c084fc14; }
+    .step-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .file { margin-bottom:2px; color:var(--logic); font-size:13px; font-weight:800; overflow-wrap:anywhere; }
+    .func { color:var(--text); font:16px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; overflow-wrap:anywhere; }
+    .note { margin-top:4px; color:#8697b4; font-size:12px; }
+    .kind { flex:0 0 auto; padding:3px 7px; border-radius:5px; font-size:10px; font-weight:800; letter-spacing:.04em; }
+    .branch { display:flex; align-items:flex-start; gap:7px; margin:5px 0 0 10px; padding:7px 10px; border:1px solid #f8717140; border-radius:6px; background:#f8717114; color:#fca5a5; font-size:12px; }
+    .branch b { color:var(--check); white-space:nowrap; }
+    .legend-item { display:flex; align-items:center; gap:9px; margin:0 0 13px; color:var(--muted); font-size:13px; }
+    .legend-dot { width:12px; height:12px; flex:0 0 12px; border-radius:50%; }
+    .legend-box { margin-top:22px; padding-top:17px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.85; }
+    .legend-box code { color:#c7d7ee; }
+    .empty { padding:44px 10px; color:var(--muted); text-align:center; }
+    @media (max-width:1100px) { .shell { grid-template-columns:220px minmax(0,1fr); } .legend { display:none; } }
+    @media (max-width:720px) { .page { padding:14px; } .hero { display:block; } .tools { justify-content:flex-start; margin-top:16px; } .shell { display:block; min-height:0; } .sidebar { max-height:235px; border-right:0; border-bottom:1px solid var(--line); } .content { padding:22px 15px 34px; } .content-head { display:block; } .chips { justify-content:flex-start; margin-top:13px; } .step-top { display:block; } .kind { display:inline-block; margin-top:8px; } .rail-col { width:29px; flex-basis:29px; } .step-body { padding-left:3px; } }
+  </style>
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">FFA VIPS / PYTHON 3.00</div>
+      <h1>FFA コマンドフローチャート</h1>
+      <p>FFAのCGI入口、ログインルーティング、各コマンドの処理・保存・画面出力を確認するための設計資料</p>
+    </div>
+    <div class="tools"><input id="search" class="search" type="search" placeholder="モード・ファイル・関数を検索"><div class="stat"><strong id="flow-count">0</strong> フロー</div><div class="stat"><strong id="route-count">0</strong> ルート</div></div>
+  </header>
+  <section class="shell" aria-label="FFAコマンドフローチャート">
+    <nav id="sidebar" class="sidebar" aria-label="フロー一覧"></nav>
+    <article id="content" class="content"></article>
+    <aside class="legend">
+      <div class="legend-title">凡例</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--entry)"></i>ENTRY / 入口</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--check)"></i>CHECK / 認証・条件</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--data)"></i>DATA / ロード・保存</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--logic)"></i>LOGIC / ゲーム処理</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--util)"></i>UTIL / 共通処理</div>
+      <div class="legend-item"><i class="legend-dot" style="background:var(--out)"></i>OUTPUT / 画面・遷移</div>
+      <div class="legend-box"><b>ログイン後の共通経路</b><br><code>login.py</code> → <code>common.decode_params()</code><br>セッション確認・CSRF照合<br>→ <code>FUNCTION_MAP</code><br>→ 各 <code>cgi_py.*.main()</code></div>
+      <div class="legend-box">モード名・処理名は現行FFAソースを基準に記載しています。サブモードは同じ入口ファイル内で分岐します。</div>
+    </aside>
+  </section>
+</main>
+<script>
+"use strict";
+const K={entry:{label:"ENTRY",color:"var(--entry)",bg:"#38bdf817"},check:{label:"CHECK",color:"var(--check)",bg:"#f8717117"},data:{label:"DATA",color:"var(--data)",bg:"#4ade8017"},logic:{label:"LOGIC",color:"var(--logic)",bg:"#c084fc17"},util:{label:"UTIL",color:"var(--util)",bg:"#fbbf2417"},out:{label:"OUTPUT",color:"var(--out)",bg:"#34d39917"}};
+const ROUTES=[
+  ["main","cgi_py.ffadventure"],["sts","cgi_py.sts"],["tac_change","cgi_py.tac_change"],["passchange","cgi_py.passchange"],["tensyoku","cgi_py.tensyoku"],
+  ["shop","cgi_py.shop"],["yado","cgi_py.shop"],["shop_item","cgi_py.shop_item"],["shop_def","cgi_py.shop_def"],["shop_acs","cgi_py.shop_acs"],
+  ["bank","cgi_py.bank"],["souko","cgi_py.souko"],["battle","cgi_py.battle"],["select_battle","cgi_py.select_battle"],["sentaku","cgi_py.select_battle"],
+  ["monster","cgi_py.monster"],["genei","cgi_py.monster"],["isekiai","cgi_py.monster"],["legend","cgi_py.legend"],["boss","cgi_py.legend"],
+  ["bbs","cgi_py.bbs"],["chocofarm","cgi_py.chocofarm"],["morifarm","cgi_py.morifarm"],["choco","cgi_py.morifarm"],
+  ["crace","cgi_py.crace"],["ctrain","cgi_py.ctrain"],["dendo","cgi_py.dendo"],["farmrace","cgi_py.farmrace"],["system","cgi_py.system"],
+  ["chara_sts","cgi_py.system"],["img_list","cgi_py.system"],["ranking","cgi_py.system"],["tenka","cgi_py.tenka"],["rank","cgi_py.rank"],["chocorank","cgi_py.chocorank"]
+].map(([mode,file])=>({mode,file}));
+const S=(file,func,type,note="",branch="")=>({file,func,type,note,branch});
+const SEC=(title,steps)=>({title,steps});
+const FLOW=(id,label,group,modes,sections,description="")=>({id,label,group,modes,sections,description});
+const FLOWS=[
+FLOW("public","公開トップ・ゲスト","入口",[],[
+  SEC("others.py → main()",[
+    S("others.py","main()","entry","ログイン前トップページの入口"),
+    S("config.py","Config['maintenance_mode']","check","メンテナンス中はエラー画面"),
+    S("sub_def.crypto.py","get_session() / save_session()","data","暗号化セッションと記憶済みユーザーを確認"),
+    S("sub_def.file_ops.py","load_user_all(user_id)","data","ログイン中なら本人データを読み込む"),
+    S("others.py","get_winner() / common.farm_winner_view()","data","人間チャンプとチョコボチャンプを取得"),
+    S("sub_def.common.py","update_and_get_guests()","logic","オンライン表示用の共有データを更新"),
+    S("sub_def.utils.py","render_template('others.html')","out","ログイン前トップを表示")
+  ]),
+  SEC("公開モードの扱い",[
+    S("login.py","public_modes = rank / system / chara_sts / img_list / ranking","check","ログインなしで許可される公開モード"),
+    S("login.py","is_logged_in 判定","check","その他のモードは未ログインなら others.py へ遷移","未ログイン → redirect('others.py')")
+  ])
+],"公開トップはothers.py、ログイン後のメイン画面はcgi_py/ffadventure.pyです。"),
+
+FLOW("register","キャラクター新規作成","入口",[],[
+  SEC("chara_make.py → main()",[
+    S("chara_make.py","main()","entry","modeなしで初期フォーム"),
+    S("config.py","maintenance_mode / chara_stop","check","メンテナンス・新規作成停止を確認"),
+    S("sub_def.common.py","decode_params()","util","GET/POSTを統合してフォーム化"),
+    S("sub_def.crypto.py","get_session() / token_generate() / save_session()","util","登録フォーム用CSRFトークンを発行"),
+    S("sub_def.utils.py","render_template('chara_make.html')","out","キャラクター作成フォーム")
+  ]),
+  SEC("確認画面: mode=make_pre",[
+    S("chara_make.py","token_check(params, session)","check","CSRFトークン照合"),
+    S("chara_make.py","validate_input(params)","check","ID・パスワード・名前・性別・職業・画像を検証","NG → show_error()"),
+    S("sub_def.crypto.py","token_generate() / save_session()","util","make_end用トークンへ更新"),
+    S("sub_def.utils.py","render_template('chara_make_pre.html')","out","登録確認画面")
+  ]),
+  SEC("登録完了: mode=make_end",[
+    S("chara_make.py","validate_input() / 初期能力値割り振り","check","職業ごとの初期能力と所持金を決定"),
+    S("sub_def.crypto.py","hash_password(user_pass)","util","PBKDF2形式のパスワードを生成"),
+    S("chara_make.py","new_chara / new_item / new_syoku 構築","logic","素手・衣服・装飾品なしを含む初期状態を作成"),
+    S("sub_def.file_ops.py","save_user_all(user_id, user_data)","data","user_all.jsonへ統合保存"),
+    S("sub_def.common.py","all_message_load() / all_message_regist()","data","全体ニュースへ新規登録メッセージを追加"),
+    S("sub_def.crypto.py","save_session(session_data)","util","登録直後の自動ログインセッションを発行"),
+    S("sub_def.utils.py","redirect('login.py?mode=main')","out","完了後に街へ遷移")
+  ])
+]),
+
+FLOW("auth","ログイン・ログアウト","認証",[],[
+  SEC("login.py → main()",[
+    S("login.py","common.decode_params()","entry","QUERY_STRINGのmodeを優先してルート決定"),
+    S("login.py","mode=log_in / method=POST","check","ログイン処理へ分岐"),
+    S("sub_def.crypto.py","get_session() / token_check()","check","CSRFトークンを検証"),
+    S("sub_def.validation.py","validate_username() / validate_password()","check","入力形式を検証","NG → show_error()"),
+    S("sub_def.file_ops.py","load_user_all(user_id)","data","charaと保存済みパスワードを取得"),
+    S("sub_def.crypto.py","verify_password() / needs_rehash()","check","新形式・旧形式・レガシー形式を検証、必要なら再ハッシュ"),
+    S("sub_def.crypto.py","save_session(session_data)","data","暗号化セッションを保存"),
+    S("login.py","testアカウントの10分ロック更新","logic","testのみlast_timeを更新"),
+    S("sub_def.utils.py","redirect('login.py?mode=main')","out","ログイン後に街へ遷移")
+  ]),
+  SEC("ログアウト・認証失敗",[
+    S("login.py","mode=log_out","entry","destroy_session()を実行"),
+    S("sub_def.crypto.py","destroy_session()","data","暗号化セッションCookieを破棄"),
+    S("sub_def.utils.py","redirect('others.py')","out","公開トップへ戻る"),
+    S("login.py","is_logged_in / password_hash照合","check","ログイン後の全ルートで再認証","不一致 → others.pyへ遷移")
+  ])
+]),
+
+FLOW("router","ログイン後ルータ","認証",["main","sts","tac_change","passchange","tensyoku","shop","yado","shop_item","shop_def","shop_acs","bank","souko","battle","select_battle","sentaku","monster","genei","isekiai","legend","boss","bbs","chocofarm","morifarm","choco","crace","ctrain","dendo","farmrace","system","chara_sts","img_list","ranking","tenka","rank","chocorank"],[
+  SEC("login.py → FUNCTION_MAP",[
+    S("login.py","get_session() / load_user_all()","entry","暗号化セッションとキャラのパスワードハッシュを確認"),
+    S("login.py","public_modes 判定","check","rank / system / chara_sts / img_list / ranking のみゲスト可","未ログインの非公開モード → redirect('others.py')"),
+    S("login.py","token_check(FORM, session)","check","POST時のみCSRF照合"),
+    S("login.py","FUNCTION_MAP[mode]","logic","modeから遅延ロードするモジュールを決定"),
+    S("importlib","import_module(module_path)","util","cgi_pyモジュールをロード"),
+    S("cgi_py/<module>.py","main()","out","各コマンドの処理を実行", "例外 → show_error('システム実行エラー')")
+  ]),
+  SEC("共通I/O: sub_def/common.py / file_ops.py",[
+    S("sub_def.common.py","decode_params()","util","GETとPOSTを統合。プロセス内キャッシュでstdin再読を防止"),
+    S("sub_def.common.py","get_cookie() / set_cookie_header()","util","旧cookie名を暗号化セッションへ互換変換"),
+    S("sub_def.common.py","get_lock() / release_lock()","util","ユーザー・共有データの排他制御"),
+    S("sub_def.file_ops.py","load_user_all() / save_user_all()","data","user_all.jsonをロック付きでアトミック読み書き"),
+    S("sub_def.utils.py","show_error() / redirect() / redirect_with_flash()","out","エラー画面またはフラッシュ付き遷移")
+  ])
+]),
+
+FLOW("main","街・キャラクターデータ","拠点・表示",["main"],[
+  SEC("cgi_py/ffadventure.py → main()",[
+    S("cgi_py/ffadventure.py","main()","entry","ログイン後のメイン画面"),
+    S("sub_def.common.py","decode_params() / get_cookie() / parse_cookie_user()","check","表示対象のユーザーIDと認証Cookieを確定"),
+    S("sub_def.common.py","chara_load(user_id)","data","キャラクター基本能力・状態をロード"),
+    S("sub_def.common.py","item_load(user_id)","data","武器・防具・装飾品をロード"),
+    S("cgi_py/ffadventure.py","get_winner() / farm_winner_view()","data","人間チャンプ・チョコボチャンプを取得"),
+    S("sub_def.common.py","update_and_get_guests()","logic","オンライン表示を更新"),
+    S("sub_def.common.py","bbs_load()","data","掲示板を取得"),
+    S("sub_def.common.py","accessory_description()","util","装飾品の効果説明を取得"),
+    S("sub_def.utils.py","render_template('ffadventure.html')","out","街・能力・装備・掲示板を表示")
+  ])
+]),
+
+FLOW("status","ステータス・戦術・転職","キャラクター",["sts","tac_change","tensyoku"],[
+  SEC("ステータス・戦術",[
+    S("cgi_py/sts.py","main() / mode=st_buy","entry","能力値配分・技発動コメントなどを処理"),
+    S("sub_def.common.py","require_owner() / chara_load() / syoku_load()","check","本人のキャラクターと職業熟練度を確認"),
+    S("cgi_py/sts.py","入力値・禁止語・testキャラ制限","check","能力ポイントやコメントを検証","不正 → show_error()"),
+    S("sub_def.common.py","get_lock() → chara_regist() / syoku_regist()","data","変更内容を保存してロック解除"),
+    S("sub_def.utils.py","render_template('sts_result.html' / 'sts.html')","out"),
+    S("cgi_py/tac_change.py","get_available_tactics() / chara_regist()","logic","職業と熟練度に応じた戦術を変更"),
+    S("sub_def.utils.py","render_template('tac_result.html' / 'tac_change.html')","out")
+  ]),
+  SEC("転職: cgi_py/tensyoku.py",[
+    S("cgi_py/tensyoku.py","main()","entry","転職フォームと確定処理"),
+    S("sub_def.common.py","get_cookie() / parse_cookie_user() / chara_load()","check","本人認証"),
+    S("cgi_py/tensyoku.py","get_syoku_master_list() / load_syoku_ini()","data","職業熟練度と転職条件を取得"),
+    S("cgi_py/tensyoku.py","meets_job_requirements()","check","能力値・カルマ・熟練度の条件を確認","不足 → show_error()"),
+    S("sub_def.common.py","chara_regist() / syoku_regist()","data","職業変更と熟練度を保存"),
+    S("sub_def.utils.py","render_template('tensyoku_result.html' / 'tensyoku.html')","out")
+  ])
+]),
+
+FLOW("shops","店・銀行・倉庫","装備・経済",["shop","yado","shop_item","shop_def","shop_acs","bank","souko"],[
+  SEC("店頭表示と購入・売却",[
+    S("cgi_py/shop.py","main() / mode=yado","entry","宿屋料金確認・回復処理を含む"),
+    S("cgi_py/shop_item.py","main()","entry","武器店の表示・購入・売却"),
+    S("cgi_py/shop_def.py","main()","entry","防具店の表示・購入・売却"),
+    S("cgi_py/shop_acs.py","main()","entry","装飾品店の表示・購入・売却"),
+    S("sub_def.common.py","require_owner() / chara_load() / item_load()","check","本人・所持金・装備を確認"),
+    S("shop_item.py / shop_def.py / shop_acs.py","mode=buy / mode=sell","check","商品番号、価格、倉庫上限、売却可能装備を検証","NG → redirect_with_flash()"),
+    S("sub_def.common.py","chara_regist() / item_regist() / souko_regist()","data","所持金・装備・倉庫を更新"),
+    S("sub_def.utils.py","redirect_with_flash() / render_template('shop_trade.html')","out","元の店へ戻り結果表示")
+  ]),
+  SEC("銀行: cgi_py/bank.py",[
+    S("cgi_py/bank.py","main()","entry","mode=bank_sell / bank_buy または表示"),
+    S("sub_def.common.py","get_cookie() / chara_load() / get_lock()","check","本人認証とキャラクターロック"),
+    S("cgi_py/bank.py","金額・数値・所持金・預金額チェック","check","預入/引出可能額を検証","NG → redirect_with_flash(bank_url)"),
+    S("sub_def.common.py","chara_regist()","data","goldとbankを更新"),
+    S("sub_def.utils.py","redirect_with_flash() / render_template('bank.html')","out")
+  ]),
+  SEC("倉庫: cgi_py/souko.py",[
+    S("cgi_py/souko.py","main()","entry","装備・倉庫の一覧と操作"),
+    S("sub_def.common.py","require_owner() / chara_load() / item_load() / souko_load()","data","本人の装備と3種類の倉庫をロード"),
+    S("cgi_py/souko.py","item/def/acs の装備・解除・削除分岐","check","番号と倉庫上限を確認","不正/満杯 → redirect_with_flash()"),
+    S("sub_def.common.py","chara_regist() / item_regist() / souko_regist() × 3","data","装備と倉庫を一括反映"),
+    S("sub_def.common.py","accessory_description() / format_bonus()","util","装飾効果を表示用に整形"),
+    S("sub_def.utils.py","render_template('souko.html')","out")
+  ])
+]),
+
+FLOW("battle","通常戦闘・対戦","戦闘",["select_battle","sentaku","battle","tenka"],[
+  SEC("対戦相手選択: cgi_py/select_battle.py",[
+    S("cgi_py/select_battle.py","main() / mode=log_in","entry","対戦相手一覧を表示"),
+    S("sub_def.common.py","get_cookie() / chara_load() / get_all_players()","data","本人と登録者一覧を取得"),
+    S("cgi_py/select_battle.py","mode=sentaku","logic","相手のステータス・装備を表示"),
+    S("sub_def.battle_logic.py","BattleSimulator(...).simulate()","logic","対戦結果を事前計算して確認"),
+    S("cgi_py/select_battle.py","mode=battle","check","相手存在・自分自身・クールダウンを確認","NG → show_error()"),
+    S("sub_def.utils.py","render_template('select_battle.html') / redirect battle","out")
+  ]),
+  SEC("王者戦: cgi_py/battle.py",[
+    S("cgi_py/battle.py","main()","entry","王者データへ挑戦"),
+    S("sub_def.common.py","get_lock(user_id) / chara_load() / item_load()","data","挑戦者をロックしてロード"),
+    S("cgi_py/battle.py","クールダウン・本人が王者かを確認","check","行動可能かを検証","NG → show_error()"),
+    S("cgi_py/battle.py","get_lock('winner') / winner読込","data","王者データをロックしてロード"),
+    S("sub_def.battle_logic.py","BattleSimulator('battle').simulate()","logic","攻撃、盗み、経験値、報酬、勝敗を計算"),
+    S("sub_def.battle_logic.py","process_levelup()","logic","経験値反映とレベルアップ"),
+    S("sub_def.common.py","chara_regist() / syoku_regist()","data","戦闘結果・職業熟練度を保存"),
+    S("sub_def.common.py","release_lock()","util","winnerとユーザーのロックを解除"),
+    S("sub_def.utils.py","render_template('monster_result.html')","out","戦闘ログ・結果を表示")
+  ]),
+  SEC("天下一武道会: cgi_py/tenka.py",[
+    S("cgi_py/tenka.py","main() / modeなし","entry","大会情報・参加状態を表示"),
+    S("cgi_py/tenka.py","get_tenka_data() / update_tenka_members()","data","大会メンバーと開催情報を取得"),
+    S("cgi_py/tenka.py","mode=battle","check","対戦相手・進行状態・クールダウンを確認"),
+    S("sub_def.battle_logic.py","BattleSimulator('tenka').simulate()","logic","大会用の戦闘を実行"),
+    S("sub_def.common.py","chara_regist() / syoku_regist() / save_tenka_logs()","data","勝敗・熟練度・大会ログを保存"),
+    S("sub_def.utils.py","render_template('tenka.html' / 'tenka_result.html')","out")
+  ])
+]),
+
+FLOW("training","修行・レジェンド","戦闘",["monster","genei","isekiai","legend","boss"],[
+  SEC("修行: cgi_py/monster.py",[
+    S("cgi_py/monster.py","main() / mode=monster","entry","周辺探索の表示と戦闘"),
+    S("cgi_py/monster.py","mode=genei / mode=isekiai","entry","幻影の城・異世界のサブモード"),
+    S("sub_def.common.py","get_cookie() / chara_load() / get_lock()","check","本人認証とキャラクターロック"),
+    S("cgi_py/monster.py","load_monsters() / item_load()","data","敵マスターと装備を取得"),
+    S("sub_def.battle_logic.py","BattleSimulator(mode).simulate()","logic","修行モード別の敵と戦闘"),
+    S("sub_def.battle_logic.py","process_levelup()","logic","勝利時の経験値・成長を反映"),
+    S("sub_def.common.py","chara_regist() / syoku_regist() / release_lock()","data","戦闘結果を保存してロック解除"),
+    S("sub_def.utils.py","render_template('monster_result.html')","out")
+  ]),
+  SEC("レジェンドプレイス: cgi_py/legend.py",[
+    S("cgi_py/legend.py","main() / mode=legend","entry","攻略者一覧と伝説の戦い入口"),
+    S("cgi_py/legend.py","get_legend_players()","data","攻略済みキャラクター一覧を作成"),
+    S("cgi_py/legend.py","mode=boss","entry","ボス階層への挑戦"),
+    S("cgi_py/legend.py","チャンプ挑戦済み・クールダウン・回数・階層チェック","check","挑戦条件を検証","NG → show_error()"),
+    S("sub_def.battle_logic.py","BattleSimulator('legend' / 'boss').simulate()","logic","伝説用の敵と戦闘"),
+    S("sub_def.battle_logic.py","process_levelup() / chara_regist() / syoku_regist()","data","勝利結果・成長・職業熟練度を保存"),
+    S("sub_def.common.py","all_message_regist()","data","攻略者のニュースを全体メッセージへ追加"),
+    S("sub_def.utils.py","render_template('legend_ranking.html' / 'monster_result.html')","out")
+  ])
+]),
+
+FLOW("choco","チョコボ牧場・森","チョコボ",["chocofarm","morifarm","choco","ctrain","dendo","chocorank"],[
+  SEC("牧場表示: cgi_py/chocofarm.py",[
+    S("cgi_py/chocofarm.py","main()","entry","牧場トップを表示"),
+    S("sub_def.common.py","chara_load() / item_load() / choco_load() / choco_g1_load()","data","キャラ・装備・チョコボ・G1記録を取得"),
+    S("sub_def.common.py","is_choco_owned() / farm_winner_view()","check","所持状態とチョコボチャンプを確認"),
+    S("sub_def.common.py","update_and_get_guests()","logic","牧場のオンライン表示を更新"),
+    S("sub_def.utils.py","render_template('chocofarm.html')","out")
+  ]),
+  SEC("森・お見合い・引退: cgi_py/morifarm.py",[
+    S("cgi_py/morifarm.py","main() / mode=main or choco","entry","チョコボの森を表示"),
+    S("cgi_py/morifarm.py","mode=choco_shop / choco_shopb","logic","親チョコボ選択・相手選択"),
+    S("cgi_py/morifarm.py","mode=choco_buy / choco_buyb","check","所持状態・親・名前・お見合い条件を確認","NG → show_error()"),
+    S("sub_def.common.py","choco_regist() / choco_g1_regist()","data","新しいチョコボと記録を保存"),
+    S("cgi_py/morifarm.py","mode=choco_sell","logic","名前付きチョコボを引退・削除"),
+    S("cgi_py/morifarm.py","mode=choco_name","check","禁止語・殿堂名重複・名前未入力を確認"),
+    S("sub_def.common.py","choco_regist() / chara_regist()","data","チョコボ名や宿屋回復による所持金を保存"),
+    S("sub_def.utils.py","render_template('morifarm.html')","out")
+  ]),
+  SEC("訓練・殿堂・ランキング",[
+    S("cgi_py/ctrain.py","main()","entry","訓練メニューを表示または実行"),
+    S("cgi_py/ctrain.py","体力・訓練選択・待機時間チェック","check","実行条件を確認","NG → show_error()"),
+    S("sub_def.common.py","chara_regist() / choco_regist()","data","訓練費用・体力・能力値を保存"),
+    S("cgi_py/dendo.py","main() / mode=dendo","entry","G1/G2タイトル3つ以上の殿堂登録"),
+    S("sub_def.common.py","choco_list_load() / choco_list_regist()","data","殿堂リストへ登録"),
+    S("cgi_py/chocorank.py","get_rank_cache() / build_rankings()","logic","チョコボ能力別・総合ランキングをキャッシュ生成"),
+    S("sub_def.utils.py","render_template('dendo.html' / 'chocorank.html')","out")
+  ])
+]),
+
+FLOW("races","チョコボレース","チョコボ",["crace","farmrace"],[
+  SEC("通常レース: cgi_py/crace.py",[
+    S("cgi_py/crace.py","main() / mode=race0〜race8","entry","牧場から選択されたレースを処理"),
+    S("sub_def.common.py","require_owner() / chara_load() / choco_load()","data","本人と出走チョコボを取得"),
+    S("cgi_py/crace.py","レース選択・名前・体力・勝利数・開催日チェック","check","出走条件を検証","NG → back_ctx付きshow_error()"),
+    S("cgi_py/crace.py","load_rivals() / _scheduled_major_race()","data","ライバルと開催条件を取得"),
+    S("cgi_py/crace.py","レース結果・賞金・能力値・G1記録を計算","logic"),
+    S("sub_def.common.py","chara_regist() / choco_regist() / choco_g1_regist()","data","体力、成績、勝利数、記録を保存"),
+    S("sub_def.utils.py","render_template('crace.html')","out")
+  ]),
+  SEC("チャンプ挑戦レース: cgi_py/farmrace.py",[
+    S("cgi_py/farmrace.py","main()","entry","チョコボチャンプへ挑戦"),
+    S("sub_def.common.py","require_owner() / choco_load() / farm_winner_load()","data","本人・出走チョコボ・現チャンプを取得"),
+    S("cgi_py/farmrace.py","名前・体力・待機時間・自身が王者かを確認","check","出走条件を検証","NG → back_ctx付きshow_error()"),
+    S("cgi_py/farmrace.py","レースシミュレーションと報酬計算","logic","勝敗・賞金・新チャンプを決定"),
+    S("sub_def.common.py","chara_regist() / choco_regist() / farm_winner_regist()","data","キャラ・チョコボ・共有チャンプを保存"),
+    S("sub_def.common.py","all_message_regist()","data","チャンプ交代ニュースを記録"),
+    S("sub_def.utils.py","render_template('farmrace.html')","out")
+  ])
+]),
+
+FLOW("bbs","掲示板","通信・表示",["bbs"],[
+  SEC("掲示板: cgi_py/bbs.py",[
+    S("cgi_py/bbs.py","main()","entry","掲示板表示・投稿"),
+    S("sub_def.common.py","decode_params() / require_owner() / chara_load()","check","本人の投稿かを確認"),
+    S("cgi_py/bbs.py","mode=post","check","本文200文字以内・禁止語を確認","NG → redirect_with_flash()"),
+    S("sub_def.common.py","bbs_load() / bbs_regist()","data","投稿を共有JSONへロック付き保存"),
+    S("sub_def.utils.py","redirect_with_flash()","out","投稿後は街の掲示板へ戻る"),
+    S("cgi_py/ffadventure.py","bbs_load() / render_template('ffadventure.html')","out","街に掲示板を埋め込んで表示")
+  ])
+]),
+
+FLOW("public-info","ランキング・画像・他者情報","公開・一覧",["rank","system","chara_sts","img_list","ranking"],[
+  SEC("ランキング: cgi_py/rank.py",[
+    S("cgi_py/rank.py","main()","entry","能力別ランキングを表示"),
+    S("cgi_py/rank.py","get_rank_cache() / build_rankings()","data","全キャラクターを読み込みランキングキャッシュを生成"),
+    S("sub_def.utils.py","render_template('rank.html')","out")
+  ]),
+  SEC("システム公開情報: cgi_py/system.py",[
+    S("cgi_py/system.py","main() / mode=chara_sts","entry","他者ステータスを表示"),
+    S("cgi_py/system.py","mode=img_list / mode=ranking","entry","画像一覧・登録者一覧を表示"),
+    S("sub_def.common.py","chara_load() / item_load() / syoku_load()","data","対象のキャラ・装備・職業を取得"),
+    S("cgi_py/system.py","calculate_stats() / get_rankings_cache()","logic","表示用能力・ランキングを整形"),
+    S("sub_def.utils.py","render_template('system_*.html')","out")
+  ])
+]),
+
+FLOW("admin","管理画面","管理",[],[
+  SEC("admin.py → main()",[
+    S("admin.py","main()","entry","管理画面の入口"),
+    S("sub_def.common.py","decode_params()","util","管理フォームを解析"),
+    S("admin.py","admin_password / token_check","check","管理者パスワードとCSRFを確認","NG → show_error()"),
+    S("admin.py","mode=kanri_top / kanri_all / data","logic","管理画面、全員一覧、個別データ編集を分岐"),
+    S("sub_def.utils.py","render_template('admin.html')","out")
+  ]),
+  SEC("保存・削除・復元",[
+    S("admin.py","mode=save","entry","キャラクターデータを編集して保存"),
+    S("sub_def.common.py","chara_regist()","data","入力値を検証して個別データを保存"),
+    S("admin.py","mode=del_chara / del_noplay","entry","指定キャラまたは放置キャラを削除"),
+    S("admin.py","get_protected_user_ids()","check","testなど保護対象を削除対象から除外"),
+    S("admin.py","restore_protected_users()","logic","保護ユーザーのバックアップを復元"),
+    S("sub_def.common.py","get_lock() / release_lock()","util","管理操作中の競合を防止"),
+    S("sub_def.utils.py","render_template('admin.html') / show_error()","out")
+  ])
+]),
+
+FLOW("common","共通処理・セーブ","共通層",[],[
+  SEC("パラメータ・セッション・CSRF",[
+    S("sub_def.common.py","decode_params()","entry","クエリとPOSTを統合して一度だけ解析"),
+    S("sub_def.crypto.py","get_session() / save_session() / destroy_session()","data","暗号化Cookieセッションを読み書き"),
+    S("sub_def.crypto.py","token_generate() / token_regenerate() / token_check()","check","ワンタイムCSRFトークンを発行・検証"),
+    S("sub_def.validation.py","validate_username() / validate_password()","check","入力値の共通形式検証"),
+    S("sub_def.utils.py","render_template()","out","Jinjaテンプレートを描画し共通コンテキストを注入")
+  ]),
+  SEC("データI/O・排他制御",[
+    S("sub_def.common.py","chara_load() / item_load() / syoku_load()","data","統合user_all.jsonの各領域を取得"),
+    S("sub_def.common.py","chara_regist() / item_regist() / syoku_regist()","data","統合データの対象領域を更新"),
+    S("sub_def.file_ops.py","load_data_with_lock()","data","JSONをロック付きで読み込み、HTMLエンティティを復元"),
+    S("sub_def.file_ops.py","save_data_atomically()","data","一時ファイル、fsync、os.replaceでアトミック保存"),
+    S("sub_def.common.py","get_lock() / release_lock()","util","同時実行時の上書き・破損を防止"),
+    S("sub_def.utils.py","redirect_with_flash() / show_error()","out","結果をセッションへ保存して遷移またはエラー表示")
+  ])
+])
+];
+const GROUPS=["入口","認証","拠点・表示","キャラクター","装備・経済","戦闘","チョコボ","通信・表示","公開・一覧","管理","共通層"];
+let selected="public", query="";
+const esc=v=>String(v).replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const searchable=f=>[f.id,f.label,f.group,f.description,...f.modes,...f.sections.flatMap(s=>[s.title,...s.steps.flatMap(x=>[x.file,x.func,x.note,x.branch])])].join(" ").toLowerCase();
+function renderSidebar(){
+  const root=document.getElementById("sidebar"), q=query.trim().toLowerCase(), visible=FLOWS.filter(f=>!q||searchable(f).includes(q));
+  root.innerHTML=GROUPS.map(g=>{const list=visible.filter(f=>f.group===g);if(!list.length)return "";return `<div class="side-title">${esc(g)}</div>${list.map(f=>`<button class="flow-button${selected===f.id?" active":""}" data-flow="${esc(f.id)}">${esc(f.label)}<small>${esc(f.modes.length?f.modes.join(" / "):"入口・共通")}</small></button>`).join("")}`}).join("")||`<div class="empty">一致するフローがありません。</div>`;
+  root.querySelectorAll("[data-flow]").forEach(b=>b.addEventListener("click",()=>{selected=b.dataset.flow;renderSidebar();renderContent();}));
+}
+function renderStep(x,last){const m=K[x.type]||K.logic;return `<div class="step"><div class="rail-col"><i class="dot" style="background:${m.color};box-shadow:0 0 10px ${m.color}"></i>${last?"":"<i class=\"rail\"></i>"}</div><div class="step-body"><div class="step-box" style="background:${m.bg};border-color:${m.color}44"><div class="step-top"><div><div class="file" style="color:${m.color}">${esc(x.file)}</div><div class="func">${esc(x.func)}</div>${x.note?`<div class="note">${esc(x.note)}</div>`:""}</div><span class="kind" style="color:${m.color};background:${m.color}22">${m.label}</span></div></div>${x.branch?`<div class="branch"><b>条件分岐</b><span>${esc(x.branch)}</span></div>`:""}</div></div>`;}
+function renderContent(){const root=document.getElementById("content"),f=FLOWS.find(x=>x.id===selected);if(!f){root.innerHTML=`<div class="empty">フローを選択してください。</div>`;return;}root.innerHTML=`<div class="content-head"><div><div class="eyebrow">${esc(f.group)}</div><h2>${esc(f.label)}</h2>${f.description?`<p>${esc(f.description)}</p>`:""}</div>${f.modes.length?`<div class="chips">${f.modes.map(m=>`<span class="chip">mode=${esc(m)}</span>`).join("")}</div>`:""}</div>${f.sections.map(s=>`<section class="section"><div class="section-title"><span>${esc(s.title)}</span></div>${s.steps.map((x,i)=>renderStep(x,i===s.steps.length-1)).join("")}</section>`).join("")}`;}
+document.getElementById("search").addEventListener("input",e=>{query=e.target.value;const v=FLOWS.filter(f=>!query.trim()||searchable(f).includes(query.trim().toLowerCase()));if(!v.some(f=>f.id===selected))selected=v[0]?.id||"public";renderSidebar();renderContent();});
+document.getElementById("flow-count").textContent=FLOWS.length;document.getElementById("route-count").textContent=ROUTES.length;renderSidebar();renderContent();
+</script>
+</body>
+</html>

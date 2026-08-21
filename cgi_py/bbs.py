@@ -4,8 +4,6 @@ FFA Python/CGI - プレイヤー掲示板 (bbs.py)
 """
 
 import os
-import sys
-import time
 
 # 共通モジュールと設定モジュールのインポート
 try:
@@ -35,12 +33,7 @@ def main():
     # === 投稿処理 ===
     if mode == "post":
         message = params.get("message", "").strip()
-        return_to = params.get("return_to", "").strip()
-        return_url = (
-            f"{config.Config['main_script']}&id={user_id}#ff-bbs"
-            if return_to == "main"
-            else f"{config.Config['bbs_script']}&id={user_id}"
-        )
+        return_url = f"{config.Config['main_script']}&id={user_id}#ff-bbs"
 
         if not message:
             common.redirect_with_flash(return_url, "本文を入力してください。", "error")
@@ -77,14 +70,8 @@ def main():
         common.redirect_with_flash(return_url, "掲示板に書き込みました。", "success")
         return
 
-    # === 一覧表示 ===
-    posts = common.bbs_load()
-    context = {
-        "chara": chara,
-        "posts": posts,
-        "chara_img": config.Config['chara_images'],
-    }
-    common.render_template("bbs.html", context)
+    # 掲示板は街に埋め込んで表示するため、単独ページは使わない。
+    common.redirect(f"{config.Config['main_script']}&id={user_id}#ff-bbs")
 
 
 if __name__ == "__main__":

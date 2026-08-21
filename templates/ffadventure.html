@@ -298,14 +298,6 @@
                                    onmouseover="document.getElementById('facility-desc').innerText = '武器・防具・装飾品を預けたり引き出したりできますクポ。'"
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
-                        <!-- 郵便局 -->
-                        <form action="{{ config.post_message_script }}" method="POST">
-                            <input type="hidden" name="s" value="{{ csrf_token }}">
-                            <input type="hidden" name="id" value="{{ chara.id }}">
-                            <input type="submit" class="btn facility-btn" value="✉️ 郵便局"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '他の冒険者に個別メッセージを送信できますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
-                        </form>
                         <!-- 掲示板 -->
                         <a href="#ff-bbs" class="btn facility-btn"
                            onmouseover="document.getElementById('facility-desc').innerText = '冒険者みんなが書き込める掲示板クポ。'"
@@ -475,7 +467,6 @@
                     <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="id" value="{{ chara.id }}">
                     <input type="hidden" name="mode" value="post">
-                    <input type="hidden" name="return_to" value="main">
                     <label class="form-label" for="bbs-message-main">{{ chara.name }} として書き込む</label>
                     <div class="ff-bbs-input-row">
                         <textarea id="bbs-message-main" name="message" class="form-control ff-bbs-textarea" rows="2" maxlength="200" placeholder="メッセージを入力してくださいクポ" required></textarea>
@@ -511,39 +502,5 @@
         </div>
     </div>
 
-    <!-- あなた宛てのメッセージ -->
-    <div class="ff-messages-section">
-        <div class="ff-messages-header">
-            <h3 class="yellow">【あなた宛のメッセージ】</h3>
-        </div>
-
-        <div class="layout-stack layout-stack--sm">
-            {% for msg in personal_messages %}
-            <div class="card ff-message-card">
-                <div class="ff-message-wrapper">
-                    <span class="ff-message-text">
-                        <b>{{ msg.name }} より</b>「<b>{{ msg.message }}</b>」({{ msg.time }}) [{{ msg.host }}]
-                    </span>
-                    {% if msg.id != 'sys' %}
-                    <div class="ff-message-action">
-                        <form action="{{ config.post_message_script }}" method="POST">
-                            <input type="hidden" name="s" value="{{ csrf_token }}">
-                            <input type="hidden" name="id" value="{{ chara.id }}">
-                            <input type="hidden" name="mode" value="res">
-                            <input type="hidden" name="mesid" value="{{ msg.id }}">
-                            <input type="hidden" name="mesname" value="{{ msg.name }}">
-                            <input type="submit" class="btn btn--sm" value="返信">
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% else %}
-            <div class="card u-text-center">
-                <span class="ff-message-text">あなた宛てのメッセージはありません。</span>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
 </div>
 {% endblock %}

@@ -806,93 +806,6 @@ img {
   text-align: left;
 }
 
-/* login.html */
-.login-panel-card {
-  width: 95%;
-  max-width: 650px;
-  margin-inline: auto;
-  margin-block: var(--space-s);
-  text-align: center;
-  background-color: rgba(5, 5, 26, 0.4);
-  border: 1px solid var(--link-color);
-  border-radius: var(--radius-m);
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(100, 100, 255, 0.15);
-}
-
-.login-msg-card {
-  padding: var(--space-s) var(--space-m);
-  margin-bottom: 0;
-}
-
-.login-msg-actions-layout {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-s);
-  text-align: left;
-}
-
-.login-msg-text {
-  flex: 1;
-}
-
-.login-msg-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-s);
-  margin-top: var(--space-xs);
-}
-
-.login-notice-text {
-  color: var(--red);
-  flex: 1;
-}
-
-.login-action-form {
-  margin: 0;
-  display: inline-block;
-}
-
-.login-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.login-table th,
-.login-table td {
-  padding: var(--space-s) var(--space-m);
-  border-bottom: 1px solid var(--dark);
-  font-size: 0.9rem;
-}
-
-.login-table th {
-  background-color: rgba(5, 5, 26, 0.6);
-  color: var(--yellow);
-  font-weight: bold;
-}
-
-.login-table th:first-child {
-  width: 50%;
-}
-
-.login-table th:nth-child(2) {
-  width: 50%;
-}
-
-.login-table--err th:first-child {
-  width: 40%;
-}
-
-.login-table--err th:nth-child(2) {
-  width: 30%;
-}
-
-.login-table--err th:nth-child(3) {
-  width: 30%;
-}
-
 /* ====================================================== */
 /* 10. Dashboard / My Page                                */
 /* ====================================================== */
@@ -1155,16 +1068,14 @@ img {
   margin: 0;
 }
 
-.ff-bbs-section,
-.ff-messages-section {
+.ff-bbs-section {
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
 }
 
 .ff-bbs-compose-card,
-.ff-bbs-post-card,
-.ff-message-card {
+.ff-bbs-post-card {
   margin-bottom: 0;
 }
 
@@ -2751,52 +2662,7 @@ img {
   margin-inline: auto;
 }
 
-/* ====================================================== */
-/* 19. Mail Post (郵便局)                                  */
-/* ====================================================== */
-.post-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
-  width: 95%;
-  max-width: 960px;
-  margin-inline: auto;
-  margin-top: var(--space-m);
-  text-align: left;
-}
-
-.post-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: var(--space-l);
-}
-
-.post-box {
-  background-color: rgba(5, 5, 20, 0.4);
-  border: 1px solid var(--dark);
-  border-radius: var(--radius-m);
-  padding: var(--space-m);
-}
-
-.post-box__title {
-  color: var(--white);
-  border-bottom: 2px solid var(--dark);
-  padding-bottom: var(--space-s);
-  margin-top: 0;
-  margin-bottom: var(--space-m);
-  font-size: 1.15rem;
-}
-
-.post-box__title--blue {
-  color: var(--sky-blue);
-  border-bottom-color: rgba(100, 181, 246, 0.3);
-}
-
-.post-box__title--yellow {
-  color: var(--yellow);
-  border-bottom-color: rgba(251, 192, 45, 0.3);
-}
-
+/* 競技系フォームで共用するテーブル・補足文 */
 .post-form-table {
   width: 100%;
   border-collapse: collapse;
@@ -2821,117 +2687,8 @@ img {
   margin-top: 2px;
 }
 
-.post-actions-menu {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-s);
-  justify-content: center;
-  margin-top: var(--space-m);
-}
-.post-actions-menu form {
-  margin: 0;
-}
-.post-menu-btn {
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  min-width: 100px;
-}
-
-/* メッセージトレイ */
-.msg-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m);
-  margin-bottom: var(--space-l);
-  max-height: 350px;
-  overflow-y: auto;
-  padding-right: var(--space-xs);
-}
-
-.msg-item {
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--dark);
-  border-radius: var(--radius-s);
-  padding: var(--space-m);
-}
-
-.msg-item-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: #888;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 4px;
-  margin-bottom: var(--space-s);
-}
-
-.msg-sender {
-  color: var(--sky-blue);
-  font-weight: bold;
-}
-
-.msg-receiver {
-  color: var(--white);
-  font-weight: bold;
-}
-
-.msg-content {
-  color: var(--white);
-  font-size: 0.85rem;
-  white-space: pre-wrap;
-  line-height: 1.5;
-}
-
-.msg-content--sent {
-  color: #ccc;
-}
-
-.msg-action-form {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: var(--space-s);
-}
-
-.msg-empty {
-  text-align: center;
-  color: #888;
-  font-size: 0.85rem;
-  padding: var(--space-m) 0;
-}
-
-.post-nav-actions {
-  display: flex;
-  gap: var(--space-m);
-  justify-content: center;
-  align-items: center;
-  margin-top: var(--space-m);
-}
-.post-nav-actions form {
-  margin: 0;
-}
-
-.post-done-container {
-  width: 95%;
-  max-width: 650px;
-  margin-inline: auto;
-  margin-top: var(--space-m);
-  text-align: left;
-}
-
-.post-done-title {
-  color: var(--yellow);
-  font-size: 1.25rem;
-  text-align: center;
-  margin-bottom: var(--space-s);
-}
-
-.post-done-desc {
-  text-align: center;
-  color: var(--white);
-}
-
 /* ====================================================== */
-/* 20. Battle Selection (対戦相手選択)                       */
+/* 19. Battle Selection (対戦相手選択)                       */
 /* ====================================================== */
 .battle-container {
   display: flex;

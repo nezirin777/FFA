@@ -170,29 +170,6 @@
     width: 100% !important;
   }
   
-  .post-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .post-actions-menu {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .post-actions-menu form,
-  .post-actions-menu .btn {
-    width: 100%;
-  }
-  
-  .post-nav-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-s);
-  }
-  .post-nav-actions form,
-  .post-nav-actions .btn {
-    width: 100%;
-  }
-  
   .battle-player-grid {
     grid-template-columns: 1fr;
   }

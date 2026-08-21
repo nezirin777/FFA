@@ -195,9 +195,8 @@ def main():
     # 7. オンラインゲスト更新・取得
     guest_list_html = common.update_and_get_guests(user_id, chara["name"])
     
-    # 8. 掲示板・個人メッセージの取得
+    # 8. 掲示板の取得
     bbs_posts = common.bbs_load()[:config.Config['max_lines']]
-    personal_messages = common.message_load(user_id)[:config.Config['max_lines']]
     accessory_description = common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
 
     # 街の基本能力値欄でも、旧版と同じく装備補正を併記する。
@@ -225,7 +224,6 @@ def main():
         "guest_list_html": guest_list_html,
         "bbs_posts": bbs_posts,
         "chara_img": config.Config['chara_images'],
-        "personal_messages": personal_messages,
         "accessory_description": accessory_description,
         "hit_ritu": hit_ritu,
         "kaihi_ritu": kaihi_ritu,

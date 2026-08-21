@@ -97,7 +97,6 @@ FFA_py/
 | `system.py` | `system.cgi` | 登録者一覧表示、他キャラクターの詳細ステータス閲覧、アバター画像一覧表示。 |
 | `admin.py` | `admin.cgi` | 管理者コントロールパネル。プレイヤーデータの編集や削除。 |
 | `passchange.py` | `passchange.cgi` | パスワードの変更処理。 |
-| `post_message.py` | `post_message.cgi` | 個人宛郵便メッセージの送受信。 |
 | `morifarm.py` | `morifarm.cgi` | 森の農場（チョコボ捕獲、配合、命名、引退、宿屋）。 |
 | `chocofarm.py` | `chocofarm.cgi` | チョコボ農場（ステータス確認、レース出走登録）。 |
 | `ctrain.py` | `ctrain.cgi` | チョコボのトレーニング（筋力、瞬発力などの特訓）。 |
