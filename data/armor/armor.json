@@ -1005,7 +1005,7 @@
     "defense": 3400,
     "gold": 75000000,
     "evasion_rate": 0,
-    "job_ids": []
+    "job_ids": [18]
   },
   {
     "no": 2182,
