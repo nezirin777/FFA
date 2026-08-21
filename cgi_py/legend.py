@@ -187,12 +187,12 @@ def main():
 
         # ボスデータのロード
         boss_map = {
-            0: config.Config['boss0_file'],
-            1: config.Config['boss1_file'],
-            2: config.Config['boss2_file'],
-            3: config.Config['boss3_file']
+            0: config.Config['legend_boss_lv1_file'],
+            1: config.Config['legend_boss_lv2_file'],
+            2: config.Config['legend_boss_lv3_file'],
+            3: config.Config['legend_boss_lv4_file']
         }
-        file_path = boss_map.get(boss_file_idx, config.Config['boss0_file'])
+        file_path = boss_map.get(boss_file_idx, config.Config['legend_boss_lv1_file'])
         enemy_list = load_monsters(file_path)
         if not enemy_list:
             common.release_lock(user_id)

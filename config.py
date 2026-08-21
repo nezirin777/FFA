@@ -184,20 +184,18 @@ Config["accessory_file"] = "data/accessory/accessory.json"  # 装飾品マスタ
 Config["max_accessories"] = 8
 
 # モンスター・ボス出現マスタ
-Config["monster0_file"] = "data/lowmons.json"  # 初級モンスター
-Config["monster1_file"] = "data/normalmons.json"  # 中級モンスター
-Config["monster2_file"] = (
-    "data/highmons.json"  # 上級モンスター (※現在高難易度用で未使用)
-)
-Config["monster3_file"] = "data/spmons.json"  # 特殊モンスター
+Config["monster_lv1_file"] = "data/mons_lv1.json"  # 初級モンスター
+Config["monster_lv2_file"] = "data/mons_lv2.json"  # 中級モンスター
+Config["monster_lv3_file"] = "data/mons_lv3.json"  # 上級モンスター
+Config["monster_lv4_file"] = "data/mons_lv4.json"  # 最上級モンスター
 
-Config["isekai_file"] = "data/isekaimons.json"  # 異世界モンスター
+Config["isekai_file"] = "data/mons_isekai.json"  # 異世界モンスター
 Config["isekai_level"] = 300  # 異世界侵入の制限レベル
 
-Config["boss0_file"] = "data/bossmons0.json"  # 伝説の地ボス層0
-Config["boss1_file"] = "data/bossmons1.json"  # 伝説の地ボス層1
-Config["boss2_file"] = "data/bossmons2.json"  # 伝説の地ボス層2
-Config["boss3_file"] = "data/bossmons3.json"  # 伝説の地ボス層3
+Config["legend_boss_lv1_file"] = "data/legend_boss_lv1.json"  # 伝説の地ボス・レベル1
+Config["legend_boss_lv2_file"] = "data/legend_boss_lv2.json"  # 伝説の地ボス・レベル2
+Config["legend_boss_lv3_file"] = "data/legend_boss_lv3.json"  # 伝説の地ボス・レベル3
+Config["legend_boss_lv4_file"] = "data/legend_boss_lv4.json"  # 伝説の地ボス・レベル4
 
 # ==========================================
 # 9. リスト・ゲームマスタ定義 (Assets & Game Masters)

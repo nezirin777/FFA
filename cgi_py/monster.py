@@ -139,10 +139,10 @@ def main():
             
             # mons_file のマッピング
             mons_map = {
-                "monster0": config.Config['monster0_file'],
-                "monster1": config.Config['monster1_file'],
-                "monster2": config.Config['monster2_file'],
-                "monster3": config.Config['monster3_file']
+                "monster0": config.Config['monster_lv1_file'],
+                "monster1": config.Config['monster_lv2_file'],
+                "monster2": config.Config['monster_lv3_file'],
+                "monster3": config.Config['monster_lv4_file']
             }
             file_key = mons_file_param
             if file_key not in mons_map:
@@ -163,13 +163,13 @@ def main():
             # レベルによる切り替え
             lvl = chara["level"]
             if lvl < config.Config['genei_level_low']:
-                target_file = config.Config['monster0_file']
+                target_file = config.Config['monster_lv1_file']
             elif lvl < config.Config['genei_level_high']:
-                target_file = config.Config['monster1_file']
+                target_file = config.Config['monster_lv2_file']
             elif lvl < config.Config['genei_level_max']:
-                target_file = config.Config['monster2_file']
+                target_file = config.Config['monster_lv3_file']
             else:
-                target_file = config.Config['monster3_file']
+                target_file = config.Config['monster_lv4_file']
             enemy_list = load_monsters(target_file)
 
         elif mode == "isekiai":
