@@ -16,13 +16,16 @@ save_data/*
 **/charalog/*.*
 **/charalog2/*.*
 **/item/*.*
-# 現行Verの装備マスタはGitで管理する
-!data/weapon/
-!data/weapon/**
-!data/armor/
-!data/armor/**
-!data/accessory/
-!data/accessory/**
+# 現行VerのマスターデータはGitで管理する
+!data/weapon.json
+!data/armor.json
+!data/accessory.json
+!data/tac.json
+!data/monsters/
+!data/monsters/**
+!data/chocobo/
+!data/chocobo/**
+
 **/souko/**/*
 **/syoku/*.*
 **/sousin/*.*

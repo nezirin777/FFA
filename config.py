@@ -171,32 +171,33 @@ Config["vote_image"] = "アイコン一覧"
 # 8. マスタデータ・定義ファイル設定 (Master Data Files)
 # ==========================================
 Config["syoku_file"] = "data/syoku.json"  # 職業マスタデータファイル
-Config["tac_file"] = "data/tac/tac.json"  # 全戦術マスター（職業別使用条件はjob_idsで管理）
+Config["tac_file"] = "data/tac.json"  # 全戦術マスター（職業別使用条件はjob_idsで管理）
 
 # ショップ商品マスタ
-Config["weapon_file"] = "data/weapon/weapon.json"  # 武器マスタ
+Config["weapon_file"] = "data/weapon.json"  # 武器マスタ
 Config["max_weapons"] = 8
 
-Config["armor_file"] = "data/armor/armor.json"  # 防具マスタ
+Config["armor_file"] = "data/armor.json"  # 防具マスタ
 Config["max_armors"] = 8
 
-Config["accessory_file"] = "data/accessory/accessory.json"  # 装飾品マスタ
-Config["chocobo_file"] = "data/chocobofile.json"  # 野生チョコボのマスターデータ
+Config["accessory_file"] = "data/accessory.json"  # 装飾品マスタ
+Config["chocobo_file"] = "data/chocobo/chocobofile.json"  # 野生チョコボのマスターデータ
+Config["chocobo_data_dir"] = "data/chocobo"  # チョコボ関連マスターデータの保存先
 Config["max_accessories"] = 8
 
 # モンスター・ボス出現マスタ
-Config["monster_lv1_file"] = "data/mons_lv1.json"  # 初級モンスター
-Config["monster_lv2_file"] = "data/mons_lv2.json"  # 中級モンスター
-Config["monster_lv3_file"] = "data/mons_lv3.json"  # 上級モンスター
-Config["monster_lv4_file"] = "data/mons_lv4.json"  # 最上級モンスター
+Config["monster_lv1_file"] = "data/monsters/mons_lv1.json"  # 初級モンスター
+Config["monster_lv2_file"] = "data/monsters/mons_lv2.json"  # 中級モンスター
+Config["monster_lv3_file"] = "data/monsters/mons_lv3.json"  # 上級モンスター
+Config["monster_lv4_file"] = "data/monsters/mons_lv4.json"  # 最上級モンスター
 
-Config["isekai_file"] = "data/mons_isekai.json"  # 異世界モンスター
+Config["isekai_file"] = "data/monsters/mons_isekai.json"  # 異世界モンスター
 Config["isekai_level"] = 300  # 異世界侵入の制限レベル
 
-Config["legend_boss_lv1_file"] = "data/legend_boss_lv1.json"  # 伝説の地ボス・レベル1
-Config["legend_boss_lv2_file"] = "data/legend_boss_lv2.json"  # 伝説の地ボス・レベル2
-Config["legend_boss_lv3_file"] = "data/legend_boss_lv3.json"  # 伝説の地ボス・レベル3
-Config["legend_boss_lv4_file"] = "data/legend_boss_lv4.json"  # 伝説の地ボス・レベル4
+Config["legend_boss_lv1_file"] = "data/monsters/legend_boss_lv1.json"  # 伝説の地ボス・レベル1
+Config["legend_boss_lv2_file"] = "data/monsters/legend_boss_lv2.json"  # 伝説の地ボス・レベル2
+Config["legend_boss_lv3_file"] = "data/monsters/legend_boss_lv3.json"  # 伝説の地ボス・レベル3
+Config["legend_boss_lv4_file"] = "data/monsters/legend_boss_lv4.json"  # 伝説の地ボス・レベル4
 
 # ==========================================
 # 9. リスト・ゲームマスタ定義 (Assets & Game Masters)

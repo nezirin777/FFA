@@ -288,9 +288,11 @@ def main():
     chara["last_time"] = now
 
     # === ライバルたちのロード ===
-    # ribal0〜8.json はマスタデータ (data/)、denchoco.json は殿堂データ (save_data/)
+    # ribal0〜8.json はチョコボ関連マスタデータ、denchoco.json は殿堂データ (save_data/)
     if ribal_file.startswith("ribal"):
-        ribal_path = os.path.join(common.BASE_DIR, "data", ribal_file)
+        ribal_path = os.path.join(
+            common.BASE_DIR, config.Config["chocobo_data_dir"], ribal_file
+        )
     else:
         ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
         

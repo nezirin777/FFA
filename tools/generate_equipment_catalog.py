@@ -1,6 +1,6 @@
 """装備マスターから職業別の閲覧用HTMLカタログを生成します。
 
-正本は data/weapon/weapon.json などのマスターファイルです。
+正本は data/weapon.json などのマスターファイルです。
 このHTMLは確認用の生成物であり、ゲーム本体からは読み込みません。
 """
 
@@ -200,7 +200,7 @@ td:nth-child(5) {{ min-width: 180px; color: #52616b; }}
 <body>
 <main>
   <h1>装備マスター 職業別カタログ</h1>
-  <p class="note">このページは weapon.json / armor.json / accessory.json から自動生成されます。編集する場合は正本のマスターデータを変更してください。</p>
+  <p class="note">このページは data/weapon.json / data/armor.json / data/accessory.json から自動生成されます。編集する場合は正本のマスターデータを変更してください。</p>
   <nav class="catalog-nav" aria-label="職業別リンク">{nav_html}</nav>
   {section_html}
 </main>
