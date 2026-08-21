@@ -16,6 +16,8 @@ save_data/*
 **/charalog/*.*
 **/charalog2/*.*
 **/item/*.*
+!data/item/
+!data/item/**
 **/souko/**/*
 **/syoku/*.*
 **/sousin/*.*
