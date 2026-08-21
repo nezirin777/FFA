@@ -294,14 +294,13 @@ def main():
     # 背景・音楽の調整
     boss_h = int(config.Config['boss_cooldown'] / 2)
     if chara["boss_flag"] == 1:
-        backgif = "images/last_boss_back.gif"
-        midi = "data/last_boss.mid"
+        media = config.Config["legend_battle_media"]["final"]
     elif chara["boss_flag"] >= boss_h:
-        backgif = "images/boss_back.gif"
-        midi = "data/boss1.mid"
+        media = config.Config["legend_battle_media"]["high"]
     else:
-        backgif = "images/boss2_back.gif"
-        midi = "data/boss2.mid"
+        media = config.Config["legend_battle_media"]["normal"]
+    backgif = media["background"]
+    midi = media["midi"]
 
     # レンダリング
     context = {
@@ -313,7 +312,9 @@ def main():
         "gold_gained": gold_gained,
         "exp_gained": exp_gained,
         "mode": "boss",
-        "boss_file": boss_file_idx
+        "boss_file": boss_file_idx,
+        "backgif": backgif,
+        "midi": midi,
     }
     common.render_template("monster_result.html", context)
 

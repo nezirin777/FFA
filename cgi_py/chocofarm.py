@@ -143,7 +143,7 @@ def main():
     is_king = (winner_raw.get("id") == user_id and winner_raw.get("name") == (choco_raw.get("name", "") if has_choco else ""))
 
     # === モーグリのアドバイスの取得 ===
-    hint_path = os.path.join(common.BASE_DIR, "data", "hint.json")
+    hint_path = os.path.join(common.BASE_DIR, config.Config["hint_file"])
     mog_advice = "頑張って育てるクポ！"
     if os.path.exists(hint_path):
         try:

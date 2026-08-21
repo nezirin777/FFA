@@ -181,8 +181,20 @@ Config["armor_file"] = "data/armor.json"  # 防具マスタ
 Config["max_armors"] = 8
 
 Config["accessory_file"] = "data/accessory.json"  # 装飾品マスタ
+Config["hint_file"] = "data/hint.json"  # チョコボ牧場のヒントマスター
 Config["chocobo_file"] = "data/chocobo/chocobofile.json"  # 野生チョコボのマスターデータ
 Config["chocobo_data_dir"] = "data/chocobo"  # チョコボ関連マスターデータの保存先
+Config["chocobo_rival_files"] = {
+    0: "ribal0.json",
+    1: "ribal1.json",
+    2: "ribal2.json",
+    3: "ribal3.json",
+    4: "ribal4.json",
+    5: "ribal5.json",
+    6: "ribal6.json",
+    7: "ribal7.json",
+    8: "ribal8.json",
+}  # チョコボレースのライバルマスター
 Config["max_accessories"] = 8
 
 # モンスター・ボス出現マスタ
@@ -198,6 +210,20 @@ Config["legend_boss_lv1_file"] = "data/monsters/legend_boss_lv1.json"  # 伝説�
 Config["legend_boss_lv2_file"] = "data/monsters/legend_boss_lv2.json"  # 伝説の地ボス・レベル2
 Config["legend_boss_lv3_file"] = "data/monsters/legend_boss_lv3.json"  # 伝説の地ボス・レベル3
 Config["legend_boss_lv4_file"] = "data/monsters/legend_boss_lv4.json"  # 伝説の地ボス・レベル4
+Config["legend_battle_media"] = {
+    "final": {
+        "background": "images/last_boss_back.gif",
+        "midi": "data/last_boss.mid",
+    },
+    "high": {
+        "background": "images/boss_back.gif",
+        "midi": "data/boss1.mid",
+    },
+    "normal": {
+        "background": "images/boss2_back.gif",
+        "midi": "data/boss2.mid",
+    },
+}  # 伝説の戦いの背景・BGM
 
 # ==========================================
 # 9. リスト・ゲームマスタ定義 (Assets & Game Masters)
