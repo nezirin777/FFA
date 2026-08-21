@@ -1,0 +1,5828 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>装備マスター 職業別カタログ</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #1f2937; background: #f3f6f8; line-height: 1.5; }
+main { width: min(1500px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 56px; }
+h1 { margin: 0 0 8px; color: #123b4a; }
+.note { margin: 0 0 20px; color: #52616b; }
+.catalog-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+.catalog-nav a { padding: 7px 10px; color: #075985; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; text-decoration: none; }
+.job-section { margin: 0 0 28px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; }
+h2 { margin: 0; padding: 12px 16px; color: #fff; background: #155e75; font-size: 1.15rem; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 9px 10px; border-top: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+thead th { color: #334155; background: #f8fafc; border-top: 0; font-size: .9rem; }
+tbody th { color: #0f3d4a; font-weight: 600; }
+td:nth-child(2) { width: 70px; white-space: nowrap; }
+td:nth-child(4) { min-width: 360px; }
+td:nth-child(5) { min-width: 180px; color: #52616b; }
+@media (max-width: 760px) {
+  main { width: min(100% - 16px, 1500px); padding-top: 18px; }
+  table { display: block; overflow-x: auto; white-space: nowrap; }
+  td:nth-child(4), td:nth-child(5) { min-width: 260px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>装備マスター 職業別カタログ</h1>
+  <p class="note">このページは weapon.json / armor.json / accessory.json から自動生成されます。編集する場合は正本のマスターデータを変更してください。</p>
+  <nav class="catalog-nav" aria-label="職業別リンク"><a href="#job-0">0: 見習い戦士</a>
+<a href="#job-1">1: 戦士</a>
+<a href="#job-2">2: ナイト</a>
+<a href="#job-3">3: シーフ</a>
+<a href="#job-4">4: 竜騎士</a>
+<a href="#job-5">5: 赤魔道士</a>
+<a href="#job-6">6: バード</a>
+<a href="#job-7">7: 忍者</a>
+<a href="#job-8">8: 召喚士</a>
+<a href="#job-9">9: ビショップ</a>
+<a href="#job-10">10: 聖騎士</a>
+<a href="#job-11">11: モンク</a>
+<a href="#job-12">12: 暗黒騎士</a>
+<a href="#job-13">13: 魔人</a>
+<a href="#job-14">14: 蒼魔道士</a>
+<a href="#job-15">15: 時魔道士</a>
+<a href="#job-16">16: マシーナリー</a>
+<a href="#job-17">17: グラディエーター</a>
+<a href="#job-18">18: 学者</a>
+<a href="#job-19">19: バーサーカー</a>
+<a href="#job-20">20: 風水士</a>
+<a href="#job-21">21: 召喚術士</a>
+<a href="#job-22">22: 管理者</a>
+<a href="#job-23">23: ものまね士</a>
+<a href="#job-24">24: アニマルテイマー</a>
+<a href="#job-25">25: アサシン</a>
+<a href="#job-26">26: 剣聖</a>
+<a href="#job-27">27: バトルマスター</a>
+<a href="#job-28">28: ホーリーナイト</a>
+<a href="#job-29">29: 歌姫</a>
+<a href="#job-30">30: ナイトメアマイスター</a>
+<a href="#special">初期装備・特殊装備</a></nav>
+  <section class="job-section" id="job-0">
+  <h2>職業 0: 見習い戦士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>1</td>
+  <th scope="row">パワーピアス</th>
+  <td>力 +25 / 価格 2,500 G</td>
+  <td>力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>2</td>
+  <th scope="row">パワーリング</th>
+  <td>力 +50 / 価格 50,000 G</td>
+  <td>力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>34</td>
+  <th scope="row">戦士の称号</th>
+  <td>力 +10 / 生命力 +10 / 価格 5,000 G</td>
+  <td>力、生命力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,001</td>
+  <th scope="row">ブロンズアーマー</th>
+  <td>DEF 50 / 回避 0% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,002</td>
+  <th scope="row">アイアンアーマー</th>
+  <td>DEF 100 / 回避 0% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,003</td>
+  <th scope="row">ミスリルアーマー</th>
+  <td>DEF 200 / 回避 0% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,004</td>
+  <th scope="row">ゴールドアーマー</th>
+  <td>DEF 350 / 回避 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,005</td>
+  <th scope="row">ダイアの鎧</th>
+  <td>DEF 850 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,001</td>
+  <th scope="row">アイアンソード</th>
+  <td>ATK 100 / 命中 10% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,002</td>
+  <th scope="row">ブロードソード</th>
+  <td>ATK 200 / 命中 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,003</td>
+  <th scope="row">バスターソード</th>
+  <td>ATK 400 / 命中 0% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,004</td>
+  <th scope="row">ミスリルセイバー</th>
+  <td>ATK 800 / 命中 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,005</td>
+  <th scope="row">ルーンブレイド</th>
+  <td>ATK 1,600 / 命中 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,006</td>
+  <th scope="row">フランベルジュ</th>
+  <td>ATK 3,200 / 命中 30% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,007</td>
+  <th scope="row">フレイムタン</th>
+  <td>ATK 6,400 / 命中 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,008</td>
+  <th scope="row">アイスブランド</th>
+  <td>ATK 7,500 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-1">
+  <h2>職業 1: 戦士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>4</td>
+  <th scope="row">マジックピアス</th>
+  <td>知能 +25 / 価格 2,500 G</td>
+  <td>知能ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>5</td>
+  <th scope="row">マジックリング</th>
+  <td>知能 +50 / 価格 50,000 G</td>
+  <td>知能ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,011</td>
+  <th scope="row">木綿のローブ</th>
+  <td>DEF 35 / 回避 10% / 価格 2,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,012</td>
+  <th scope="row">シルクのローブ</th>
+  <td>DEF 80 / 回避 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,013</td>
+  <th scope="row">ムーンローブ </th>
+  <td>DEF 160 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,014</td>
+  <th scope="row">スピリットローブ </th>
+  <td>DEF 350 / 回避 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,015</td>
+  <th scope="row">黒のローブ</th>
+  <td>DEF 700 / 回避 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,011</td>
+  <th scope="row">メイジスタッフ</th>
+  <td>ATK 80 / 命中 10% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,012</td>
+  <th scope="row">プリズムロッド</th>
+  <td>ATK 320 / 命中 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,013</td>
+  <th scope="row">ミスリルロッド</th>
+  <td>ATK 640 / 命中 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,014</td>
+  <th scope="row">フレイムロッド</th>
+  <td>ATK 6,200 / 命中 10% / 価格 75,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-2">
+  <h2>職業 2: ナイト</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>7</td>
+  <th scope="row">クロスピアス</th>
+  <td>信仰心 +25 / 価格 2,500 G</td>
+  <td>信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>8</td>
+  <th scope="row">クロスリング</th>
+  <td>信仰心 +50 / 価格 50,000 G</td>
+  <td>信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,021</td>
+  <th scope="row">信者の衣</th>
+  <td>DEF 40 / 回避 10% / 価格 2,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,022</td>
+  <th scope="row">修道士の衣</th>
+  <td>DEF 80 / 回避 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,023</td>
+  <th scope="row">神官の衣</th>
+  <td>DEF 160 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,024</td>
+  <th scope="row">白のローブ</th>
+  <td>DEF 700 / 回避 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,021</td>
+  <th scope="row">ハーケン</th>
+  <td>ATK 100 / 命中 0% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,022</td>
+  <th scope="row">モーニングスター</th>
+  <td>ATK 250 / 命中 0% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,023</td>
+  <th scope="row">祝福の杖</th>
+  <td>ATK 380 / 命中 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,024</td>
+  <th scope="row">ロザリオメイス</th>
+  <td>ATK 750 / 命中 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,025</td>
+  <th scope="row">理力の杖</th>
+  <td>ATK 1,400 / 命中 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,026</td>
+  <th scope="row">天罰の杖</th>
+  <td>ATK 3,000 / 命中 10% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,027</td>
+  <th scope="row">セイントランス</th>
+  <td>ATK 6,800 / 命中 30% / 価格 75,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-3">
+  <h2>職業 3: シーフ</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>16</td>
+  <th scope="row">スキルピアス</th>
+  <td>器用さ +25 / 価格 2,500 G</td>
+  <td>器用さボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>17</td>
+  <th scope="row">スキルリング</th>
+  <td>器用さ +50 / 価格 50,000 G</td>
+  <td>器用さボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>22</td>
+  <th scope="row">ラックピアス</th>
+  <td>カルマ +25 / 価格 2,500 G</td>
+  <td>カルマボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>23</td>
+  <th scope="row">ラックリング</th>
+  <td>カルマ +50 / 価格 50,000 G</td>
+  <td>カルマボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>40</td>
+  <th scope="row">盗賊の証</th>
+  <td>器用さ +10 / 速さ +10 / 価格 5,000 G</td>
+  <td>速さ、器用さボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,031</td>
+  <th scope="row">ハードレザー </th>
+  <td>DEF 45 / 回避 10% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,032</td>
+  <th scope="row">ミスリルメッシュ </th>
+  <td>DEF 90 / 回避 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,033</td>
+  <th scope="row">ムーンクレスト</th>
+  <td>DEF 180 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,034</td>
+  <th scope="row">スタークレスト</th>
+  <td>DEF 360 / 回避 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,035</td>
+  <th scope="row">リネンキュラッサ</th>
+  <td>DEF 720 / 回避 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,031</td>
+  <th scope="row">シミター</th>
+  <td>ATK 90 / 命中 25% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,032</td>
+  <th scope="row">カトラス</th>
+  <td>ATK 180 / 命中 25% / 価格 70,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,033</td>
+  <th scope="row">マインゴーシュ</th>
+  <td>ATK 320 / 命中 50% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,034</td>
+  <th scope="row">ミスリルナイフ</th>
+  <td>ATK 640 / 命中 25% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,035</td>
+  <th scope="row">メイジマッシャー</th>
+  <td>ATK 1,280 / 命中 50% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,036</td>
+  <th scope="row">ダブルエッジ</th>
+  <td>ATK 2,560 / 命中 50% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,037</td>
+  <th scope="row">シャムシール</th>
+  <td>ATK 4,000 / 命中 50% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,038</td>
+  <th scope="row">ファルシオン</th>
+  <td>ATK 4,900 / 命中 50% / 価格 25,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-4">
+  <h2>職業 4: 竜騎士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>4</td>
+  <th scope="row">マジックピアス</th>
+  <td>知能 +25 / 価格 2,500 G</td>
+  <td>知能ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>5</td>
+  <th scope="row">マジックリング</th>
+  <td>知能 +50 / 価格 50,000 G</td>
+  <td>知能ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>13</td>
+  <th scope="row">スピードピアス</th>
+  <td>速さ +25 / 価格 2,500 G</td>
+  <td>速さボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>14</td>
+  <th scope="row">スピードリング</th>
+  <td>速さ +50 / 価格 50,000 G</td>
+  <td>速さボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,041</td>
+  <th scope="row">アルトローブ</th>
+  <td>DEF 90 / 回避 10% / 価格 17,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,042</td>
+  <th scope="row">ミスティローブ </th>
+  <td>DEF 185 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,043</td>
+  <th scope="row">フェザーローブ </th>
+  <td>DEF 370 / 回避 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,044</td>
+  <th scope="row">紫紺のローブ</th>
+  <td>DEF 730 / 回避 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,045</td>
+  <th scope="row">光のローブ</th>
+  <td>DEF 1,440 / 回避 30% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,041</td>
+  <th scope="row">微笑みの杖</th>
+  <td>ATK 300 / 命中 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,042</td>
+  <th scope="row">妖精のロッド</th>
+  <td>ATK 600 / 命中 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,043</td>
+  <th scope="row">サイコダガー</th>
+  <td>ATK 1,200 / 命中 50% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,044</td>
+  <th scope="row">波動の杖</th>
+  <td>ATK 2,800 / 命中 20% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,045</td>
+  <th scope="row">星屑のロッド</th>
+  <td>ATK 4,800 / 命中 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,046</td>
+  <th scope="row">モーゼの杖</th>
+  <td>ATK 6,000 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,047</td>
+  <th scope="row">フェアリーテール</th>
+  <td>ATK 9,500 / 命中 50% / 価格 350,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-5">
+  <h2>職業 5: 赤魔道士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>10</td>
+  <th scope="row">ライフピアス</th>
+  <td>生命力 +25 / 価格 2,500 G</td>
+  <td>生命力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>11</td>
+  <th scope="row">ライフリング</th>
+  <td>生命力 +50 / 価格 50,000 G</td>
+  <td>生命力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,051</td>
+  <th scope="row">皮の服</th>
+  <td>DEF 40 / 回避 10% / 価格 2,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,052</td>
+  <th scope="row">シルクの服</th>
+  <td>DEF 80 / 回避 10% / 価格 17,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,053</td>
+  <th scope="row">冒険の服</th>
+  <td>DEF 160 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,054</td>
+  <th scope="row">魔術師の服</th>
+  <td>DEF 340 / 回避 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,055</td>
+  <th scope="row">妖精のローブ</th>
+  <td>DEF 690 / 回避 50% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,051</td>
+  <th scope="row">アイスロッド</th>
+  <td>ATK 600 / 命中 30% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,052</td>
+  <th scope="row">サンダーロッド</th>
+  <td>ATK 1,100 / 命中 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,053</td>
+  <th scope="row">オーロラロッド</th>
+  <td>ATK 5,900 / 命中 30% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,054</td>
+  <th scope="row">ワイザーロッド</th>
+  <td>ATK 9,800 / 命中 30% / 価格 350,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-6">
+  <h2>職業 6: バード</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>10</td>
+  <th scope="row">ライフピアス</th>
+  <td>生命力 +25 / 価格 2,500 G</td>
+  <td>生命力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>11</td>
+  <th scope="row">ライフリング</th>
+  <td>生命力 +50 / 価格 50,000 G</td>
+  <td>生命力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>19</td>
+  <th scope="row">富豪の紋章</th>
+  <td>魅力 +25 / 価格 2,500 G</td>
+  <td>魅力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>20</td>
+  <th scope="row">貴族の紋章</th>
+  <td>魅力 +50 / 価格 50,000 G</td>
+  <td>魅力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>21</td>
+  <th scope="row">王家の紋章</th>
+  <td>魅力 +100 / 価格 999,999 G</td>
+  <td>魅力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>28</td>
+  <th scope="row">蝶の羽</th>
+  <td>回避 10% / 価格 15,000 G</td>
+  <td>回避率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,061</td>
+  <th scope="row">詩人の服</th>
+  <td>DEF 190 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,062</td>
+  <th scope="row">グッチの服</th>
+  <td>DEF 380 / 回避 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,063</td>
+  <th scope="row">シルフの羽衣</th>
+  <td>DEF 760 / 回避 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,064</td>
+  <th scope="row">エルフのマント</th>
+  <td>DEF 1,400 / 回避 30% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,065</td>
+  <th scope="row">レインボードレス</th>
+  <td>DEF 2,900 / 回避 30% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,071</td>
+  <th scope="row">リュート</th>
+  <td>ATK 90 / 命中 20% / 価格 2,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,072</td>
+  <th scope="row">ノアのリュート</th>
+  <td>ATK 180 / 命中 20% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,073</td>
+  <th scope="row">夢の竪琴</th>
+  <td>ATK 360 / 命中 20% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,074</td>
+  <th scope="row">山彦の笛</th>
+  <td>ATK 720 / 命中 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,075</td>
+  <th scope="row">光のリュート</th>
+  <td>ATK 1,440 / 命中 20% / 価格 2,250,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,076</td>
+  <th scope="row">妖精の笛</th>
+  <td>ATK 2,880 / 命中 20% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,077</td>
+  <th scope="row">大地のドラム</th>
+  <td>ATK 5,760 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,078</td>
+  <th scope="row">ラミアの竪琴</th>
+  <td>ATK 8,500 / 命中 20% / 価格 150,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,079</td>
+  <th scope="row">マーメイドリュート</th>
+  <td>ATK 9,900 / 命中 20% / 価格 350,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-7">
+  <h2>職業 7: 忍者</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>4</td>
+  <th scope="row">マジックピアス</th>
+  <td>知能 +25 / 価格 2,500 G</td>
+  <td>知能ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>5</td>
+  <th scope="row">マジックリング</th>
+  <td>知能 +50 / 価格 50,000 G</td>
+  <td>知能ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,071</td>
+  <th scope="row">銅の胸当て</th>
+  <td>DEF 170 / 回避 0% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,072</td>
+  <th scope="row">銀の胸当て</th>
+  <td>DEF 340 / 回避 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,073</td>
+  <th scope="row">大地の胸当て</th>
+  <td>DEF 680 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,074</td>
+  <th scope="row">ダイアの胸当て</th>
+  <td>DEF 1,360 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,075</td>
+  <th scope="row">大地の聖衣</th>
+  <td>DEF 2,720 / 回避 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,061</td>
+  <th scope="row">ロングボウ</th>
+  <td>ATK 350 / 命中 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,062</td>
+  <th scope="row">クロスボウ</th>
+  <td>ATK 750 / 命中 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,063</td>
+  <th scope="row">グレートボウ</th>
+  <td>ATK 1,250 / 命中 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,064</td>
+  <th scope="row">サバイバルボウ</th>
+  <td>ATK 2,050 / 命中 10% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,065</td>
+  <th scope="row">キラーボウ</th>
+  <td>ATK 3,850 / 命中 20% / 価格 25,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,066</td>
+  <th scope="row">エルフィンボウ</th>
+  <td>ATK 5,500 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,067</td>
+  <th scope="row">ピースメーカー</th>
+  <td>ATK 9,900 / 命中 40% / 価格 350,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-8">
+  <h2>職業 8: 召喚士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>1</td>
+  <th scope="row">パワーピアス</th>
+  <td>力 +25 / 価格 2,500 G</td>
+  <td>力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>2</td>
+  <th scope="row">パワーリング</th>
+  <td>力 +50 / 価格 50,000 G</td>
+  <td>力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>13</td>
+  <th scope="row">スピードピアス</th>
+  <td>速さ +25 / 価格 2,500 G</td>
+  <td>速さボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>14</td>
+  <th scope="row">スピードリング</th>
+  <td>速さ +50 / 価格 50,000 G</td>
+  <td>速さボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>28</td>
+  <th scope="row">蝶の羽</th>
+  <td>回避 10% / 価格 15,000 G</td>
+  <td>回避率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>29</td>
+  <th scope="row">翼竜の翼</th>
+  <td>回避 20% / 価格 75,000 G</td>
+  <td>回避率ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>30</td>
+  <th scope="row">飛竜の翼</th>
+  <td>回避 30% / 価格 8,000,000 G</td>
+  <td>回避率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,081</td>
+  <th scope="row">サバイバルベスト</th>
+  <td>DEF 55 / 回避 10% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,082</td>
+  <th scope="row">ラバーコンシャス</th>
+  <td>DEF 110 / 回避 10% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,083</td>
+  <th scope="row">ミラージュベスト</th>
+  <td>DEF 220 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,084</td>
+  <th scope="row">ウィンドブレスト</th>
+  <td>DEF 440 / 回避 10% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,085</td>
+  <th scope="row">ミスリルベスト</th>
+  <td>DEF 880 / 回避 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,086</td>
+  <th scope="row">アダマンベスト</th>
+  <td>DEF 1,760 / 回避 10% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,087</td>
+  <th scope="row">飛竜のベスト</th>
+  <td>DEF 3,520 / 回避 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,088</td>
+  <th scope="row">ブリガンダイン</th>
+  <td>DEF 7,000 / 回避 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,081</td>
+  <th scope="row">氷の槍</th>
+  <td>ATK 550 / 命中 30% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,082</td>
+  <th scope="row">ジャベリン</th>
+  <td>ATK 980 / 命中 30% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,083</td>
+  <th scope="row">ドラグーンランス</th>
+  <td>ATK 1,980 / 命中 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,084</td>
+  <th scope="row">グローランス</th>
+  <td>ATK 3,500 / 命中 30% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,085</td>
+  <th scope="row">ホーリーランス</th>
+  <td>ATK 7,550 / 命中 30% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,086</td>
+  <th scope="row">飛龍の槍</th>
+  <td>ATK 9,800 / 命中 30% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,087</td>
+  <th scope="row">グングニル</th>
+  <td>ATK 15,000 / 命中 55% / 価格 350,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-9">
+  <h2>職業 9: ビショップ</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>4</td>
+  <th scope="row">マジックピアス</th>
+  <td>知能 +25 / 価格 2,500 G</td>
+  <td>知能ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>5</td>
+  <th scope="row">マジックリング</th>
+  <td>知能 +50 / 価格 50,000 G</td>
+  <td>知能ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>7</td>
+  <th scope="row">クロスピアス</th>
+  <td>信仰心 +25 / 価格 2,500 G</td>
+  <td>信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>8</td>
+  <th scope="row">クロスリング</th>
+  <td>信仰心 +50 / 価格 50,000 G</td>
+  <td>信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,091</td>
+  <th scope="row">司祭の法衣</th>
+  <td>DEF 710 / 回避 10% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,092</td>
+  <th scope="row">ホーリークロース</th>
+  <td>DEF 1,420 / 回避 20% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,093</td>
+  <th scope="row">聖者の法衣</th>
+  <td>DEF 2,840 / 回避 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,091</td>
+  <th scope="row">水晶の杖</th>
+  <td>ATK 1,000 / 命中 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,092</td>
+  <th scope="row">マグマの杖</th>
+  <td>ATK 2,000 / 命中 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,093</td>
+  <th scope="row">時空の杖</th>
+  <td>ATK 4,000 / 命中 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,094</td>
+  <th scope="row">賢者の杖</th>
+  <td>ATK 6,000 / 命中 0% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,095</td>
+  <th scope="row">創造の杖</th>
+  <td>ATK 8,000 / 命中 0% / 価格 98,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-10">
+  <h2>職業 10: 聖騎士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>19</td>
+  <th scope="row">富豪の紋章</th>
+  <td>魅力 +25 / 価格 2,500 G</td>
+  <td>魅力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>20</td>
+  <th scope="row">貴族の紋章</th>
+  <td>魅力 +50 / 価格 50,000 G</td>
+  <td>魅力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>21</td>
+  <th scope="row">王家の紋章</th>
+  <td>魅力 +100 / 価格 999,999 G</td>
+  <td>魅力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>34</td>
+  <th scope="row">戦士の称号</th>
+  <td>力 +10 / 生命力 +10 / 価格 5,000 G</td>
+  <td>力、生命力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>35</td>
+  <th scope="row">ナイトの称号</th>
+  <td>力 +25 / 生命力 +25 / 価格 50,000 G</td>
+  <td>力、生命力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,101</td>
+  <th scope="row">フルプレート</th>
+  <td>DEF 800 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,102</td>
+  <th scope="row">アイスアーマー</th>
+  <td>DEF 1,600 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,103</td>
+  <th scope="row">メタルアーマー</th>
+  <td>DEF 3,200 / 回避 0% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,104</td>
+  <th scope="row">クリティカルメイル</th>
+  <td>DEF 6,400 / 回避 0% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,105</td>
+  <th scope="row">ナイトアーマー</th>
+  <td>DEF 7,500 / 回避 0% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,106</td>
+  <th scope="row">マクシミリアン</th>
+  <td>DEF 9,000 / 回避 0% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,101</td>
+  <th scope="row">バトル・ブレイド</th>
+  <td>ATK 800 / 命中 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,102</td>
+  <th scope="row">ポイズン・ブレイド</th>
+  <td>ATK 1,600 / 命中 20% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,103</td>
+  <th scope="row">ルナ・ブレイド</th>
+  <td>ATK 3,200 / 命中 20% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,104</td>
+  <th scope="row">プラズマ・ブレイド</th>
+  <td>ATK 6,400 / 命中 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,105</td>
+  <th scope="row">古代の剣</th>
+  <td>ATK 7,500 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,106</td>
+  <th scope="row">伝説の剣</th>
+  <td>ATK 12,000 / 命中 20% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,107</td>
+  <th scope="row">クリスタル・ブレイド</th>
+  <td>ATK 18,000 / 命中 20% / 価格 900,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-11">
+  <h2>職業 11: モンク</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>32</td>
+  <th scope="row">鬼武者の魂</th>
+  <td>必殺 20% / 価格 8,000,000 G</td>
+  <td>必殺率ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,111</td>
+  <th scope="row">武人の鎧</th>
+  <td>DEF 880 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,112</td>
+  <th scope="row">黒水晶の鎧</th>
+  <td>DEF 1,550 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,113</td>
+  <th scope="row">源氏の鎧</th>
+  <td>DEF 3,450 / 回避 10% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,114</td>
+  <th scope="row">天津神の鎧</th>
+  <td>DEF 5,900 / 回避 10% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,115</td>
+  <th scope="row">鬼武者の鎧</th>
+  <td>DEF 7,300 / 回避 30% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,116</td>
+  <th scope="row">茉莉四天の鎧</th>
+  <td>DEF 8,700 / 回避 30% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,111</td>
+  <th scope="row">虎鉄</th>
+  <td>ATK 399 / 命中 50% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,112</td>
+  <th scope="row">菊一文字</th>
+  <td>ATK 999 / 命中 50% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,113</td>
+  <th scope="row">妖刀ひな</th>
+  <td>ATK 1,999 / 命中 50% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,114</td>
+  <th scope="row">村雨</th>
+  <td>ATK 3,999 / 命中 50% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,115</td>
+  <th scope="row">村正</th>
+  <td>ATK 6,999 / 命中 50% / 価格 198,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,116</td>
+  <th scope="row">正宗</th>
+  <td>ATK 9,999 / 命中 50% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,117</td>
+  <th scope="row">天の群雲</th>
+  <td>ATK 13,999 / 命中 50% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,118</td>
+  <th scope="row">斬鉄剣</th>
+  <td>ATK 19,999 / 命中 50% / 価格 1,500,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-12">
+  <h2>職業 12: 暗黒騎士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>28</td>
+  <th scope="row">蝶の羽</th>
+  <td>回避 10% / 価格 15,000 G</td>
+  <td>回避率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>43</td>
+  <th scope="row">オールボーナス</th>
+  <td>力 +5 / 知能 +5 / 信仰心 +5 / 生命力 +5 / 価格 5,000 G</td>
+  <td>オールボーナス（極小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>44</td>
+  <th scope="row">ノルンの輝き</th>
+  <td>力 +10 / 知能 +10 / 信仰心 +10 / 生命力 +10 / 器用さ +10 / 速さ +10 / 価格 75,000 G</td>
+  <td>オールボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,121</td>
+  <th scope="row">拳法着</th>
+  <td>DEF 45 / 回避 30% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,122</td>
+  <th scope="row">柔術道着</th>
+  <td>DEF 90 / 回避 30% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,123</td>
+  <th scope="row">力だすき</th>
+  <td>DEF 180 / 回避 30% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,124</td>
+  <th scope="row">バトルスーツ </th>
+  <td>DEF 999 / 回避 30% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,125</td>
+  <th scope="row">ブレイブスーツ</th>
+  <td>DEF 1,950 / 回避 30% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,120</td>
+  <th scope="row">炎の爪</th>
+  <td>ATK 400 / 命中 0% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,121</td>
+  <th scope="row">氷の爪</th>
+  <td>ATK 800 / 命中 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,122</td>
+  <th scope="row">雷の爪</th>
+  <td>ATK 1,600 / 命中 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,123</td>
+  <th scope="row">妖精の爪</th>
+  <td>ATK 3,200 / 命中 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,124</td>
+  <th scope="row">地獄の爪</th>
+  <td>ATK 6,400 / 命中 0% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,125</td>
+  <th scope="row">猫の爪</th>
+  <td>ATK 7,500 / 命中 0% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,126</td>
+  <th scope="row">デスペナルティ</th>
+  <td>ATK 10,000 / 命中 0% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,127</td>
+  <th scope="row">プレミアムハート</th>
+  <td>ATK 16,000 / 命中 0% / 価格 900,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-13">
+  <h2>職業 13: 魔人</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>25</td>
+  <th scope="row">近視眼鏡</th>
+  <td>命中 10% / 価格 15,000 G</td>
+  <td>命中率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>26</td>
+  <th scope="row">赤外線スコープ</th>
+  <td>命中 20% / 価格 75,000 G</td>
+  <td>命中率ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>31</td>
+  <th scope="row">必殺の魂</th>
+  <td>必殺 10% / 価格 75,000 G</td>
+  <td>必殺率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>40</td>
+  <th scope="row">盗賊の証</th>
+  <td>器用さ +10 / 速さ +10 / 価格 5,000 G</td>
+  <td>速さ、器用さボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>41</td>
+  <th scope="row">忍者の証</th>
+  <td>器用さ +25 / 速さ +25 / 価格 50,000 G</td>
+  <td>速さ、器用さボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>42</td>
+  <th scope="row">風間の証</th>
+  <td>器用さ +50 / 速さ +50 / 価格 750,000 G</td>
+  <td>速さ、器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,131</td>
+  <th scope="row">防弾チョッキ</th>
+  <td>DEF 180 / 回避 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,132</td>
+  <th scope="row">しのびの衣</th>
+  <td>DEF 999 / 回避 55% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,133</td>
+  <th scope="row">黒装束</th>
+  <td>DEF 2,400 / 回避 55% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,134</td>
+  <th scope="row">風魔の装束</th>
+  <td>DEF 4,700 / 回避 75% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,135</td>
+  <th scope="row">真田の装束</th>
+  <td>DEF 6,300 / 回避 75% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,131</td>
+  <th scope="row">くない</th>
+  <td>ATK 180 / 命中 50% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,132</td>
+  <th scope="row">懐刀</th>
+  <td>ATK 440 / 命中 50% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,133</td>
+  <th scope="row">忍者刀</th>
+  <td>ATK 750 / 命中 50% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,134</td>
+  <th scope="row">手裏剣</th>
+  <td>ATK 1,200 / 命中 50% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,135</td>
+  <th scope="row">風斬り</th>
+  <td>ATK 3,500 / 命中 50% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,136</td>
+  <th scope="row">風魔手裏剣</th>
+  <td>ATK 5,600 / 命中 50% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,137</td>
+  <th scope="row">伊賀忍者刀</th>
+  <td>ATK 9,300 / 命中 50% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,138</td>
+  <th scope="row">円月輪</th>
+  <td>ATK 12,000 / 命中 50% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,139</td>
+  <th scope="row">神響</th>
+  <td>ATK 17,500 / 命中 50% / 価格 900,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-14">
+  <h2>職業 14: 蒼魔道士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>31</td>
+  <th scope="row">必殺の魂</th>
+  <td>必殺 10% / 価格 75,000 G</td>
+  <td>必殺率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>32</td>
+  <th scope="row">鬼武者の魂</th>
+  <td>必殺 20% / 価格 8,000,000 G</td>
+  <td>必殺率ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,141</td>
+  <th scope="row">ボーンメイル</th>
+  <td>DEF 444 / 回避 44% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,142</td>
+  <th scope="row">ファウストメイル</th>
+  <td>DEF 666 / 回避 44% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,143</td>
+  <th scope="row">デモンズメイル</th>
+  <td>DEF 999 / 回避 44% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,144</td>
+  <th scope="row">ダークアーマー</th>
+  <td>DEF 1,999 / 回避 44% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,145</td>
+  <th scope="row">冥王の鎧</th>
+  <td>DEF 4,444 / 回避 44% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,146</td>
+  <th scope="row">ドクロの鎧</th>
+  <td>DEF 6,666 / 回避 66% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,147</td>
+  <th scope="row">ルシファーアーマー</th>
+  <td>DEF 9,999 / 回避 99% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,141</td>
+  <th scope="row">暗黒の剣</th>
+  <td>ATK 666 / 命中 44% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,142</td>
+  <th scope="row">破壊の剣</th>
+  <td>ATK 999 / 命中 44% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,143</td>
+  <th scope="row">魔王の剣</th>
+  <td>ATK 1,666 / 命中 44% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,144</td>
+  <th scope="row">死神の剣</th>
+  <td>ATK 3,444 / 命中 44% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,145</td>
+  <th scope="row">異次元の剣</th>
+  <td>ATK 6,444 / 命中 44% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,146</td>
+  <th scope="row">魔界の剣</th>
+  <td>ATK 7,444 / 命中 44% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,147</td>
+  <th scope="row">デビルソード</th>
+  <td>ATK 14,400 / 命中 44% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,148</td>
+  <th scope="row">ソードオブシャドウ</th>
+  <td>ATK 19,500 / 命中 44% / 価格 900,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-15">
+  <h2>職業 15: 時魔道士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>34</td>
+  <th scope="row">戦士の称号</th>
+  <td>力 +10 / 生命力 +10 / 価格 5,000 G</td>
+  <td>力、生命力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>35</td>
+  <th scope="row">ナイトの称号</th>
+  <td>力 +25 / 生命力 +25 / 価格 50,000 G</td>
+  <td>力、生命力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>59</td>
+  <th scope="row">バーサクリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>攻撃力増大（1.5倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>60</td>
+  <th scope="row">魔神の指輪</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>攻撃力増大（2倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,151</td>
+  <th scope="row">リングメイル </th>
+  <td>DEF 400 / 回避 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,152</td>
+  <th scope="row">コメットメイル </th>
+  <td>DEF 800 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,153</td>
+  <th scope="row">フレアメイル</th>
+  <td>DEF 1,600 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,154</td>
+  <th scope="row">メルトンメイル</th>
+  <td>DEF 3,200 / 回避 0% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,155</td>
+  <th scope="row">ジハードメイル</th>
+  <td>DEF 6,400 / 回避 30% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,156</td>
+  <th scope="row">ドラゴンメイル</th>
+  <td>DEF 7,500 / 回避 0% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,157</td>
+  <th scope="row">クリスタルメイル</th>
+  <td>DEF 9,000 / 回避 0% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,158</td>
+  <th scope="row">ローブオブロード</th>
+  <td>DEF 12,000 / 回避 40% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,151</td>
+  <th scope="row">マトラマジック</th>
+  <td>ATK 800 / 命中 20% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,152</td>
+  <th scope="row">ディメンジョン</th>
+  <td>ATK 1,600 / 命中 20% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,153</td>
+  <th scope="row">サイコソード</th>
+  <td>ATK 3,200 / 命中 20% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,154</td>
+  <th scope="row">王者の剣</th>
+  <td>ATK 6,400 / 命中 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,155</td>
+  <th scope="row">光の剣</th>
+  <td>ATK 7,500 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,156</td>
+  <th scope="row">エクスカリバー</th>
+  <td>ATK 12,000 / 命中 20% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,157</td>
+  <th scope="row">ラグナロク</th>
+  <td>ATK 18,000 / 命中 20% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,158</td>
+  <th scope="row">アルテマウェポン</th>
+  <td>ATK 25,000 / 命中 20% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-16">
+  <h2>職業 16: マシーナリー</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>25</td>
+  <th scope="row">近視眼鏡</th>
+  <td>命中 10% / 価格 15,000 G</td>
+  <td>命中率ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>26</td>
+  <th scope="row">赤外線スコープ</th>
+  <td>命中 20% / 価格 75,000 G</td>
+  <td>命中率ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,161</td>
+  <th scope="row">ショルダーガード</th>
+  <td>DEF 200 / 回避 0% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,162</td>
+  <th scope="row">チェインプレイト</th>
+  <td>DEF 400 / 回避 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,163</td>
+  <th scope="row">キャラビニエール</th>
+  <td>DEF 750 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,164</td>
+  <th scope="row">プロテクター </th>
+  <td>DEF 1,450 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,165</td>
+  <th scope="row">フォ−スアーマー</th>
+  <td>DEF 2,900 / 回避 10% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,166</td>
+  <th scope="row">サイコアーマー</th>
+  <td>DEF 6,300 / 回避 10% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,167</td>
+  <th scope="row">オーラアーマー</th>
+  <td>DEF 8,200 / 回避 10% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,161</td>
+  <th scope="row">マイクロレーザー</th>
+  <td>ATK 550 / 命中 70% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,162</td>
+  <th scope="row">ブレイズガン</th>
+  <td>ATK 980 / 命中 70% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,163</td>
+  <th scope="row">マキシマムレイ</th>
+  <td>ATK 1,550 / 命中 70% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,164</td>
+  <th scope="row">スナイパーＣＲ</th>
+  <td>ATK 3,000 / 命中 70% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,165</td>
+  <th scope="row">ライアット</th>
+  <td>ATK 6,100 / 命中 70% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,166</td>
+  <th scope="row">ロングパレルＲ</th>
+  <td>ATK 9,800 / 命中 70% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,167</td>
+  <th scope="row">アウトサイダー</th>
+  <td>ATK 17,500 / 命中 70% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,168</td>
+  <th scope="row">デスペナルティ</th>
+  <td>ATK 23,500 / 命中 99% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-17">
+  <h2>職業 17: グラディエーター</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,171</td>
+  <th scope="row">古代の胸当て</th>
+  <td>DEF 900 / 回避 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,172</td>
+  <th scope="row">魔人の胸当て</th>
+  <td>DEF 1,440 / 回避 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,173</td>
+  <th scope="row">天使の白衣</th>
+  <td>DEF 3,100 / 回避 45% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,174</td>
+  <th scope="row">メテオスーツ</th>
+  <td>DEF 5,500 / 回避 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,175</td>
+  <th scope="row">アルテマスーツ</th>
+  <td>DEF 7,200 / 回避 20% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,176</td>
+  <th scope="row">ミネルバビスチェ</th>
+  <td>DEF 9,600 / 回避 50% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,171</td>
+  <th scope="row">与一の弓</th>
+  <td>ATK 7,500 / 命中 99% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,172</td>
+  <th scope="row">アルテミスの弓</th>
+  <td>ATK 17,500 / 命中 99% / 価格 900,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-18">
+  <h2>職業 18: 学者</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>19</td>
+  <th scope="row">富豪の紋章</th>
+  <td>魅力 +25 / 価格 2,500 G</td>
+  <td>魅力ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>20</td>
+  <th scope="row">貴族の紋章</th>
+  <td>魅力 +50 / 価格 50,000 G</td>
+  <td>魅力ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>21</td>
+  <th scope="row">王家の紋章</th>
+  <td>魅力 +100 / 価格 999,999 G</td>
+  <td>魅力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>68</td>
+  <th scope="row">皇帝の杯</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 999,999,999 G</td>
+  <td>オールボーナス（中）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,181</td>
+  <th scope="row">ヘルアーマー</th>
+  <td>DEF 3,400 / 回避 0% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,182</td>
+  <th scope="row">デジョンアーマー</th>
+  <td>DEF 5,500 / 回避 10% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,183</td>
+  <th scope="row">フォ−スアーマー</th>
+  <td>DEF 7,200 / 回避 10% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,184</td>
+  <th scope="row">帝国の鎧</th>
+  <td>DEF 9,300 / 回避 0% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,185</td>
+  <th scope="row">巨人の鎧</th>
+  <td>DEF 11,800 / 回避 0% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,186</td>
+  <th scope="row">エンペラーメイル</th>
+  <td>DEF 14,500 / 回避 45% / 価格 7,500,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,187</td>
+  <th scope="row">第３帝国の鎧</th>
+  <td>DEF 18,666 / 回避 55% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,181</td>
+  <th scope="row">アルティメット・ストライク</th>
+  <td>ATK 12,000 / 命中 100% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,182</td>
+  <th scope="row">ニルヴァーナ・ブレイド</th>
+  <td>ATK 18,500 / 命中 20% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,183</td>
+  <th scope="row">スター・エンペラーズ</th>
+  <td>ATK 25,500 / 命中 80% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,184</td>
+  <th scope="row">真・村正ブレイド</th>
+  <td>ATK 28,500 / 命中 30% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,185</td>
+  <th scope="row">ルシファー・ズ・ブレイド</th>
+  <td>ATK 32,999 / 命中 99% / 価格 70,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-19">
+  <h2>職業 19: バーサーカー</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>36</td>
+  <th scope="row">Ｓｅｅｄ認定証</th>
+  <td>力 +50 / 生命力 +50 / 価格 750,000 G</td>
+  <td>力、生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>47</td>
+  <th scope="row">バッカスの腕輪</th>
+  <td>力 +100 / カルマ +100 / 価格 9,999,999 G</td>
+  <td>力、カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>48</td>
+  <th scope="row">武神の腕輪</th>
+  <td>力 +200 / カルマ +200 / 価格 99,999,999 G</td>
+  <td>力、カルマボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,191</td>
+  <th scope="row">ロードアーマー</th>
+  <td>DEF 3,200 / 回避 40% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,192</td>
+  <th scope="row">オーディンメイル</th>
+  <td>DEF 6,400 / 回避 50% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,193</td>
+  <th scope="row">ヴァルキリーメイル</th>
+  <td>DEF 7,500 / 回避 50% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,194</td>
+  <th scope="row">ホーリーメイル</th>
+  <td>DEF 9,000 / 回避 50% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,195</td>
+  <th scope="row">マテリアアーマー</th>
+  <td>DEF 12,000 / 回避 55% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,196</td>
+  <th scope="row">ファンネル・スーツ</th>
+  <td>DEF 20,000 / 回避 99% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,191</td>
+  <th scope="row">エンハンスソード</th>
+  <td>ATK 6,400 / 命中 20% / 価格 75,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,192</td>
+  <th scope="row">フォースイーター</th>
+  <td>ATK 7,500 / 命中 20% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,193</td>
+  <th scope="row">ソウルクラッシュ</th>
+  <td>ATK 12,000 / 命中 20% / 価格 350,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,194</td>
+  <th scope="row">メテオ・ブレイカー</th>
+  <td>ATK 18,000 / 命中 25% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,195</td>
+  <th scope="row">ディフェンダー</th>
+  <td>ATK 25,000 / 命中 25% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,197</td>
+  <th scope="row">ライオン・ハート</th>
+  <td>ATK 28,000 / 命中 30% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,198</td>
+  <th scope="row">アルファ・ブラスター</th>
+  <td>ATK 33,000 / 命中 90% / 価格 70,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-20">
+  <h2>職業 20: 風水士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>37</td>
+  <th scope="row">魔石</th>
+  <td>知能 +10 / 信仰心 +10 / 価格 5,000 G</td>
+  <td>知能、信仰心ボーナス（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>38</td>
+  <th scope="row">魔水晶</th>
+  <td>知能 +25 / 信仰心 +25 / 価格 50,000 G</td>
+  <td>知能、信仰心ボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>45</td>
+  <th scope="row">アルテミスの指輪</th>
+  <td>力 +20 / 知能 +20 / 信仰心 +20 / 生命力 +20 / 器用さ +20 / 速さ +20 / 価格 800,000 G</td>
+  <td>オールボーナス（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>50</td>
+  <th scope="row">メテオリング</th>
+  <td>知能 +100 / 信仰心 +100 / 価格 9,999,999 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>51</td>
+  <th scope="row">アルテマリング</th>
+  <td>知能 +200 / 信仰心 +200 / 価格 99,999,999 G</td>
+  <td>知能、信仰心ボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>53</td>
+  <th scope="row">回復の指輪</th>
+  <td>補正なし / 価格 9,999,999 G</td>
+  <td>毎ターンＨＰ回復（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>56</td>
+  <th scope="row">プロテスリング</th>
+  <td>補正なし / 価格 999,999 G</td>
+  <td>ダメージ軽減（小）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>57</td>
+  <th scope="row">シェルリング</th>
+  <td>補正なし / 価格 99,999,999 G</td>
+  <td>ダメージ軽減（中）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>64</td>
+  <th scope="row">光の結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にホーリーの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>65</td>
+  <th scope="row">隕石のかけら</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にメテオの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>69</td>
+  <th scope="row">オメガ・ソウル</th>
+  <td>力 +100 / 知能 +100 / 信仰心 +100 / 生命力 +100 / 器用さ +100 / 速さ +100 / 価格 3,000,000,000 G</td>
+  <td>オールボーナス（大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,201</td>
+  <th scope="row">イデアローブ</th>
+  <td>DEF 9,990 / 回避 40% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,202</td>
+  <th scope="row">アルティミシアローブ</th>
+  <td>DEF 12,000 / 回避 50% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,203</td>
+  <th scope="row">テラ・フォース</th>
+  <td>DEF 18,500 / 回避 35% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,201</td>
+  <th scope="row">幸運のダイス</th>
+  <td>ATK 3,500 / 命中 0% / 価格 12,500,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,202</td>
+  <th scope="row">神秘のトランプ</th>
+  <td>ATK 7,000 / 命中 0% / 価格 98,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,203</td>
+  <th scope="row">魔法の水晶</th>
+  <td>ATK 14,000 / 命中 0% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,204</td>
+  <th scope="row">テラ・フォーチューン</th>
+  <td>ATK 21,000 / 命中 80% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-21">
+  <h2>職業 21: 召喚術士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,211</td>
+  <th scope="row">リボン</th>
+  <td>DEF 9,999 / 回避 99% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,211</td>
+  <th scope="row">ロケット花火</th>
+  <td>ATK 10 / 命中 0% / 価格 100 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,212</td>
+  <th scope="row">デリンジャー</th>
+  <td>ATK 100 / 命中 5% / 価格 2,500 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,213</td>
+  <th scope="row">ニューナンブ</th>
+  <td>ATK 200 / 命中 5% / 価格 18,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,214</td>
+  <th scope="row">パイソン357</th>
+  <td>ATK 400 / 命中 10% / 価格 75,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,215</td>
+  <th scope="row">TNT火薬</th>
+  <td>ATK 800 / 命中 0% / 価格 580,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,216</td>
+  <th scope="row">プルトニウム</th>
+  <td>ATK 1,600 / 命中 0% / 価格 2,550,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,217</td>
+  <th scope="row">レオパルト2</th>
+  <td>ATK 3,200 / 命中 10% / 価格 12,500,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-22">
+  <h2>職業 22: 管理者</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>30</td>
+  <th scope="row">飛竜の翼</th>
+  <td>回避 30% / 価格 8,000,000 G</td>
+  <td>回避率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,221</td>
+  <th scope="row">オリハルコン・メイル</th>
+  <td>DEF 9,500 / 回避 99% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,222</td>
+  <th scope="row">オリハルコン・プレート</th>
+  <td>DEF 14,500 / 回避 99% / 価格 8,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,223</td>
+  <th scope="row">レジェン・ブライト</th>
+  <td>DEF 19,000 / 回避 99% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,221</td>
+  <th scope="row">ビーム・サーベル</th>
+  <td>ATK 18,000 / 命中 25% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,222</td>
+  <th scope="row">アルテマ・フォース</th>
+  <td>ATK 22,000 / 命中 30% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,223</td>
+  <th scope="row">フューベリオン・カスタム</th>
+  <td>ATK 28,000 / 命中 50% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,224</td>
+  <th scope="row">オメガ・ブラスター</th>
+  <td>ATK 32,000 / 命中 90% / 価格 70,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-23">
+  <h2>職業 23: ものまね士</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>30</td>
+  <th scope="row">飛竜の翼</th>
+  <td>回避 30% / 価格 8,000,000 G</td>
+  <td>回避率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>78</td>
+  <th scope="row">オニオンネックレス</th>
+  <td>力 +2,000 / 知能 +2,000 / 信仰心 +2,000 / 生命力 +2,000 / 器用さ +2,000 / 速さ +2,000 / 魅力 +2,000 / 命中 30% / 回避 30% / 必殺 999% / 価格 555,000,000,000 G</td>
+  <td>？？？？＆オールボーナス（超大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,221</td>
+  <th scope="row">オリハルコン・メイル</th>
+  <td>DEF 9,500 / 回避 99% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,222</td>
+  <th scope="row">オリハルコン・プレート</th>
+  <td>DEF 14,500 / 回避 99% / 価格 8,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,223</td>
+  <th scope="row">レジェン・ブライト</th>
+  <td>DEF 19,000 / 回避 99% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,224</td>
+  <th scope="row">オニオン・アーマー</th>
+  <td>DEF 39,000 / 回避 99% / 価格 388,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,225</td>
+  <th scope="row">オニオン・ソード</th>
+  <td>ATK 150,000 / 命中 90% / 価格 470,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-24">
+  <h2>職業 24: アニマルテイマー</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>30</td>
+  <th scope="row">飛竜の翼</th>
+  <td>回避 30% / 価格 8,000,000 G</td>
+  <td>回避率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>78</td>
+  <th scope="row">オニオンネックレス</th>
+  <td>力 +2,000 / 知能 +2,000 / 信仰心 +2,000 / 生命力 +2,000 / 器用さ +2,000 / 速さ +2,000 / 魅力 +2,000 / 命中 30% / 回避 30% / 必殺 999% / 価格 555,000,000,000 G</td>
+  <td>？？？？＆オールボーナス（超大）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,221</td>
+  <th scope="row">オリハルコン・メイル</th>
+  <td>DEF 9,500 / 回避 99% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,222</td>
+  <th scope="row">オリハルコン・プレート</th>
+  <td>DEF 14,500 / 回避 99% / 価格 8,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,223</td>
+  <th scope="row">レジェン・ブライト</th>
+  <td>DEF 19,000 / 回避 99% / 価格 18,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,225</td>
+  <th scope="row">アステカ・マント</th>
+  <td>DEF 29,000 / 回避 99% / 価格 118,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,221</td>
+  <th scope="row">ビーム・サーベル</th>
+  <td>ATK 18,000 / 命中 25% / 価格 900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,222</td>
+  <th scope="row">アルテマ・フォース</th>
+  <td>ATK 22,000 / 命中 30% / 価格 2,400,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,223</td>
+  <th scope="row">フューベリオン・カスタム</th>
+  <td>ATK 28,000 / 命中 50% / 価格 15,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,224</td>
+  <th scope="row">オメガ・ブラスター</th>
+  <td>ATK 32,000 / 命中 90% / 価格 70,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-25">
+  <h2>職業 25: アサシン</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>3</td>
+  <th scope="row">パワーリスト</th>
+  <td>力 +100 / 価格 999,999 G</td>
+  <td>力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>6</td>
+  <th scope="row">サークレット</th>
+  <td>知能 +100 / 価格 999,999 G</td>
+  <td>知能ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>9</td>
+  <th scope="row">神秘の指輪</th>
+  <td>信仰心 +100 / 価格 999,999 G</td>
+  <td>信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>12</td>
+  <th scope="row">命の指輪</th>
+  <td>生命力 +100 / 価格 999,999 G</td>
+  <td>生命力ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>15</td>
+  <th scope="row">エルメスの靴</th>
+  <td>速さ +100 / 価格 999,999 G</td>
+  <td>速さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>18</td>
+  <th scope="row">ピッキングリング</th>
+  <td>器用さ +100 / 価格 999,999 G</td>
+  <td>器用さボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>24</td>
+  <th scope="row">幸せの指輪</th>
+  <td>カルマ +100 / 価格 999,999 G</td>
+  <td>カルマボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>27</td>
+  <th scope="row">デジタルスコープ</th>
+  <td>命中 30% / 価格 8,000,000 G</td>
+  <td>命中率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>30</td>
+  <th scope="row">飛竜の翼</th>
+  <td>回避 30% / 価格 8,000,000 G</td>
+  <td>回避率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>33</td>
+  <th scope="row">クリティカルリング</th>
+  <td>必殺 30% / 価格 50,000,000 G</td>
+  <td>必殺率ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>39</td>
+  <th scope="row">魔水晶の指輪</th>
+  <td>知能 +50 / 信仰心 +50 / 価格 750,000 G</td>
+  <td>知能、信仰心ボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>46</td>
+  <th scope="row">ラクシュミの王冠</th>
+  <td>力 +50 / 知能 +50 / 信仰心 +50 / 生命力 +50 / 器用さ +50 / 速さ +50 / 価格 5,000,000 G</td>
+  <td>オールボーナス（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>49</td>
+  <th scope="row">シヴァ・ソウル</th>
+  <td>力 +500 / カルマ +500 / 価格 1,500,000,000 G</td>
+  <td>力、カルマボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>52</td>
+  <th scope="row">スリースターズ</th>
+  <td>知能 +500 / 信仰心 +500 / 価格 1,500,000,000 G</td>
+  <td>知能、信仰心ボーナス（超大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>54</td>
+  <th scope="row">全快の指輪</th>
+  <td>補正なし / 価格 1,500,000,000 G</td>
+  <td>毎ターンＨＰ回復（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>55</td>
+  <th scope="row">無敵の指輪</th>
+  <td>補正なし / 価格 6,000,000,000 G</td>
+  <td>毎ターンＨＰ回復（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>58</td>
+  <th scope="row">ウォールリング</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>ダメージ軽減（大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>61</td>
+  <th scope="row">鬼神の指輪</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>攻撃力増大（3倍）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>62</td>
+  <th scope="row">オーラの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にオーラの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>63</td>
+  <th scope="row">ケアルガの結晶</th>
+  <td>補正なし / 価格 100,000,000 G</td>
+  <td>稀にケアルガの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>66</td>
+  <th scope="row">波動の結晶</th>
+  <td>補正なし / 価格 150,000,000 G</td>
+  <td>稀にアルテマの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>67</td>
+  <th scope="row">異次元の結晶</th>
+  <td>補正なし / 価格 250,000,000 G</td>
+  <td>稀にデジョンの効果</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>70</td>
+  <th scope="row">銀河の翡翠</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>71</td>
+  <th scope="row">封印球</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>72</td>
+  <th scope="row">オリハルコンメダル</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 必殺 999% / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>73</td>
+  <th scope="row">夢幻のマテリア</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>74</td>
+  <th scope="row">古代の水鏡</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>75</td>
+  <th scope="row">反魂香</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 価格 15,000,000,000 G</td>
+  <td>オールボーナス（極大）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>77</td>
+  <th scope="row">ルナ・ブレスレット</th>
+  <td>力 +300 / 知能 +300 / 信仰心 +300 / 生命力 +300 / 器用さ +300 / 速さ +300 / 魅力 +300 / 命中 30% / 回避 30% / 必殺 30% / 価格 15,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（極大）</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>79</td>
+  <th scope="row">キル・クラフト</th>
+  <td>力 +800 / 知能 +800 / 信仰心 +800 / 生命力 +800 / 器用さ +800 / 速さ +800 / 魅力 +800 / 必殺 500% / 価格 335,000,000,000 G</td>
+  <td>オールボーナス（特大）＆？？？？</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,226</td>
+  <th scope="row">黒装束</th>
+  <td>DEF 49,000 / 回避 99% / 価格 558,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,226</td>
+  <th scope="row">風魔手裏剣</th>
+  <td>ATK 140,000 / 命中 50% / 価格 555,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,227</td>
+  <th scope="row">一撃のカマ</th>
+  <td>ATK 500,000 / 命中 -500% / 価格 70,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-26">
+  <h2>職業 26: 剣聖</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>80</td>
+  <th scope="row">聖書</th>
+  <td>力 +3,000 / 知能 +3,000 / 信仰心 +3,000 / 生命力 +3,000 / 器用さ +3,000 / 速さ +3,000 / 魅力 +3,000 / 命中 30% / 回避 30% / 必殺 300% / 価格 655,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（？？？？）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,227</td>
+  <th scope="row">聖衣</th>
+  <td>DEF 59,000 / 回避 99% / 価格 500,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,228</td>
+  <th scope="row">セイント・フォース</th>
+  <td>ATK 220,000 / 命中 90% / 価格 600,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-27">
+  <h2>職業 27: バトルマスター</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>81</td>
+  <th scope="row">ダイダロスの翡翠</th>
+  <td>力 +3,000 / 知能 +3,000 / 信仰心 +3,000 / 生命力 +3,000 / 器用さ +3,000 / 速さ +3,000 / 魅力 +3,000 / 命中 300% / 回避 300% / 必殺 300% / 価格 855,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（？？？？）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,228</td>
+  <th scope="row">無敵の鎧</th>
+  <td>DEF 89,000 / 回避 99% / 価格 888,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,220</td>
+  <th scope="row">バーミリオン・クラスター</th>
+  <td>ATK 300,000 / 命中 90% / 価格 800,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-28">
+  <h2>職業 28: ホーリーナイト</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>82</td>
+  <th scope="row">ホーリークロス</th>
+  <td>力 +3,000 / 知能 +3,000 / 信仰心 +3,000 / 生命力 +3,000 / 器用さ +3,000 / 速さ +3,000 / 魅力 +3,000 / 命中 300% / 回避 300% / 必殺 300% / 価格 855,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（？？？？）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,229</td>
+  <th scope="row">ホーリーメイル</th>
+  <td>DEF 69,000 / 回避 99% / 価格 558,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,229</td>
+  <th scope="row">ホーリーソード</th>
+  <td>ATK 280,000 / 命中 50% / 価格 750,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,230</td>
+  <th scope="row">セイント・ブラスター</th>
+  <td>ATK 220,000 / 命中 90% / 価格 700,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-29">
+  <h2>職業 29: 歌姫</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>83</td>
+  <th scope="row">勇者の紋章</th>
+  <td>力 +3,000 / 知能 +3,000 / 信仰心 +3,000 / 生命力 +3,000 / 器用さ +3,000 / 速さ +3,000 / 魅力 +3,000 / 命中 10% / 回避 10% / 必殺 10% / 価格 855,000,000,000 G</td>
+  <td>オールボーナス（？？？？）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>84</td>
+  <th scope="row">銀河のしずく</th>
+  <td>力 +3,000 / 知能 +3,000 / 信仰心 +3,000 / 生命力 +3,000 / 器用さ +3,000 / 速さ +3,000 / 魅力 +3,000 / 命中 30% / 回避 30% / 必殺 30% / 価格 855,000,000,000 G</td>
+  <td>？？？？の効果を打ち消す＆オールボーナス（？？？？）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,230</td>
+  <th scope="row">光の鎧</th>
+  <td>DEF 85,500 / 回避 199% / 価格 900,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,231</td>
+  <th scope="row">アダムの葉っぱ</th>
+  <td>DEF 1 / 回避 1,000% / 価格 300,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,231</td>
+  <th scope="row">王者の剣</th>
+  <td>ATK 430,000 / 命中 90% / 価格 800,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="job-30">
+  <h2>職業 30: ナイトメアマイスター</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>85</td>
+  <th scope="row">blessings</th>
+  <td>力 +3,500 / 知能 +3,500 / 信仰心 +3,500 / 生命力 +3,500 / 器用さ +3,500 / 速さ +3,500 / 魅力 +3,500 / 価格 999,999,999,999 G</td>
+  <td>オールボーナス（？？？？）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>86</td>
+  <th scope="row">クレア・バイブル</th>
+  <td>力 +3,500 / 知能 +3,500 / 信仰心 +3,500 / 生命力 +3,500 / 器用さ +3,500 / 速さ +3,500 / 魅力 +3,500 / 命中 100% / 回避 100% / 価格 999,999,999,999 G</td>
+  <td>オールボーナス（？？？？）＆？？？？</td>
+</tr>
+<tr>
+  <td>アクセサリー</td>
+  <td>87</td>
+  <th scope="row">ガイアフォースの結晶</th>
+  <td>力 +9,999 / 知能 +9,999 / 信仰心 +9,999 / 生命力 +9,999 / 器用さ +9,999 / 速さ +9,999 / 魅力 +9,999 / 価格 999,999,999,999 G</td>
+  <td>オールボーナス（極悪）</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,232</td>
+  <th scope="row">Vanqishing</th>
+  <td>DEF 99,500 / 回避 99% / 価格 99,900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>2,233</td>
+  <th scope="row">フォースフィールド</th>
+  <td>DEF 64,500 / 回避 499% / 価格 99,900,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,232</td>
+  <th scope="row">エクスカリバー2</th>
+  <td>ATK 448,000 / 命中 50% / 価格 876,000,000,000 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>1,233</td>
+  <th scope="row">神剣・グラビティースレイブ</th>
+  <td>ATK 499,000 / 命中 90% / 価格 999,000,000,000 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+<section class="job-section" id="special">
+  <h2>初期装備・特殊装備</h2>
+  <table>
+    <thead>
+      <tr><th>分類</th><th>No.</th><th>装備名</th><th>性能</th><th>説明</th></tr>
+    </thead>
+    <tbody><tr>
+  <td>アクセサリー</td>
+  <td>999</td>
+  <th scope="row">なし</th>
+  <td>補正なし / 価格 0 G</td>
+  <td>効果なし</td>
+</tr>
+<tr>
+  <td>防具</td>
+  <td>9,999</td>
+  <th scope="row">服</th>
+  <td>DEF 0 / 回避 10% / 価格 0 G</td>
+  <td></td>
+</tr>
+<tr>
+  <td>武器</td>
+  <td>9,999</td>
+  <th scope="row">素手</th>
+  <td>ATK 0 / 命中 0% / 価格 0 G</td>
+  <td></td>
+</tr></tbody>
+  </table>
+</section>
+</main>
+</body>
+</html>
