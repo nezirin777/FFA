@@ -89,13 +89,14 @@ def get_acs_master(acs_id):
     return None
 
 def load_shop_items(job_idx):
-    """現在の職業に対応する装飾品店の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['accessory_folder']}/accessory{job_idx}.json")
+    """共通装飾品マスターから、現在の職業が購入可能な商品を抽出します。"""
+    path = os.path.join(common.BASE_DIR, config.Config["accessory_file"])
     if not os.path.exists(path):
         return []
     try:
         with open(path, "r", encoding="utf-8") as f:
             items = json.load(f)
+        items = [item for item in items if job_idx in item.get("job_ids", [])]
         for item in items:
             item["description"] = item.get("description", "")
         return items

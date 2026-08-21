@@ -75,13 +75,14 @@ def get_item_master(item_id):
     return None
 
 def load_shop_items(job_idx):
-    """現在の職業に対応する武器屋の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['weapon_folder']}/weapon{job_idx}.json")
+    """共通武器マスターから、現在の職業が購入可能な商品を抽出します。"""
+    path = os.path.join(common.BASE_DIR, config.Config["weapon_file"])
     if not os.path.exists(path):
         return []
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            items = json.load(f)
+        return [item for item in items if job_idx in item.get("job_ids", [])]
     except Exception:
         return []
 

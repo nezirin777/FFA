@@ -17,7 +17,11 @@
     "description": "力ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8
+    ]
   },
   {
     "no": 2,
@@ -37,7 +41,11 @@
     "description": "力ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8
+    ]
   },
   {
     "no": 3,
@@ -57,7 +65,22 @@
     "description": "力ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 4,
@@ -77,7 +100,13 @@
     "description": "知能ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      4,
+      7,
+      9
+    ]
   },
   {
     "no": 5,
@@ -97,7 +126,13 @@
     "description": "知能ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      4,
+      7,
+      9
+    ]
   },
   {
     "no": 6,
@@ -117,7 +152,21 @@
     "description": "知能ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      4,
+      7,
+      9,
+      11,
+      14,
+      15,
+      17,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 7,
@@ -137,7 +186,11 @@
     "description": "信仰心ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      9
+    ]
   },
   {
     "no": 8,
@@ -157,7 +210,11 @@
     "description": "信仰心ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      9
+    ]
   },
   {
     "no": 9,
@@ -177,7 +234,18 @@
     "description": "信仰心ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      9,
+      14,
+      15,
+      17,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 10,
@@ -197,7 +265,11 @@
     "description": "生命力ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      6
+    ]
   },
   {
     "no": 11,
@@ -217,7 +289,11 @@
     "description": "生命力ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      6
+    ]
   },
   {
     "no": 12,
@@ -237,7 +313,22 @@
     "description": "生命力ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      6,
+      10,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 13,
@@ -257,7 +348,11 @@
     "description": "速さボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      4,
+      8
+    ]
   },
   {
     "no": 14,
@@ -277,7 +372,11 @@
     "description": "速さボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      4,
+      8
+    ]
   },
   {
     "no": 15,
@@ -297,7 +396,22 @@
     "description": "速さボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      4,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 16,
@@ -317,7 +431,10 @@
     "description": "器用さボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3
+    ]
   },
   {
     "no": 17,
@@ -337,7 +454,10 @@
     "description": "器用さボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3
+    ]
   },
   {
     "no": 18,
@@ -357,7 +477,15 @@
     "description": "器用さボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3,
+      13,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 19,
@@ -377,7 +505,12 @@
     "description": "魅力ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      6,
+      10,
+      18
+    ]
   },
   {
     "no": 20,
@@ -397,7 +530,12 @@
     "description": "魅力ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      6,
+      10,
+      18
+    ]
   },
   {
     "no": 21,
@@ -417,7 +555,12 @@
     "description": "魅力ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      6,
+      10,
+      18
+    ]
   },
   {
     "no": 22,
@@ -437,7 +580,10 @@
     "description": "カルマボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3
+    ]
   },
   {
     "no": 23,
@@ -457,7 +603,10 @@
     "description": "カルマボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3
+    ]
   },
   {
     "no": 24,
@@ -477,7 +626,16 @@
     "description": "カルマボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3,
+      13,
+      17,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 25,
@@ -497,7 +655,11 @@
     "description": "命中率ボーナス（小）",
     "hit_rate": 10,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13,
+      16
+    ]
   },
   {
     "no": 26,
@@ -517,7 +679,11 @@
     "description": "命中率ボーナス（中）",
     "hit_rate": 20,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13,
+      16
+    ]
   },
   {
     "no": 27,
@@ -537,7 +703,15 @@
     "description": "命中率ボーナス（大）",
     "hit_rate": 30,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13,
+      16,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 28,
@@ -557,7 +731,12 @@
     "description": "回避率ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 10,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      6,
+      8,
+      12
+    ]
   },
   {
     "no": 29,
@@ -577,7 +756,10 @@
     "description": "回避率ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 20,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      8
+    ]
   },
   {
     "no": 30,
@@ -597,7 +779,14 @@
     "description": "回避率ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 30,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      8,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 31,
@@ -617,7 +806,11 @@
     "description": "必殺率ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 10
+    "special_rate": 10,
+    "job_ids": [
+      13,
+      14
+    ]
   },
   {
     "no": 32,
@@ -637,7 +830,11 @@
     "description": "必殺率ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 20
+    "special_rate": 20,
+    "job_ids": [
+      11,
+      14
+    ]
   },
   {
     "no": 33,
@@ -657,7 +854,17 @@
     "description": "必殺率ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 30
+    "special_rate": 30,
+    "job_ids": [
+      11,
+      12,
+      13,
+      14,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 34,
@@ -677,7 +884,12 @@
     "description": "力、生命力ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      10,
+      15
+    ]
   },
   {
     "no": 35,
@@ -697,7 +909,11 @@
     "description": "力、生命力ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      10,
+      15
+    ]
   },
   {
     "no": 36,
@@ -717,7 +933,10 @@
     "description": "力、生命力ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      19
+    ]
   },
   {
     "no": 37,
@@ -737,7 +956,18 @@
     "description": "知能、信仰心ボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      2,
+      5,
+      7,
+      9,
+      14,
+      15,
+      17,
+      20
+    ]
   },
   {
     "no": 38,
@@ -757,7 +987,16 @@
     "description": "知能、信仰心ボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      7,
+      9,
+      14,
+      15,
+      17,
+      20
+    ]
   },
   {
     "no": 39,
@@ -777,7 +1016,20 @@
     "description": "知能、信仰心ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      7,
+      9,
+      14,
+      15,
+      17,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 40,
@@ -797,7 +1049,11 @@
     "description": "速さ、器用さボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3,
+      13
+    ]
   },
   {
     "no": 41,
@@ -817,7 +1073,10 @@
     "description": "速さ、器用さボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13
+    ]
   },
   {
     "no": 42,
@@ -837,7 +1096,10 @@
     "description": "速さ、器用さボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13
+    ]
   },
   {
     "no": 43,
@@ -857,7 +1119,19 @@
     "description": "オールボーナス（極小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      12
+    ]
   },
   {
     "no": 44,
@@ -877,7 +1151,15 @@
     "description": "オールボーナス（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      4,
+      5,
+      6,
+      7,
+      9,
+      12
+    ]
   },
   {
     "no": 45,
@@ -897,7 +1179,18 @@
     "description": "オールボーナス（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      6,
+      7,
+      9,
+      12,
+      15,
+      16,
+      17,
+      20
+    ]
   },
   {
     "no": 46,
@@ -917,7 +1210,23 @@
     "description": "オールボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      6,
+      7,
+      9,
+      12,
+      15,
+      16,
+      17,
+      18,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 47,
@@ -937,7 +1246,19 @@
     "description": "力、カルマボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19
+    ]
   },
   {
     "no": 48,
@@ -957,7 +1278,19 @@
     "description": "力、カルマボーナス（極大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19
+    ]
   },
   {
     "no": 49,
@@ -977,7 +1310,23 @@
     "description": "力、カルマボーナス（超大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 50,
@@ -997,7 +1346,18 @@
     "description": "知能、信仰心ボーナス（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      2,
+      4,
+      5,
+      7,
+      9,
+      15,
+      17,
+      20
+    ]
   },
   {
     "no": 51,
@@ -1017,7 +1377,16 @@
     "description": "知能、信仰心ボーナス（極大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      5,
+      7,
+      9,
+      15,
+      17,
+      20
+    ]
   },
   {
     "no": 52,
@@ -1037,7 +1406,19 @@
     "description": "知能、信仰心ボーナス（超大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      7,
+      9,
+      15,
+      17,
+      18,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 53,
@@ -1057,7 +1438,19 @@
     "description": "毎ターンＨＰ回復（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      6,
+      9,
+      12,
+      14,
+      15,
+      16,
+      17,
+      19,
+      20
+    ]
   },
   {
     "no": 54,
@@ -1077,7 +1470,19 @@
     "description": "毎ターンＨＰ回復（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      9,
+      15,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 55,
@@ -1097,7 +1502,17 @@
     "description": "毎ターンＨＰ回復（極大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 56,
@@ -1117,7 +1532,18 @@
     "description": "ダメージ軽減（小）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      4,
+      5,
+      8,
+      12,
+      14,
+      16,
+      17,
+      20
+    ]
   },
   {
     "no": 57,
@@ -1137,7 +1563,16 @@
     "description": "ダメージ軽減（中）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      4,
+      5,
+      14,
+      16,
+      17,
+      20
+    ]
   },
   {
     "no": 58,
@@ -1157,7 +1592,21 @@
     "description": "ダメージ軽減（大）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      5,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 59,
@@ -1177,7 +1626,17 @@
     "description": "攻撃力増大（1.5倍）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
   },
   {
     "no": 60,
@@ -1197,7 +1656,16 @@
     "description": "攻撃力増大（2倍）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      13,
+      14,
+      15
+    ]
   },
   {
     "no": 61,
@@ -1217,7 +1685,22 @@
     "description": "攻撃力増大（3倍）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      0,
+      8,
+      10,
+      11,
+      13,
+      14,
+      15,
+      18,
+      19,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 62,
@@ -1237,7 +1720,19 @@
     "description": "稀にオーラの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      8,
+      10,
+      12,
+      14,
+      16,
+      19,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 63,
@@ -1257,7 +1752,20 @@
     "description": "稀にケアルガの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      9,
+      10,
+      12,
+      17,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 64,
@@ -1277,7 +1785,16 @@
     "description": "稀にホーリーの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      2,
+      9,
+      10,
+      15,
+      17,
+      19,
+      20
+    ]
   },
   {
     "no": 65,
@@ -1297,7 +1814,17 @@
     "description": "稀にメテオの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      1,
+      7,
+      9,
+      14,
+      15,
+      17,
+      19,
+      20
+    ]
   },
   {
     "no": 66,
@@ -1317,7 +1844,18 @@
     "description": "稀にアルテマの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      9,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 67,
@@ -1337,7 +1875,17 @@
     "description": "稀にデジョンの効果",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      13,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 68,
@@ -1357,7 +1905,10 @@
     "description": "オールボーナス（中）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      18
+    ]
   },
   {
     "no": 69,
@@ -1377,7 +1928,15 @@
     "description": "オールボーナス（大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      11,
+      12,
+      13,
+      14,
+      16,
+      20
+    ]
   },
   {
     "no": 70,
@@ -1397,7 +1956,17 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      6,
+      13,
+      14,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 71,
@@ -1417,7 +1986,17 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      3,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 72,
@@ -1437,7 +2016,15 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 999
+    "special_rate": 999,
+    "job_ids": [
+      18,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 73,
@@ -1457,7 +2044,15 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      17,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 74,
@@ -1477,7 +2072,16 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      18,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 75,
@@ -1497,7 +2101,15 @@
     "description": "オールボーナス（極大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      19,
+      20,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 77,
@@ -1517,7 +2129,18 @@
     "description": "？？？？の効果を打ち消す＆オールボーナス（極大）",
     "hit_rate": 30,
     "evasion_rate": 30,
-    "special_rate": 30
+    "special_rate": 30,
+    "job_ids": [
+      15,
+      16,
+      17,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ]
   },
   {
     "no": 78,
@@ -1537,7 +2160,11 @@
     "description": "？？？？＆オールボーナス（超大）",
     "hit_rate": 30,
     "evasion_rate": 30,
-    "special_rate": 999
+    "special_rate": 999,
+    "job_ids": [
+      23,
+      24
+    ]
   },
   {
     "no": 79,
@@ -1557,7 +2184,10 @@
     "description": "オールボーナス（特大）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 500
+    "special_rate": 500,
+    "job_ids": [
+      25
+    ]
   },
   {
     "no": 80,
@@ -1577,7 +2207,10 @@
     "description": "？？？？の効果を打ち消す＆オールボーナス（？？？？）",
     "hit_rate": 30,
     "evasion_rate": 30,
-    "special_rate": 300
+    "special_rate": 300,
+    "job_ids": [
+      26
+    ]
   },
   {
     "no": 81,
@@ -1597,7 +2230,10 @@
     "description": "？？？？の効果を打ち消す＆オールボーナス（？？？？）",
     "hit_rate": 300,
     "evasion_rate": 300,
-    "special_rate": 300
+    "special_rate": 300,
+    "job_ids": [
+      27
+    ]
   },
   {
     "no": 82,
@@ -1617,7 +2253,10 @@
     "description": "？？？？の効果を打ち消す＆オールボーナス（？？？？）",
     "hit_rate": 300,
     "evasion_rate": 300,
-    "special_rate": 300
+    "special_rate": 300,
+    "job_ids": [
+      28
+    ]
   },
   {
     "no": 83,
@@ -1637,7 +2276,10 @@
     "description": "オールボーナス（？？？？）＆？？？？",
     "hit_rate": 10,
     "evasion_rate": 10,
-    "special_rate": 10
+    "special_rate": 10,
+    "job_ids": [
+      29
+    ]
   },
   {
     "no": 84,
@@ -1657,7 +2299,10 @@
     "description": "？？？？の効果を打ち消す＆オールボーナス（？？？？）",
     "hit_rate": 30,
     "evasion_rate": 30,
-    "special_rate": 30
+    "special_rate": 30,
+    "job_ids": [
+      29
+    ]
   },
   {
     "no": 85,
@@ -1677,7 +2322,10 @@
     "description": "オールボーナス（？？？？）＆？？？？",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      30
+    ]
   },
   {
     "no": 86,
@@ -1697,7 +2345,10 @@
     "description": "オールボーナス（？？？？）＆？？？？",
     "hit_rate": 100,
     "evasion_rate": 100,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      30
+    ]
   },
   {
     "no": 87,
@@ -1717,7 +2368,10 @@
     "description": "オールボーナス（極悪）",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": [
+      30
+    ]
   },
   {
     "no": 999,
@@ -1737,6 +2391,7 @@
     "description": "効果なし",
     "hit_rate": 0,
     "evasion_rate": 0,
-    "special_rate": 0
+    "special_rate": 0,
+    "job_ids": []
   }
 ]
