@@ -171,8 +171,7 @@ Config["vote_image"] = "アイコン一覧"
 # 8. マスタデータ・定義ファイル設定 (Master Data Files)
 # ==========================================
 Config["syoku_file"] = "data/syoku.json"  # 職業マスタデータファイル
-Config["tac_file"] = "data/tac/tac.json"  # 戦術マスタデータファイル
-Config["tac_folder"] = "data/tac"  # 戦術データフォルダ
+Config["tac_file"] = "data/tac/tac.json"  # 全戦術マスター（職業別使用条件はjob_idsで管理）
 
 # ショップ商品マスタ
 Config["weapon_file"] = "data/weapon/weapon.json"  # 武器マスタ

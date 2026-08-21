@@ -61,15 +61,18 @@ except ImportError:
 
 # Windows等で標準出力をUTF-8にする設定
 def load_job_tactics(job_id, job_level):
-    """特定のジョブで使用可能な戦術を読み込みます"""
+    """共通戦術マスターから、特定のジョブで使用可能な戦術を読み込みます。"""
     tactics = []
-    tac_path = os.path.join(common.BASE_DIR, config.Config['tac_folder'], f"tac{job_id}.json")
+    tac_path = os.path.join(common.BASE_DIR, config.Config['tac_file'])
     
     if os.path.exists(tac_path):
         try:
             with open(tac_path, "r", encoding="utf-8") as f:
                 items = json.load(f)
             for item in items:
+                # 職業別ファイルを廃止し、共通マスターの job_ids で絞り込みます。
+                if job_id not in item.get("job_ids", []):
+                    continue
                 # マスター戦術(ms == 1)の場合はジョブレベルが60以上である必要がある
                 if item.get("ms", 0) == 0 or (item.get("ms", 0) == 1 and job_level >= 60):
                     tactics.append({
