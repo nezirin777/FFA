@@ -56,12 +56,12 @@ from sub_def import common  # common.pyのsub_defへの移動に伴うインポ�
 
 def get_item_master(item_id, item_type):
     """マスタファイルから特定の装備品情報を取得します。"""
-    if item_type == "item":
-        path = os.path.join(common.BASE_DIR, config.Config['item_file'])
-    elif item_type == "def":
-        path = os.path.join(common.BASE_DIR, config.Config['def_file'])
-    else: # acs
-        path = os.path.join(common.BASE_DIR, config.Config['acs_file'])
+    if item_type == "weapon":
+        path = os.path.join(common.BASE_DIR, config.Config['weapon_file'])
+    elif item_type == "armor":
+        path = os.path.join(common.BASE_DIR, config.Config['armor_file'])
+    else: # accessory
+        path = os.path.join(common.BASE_DIR, config.Config['accessory_file'])
         
     if not os.path.exists(path):
         return None
@@ -75,7 +75,7 @@ def get_item_master(item_id, item_type):
 
     for item in items:
         if item.get("no") == int(item_id):
-            if item_type == "acs":
+            if item_type == "accessory":
                 bonus = item.get("bonus", {})
                 return {
                     "id": item["no"],
@@ -98,12 +98,20 @@ def get_item_master(item_id, item_type):
                     "description": item.get("description", "")
                 }
             else:
+                if item_type == "weapon":
+                    return {
+                        "id": item["no"],
+                        "name": item["name"],
+                        "atk": item["atk"],
+                        "gold": item.get("gold", 0),
+                        "hit_rate": item["hit_rate"]
+                    }
                 return {
                     "id": item["no"],
                     "name": item["name"],
-                    "power": item.get("power", 0),
+                    "defense": item["defense"],
                     "gold": item.get("gold", 0),
-                    "effect": item.get("effect", item.get("hit", 0))
+                    "evasion_rate": item["evasion_rate"]
                 }
     return None
 
@@ -138,144 +146,144 @@ def main():
     common.get_lock(user_id)
     try:
         chara = common.chara_load(user_id)
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not chara or not item:
             common.release_lock(user_id)
             common.show_error("キャラクター情報が見つかりません。")
             
         # 倉庫データのロード
-        souko_item = common.souko_load(user_id, "item")
-        souko_def = common.souko_load(user_id, "def")
-        souko_acs = common.souko_load(user_id, "acs")
+        souko_weapon = common.souko_load(user_id, "weapon")
+        souko_armor = common.souko_load(user_id, "armor")
+        souko_accessory = common.souko_load(user_id, "accessory")
         souko_url = f"{config.Config['souko_script']}&id={user_id}"
         
         # 処理実行フラグ (保存が必要か)
         modified = False
         
         # 1. 武器の外し・装備・破棄
-        if mode == "item_hazusi":
+        if mode == "weapon_remove":
             equipped_id = chara.get("weapon_id", 0)
             if equipped_id and equipped_id != 0:
-                if len(souko_item) >= config.Config['max_items']:
+                if len(souko_weapon) >= config.Config['max_weapons']:
                     common.release_lock(user_id)
                     common.redirect_with_flash(souko_url, "武器倉庫がいっぱいです！外せません。", "error")
                 
-                master = get_item_master(equipped_id, "item")
+                master = get_item_master(equipped_id, "weapon")
                 if not master:
-                    master = {"id": equipped_id, "name": item["weapon"]["name"], "power": item["weapon"]["dmg"], "gold": 0, "effect": 0}
+                    master = {"id": equipped_id, "name": item["weapon"]["name"], "atk": item["weapon"]["atk"], "gold": 0, "hit_rate": 0}
                     
                 # 倉庫へ追加
-                souko_item.append({
+                souko_weapon.append({
                     "id": master["id"],
                     "name": master["name"],
-                    "power": master["power"],
+                    "atk": master["atk"],
                     "gold": master["gold"],
-                    "effect": master.get("effect", 0)
+                    "hit_rate": master.get("hit_rate", 0)
                 })
                 # 装備リセット
                 chara["weapon_id"] = 0
-                item["weapon"] = {"name": "素手", "dmg": 0, "effect": 0}
+                item["weapon"] = {"name": "素手", "atk": 0, "hit_rate": 0}
                 modified = True
                 
-        elif mode == "item_soubi" and item_no_str:
+        elif mode == "weapon_equip" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_item):
+            if 0 <= idx < len(souko_weapon):
                 # 倉庫から取り出し
-                target = souko_item.pop(idx)
+                target = souko_weapon.pop(idx)
                 
                 # 現在の装備を外して倉庫へ戻す
                 equipped_id = chara.get("weapon_id", 0)
                 if equipped_id and equipped_id != 0:
-                    master = get_item_master(equipped_id, "item")
+                    master = get_item_master(equipped_id, "weapon")
                     if not master:
-                        master = {"id": equipped_id, "name": item["weapon"]["name"], "power": item["weapon"]["dmg"], "gold": 0, "effect": 0}
-                    souko_item.append({
+                        master = {"id": equipped_id, "name": item["weapon"]["name"], "atk": item["weapon"]["atk"], "gold": 0, "hit_rate": 0}
+                    souko_weapon.append({
                         "id": master["id"],
                         "name": master["name"],
-                        "power": master["power"],
+                        "atk": master["atk"],
                         "gold": master["gold"],
-                        "effect": master.get("effect", 0)
+                        "hit_rate": master.get("hit_rate", 0)
                     })
                 
                 # 新しい装備を適用
                 chara["weapon_id"] = target["id"]
                 item["weapon"] = {
                     "name": target["name"],
-                    "dmg": target["power"],
-                    "effect": target.get("effect", 0)
+                    "atk": target["atk"],
+                    "hit_rate": target.get("hit_rate", 0)
                 }
                 modified = True
                 
-        elif mode == "item_delete" and item_no_str:
+        elif mode == "weapon_delete" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_item):
-                souko_item.pop(idx)
+            if 0 <= idx < len(souko_weapon):
+                souko_weapon.pop(idx)
                 modified = True
                 
         # 2. 防具の外し・装備・破棄
-        elif mode == "def_hazusi":
+        elif mode == "armor_remove":
             equipped_id = chara.get("armor_id", 0)
             if equipped_id and equipped_id != 0:
-                if len(souko_def) >= config.Config['max_defenses']:
+                if len(souko_armor) >= config.Config['max_armors']:
                     common.release_lock(user_id)
                     common.redirect_with_flash(souko_url, "防具倉庫がいっぱいです！外せません。", "error")
                 
-                master = get_item_master(equipped_id, "def")
+                master = get_item_master(equipped_id, "armor")
                 if not master:
-                    master = {"id": equipped_id, "name": item["armor"]["name"], "power": item["armor"]["def"], "gold": 0, "effect": 0}
+                    master = {"id": equipped_id, "name": item["armor"]["name"], "defense": item["armor"]["defense"], "gold": 0, "evasion_rate": 0}
                     
-                souko_def.append({
+                souko_armor.append({
                     "id": master["id"],
                     "name": master["name"],
-                    "power": master["power"],
+                    "defense": master["defense"],
                     "gold": master["gold"],
-                    "effect": master.get("effect", 0)
+                    "evasion_rate": master.get("evasion_rate", 0)
                 })
                 chara["armor_id"] = 0
-                item["armor"] = {"name": "衣服", "def": 0, "effect": 0}
+                item["armor"] = {"name": "衣服", "defense": 0, "evasion_rate": 0}
                 modified = True
                 
-        elif mode == "def_soubi" and item_no_str:
+        elif mode == "armor_equip" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_def):
-                target = souko_def.pop(idx)
+            if 0 <= idx < len(souko_armor):
+                target = souko_armor.pop(idx)
                 
                 equipped_id = chara.get("armor_id", 0)
                 if equipped_id and equipped_id != 0:
-                    master = get_item_master(equipped_id, "def")
+                    master = get_item_master(equipped_id, "armor")
                     if not master:
-                        master = {"id": equipped_id, "name": item["armor"]["name"], "power": item["armor"]["def"], "gold": 0, "effect": 0}
-                    souko_def.append({
+                        master = {"id": equipped_id, "name": item["armor"]["name"], "defense": item["armor"]["defense"], "gold": 0, "evasion_rate": 0}
+                    souko_armor.append({
                         "id": master["id"],
                         "name": master["name"],
-                        "power": master["power"],
+                        "defense": master["defense"],
                         "gold": master["gold"],
-                        "effect": master.get("effect", 0)
+                        "evasion_rate": master.get("evasion_rate", 0)
                     })
                 
                 chara["armor_id"] = target["id"]
                 item["armor"] = {
                     "name": target["name"],
-                    "def": target["power"],
-                    "effect": target.get("effect", 0)
+                    "defense": target["defense"],
+                    "evasion_rate": target.get("evasion_rate", 0)
                 }
                 modified = True
                 
-        elif mode == "def_delete" and item_no_str:
+        elif mode == "armor_delete" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_def):
-                souko_def.pop(idx)
+            if 0 <= idx < len(souko_armor):
+                souko_armor.pop(idx)
                 modified = True
                 
         # 3. 装飾品の外し・装備・破棄
-        elif mode == "acs_hazusi":
+        elif mode == "accessory_remove":
             equipped_id = chara.get("accessory_id", 0)
             if equipped_id and equipped_id != 0:
-                if len(souko_acs) >= config.Config['max_accessories']:
+                if len(souko_accessory) >= config.Config['max_accessories']:
                     common.release_lock(user_id)
                     common.redirect_with_flash(souko_url, "装飾品倉庫がいっぱいです！外せません。", "error")
                 
-                master = get_item_master(equipped_id, "acs")
+                master = get_item_master(equipped_id, "accessory")
                 if not master:
                     master = {
                         "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
@@ -284,7 +292,7 @@ def main():
                         "description": item["accessory"].get("description", "")
                     }
                     
-                souko_acs.append(master)
+                souko_accessory.append(master)
                 chara["accessory_id"] = 0
                 item["accessory"] = {
                     "name": "なし",
@@ -294,14 +302,14 @@ def main():
                 }
                 modified = True
                 
-        elif mode == "acs_soubi" and item_no_str:
+        elif mode == "accessory_equip" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_acs):
-                target = souko_acs.pop(idx)
+            if 0 <= idx < len(souko_accessory):
+                target = souko_accessory.pop(idx)
                 
                 equipped_id = chara.get("accessory_id", 0)
                 if equipped_id and equipped_id != 0:
-                    master = get_item_master(equipped_id, "acs")
+                    master = get_item_master(equipped_id, "accessory")
                     if not master:
                         master = {
                             "id": equipped_id, "name": item["accessory"]["name"], "gold": 0, "effect_id": 0,
@@ -309,7 +317,7 @@ def main():
                             "evasion_rate": item["accessory"]["evasion_rate"], "special_rate": item["accessory"]["special_rate"],
                             "description": item["accessory"].get("description", "")
                         }
-                    souko_acs.append(master)
+                    souko_accessory.append(master)
                 
                 chara["accessory_id"] = target["id"]
                 target_description = target.get("description") or common.accessory_description(target, target.get("id"))
@@ -324,19 +332,19 @@ def main():
                 }
                 modified = True
                 
-        elif mode == "acs_delete" and item_no_str:
+        elif mode == "accessory_delete" and item_no_str:
             idx = int(item_no_str)
-            if 0 <= idx < len(souko_acs):
-                souko_acs.pop(idx)
+            if 0 <= idx < len(souko_accessory):
+                souko_accessory.pop(idx)
                 modified = True
                 
         # 4. データ保存
         if modified:
             common.chara_regist(user_id, chara)
-            common.item_regist(user_id, item)
-            common.souko_regist(user_id, "item", souko_item)
-            common.souko_regist(user_id, "def", souko_def)
-            common.souko_regist(user_id, "acs", souko_acs)
+            common.equipment_regist(user_id, item)
+            common.souko_regist(user_id, "weapon", souko_weapon)
+            common.souko_regist(user_id, "armor", souko_armor)
+            common.souko_regist(user_id, "accessory", souko_accessory)
             
         common.release_lock(user_id)
         
@@ -345,16 +353,16 @@ def main():
         acs_bonus_str = common.accessory_description(item["accessory"], chara.get("accessory_id", 0)) or format_bonus(item["accessory"]["bonus"])
         
         # 倉庫アクセサリーリストの上昇ステータス文字列化
-        for a in souko_acs:
+        for a in souko_accessory:
             a["bonus_str"] = common.accessory_description(a, a.get("id", 0)) or format_bonus(a["bonus"])
             
         context = {
             "chara": chara,
-            "item": item,
+            "equipment": item,
             "acs_bonus_str": acs_bonus_str,
-            "souko_item": souko_item,
-            "souko_def": souko_def,
-            "souko_acs": souko_acs
+            "souko_weapon": souko_weapon,
+            "souko_armor": souko_armor,
+            "souko_accessory": souko_accessory
         }
         common.render_template("souko.html", context)
         

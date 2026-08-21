@@ -138,11 +138,11 @@ def main():
 
     else:
         # === ステータス表示画面 (chara_st) ===
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not item:
             item = {
-                "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-                "armor": {"name": "衣服", "def": 0, "effect": 0},
+                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
                     "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
@@ -168,8 +168,8 @@ def main():
             waza_ritu = 75
 
         # 装備品補正値
-        ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("hit_rate", 0) # 命中補正
-        cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("evasion_rate", 0) # 回避補正
+        ci_plus = item.get("weapon", {}).get("hit_rate", 0) + item.get("accessory", {}).get("hit_rate", 0) # 命中補正
+        cd_plus = item.get("armor", {}).get("evasion_rate", 0) + item.get("accessory", {}).get("evasion_rate", 0) # 回避補正
         waza_plus = item.get("accessory", {}).get("special_rate", 0) # 必殺補正
 
         # 作戦（戦術）の取得
@@ -256,7 +256,7 @@ def main():
         # 表示コンテキストの作成
         context = {
             "chara": chara,
-            "item": item,
+            "equipment": item,
             "chara_log": chara_log,
             "hit_ritu": hit_ritu,
             "kaihi_ritu": kaihi_ritu,

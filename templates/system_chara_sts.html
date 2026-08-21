@@ -22,9 +22,9 @@
                     <span class="note-text system-avatar-note">キャラクター画像</span>
                 </div>
                 <table class="system-stat-table">
-                    <tr><th>武器</th><td>{{ item.weapon.name }}</td></tr>
-                    <tr><th>防具</th><td>{{ item.armor.name }}</td></tr>
-                    <tr><th>アクセサリ</th><td>{{ item.accessory.name }}</td></tr>
+                    <tr><th>武器</th><td>{{ equipment.weapon.name }}</td></tr>
+                    <tr><th>防具</th><td>{{ equipment.armor.name }}</td></tr>
+                    <tr><th>アクセサリ</th><td>{{ equipment.accessory.name }}</td></tr>
                     <tr><th>現在の称号</th><td><span class="yellow system-avatar-link">{{ syou_name }}</span></td></tr>
                 </table>
             </div>
@@ -60,55 +60,55 @@
                         <th>現在HP</th><td>{{ chara.hp }} / {{ chara.max_hp }}</td>
                     </tr>
                     <tr>
-                        <th>攻撃力</th><td>{{ item.weapon.dmg }}</td>
-                        <th>防御力</th><td>{{ item.armor.def }}</td>
+                        <th>攻撃力</th><td>{{ equipment.weapon.atk }}</td>
+                        <th>防御力</th><td>{{ equipment.armor.defense }}</td>
                     </tr>
                     <tr>
                         <th>力</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_str }}%;"></div></div>
-                            <span>{{ chara.str }} <span class="note-text">+ {{ item.accessory.bonus.str }}</span></span>
+                            <span>{{ chara.str }} <span class="note-text">+ {{ equipment.accessory.bonus.str }}</span></span>
                         </td>
                         <th>知能</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_int }}%;"></div></div>
-                            <span>{{ chara.int }} <span class="note-text">+ {{ item.accessory.bonus.int }}</span></span>
+                            <span>{{ chara.int }} <span class="note-text">+ {{ equipment.accessory.bonus.int }}</span></span>
                         </td>
                     </tr>
                     <tr>
                         <th>信仰心</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_mnd }}%;"></div></div>
-                            <span>{{ chara.mnd }} <span class="note-text">+ {{ item.accessory.bonus.mnd }}</span></span>
+                            <span>{{ chara.mnd }} <span class="note-text">+ {{ equipment.accessory.bonus.mnd }}</span></span>
                         </td>
                         <th>生命力</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_vit }}%;"></div></div>
-                            <span>{{ chara.vit }} <span class="note-text">+ {{ item.accessory.bonus.vit }}</span></span>
+                            <span>{{ chara.vit }} <span class="note-text">+ {{ equipment.accessory.bonus.vit }}</span></span>
                         </td>
                     </tr>
                     <tr>
                         <th>器用さ</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_dex }}%;"></div></div>
-                            <span>{{ chara.dex }} <span class="note-text">+ {{ item.accessory.bonus.dex }}</span></span>
+                            <span>{{ chara.dex }} <span class="note-text">+ {{ equipment.accessory.bonus.dex }}</span></span>
                         </td>
                         <th>速さ</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_agi }}%;"></div></div>
-                            <span>{{ chara.agi }} <span class="note-text">+ {{ item.accessory.bonus.agi }}</span></span>
+                            <span>{{ chara.agi }} <span class="note-text">+ {{ equipment.accessory.bonus.agi }}</span></span>
                         </td>
                     </tr>
                     <tr>
                         <th>魅力</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_cha }}%;"></div></div>
-                            <span>{{ chara.cha }} <span class="note-text">+ {{ item.accessory.bonus.cha }}</span></span>
+                            <span>{{ chara.cha }} <span class="note-text">+ {{ equipment.accessory.bonus.cha }}</span></span>
                         </td>
                         <th>カルマ</th>
                         <td>
                             <div class="bar-container"><div class="bar-fill" style="width: {{ bw_karma }}%;"></div></div>
-                            <span>{{ chara.karma }} <span class="note-text">+ {{ item.accessory.bonus.karma }}</span></span>
+                            <span>{{ chara.karma }} <span class="note-text">+ {{ equipment.accessory.bonus.karma }}</span></span>
                         </td>
                     </tr>
                     <tr>

@@ -252,17 +252,17 @@ class BattleSimulator:
             
             # === 1. ターン初期化 (shokika) ===
             # プレイヤーダメージ
-            s.dmg1 = get_job_dmg(s.chara["job"], s.chara, s.item["weapon"]["dmg"])
+            s.dmg1 = get_job_dmg(s.chara["job"], s.chara, s.item["weapon"]["atk"])
             # 敵ダメージ
             if s.is_player_enemy:
                 # 対人戦の場合、相手の職業ダメージを計算
-                s.dmg2 = get_job_dmg(s.winner["job"], s.winner, s.winner_item["weapon"]["dmg"])
+                s.dmg2 = get_job_dmg(s.winner["job"], s.winner, s.winner_item["weapon"]["atk"])
                 s.com2 = f"{s.mname}の攻撃！"
             else:
                 s.dmg2 = s.mdmg + random.randrange(max(1, s.mrand))
                 # 旧版 genei は各ターン開始時に、防具の防御力を敵攻撃へ加算していた。
                 if s.mode == "genei":
-                    s.dmg2 += s.item["armor"]["def"]
+                    s.dmg2 += s.item["armor"]["defense"]
                 s.com2 = f"{s.mname}の攻撃！"
                 
             s.clit1 = ""
@@ -336,19 +336,19 @@ class BattleSimulator:
             if s.is_player_enemy and s.i == 1:
                 level_sa = int(config.Config.get("level_sa", 15))
                 gyakuten = int(config.Config.get("gyakuten", 100))
-                player_weapon_dmg = s.item["weapon"]["dmg"]
-                winner_weapon_dmg = s.winner_item["weapon"]["dmg"]
+                player_weapon_dmg = s.item["weapon"]["atk"]
+                winner_weapon_dmg = s.winner_item["weapon"]["atk"]
                 if (
                     int(s.winner.get("level", 0)) - int(s.chara.get("level", 0)) >= level_sa
                     or player_weapon_dmg < winner_weapon_dmg
                 ):
                     s.dmg1 = s.dmg1 * gyakuten
                     s.sake2 -= 999999
-                    s.winner_item["weapon"]["dmg"] = 0
+                    s.winner_item["weapon"]["atk"] = 0
                     s.com1 += "<font color=\"blue\" size=5>逆転必殺技発動！！</font><br>"
                 if (
                     int(s.chara.get("level", 0)) - int(s.winner.get("level", 0)) >= level_sa
-                    or s.winner_item["weapon"]["dmg"] < s.item["armor"]["def"]
+                    or s.winner_item["weapon"]["atk"] < s.item["armor"]["defense"]
                 ):
                     s.dmg2 = s.dmg2 * 100
                     s.sake1 -= 999999
@@ -360,7 +360,7 @@ class BattleSimulator:
                 s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
                 if s.is_player_enemy:
                     # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
-                    s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["dmg"]
+                    s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["atk"]
                 else:
                     s.dmg1 = s.dmg1 * 3
                 
@@ -369,26 +369,26 @@ class BattleSimulator:
                 if mclt_ritu > random.randrange(100):
                     s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
                     # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
-                    s.dmg2 = s.dmg2 * 2 + s.item["armor"]["def"]
+                    s.dmg2 = s.dmg2 * 2 + s.item["armor"]["defense"]
             else:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0
                 if mclt_ritu > random.randrange(200):
                     s.com2 += f"<br><span class=\"red\"><b>クリティカルヒット！！</b></span>"
-                    s.dmg2 = s.dmg2 + s.item["armor"]["def"] # 防御無視相当の加算
+                    s.dmg2 = s.dmg2 + s.item["armor"]["defense"] # 防御無視相当の加算
                     
             # === 6. 防御力による減算・回避判定 ===
-            ci_plus = s.item["weapon"]["effect"] + s.item["accessory"]["hit_rate"]
-            cd_plus = s.item["armor"]["effect"] + s.item["accessory"]["evasion_rate"]
+            ci_plus = s.item["weapon"]["hit_rate"] + s.item["accessory"]["hit_rate"]
+            cd_plus = s.item["armor"]["evasion_rate"] + s.item["accessory"]["evasion_rate"]
             hit_ritu = int(s.chara["dex"] / 10) + 51 + ci_plus
 
             if s.is_player_enemy:
                 # 対人戦は旧版 wbattle.pl の双方計算を使う。
                 winner_ci_plus = (
-                    s.winner_item["weapon"]["effect"] +
+                    s.winner_item["weapon"]["hit_rate"] +
                     s.winner_item["accessory"]["hit_rate"]
                 )
                 winner_cd_plus = (
-                    s.winner_item["armor"]["effect"] +
+                    s.winner_item["armor"]["evasion_rate"] +
                     s.winner_item["accessory"]["evasion_rate"]
                 )
                 winner_hit_ritu = int(s.winner["dex"] / 10) + 51 + winner_ci_plus
@@ -410,18 +410,18 @@ class BattleSimulator:
             # 被ダメージの防御力減算。対人戦は相手防具にも同じ処理を行う。
             if s.dmg2 < 0:
                 pass
-            elif s.dmg2 < s.item["armor"]["def"]:
+            elif s.dmg2 < s.item["armor"]["defense"]:
                 s.dmg2 = 1 if s.is_player_enemy else 0
             else:
-                s.dmg2 = s.dmg2 - s.item["armor"]["def"]
+                s.dmg2 = s.dmg2 - s.item["armor"]["defense"]
 
             if s.is_player_enemy:
                 if s.dmg1 < 0:
                     pass
-                elif s.dmg1 < s.winner_item["armor"]["def"]:
+                elif s.dmg1 < s.winner_item["armor"]["defense"]:
                     s.dmg1 = 1
                 else:
-                    s.dmg1 = s.dmg1 - s.winner_item["armor"]["def"]
+                    s.dmg1 = s.dmg1 - s.winner_item["armor"]["defense"]
 
             # 上級職による防御ボーナス
             if s.chara["job"] > 17:

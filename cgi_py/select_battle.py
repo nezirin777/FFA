@@ -170,14 +170,14 @@ def main():
         if not aite_chara:
             common.show_error("対戦相手のキャラクターデータが見つかりません。")
 
-        aite_item = common.item_load(aite_id)
+        aite_item = common.equipment_load(aite_id)
         if not aite_item:
             common.show_error("対戦相手のアイテムデータが見つかりません。")
 
         aite_chara["equipped_item"] = aite_item
 
         # 自プレイヤーのアイテムロード
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not item:
             common.show_error("アイテムデータが読み込めません。")
 

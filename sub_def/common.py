@@ -229,10 +229,10 @@ def chara_load(user_id):
     data = load_user_all(user_id)
     return data.get("chara") if data else None
 
-def item_load(user_id):
+def equipment_load(user_id):
     """所持アイテムデータをロードします (統合JSONデータから読み出し)"""
     data = load_user_all(user_id)
-    return data.get("item") if data else None
+    return data.get("equipment") if data else None
 
 def syoku_load(user_id):
     """職業熟練度データをロードします (統合JSONデータから読み出し)"""
@@ -258,10 +258,10 @@ def chara_regist(user_id, chara_data):
     data["chara"] = chara_data
     save_user_unified(user_id, data)
 
-def item_regist(user_id, item_data):
+def equipment_regist(user_id, item_data):
     """所持アイテムデータを保存します"""
     data = load_user_all(user_id) or {}
-    data["item"] = item_data
+    data["equipment"] = item_data
     save_user_unified(user_id, data)
 
 def syoku_regist(user_id, syoku_data):
@@ -299,18 +299,18 @@ def save_user_all(user_id, chara, item, syoku):
     data = load_user_all(user_id) or {}
     data["chara"] = chara
     if item is not None:
-        data["item"] = item
+        data["equipment"] = item
     if syoku is not None:
         data["syoku"] = syoku
     save_user_unified(user_id, data)
 
 def souko_load(user_id, item_type):
-    """倉庫データ(item_type: 'item', 'def', 'acs')をロードします"""
+    """倉庫データ(item_type: 'weapon', 'armor', 'accessory')をロードします"""
     data = load_user_all(user_id)
     return data.get(f"souko_{item_type}", []) if data else []
 
 def souko_regist(user_id, item_type, data):
-    """倉庫データ(item_type: 'item', 'def', 'acs')を保存します"""
+    """倉庫データ(item_type: 'weapon', 'armor', 'accessory')を保存します"""
     u_data = load_user_all(user_id) or {}
     u_data[f"souko_{item_type}"] = data
     save_user_unified(user_id, u_data)
@@ -394,7 +394,7 @@ def acs_master_get(acs_id):
         return None
 
     if _acs_master_cache is None:
-        path = os.path.join(BASE_DIR, Config["acs_file"])
+        path = os.path.join(BASE_DIR, Config["accessory_file"])
         try:
             with open(path, "r", encoding="utf-8") as f:
                 _acs_master_cache = json.load(f)

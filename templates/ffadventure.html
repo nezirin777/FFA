@@ -110,9 +110,9 @@
                         </div>
                         <div class="ff-chara-equip-box">
                             <table class="ff-chara-table">
-                                <tr><th>武器:</th><td>{{ item.weapon.name }} (ATK: {{ item.weapon.dmg }})</td></tr>
-                                <tr><th>防具:</th><td>{{ item.armor.name }} (DEF: {{ item.armor.def }})</td></tr>
-                                <tr><th>装飾品:</th><td>{{ item.accessory.name }}</td></tr>
+                                <tr><th>武器:</th><td>{{ equipment.weapon.name }} (ATK: {{ equipment.weapon.atk }})</td></tr>
+                                <tr><th>防具:</th><td>{{ equipment.armor.name }} (DEF: {{ equipment.armor.defense }})</td></tr>
+                                <tr><th>装飾品:</th><td>{{ equipment.accessory.name }}</td></tr>
                             </table>
                         </div>
                     </div>
@@ -121,8 +121,8 @@
                         <b>装飾効果:</b>
                         {{ accessory_description or '効果なし' }}
                         <span class="small-text">
-                            （力+{{ item.accessory.bonus.str }} 知+{{ item.accessory.bonus.int }} 信+{{ item.accessory.bonus.mnd }} 生+{{ item.accessory.bonus.vit }}
-                            器+{{ item.accessory.bonus.dex }} 速+{{ item.accessory.bonus.agi }} 魅+{{ item.accessory.bonus.cha }} カ+{{ item.accessory.bonus.karma }}）
+                            （力+{{ equipment.accessory.bonus.str }} 知+{{ equipment.accessory.bonus.int }} 信+{{ equipment.accessory.bonus.mnd }} 生+{{ equipment.accessory.bonus.vit }}
+                            器+{{ equipment.accessory.bonus.dex }} 速+{{ equipment.accessory.bonus.agi }} 魅+{{ equipment.accessory.bonus.cha }} カ+{{ equipment.accessory.bonus.karma }}）
                         </span>
                     </div>
 
@@ -188,27 +188,27 @@
                     <table class="ff-chara-table">
                         <tr>
                             <th>力 (Str)</th>
-                            <td><b>{{ chara.str }} + {{ item.accessory.bonus.str }}</b></td>
+                            <td><b>{{ chara.str }} + {{ equipment.accessory.bonus.str }}</b></td>
                             <th>知能 (Int)</th>
-                            <td><b>{{ chara.int }} + {{ item.accessory.bonus.int }}</b></td>
+                            <td><b>{{ chara.int }} + {{ equipment.accessory.bonus.int }}</b></td>
                         </tr>
                         <tr>
                             <th>信仰心 (Mnd)</th>
-                            <td><b>{{ chara.mnd }} + {{ item.accessory.bonus.mnd }}</b></td>
+                            <td><b>{{ chara.mnd }} + {{ equipment.accessory.bonus.mnd }}</b></td>
                             <th>生命力 (Vit)</th>
-                            <td><b>{{ chara.vit }} + {{ item.accessory.bonus.vit }}</b></td>
+                            <td><b>{{ chara.vit }} + {{ equipment.accessory.bonus.vit }}</b></td>
                         </tr>
                         <tr>
                             <th>器用さ (Dex)</th>
-                            <td><b>{{ chara.dex }} + {{ item.accessory.bonus.dex }}</b></td>
+                            <td><b>{{ chara.dex }} + {{ equipment.accessory.bonus.dex }}</b></td>
                             <th>速さ (Agi)</th>
-                            <td><b>{{ chara.agi }} + {{ item.accessory.bonus.agi }}</b></td>
+                            <td><b>{{ chara.agi }} + {{ equipment.accessory.bonus.agi }}</b></td>
                         </tr>
                         <tr>
                             <th>魅力 (Cha)</th>
-                            <td><b>{{ chara.cha }} + {{ item.accessory.bonus.cha }}</b></td>
+                            <td><b>{{ chara.cha }} + {{ equipment.accessory.bonus.cha }}</b></td>
                             <th>カルマ (Karma)</th>
-                            <td><b>{{ chara.karma }} + {{ item.accessory.bonus.karma }}</b></td>
+                            <td><b>{{ chara.karma }} + {{ equipment.accessory.bonus.karma }}</b></td>
                         </tr>
                         <tr>
                             <th>命中率</th>

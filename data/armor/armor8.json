@@ -1,0 +1,58 @@
+[
+  {
+    "no": 2081,
+    "name": "サバイバルベスト",
+    "defense": 55,
+    "gold": 2500,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2082,
+    "name": "ラバーコンシャス",
+    "defense": 110,
+    "gold": 18000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2083,
+    "name": "ミラージュベスト",
+    "defense": 220,
+    "gold": 75000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2084,
+    "name": "ウィンドブレスト",
+    "defense": 440,
+    "gold": 580000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2085,
+    "name": "ミスリルベスト",
+    "defense": 880,
+    "gold": 2550000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2086,
+    "name": "アダマンベスト",
+    "defense": 1760,
+    "gold": 12500000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2087,
+    "name": "飛竜のベスト",
+    "defense": 3520,
+    "gold": 75000000,
+    "evasion_rate": 20
+  },
+  {
+    "no": 2088,
+    "name": "ブリガンダイン",
+    "defense": 7000,
+    "gold": 98000000,
+    "evasion_rate": 20
+  }
+]

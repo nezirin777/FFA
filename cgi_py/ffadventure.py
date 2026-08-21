@@ -129,12 +129,12 @@ def main():
         common.show_error("認証に失敗しました。再度ログインしてください。")
         
     # 4. 所持アイテムのロード
-    item = common.item_load(user_id)
+    item = common.equipment_load(user_id)
     if not item:
         # 初期装備の設定（ロード失敗時の安全策）
         item = {
-            "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-            "armor": {"name": "衣服", "def": 0, "effect": 0},
+            "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+            "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
             "accessory": {
                 "name": "なし", "effect_id": 0,
                 "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
@@ -204,14 +204,14 @@ def main():
     hit_ritu = min(150, int(chara.get("dex", 10) / 10) + 51)
     kaihi_ritu = min(50, int(chara.get("agi", 10) / 20))
     waza_ritu = min(75, int(chara.get("karma", 0) / 15) + 10 + chara.get("job_level", 0))
-    ci_plus = item.get("weapon", {}).get("effect", 0) + accessory.get("hit_rate", 0)
-    cd_plus = item.get("armor", {}).get("effect", 0) + accessory.get("evasion_rate", 0)
+    ci_plus = item.get("weapon", {}).get("hit_rate", 0) + accessory.get("hit_rate", 0)
+    cd_plus = item.get("armor", {}).get("evasion_rate", 0) + accessory.get("evasion_rate", 0)
     waza_plus = accessory.get("special_rate", 0)
     
     # 9. 画面描画
     context = {
         "chara": chara,
-        "item": item,
+        "equipment": item,
         "winner": winner,
         "choco_winner": choco_winner,
         "ztime": ztime,

@@ -253,7 +253,7 @@ class tech_16:
         if (s.waza_ritu > random.randrange(int(120))):
             s.sake2 -= 999999
             # 旧版 winner[25] は対戦相手の防具防御力。
-            s.winner_item['armor']['def'] = 0
+            s.winner_item['armor']['defense'] = 0
             s.dmg1 = (s.chara['int'] + s.chara['job_level']) * random.randrange(int(40))
             s.com1 += "<font class='red' size='5'>赤魔法メルトン！！！（防御力無効）</font><br>"
 
@@ -297,8 +297,8 @@ class tech_19:
 class tech_20:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(80 + s.syukuhuku * 40))):
-            s.item['weapon']['dmg'] += s.item['weapon']['dmg']
-            s.item['armor']['def'] += s.item['armor']['def']
+            s.item['weapon']['atk'] += s.item['weapon']['atk']
+            s.item['armor']['defense'] += s.item['armor']['defense']
             s.syukuhuku += 1
             s.com1 += f"<font class='white' size='5'>{s.chara['name']}は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</font><br>"
 
@@ -411,7 +411,7 @@ class tech_30:
 class tech_31:
     def hissatu(s):
         if (s.waza_ritu > random.randrange(int(80 + 40 * s.ora))):
-            s.item['weapon']['dmg'] = s.item['weapon']['dmg'] * 2
+            s.item['weapon']['atk'] = s.item['weapon']['atk'] * 2
             s.ora += 1
             s.com1 += "<font class='yellow' size='5'>古代魔法オーラ！！！（武器攻撃力２倍効果持続）</font><br>"
 
@@ -1263,7 +1263,7 @@ class wtech_16:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(120))):
             s.sake1 -= 999999
-            s.item['armor']['def'] = 0
+            s.item['armor']['defense'] = 0
             s.dmg2 = (s.winner['int'] + s.winner['job_level']) * random.randrange(int(40))
             s.com2 += "<font class='red' size='5'>赤魔法メルトン！！！（防御力無効）</FONT><br>"
 
@@ -1307,9 +1307,9 @@ class wtech_20:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(80))):
             # 旧版 winner[22] は対戦相手の武器攻撃力。
-            s.winner_item['weapon']['dmg'] += s.winner_item['weapon']['dmg']
+            s.winner_item['weapon']['atk'] += s.winner_item['weapon']['atk']
             # 旧版 winner[25] は対戦相手の防具防御力。
-            s.winner_item['armor']['def'] += s.winner_item['armor']['def']
+            s.winner_item['armor']['defense'] += s.winner_item['armor']['defense']
             s.com2 += f"<font class='yellow' size='3'>{s.winner['name']}は祝福の歌を歌った♪（攻撃力、防御力増大、効果持続）</FONT><br>"
 
     def watowaza(s):
@@ -1420,7 +1420,7 @@ class wtech_31:
     def whissatu(s):
         if (s.wwaza_ritu > random.randrange(int(80))):
             # 旧版 winner[22] は対戦相手の武器攻撃力。
-            s.winner_item['weapon']['dmg'] = s.winner_item['weapon']['dmg'] * 2
+            s.winner_item['weapon']['atk'] = s.winner_item['weapon']['atk'] * 2
             s.com2 += "<font class='yellow' size='5'>古代魔法オーラ！！！（武器攻撃力２倍効果持続）</FONT><br>"
 
     def watowaza(s):
@@ -1761,7 +1761,7 @@ class wtech_60:
                 s.dmg2 = int(0)
             elif (12 == s.ura):
                 s.com2 += "DEATH！！！！\n"
-                s.dmg2 = s.khp + s.item['armor']['def']
+                s.dmg2 = s.khp + s.item['armor']['defense']
                 s.sake1 -= 999999
             elif (13 == s.ura):
                 s.com2 += "TEMPERANCE！！！！\n"
@@ -1860,7 +1860,7 @@ class wtech_61:
                 s.dmg2 = int(0)
             elif (12 == s.ura):
                 s.com2 += "DEATH！！！！\n"
-                s.dmg2 = s.khp + s.item['armor']['def']
+                s.dmg2 = s.khp + s.item['armor']['defense']
                 s.sake1 -= 999999
             elif (13 == s.ura):
                 s.com2 += "TEMPERANCE！！！！\n"
@@ -2140,7 +2140,7 @@ class mons_3:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.dmg2 += random.randrange(int(s.mrand))
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='red' size='5'>黒魔法ファイガ！！！</font><br>"
 
@@ -2151,7 +2151,7 @@ class mons_4:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.dmg2 += random.randrange(int(s.mrand))
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='blue' size='5'>黒魔法ブリザガ！！！</font><br>"
 
@@ -2162,7 +2162,7 @@ class mons_5:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.dmg2 += random.randrange(int(s.mrand))
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='yellow' size='5'>黒魔法サンダガ！！！</font><br>"
 
@@ -2175,7 +2175,7 @@ class mons_6:
             s.dmhit = random.randrange(int(7))+1
             s.sake1 -= 999999
             s.dmg2 = random.randrange(int(s.mrand)) * s.dmhit
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.com2 += f"<font class='red' size='5'>古代魔法メテオ！！！</font><font color=red>{s.dmhit}ヒット！！</font><br>"
 
     def mons_atowaza(s):
@@ -2196,7 +2196,7 @@ class mons_8:
         if (s.mons_ritu > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += random.randrange(int(s.mrand)) * 2
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='red' size='5'>黒魔法クエイクを発動！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2207,7 +2207,7 @@ class mons_9:
         if (s.mons_ritu > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += random.randrange(int(s.mrand)) * 3
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='white' size='5'>禁断の魔法アルテマを発動！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2218,7 +2218,7 @@ class mons_10:
         if (s.mons_ritu > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += random.randrange(int(s.mrand)) * 5
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='blue' size='5'>青魔法ショック・ウェーブ・パルサーを発動！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2230,7 +2230,7 @@ class mons_11:
             if (random.randrange(int(3))==0):
                 s.sake1 -= 999999
                 s.dmg2 = s.khp
-                s.dmg2 += s.item['armor']['def']
+                s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='red' size='5'>時空魔法デジョンを発動！！！</font><br>"
             else:
                 s.com2 += "<font class='red' size='5'>時空魔法デジョンを発動！！！失敗！！</font><br>"
@@ -2243,7 +2243,7 @@ class mons_12:
         if (s.mons_ritu > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += random.randrange(int(s.mrand))
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='red' size='5'>ファイア・ブレス！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2259,7 +2259,7 @@ class mons_13:
             else:
                 s.sake1 -= 999999
                 s.dmg2 += random.randrange(int(s.mrand)) * 3
-                s.dmg2 += s.item['armor']['def']
+                s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='white' size='5'>禁断の魔法アルテマを発動！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2280,7 +2280,7 @@ class mons_15:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.dmg2 += random.randrange(int(s.mrand))
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.hpplus2 = s.dmg2
             s.sake1 -= 999999
             s.com2 += "<font class='dark' size='4'>暗黒魔法ドレイン！！！</font><br>"
@@ -2293,7 +2293,7 @@ class mons_16:
     def mons_waza(s):
         if (s.mons_ritu > random.randrange(int(100))):
             s.dmg2 += random.randrange(int(s.mrand)) * 7
-            s.dmg2 += s.item['armor']['def']
+            s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='white' size='5'>最強魔法アポガリプス！！！</font><br>"
 
@@ -2323,7 +2323,7 @@ class mons_18:
         if (s.mons_ritu > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += random.randrange(int(s.mrand))*3
-            s.dmg2 += s.item['armor']['def']*3
+            s.dmg2 += s.item['armor']['defense']*3
             s.com2 += "<font class='red' size='5'>メガ・フレア！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2338,7 +2338,7 @@ class mons_19:
                 s.com2 = "<font class='yellow' size='5'>ハァハァ。。。</font><br>"
             else:
                 s.dmg2 += random.randrange(int(s.mrand)) * 5
-                s.dmg2 += s.item['armor']['def']
+                s.dmg2 += s.item['armor']['defense']
                 s.sake1 -= 999999
                 s.com2 += "<font class='white' size='5'>ハァハァ。。。</font><br>"
 
@@ -2354,7 +2354,7 @@ class mons_20:
                 s.com2 += "<font class='red' size='5'>斬・鉄・剣！！！</font><font color =#cc6633 size = 5><br>「私に斬れぬものなどない」</font><br>"
             else:
                 s.dmg2 += random.randrange(int(s.mrand)) * 10
-                s.dmg2 += s.item['armor']['def']
+                s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='red' size='5'>斬・鉄・剣！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2409,7 +2409,7 @@ class mons_22:
 </font><br>"""
             else:
                 s.dmg2 += random.randrange(int(s.mrand)) * 10
-                s.dmg2 += s.item['armor']['def']
+                s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='red' size='5'>臭い息！！！</font><br>"
 
     def mons_atowaza(s):
@@ -2474,7 +2474,7 @@ class acstech_9:
 class acstech_10:
     def acskouka(s):
         if (random.randrange(int(5))==0):
-            s.item['weapon']['dmg'] = s.item['weapon']['dmg'] * 2
+            s.item['weapon']['atk'] = s.item['weapon']['atk'] * 2
             s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</font><br>"
 
 
@@ -2650,7 +2650,7 @@ class wacstech_10:
     def wacskouka(s):
         if (random.randrange(int(5))==0):
             # 旧版 winner[22] は対戦相手の武器攻撃力。
-            s.winner_item['weapon']['dmg'] = s.winner_item['weapon']['dmg'] * 2
+            s.winner_item['weapon']['atk'] = s.winner_item['weapon']['atk'] * 2
             s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！オーラの効果！！！（武器攻撃力２倍効果持続）</FONT><br>"
 
 

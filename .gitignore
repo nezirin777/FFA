@@ -16,8 +16,13 @@ save_data/*
 **/charalog/*.*
 **/charalog2/*.*
 **/item/*.*
-!data/item/
-!data/item/**
+# 現行Verの装備マスタはGitで管理する
+!data/weapon/
+!data/weapon/**
+!data/armor/
+!data/armor/**
+!data/accessory/
+!data/accessory/**
 **/souko/**/*
 **/syoku/*.*
 **/sousin/*.*

@@ -158,8 +158,8 @@ def calculate_stats(chara, item):
     if waza_ritu > 75:
         waza_ritu = 75
 
-    ci_plus = item.get("weapon", {}).get("effect", 0) + item.get("accessory", {}).get("hit_rate", 0)
-    cd_plus = item.get("armor", {}).get("effect", 0) + item.get("accessory", {}).get("evasion_rate", 0)
+    ci_plus = item.get("weapon", {}).get("hit_rate", 0) + item.get("accessory", {}).get("hit_rate", 0)
+    cd_plus = item.get("armor", {}).get("evasion_rate", 0) + item.get("accessory", {}).get("evasion_rate", 0)
     waza_plus = item.get("accessory", {}).get("special_rate", 0)
 
     # 削除までの残り日数算出 (最終更新時間 + limit日数 - 現在時刻)
@@ -215,11 +215,11 @@ def main():
         if not target_chara:
             common.show_error("指定されたキャラクターデータが見つかりません。")
 
-        target_item = common.item_load(target_id)
+        target_item = common.equipment_load(target_id)
         if not target_item:
             target_item = {
-                "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-                "armor": {"name": "衣服", "def": 0, "effect": 0},
+                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
                     "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
@@ -248,7 +248,7 @@ def main():
 
         context = {
             "chara": target_chara,
-            "item": target_item,
+            "equipment": target_item,
             "syou_name": syou_name,
             "mastered_jobs": mastered_jobs,
             "esex": "男" if target_chara.get("sex") == 1 else "女",
@@ -287,9 +287,9 @@ def main():
         formatted_players = []
         for idx, p in enumerate(page_players):
             p_id = p["id"]
-            p_item = common.item_load(p_id) or {
-                "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-                "armor": {"name": "衣服", "def": 0, "effect": 0},
+            p_item = common.equipment_load(p_id) or {
+                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
                 "accessory": {
                     "name": "なし", "effect_id": 0,
                     "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},

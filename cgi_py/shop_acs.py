@@ -55,8 +55,8 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 def get_acs_master(acs_id):
-    """装飾品マスタ(acs.json)から特定の装飾品情報を取得します。"""
-    path = os.path.join(common.BASE_DIR, config.Config['acs_file'])
+    """装飾品マスタ(accessory.json)から特定の装飾品情報を取得します。"""
+    path = os.path.join(common.BASE_DIR, config.Config['accessory_file'])
     if not os.path.exists(path):
         return None
     try:
@@ -90,7 +90,7 @@ def get_acs_master(acs_id):
 
 def load_shop_items(job_idx):
     """現在の職業に対応する装飾品店の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['acs_folder']}/acs{job_idx}.json")
+    path = os.path.join(common.BASE_DIR, f"{config.Config['accessory_folder']}/accessory{job_idx}.json")
     if not os.path.exists(path):
         return []
     try:
@@ -131,7 +131,7 @@ def main():
     common.get_lock(user_id)
     try:
         chara = common.chara_load(user_id)
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not chara or not item:
             common.release_lock(user_id)
             common.show_error("キャラクター情報が見つかりません。")
@@ -160,7 +160,7 @@ def main():
                 common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
-            souko = common.souko_load(user_id, "acs")
+            souko = common.souko_load(user_id, "accessory")
             if len(souko) >= config.Config['max_accessories']:
                 common.release_lock(user_id)
                 common.redirect_with_flash(shop_url, f"装飾品倉庫がいっぱいです！(最大 {config.Config['max_accessories']} 個)", "error")
@@ -185,7 +185,7 @@ def main():
             
             # 保存
             common.chara_regist(user_id, chara)
-            common.souko_regist(user_id, "acs", souko)
+            common.souko_regist(user_id, "accessory", souko)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、装飾品店へ戻す
@@ -228,7 +228,7 @@ def main():
             
             # 保存
             common.chara_regist(user_id, chara)
-            common.item_regist(user_id, item)
+            common.equipment_regist(user_id, item)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、装飾品店へ戻す
@@ -251,14 +251,14 @@ def main():
                 equipped_item = {
                     "id": equipped_id,
                     "name": master_item["name"],
-                    "power": master_item.get("description") or format_bonus(master_item["bonus"]),
+                    "performance": master_item.get("description") or format_bonus(master_item["bonus"]),
                     "sell_gold": int(master_item["gold"] / 3) * 2
                 }
             else:
                 equipped_item = {
                     "id": 0,
                     "name": "なし",
-                    "power": "効果なし",
+                    "performance": "効果なし",
                     "sell_gold": 0
                 }
                 
@@ -269,7 +269,7 @@ def main():
                 shop_items.append({
                     "no": r_item["no"],
                     "name": r_item["name"],
-                    "power": r_item.get("description") or format_bonus(r_item["bonus"]),
+                    "performance": r_item.get("description") or format_bonus(r_item["bonus"]),
                     "gold": r_item["gold"]
                 })
             

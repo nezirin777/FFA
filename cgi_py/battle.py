@@ -99,8 +99,8 @@ DEFAULT_WINNER = {
     "battle_win_count": 0,
     "comment": "無名",
     "equipped_item": {
-        "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
-        "armor": { "name": "衣服", "def": 0, "effect": 0 },
+        "weapon": { "name": "素手", "atk": 0, "hit_rate": 0 },
+        "armor": { "name": "衣服", "defense": 0, "evasion_rate": 0 },
         "accessory": {
             "name": "なし",
             "effect_id": 0,
@@ -188,7 +188,7 @@ def main():
                 common.show_error("自身が王者のため、挑戦できません。")
 
             # 所持アイテム・装備のロード
-            item = common.item_load(user_id)
+            item = common.equipment_load(user_id)
             if not item:
                 common.release_lock("winner")
                 common.release_lock(user_id)
@@ -268,13 +268,13 @@ def main():
                     "equipped_item": {
                         "weapon": {
                             "name": item["weapon"]["name"],
-                            "dmg": int(item["weapon"]["dmg"]),
-                            "effect": int(item["weapon"]["effect"])
+                            "atk": int(item["weapon"]["atk"]),
+                            "hit_rate": int(item["weapon"]["hit_rate"])
                         },
                         "armor": {
                             "name": item["armor"]["name"],
-                            "def": int(item["armor"]["def"]),
-                            "effect": int(item["armor"]["effect"])
+                            "defense": int(item["armor"]["defense"]),
+                            "evasion_rate": int(item["armor"]["evasion_rate"])
                         },
                         "accessory": {
                             "name": item["accessory"]["name"],

@@ -21,13 +21,13 @@
   "equipped_item": {
     "weapon": {
       "name": "神剣・グラビティースレイブ",
-      "dmg": 499000,
-      "effect": 90
+      "atk": 499000,
+      "hit_rate": 90
     },
     "armor": {
       "name": "フォースフィールド",
-      "def": 64500,
-      "effect": 499
+      "defense": 64500,
+      "evasion_rate": 499
     },
     "accessory": {
       "name": "ケアルガの結晶",

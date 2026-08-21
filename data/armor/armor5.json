@@ -1,0 +1,37 @@
+[
+  {
+    "no": 2051,
+    "name": "皮の服",
+    "defense": 40,
+    "gold": 2000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2052,
+    "name": "シルクの服",
+    "defense": 80,
+    "gold": 17000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2053,
+    "name": "冒険の服",
+    "defense": 160,
+    "gold": 75000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2054,
+    "name": "魔術師の服",
+    "defense": 340,
+    "gold": 580000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2055,
+    "name": "妖精のローブ",
+    "defense": 690,
+    "gold": 2550000,
+    "evasion_rate": 50
+  }
+]

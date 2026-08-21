@@ -187,7 +187,7 @@ FLOW("main","街・キャラクターデータ","拠点・表示",["main"],[
     S("cgi_py/ffadventure.py","main()","entry","ログイン後のメイン画面"),
     S("sub_def.common.py","decode_params() / get_cookie() / parse_cookie_user()","check","表示対象のユーザーIDと認証Cookieを確定"),
     S("sub_def.common.py","chara_load(user_id)","data","キャラクター基本能力・状態をロード"),
-    S("sub_def.common.py","item_load(user_id)","data","武器・防具・装飾品をロード"),
+    S("sub_def.common.py","equipment_load(user_id)","data","武器・防具・装飾品をロード"),
     S("cgi_py/ffadventure.py","get_winner() / farm_winner_view()","data","人間チャンプ・チョコボチャンプを取得"),
     S("sub_def.common.py","update_and_get_guests()","logic","オンライン表示を更新"),
     S("sub_def.common.py","bbs_load()","data","掲示板を取得"),
@@ -222,9 +222,9 @@ FLOW("shops","店・銀行・倉庫","装備・経済",["shop","yado","shop_item
     S("cgi_py/shop_item.py","main()","entry","武器店の表示・購入・売却"),
     S("cgi_py/shop_def.py","main()","entry","防具店の表示・購入・売却"),
     S("cgi_py/shop_acs.py","main()","entry","装飾品店の表示・購入・売却"),
-    S("sub_def.common.py","require_owner() / chara_load() / item_load()","check","本人・所持金・装備を確認"),
+    S("sub_def.common.py","require_owner() / chara_load() / equipment_load()","check","本人・所持金・装備を確認"),
     S("shop_item.py / shop_def.py / shop_acs.py","mode=buy / mode=sell","check","商品番号、価格、倉庫上限、売却可能装備を検証","NG → redirect_with_flash()"),
-    S("sub_def.common.py","chara_regist() / item_regist() / souko_regist()","data","所持金・装備・倉庫を更新"),
+    S("sub_def.common.py","chara_regist() / equipment_regist() / souko_regist()","data","所持金・装備・倉庫を更新"),
     S("sub_def.utils.py","redirect_with_flash() / render_template('shop_trade.html')","out","元の店へ戻り結果表示")
   ]),
   SEC("銀行: cgi_py/bank.py",[
@@ -236,9 +236,9 @@ FLOW("shops","店・銀行・倉庫","装備・経済",["shop","yado","shop_item
   ]),
   SEC("倉庫: cgi_py/souko.py",[
     S("cgi_py/souko.py","main()","entry","装備・倉庫の一覧と操作"),
-    S("sub_def.common.py","require_owner() / chara_load() / item_load() / souko_load()","data","本人の装備と3種類の倉庫をロード"),
-    S("cgi_py/souko.py","item/def/acs の装備・解除・削除分岐","check","番号と倉庫上限を確認","不正/満杯 → redirect_with_flash()"),
-    S("sub_def.common.py","chara_regist() / item_regist() / souko_regist() × 3","data","装備と倉庫を一括反映"),
+    S("sub_def.common.py","require_owner() / chara_load() / equipment_load() / souko_load()","data","本人の装備と3種類の倉庫をロード"),
+    S("cgi_py/souko.py","weapon/armor/accessory の装備・解除・削除分岐","check","番号と倉庫上限を確認","不正/満杯 → redirect_with_flash()"),
+    S("sub_def.common.py","chara_regist() / equipment_regist() / souko_regist() × 3","data","装備と倉庫を一括反映"),
     S("sub_def.common.py","accessory_description() / format_bonus()","util","装飾効果を表示用に整形"),
     S("sub_def.utils.py","render_template('souko.html')","out")
   ])
@@ -255,7 +255,7 @@ FLOW("battle","通常戦闘・対戦","戦闘",["select_battle","sentaku","battl
   ]),
   SEC("王者戦: cgi_py/battle.py",[
     S("cgi_py/battle.py","main()","entry","王者データへ挑戦"),
-    S("sub_def.common.py","get_lock(user_id) / chara_load() / item_load()","data","挑戦者をロックしてロード"),
+    S("sub_def.common.py","get_lock(user_id) / chara_load() / equipment_load()","data","挑戦者をロックしてロード"),
     S("cgi_py/battle.py","クールダウン・本人が王者かを確認","check","行動可能かを検証","NG → show_error()"),
     S("cgi_py/battle.py","get_lock('winner') / winner読込","data","王者データをロックしてロード"),
     S("sub_def.battle_logic.py","BattleSimulator('battle').simulate()","logic","攻撃、盗み、経験値、報酬、勝敗を計算"),
@@ -279,7 +279,7 @@ FLOW("training","修行・レジェンド","戦闘",["monster","genei","isekiai"
     S("cgi_py/monster.py","main() / mode=monster","entry","周辺探索の表示と戦闘"),
     S("cgi_py/monster.py","mode=genei / mode=isekiai","entry","幻影の城・異世界のサブモード"),
     S("sub_def.common.py","get_cookie() / chara_load() / get_lock()","check","本人認証とキャラクターロック"),
-    S("cgi_py/monster.py","load_monsters() / item_load()","data","敵マスターと装備を取得"),
+    S("cgi_py/monster.py","load_monsters() / equipment_load()","data","敵マスターと装備を取得"),
     S("sub_def.battle_logic.py","BattleSimulator(mode).simulate()","logic","修行モード別の敵と戦闘"),
     S("sub_def.battle_logic.py","process_levelup()","logic","勝利時の経験値・成長を反映"),
     S("sub_def.common.py","chara_regist() / syoku_regist() / release_lock()","data","戦闘結果を保存してロック解除"),
@@ -300,7 +300,7 @@ FLOW("training","修行・レジェンド","戦闘",["monster","genei","isekiai"
 FLOW("choco","チョコボ牧場・森","チョコボ",["chocofarm","morifarm","choco","ctrain","dendo","chocorank"],[
   SEC("牧場表示: cgi_py/chocofarm.py",[
     S("cgi_py/chocofarm.py","main()","entry","牧場トップを表示"),
-    S("sub_def.common.py","chara_load() / item_load() / choco_load() / choco_g1_load()","data","キャラ・装備・チョコボ・G1記録を取得"),
+    S("sub_def.common.py","chara_load() / equipment_load() / choco_load() / choco_g1_load()","data","キャラ・装備・チョコボ・G1記録を取得"),
     S("sub_def.common.py","is_choco_owned() / farm_winner_view()","check","所持状態とチョコボチャンプを確認"),
     S("sub_def.common.py","update_and_get_guests()","logic","牧場のオンライン表示を更新"),
     S("sub_def.utils.py","render_template('chocofarm.html')","out")
@@ -367,7 +367,7 @@ FLOW("public-info","ランキング・画像・他者情報","公開・一覧",[
   SEC("システム公開情報: cgi_py/system.py",[
     S("cgi_py/system.py","main() / mode=chara_sts","entry","他者ステータスを表示"),
     S("cgi_py/system.py","mode=img_list / mode=ranking","entry","画像一覧・登録者一覧を表示"),
-    S("sub_def.common.py","chara_load() / item_load() / syoku_load()","data","対象のキャラ・装備・職業を取得"),
+    S("sub_def.common.py","chara_load() / equipment_load() / syoku_load()","data","対象のキャラ・装備・職業を取得"),
     S("cgi_py/system.py","calculate_stats() / get_rankings_cache()","logic","表示用能力・ランキングを整形"),
     S("sub_def.utils.py","render_template('system_*.html')","out")
   ])
@@ -401,8 +401,8 @@ FLOW("common","共通処理・セーブ","共通層",[],[
     S("sub_def.utils.py","render_template()","out","Jinjaテンプレートを描画し共通コンテキストを注入")
   ]),
   SEC("データI/O・排他制御",[
-    S("sub_def.common.py","chara_load() / item_load() / syoku_load()","data","統合user_all.jsonの各領域を取得"),
-    S("sub_def.common.py","chara_regist() / item_regist() / syoku_regist()","data","統合データの対象領域を更新"),
+    S("sub_def.common.py","chara_load() / equipment_load() / syoku_load()","data","統合user_all.jsonの各領域を取得"),
+    S("sub_def.common.py","chara_regist() / equipment_regist() / syoku_regist()","data","統合データの対象領域を更新"),
     S("sub_def.file_ops.py","load_data_with_lock()","data","JSONをロック付きで読み込み、HTMLエンティティを復元"),
     S("sub_def.file_ops.py","save_data_atomically()","data","一時ファイル、fsync、os.replaceでアトミック保存"),
     S("sub_def.common.py","get_lock() / release_lock()","util","同時実行時の上書き・破損を防止"),

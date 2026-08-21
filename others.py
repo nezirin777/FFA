@@ -70,8 +70,8 @@ DEFAULT_WINNER = {
     "battle_win_count": 0,
     "comment": "無名",
     "equipped_item": {
-        "weapon": { "name": "素手", "dmg": 0, "effect": 0 },
-        "armor": { "name": "衣服", "def": 0, "effect": 0 },
+        "weapon": { "name": "素手", "atk": 0, "hit_rate": 0 },
+        "armor": { "name": "衣服", "defense": 0, "evasion_rate": 0 },
         "accessory": {
             "name": "なし",
             "effect_id": 0,
@@ -204,8 +204,8 @@ def main():
     waza_base = int(winner["karma"] / 15) + 10 + winner["job_level"]
     waza_base = min(waza_base, 75)
     
-    weapon_effect = winner["equipped_item"]["weapon"]["effect"]
-    armor_effect = winner["equipped_item"]["armor"]["effect"]
+    weapon_effect = winner["equipped_item"]["weapon"]["hit_rate"]
+    armor_effect = winner["equipped_item"]["armor"]["evasion_rate"]
     accessory = winner["equipped_item"]["accessory"]
     acs_hit = accessory.get("hit_rate", 0)
     acs_kaihi = accessory.get("evasion_rate", 0)

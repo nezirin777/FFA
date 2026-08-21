@@ -1,0 +1,37 @@
+[
+  {
+    "no": 2031,
+    "name": "ハードレザー ",
+    "defense": 45,
+    "gold": 2500,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2032,
+    "name": "ミスリルメッシュ ",
+    "defense": 90,
+    "gold": 18000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2033,
+    "name": "ムーンクレスト",
+    "defense": 180,
+    "gold": 75000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2034,
+    "name": "スタークレスト",
+    "defense": 360,
+    "gold": 580000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2035,
+    "name": "リネンキュラッサ",
+    "defense": 720,
+    "gold": 2550000,
+    "evasion_rate": 10
+  }
+]

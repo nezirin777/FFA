@@ -199,7 +199,7 @@ def main():
         enemy_data = random.choices(enemy_list, weights=weights, k=1)[0]
 
         # 所持アイテム・装備のロード
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not item:
             common.release_lock(user_id)
             common.show_error("アイテムデータが読み込めません。")

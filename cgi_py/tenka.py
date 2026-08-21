@@ -138,11 +138,11 @@ def get_tenka_data():
 
 def load_aite_equipped_item(aite_id):
     """対戦相手の装備データをロードします。無ければ初期装備を返します。"""
-    item = common.item_load(aite_id)
+    item = common.equipment_load(aite_id)
     if not item:
         item = {
-            "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-            "armor": {"name": "衣服", "def": 0, "effect": 0},
+            "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+            "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
             "accessory": {
                 "name": "なし", "effect_id": 0,
                 "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
@@ -226,7 +226,7 @@ def main():
         winner["equipped_item"] = load_aite_equipped_item(winner_id)
         
         # 自分の装備ロード
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not item:
             item = load_aite_equipped_item(user_id)
             

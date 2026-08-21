@@ -1,0 +1,37 @@
+[
+  {
+    "no": 2011,
+    "name": "木綿のローブ",
+    "defense": 35,
+    "gold": 2000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2012,
+    "name": "シルクのローブ",
+    "defense": 80,
+    "gold": 18000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2013,
+    "name": "ムーンローブ ",
+    "defense": 160,
+    "gold": 75000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2014,
+    "name": "スピリットローブ ",
+    "defense": 350,
+    "gold": 580000,
+    "evasion_rate": 10
+  },
+  {
+    "no": 2015,
+    "name": "黒のローブ",
+    "defense": 700,
+    "gold": 2550000,
+    "evasion_rate": 30
+  }
+]

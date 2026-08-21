@@ -36,36 +36,6 @@
     "cha": 19,
     "karma": 20
   },
-  "item": {
-    "weapon": {
-      "name": "バスターソード",
-      "dmg": 400,
-      "effect": 0
-    },
-    "armor": {
-      "name": "アイアンアーマー",
-      "def": 100,
-      "effect": 0
-    },
-    "accessory": {
-      "name": "オールボーナス",
-      "effect_id": 0,
-      "bonus": {
-        "str": 5,
-        "int": 5,
-        "mnd": 5,
-        "vit": 5,
-        "dex": 0,
-        "agi": 0,
-        "cha": 0,
-        "karma": 0
-      },
-      "description": "オールボーナス（極小）",
-      "hit_rate": 0,
-      "evasion_rate": 0,
-      "special_rate": 0
-    }
-  },
   "syoku": {
     "0": 34,
     "1": 0,
@@ -161,17 +131,6 @@
       "failed": 0
     }
   ],
-  "souko_item": [
-    {
-      "id": 1011,
-      "name": "メイジスタッフ",
-      "power": 80,
-      "gold": 2500,
-      "effect": 10
-    }
-  ],
-  "souko_def": [],
-  "souko_acs": [],
   "choco": {
     "id": "test",
     "pass": "test",
@@ -206,5 +165,46 @@
     "fblood": 4,
     "mother": "ネスサス",
     "mblood": 1
-  }
+  },
+  "equipment": {
+    "weapon": {
+      "name": "バスターソード",
+      "atk": 400,
+      "hit_rate": 0
+    },
+    "armor": {
+      "name": "アイアンアーマー",
+      "defense": 100,
+      "evasion_rate": 0
+    },
+    "accessory": {
+      "name": "オールボーナス",
+      "effect_id": 0,
+      "bonus": {
+        "str": 5,
+        "int": 5,
+        "mnd": 5,
+        "vit": 5,
+        "dex": 0,
+        "agi": 0,
+        "cha": 0,
+        "karma": 0
+      },
+      "description": "オールボーナス（極小）",
+      "hit_rate": 0,
+      "evasion_rate": 0,
+      "special_rate": 0
+    }
+  },
+  "souko_weapon": [
+    {
+      "id": 1011,
+      "name": "メイジスタッフ",
+      "gold": 2500,
+      "atk": 80,
+      "hit_rate": 10
+    }
+  ],
+  "souko_armor": [],
+  "souko_accessory": []
 }

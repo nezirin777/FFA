@@ -55,8 +55,8 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 def get_item_master(item_id):
-    """武器マスタ(item.json)から特定の武器情報を取得します。"""
-    path = os.path.join(common.BASE_DIR, config.Config['item_file'])
+    """武器マスタ(weapon.json)から特定の武器情報を取得します。"""
+    path = os.path.join(common.BASE_DIR, config.Config['weapon_file'])
     if not os.path.exists(path):
         return None
     try:
@@ -67,7 +67,7 @@ def get_item_master(item_id):
                 return {
                     "id": item["no"],
                     "name": item["name"],
-                    "power": item["power"],
+                    "atk": item["atk"],
                     "gold": item["gold"]
                 }
     except Exception:
@@ -76,7 +76,7 @@ def get_item_master(item_id):
 
 def load_shop_items(job_idx):
     """現在の職業に対応する武器屋の商品リストを読み込みます。"""
-    path = os.path.join(common.BASE_DIR, f"{config.Config['item_folder']}/item{job_idx}.json")
+    path = os.path.join(common.BASE_DIR, f"{config.Config['weapon_folder']}/weapon{job_idx}.json")
     if not os.path.exists(path):
         return []
     try:
@@ -102,7 +102,7 @@ def main():
     common.get_lock(user_id)
     try:
         chara = common.chara_load(user_id)
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not chara or not item:
             common.release_lock(user_id)
             common.show_error("キャラクター情報が見つかりません。")
@@ -132,10 +132,10 @@ def main():
                 common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
-            souko = common.souko_load(user_id, "item")
-            if len(souko) >= config.Config['max_items']:
+            souko = common.souko_load(user_id, "weapon")
+            if len(souko) >= config.Config['max_weapons']:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, f"武器倉庫がいっぱいです！(最大 {config.Config['max_items']} 個)", "error")
+                common.redirect_with_flash(shop_url, f"武器倉庫がいっぱいです！(最大 {config.Config['max_weapons']} 個)", "error")
                 
             # 購入処理実行
             chara["gold"] -= selected_item["gold"]
@@ -145,15 +145,15 @@ def main():
             new_weapon = {
                 "id": selected_item["no"],
                 "name": selected_item["name"],
-                "power": selected_item["power"],
+                "atk": selected_item["atk"],
                 "gold": selected_item["gold"],
-                "effect": selected_item["hit"]
+                "hit_rate": selected_item["hit_rate"]
             }
             souko.append(new_weapon)
             
             # 保存
             common.chara_regist(user_id, chara)
-            common.souko_regist(user_id, "item", souko)
+            common.souko_regist(user_id, "weapon", souko)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、武器屋へ戻す
@@ -185,11 +185,11 @@ def main():
                 
             # 装備をリセット
             chara["weapon_id"] = 0
-            item["weapon"] = {"name": "素手", "dmg": 0, "effect": 0}
+            item["weapon"] = {"name": "素手", "atk": 0, "hit_rate": 0}
             
             # 保存
             common.chara_regist(user_id, chara)
-            common.item_regist(user_id, item)
+            common.equipment_regist(user_id, item)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、武器屋へ戻す
@@ -212,19 +212,27 @@ def main():
                 equipped_item = {
                     "id": equipped_id,
                     "name": master_item["name"],
-                    "power": master_item["power"],
+                    "performance": master_item["atk"],
                     "sell_gold": int(master_item["gold"] / 3) * 2
                 }
             else:
                 equipped_item = {
                     "id": 0,
                     "name": "素手",
-                    "power": 0,
+                    "performance": 0,
                     "sell_gold": 0
                 }
                 
             # 販売リストの取得
-            shop_items = load_shop_items(job_idx)
+            shop_items = [
+                {
+                    "no": shop_item["no"],
+                    "name": shop_item["name"],
+                    "performance": shop_item["atk"],
+                    "gold": shop_item["gold"],
+                }
+                for shop_item in load_shop_items(job_idx)
+            ]
             
             # メッセージの構築
             shop_msg = (

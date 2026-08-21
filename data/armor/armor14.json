@@ -1,0 +1,51 @@
+[
+  {
+    "no": 2141,
+    "name": "ボーンメイル",
+    "defense": 444,
+    "gold": 580000,
+    "evasion_rate": 44
+  },
+  {
+    "no": 2142,
+    "name": "ファウストメイル",
+    "defense": 666,
+    "gold": 2550000,
+    "evasion_rate": 44
+  },
+  {
+    "no": 2143,
+    "name": "デモンズメイル",
+    "defense": 999,
+    "gold": 12500000,
+    "evasion_rate": 44
+  },
+  {
+    "no": 2144,
+    "name": "ダークアーマー",
+    "defense": 1999,
+    "gold": 75000000,
+    "evasion_rate": 44
+  },
+  {
+    "no": 2145,
+    "name": "冥王の鎧",
+    "defense": 4444,
+    "gold": 98000000,
+    "evasion_rate": 44
+  },
+  {
+    "no": 2146,
+    "name": "ドクロの鎧",
+    "defense": 6666,
+    "gold": 350000000,
+    "evasion_rate": 66
+  },
+  {
+    "no": 2147,
+    "name": "ルシファーアーマー",
+    "defense": 9999,
+    "gold": 900000000,
+    "evasion_rate": 99
+  }
+]

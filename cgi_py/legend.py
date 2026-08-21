@@ -206,7 +206,7 @@ def main():
             
         enemy_data = enemy_list[boss_flag]
 
-        item = common.item_load(user_id)
+        item = common.equipment_load(user_id)
         if not item:
             common.release_lock(user_id)
             common.show_error("アイテムデータが読み込めません。")

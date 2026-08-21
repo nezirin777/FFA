@@ -283,13 +283,13 @@ def main():
         new_item = {
             "weapon": {
                 "name": "素手",
-                "dmg": 0,
-                "effect": 0
+                "atk": 0,
+                "hit_rate": 0
             },
             "armor": {
                 "name": "衣服",
-                "def": 0,
-                "effect": 0
+                "defense": 0,
+                "evasion_rate": 0
             },
             "accessory": {
                 "name": "なし",
@@ -324,12 +324,12 @@ def main():
         # user_all.json 統合データ辞書の一本化構造の組み立てとアトミック保存
         user_data = {
             "chara": new_chara,
-            "item": new_item,
+            "equipment": new_item,
             "syoku": new_syoku,
             "login_log": [],
-            "souko_item": [],
-            "souko_def": [],
-            "souko_acs": [],
+            "souko_weapon": [],
+            "souko_armor": [],
+            "souko_accessory": [],
             "choco": {},
             "choco_g1": {}
         }

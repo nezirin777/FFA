@@ -82,7 +82,7 @@ def main():
         common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
         
     # アイテムデータのロード
-    item = common.item_load(user_id)
+    item = common.equipment_load(user_id)
     
     # チョコボデータのロード
     choco_raw = common.choco_load(user_id)
@@ -311,7 +311,7 @@ def main():
     context = {
         "chara": chara,
         "chara_log": chara_log,
-        "item": item,
+        "equipment": item,
         "has_choco": has_choco,
         "choco": choco_info,
         "winner": winner_raw,

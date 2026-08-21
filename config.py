@@ -175,16 +175,16 @@ Config["tac_file"] = "data/tac/tac.json"  # 戦術マスタデータファイル
 Config["tac_folder"] = "data/tac"  # 戦術データフォルダ
 
 # ショップ商品マスタ
-Config["item_file"] = "data/item/item.json"  # 武器マスタ
-Config["item_folder"] = "data/item"
-Config["max_items"] = 8
+Config["weapon_file"] = "data/weapon/weapon.json"  # 武器マスタ
+Config["weapon_folder"] = "data/weapon"
+Config["max_weapons"] = 8
 
-Config["def_file"] = "data/def/def.json"  # 防具マスタ
-Config["def_folder"] = "data/def"
-Config["max_defenses"] = 8
+Config["armor_file"] = "data/armor/armor.json"  # 防具マスタ
+Config["armor_folder"] = "data/armor"
+Config["max_armors"] = 8
 
-Config["acs_file"] = "data/acs/acs.json"  # 装飾品マスタ
-Config["acs_folder"] = "data/acs"
+Config["accessory_file"] = "data/accessory/accessory.json"  # 装飾品マスタ
+Config["accessory_folder"] = "data/accessory"
 Config["max_accessories"] = 8
 
 # モンスター・ボス出現マスタ
