@@ -121,8 +121,8 @@
                 <td><strong>職業</strong></td>
                 <td>
                     <select name="job" class="admin-form-input">
-                        {% for job_name in chara_syoku %}
-                        <option value="{{ loop.index0 }}" {% if chara.job == loop.index0 %}selected{% endif %}>{{ job_name }}</option>
+                        {% for job in chara_syoku %}
+                        <option value="{{ job.id }}" {% if chara.job == job.id %}selected{% endif %}>{{ job.name }}</option>
                         {% endfor %}
                     </select>
                 </td>

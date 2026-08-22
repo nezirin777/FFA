@@ -17,8 +17,8 @@
     <div class="system-img-grid">
         {% for img in chara_img %}
         <div class="system-img-card">
-            <img src="{{ config.img_path }}/{{ img }}" class="system-img-element"><br>
-            <span class="system-img-num">No.{{ loop.index0 }}</span>
+            <img src="{{ config.img_path }}/{{ img.file }}" class="system-img-element"><br>
+            <span class="system-img-num">No.{{ img.id }}</span>
         </div>
         {% endfor %}
     </div>

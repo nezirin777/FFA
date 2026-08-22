@@ -232,7 +232,7 @@ def main():
 
         # 称号名
         syou_idx = target_chara.get("title", 0)
-        syou_name = config.Config['titles'][syou_idx] if 0 <= syou_idx < len(config.Config['titles']) else config.Config['titles'][0]
+        syou_name = config.Config['titles'].get(syou_idx, config.Config['titles'][0])
 
         # 極めたジョブのリスト
         syoku = common.syoku_load(target_id)
@@ -241,7 +241,7 @@ def main():
             for job_idx_str, level in syoku.items():
                 try:
                     job_idx = int(job_idx_str)
-                    if level >= 60 and job_idx < len(config.Config['chara_jobs']):
+                    if level >= 60 and job_idx in config.Config['chara_jobs']:
                         mastered_jobs.append(config.Config['chara_jobs'][job_idx])
                 except ValueError:
                     pass
@@ -260,7 +260,10 @@ def main():
     elif mode == "img_list":
         # === 画像インデックス一覧表示 ===
         context = {
-            "chara_img": config.Config['chara_images']
+            "chara_img": [
+                {"id": image_id, "file": image_file}
+                for image_id, image_file in config.Config['chara_images'].items()
+            ]
         }
         common.render_template("system_img_list.html", context)
 
@@ -300,7 +303,7 @@ def main():
             formatted_players.append({
                 "chara": p,
                 "rank_num": ifr + idx + 1,
-                "job_name": config.Config['chara_jobs'][p.get("job", 0)],
+                "job_name": config.Config['chara_jobs'].get(p.get("job", 0), "不明な職業"),
                 **stats
             })
 

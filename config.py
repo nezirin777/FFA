@@ -228,134 +228,48 @@ Config["legend_battle_media"] = {
 # ==========================================
 # 9. リスト・ゲームマスタ定義 (Assets & Game Masters)
 # ==========================================
-# キャラクター立ち絵リスト
-Config["chara_images"] = [
-    "ana.gif",
-    "arce.gif",
-    "arlon.gif",
-    "balt.gif",
-    "bea.gif",
-    "bellmayl.gif",
-    "c_zoro.gif",
-    "corza.gif",
-    "dr_kureha.gif",
-    "elly.gif",
-    "emerada.gif",
-    "fei.gif",
-    "karuu.gif",
-    "kuina.gif",
-    "kuro.gif",
-    "kurokoda.gif",
-    "kuzya.gif",
-    "maru.gif",
-    "meso-s.gif",
-    "mini-aerith.gif",
-    "mini-auron.gif",
-    "mini-baku.gif",
-    "mini-barret.gif",
-    "mini-blank.gif",
-    "mini-braska.gif",
-    "mini-buricid.gif",
-    "mini-cait.gif",
-    "mini-cid.gif",
-    "mini-cid10.gif",
-    "mini-cid7.gif",
-    "mini-cinna.gif",
-    "mini-cloud.gif",
-    "mini-edea.gif",
-    "mini-eiko.gif",
-    "mini-el.gif",
-    "mini-ff9-01.gif",
-    "mini-ff9-02.gif",
-    "mini-ff9-03.gif",
-    "mini-ff9-04.gif",
-    "mini-ff9-05.gif",
-    "mini-ff9-06.gif",
-    "mini-ff9-07.gif",
-    "mini-flatley.gif",
-    "mini-freija.gif",
-    "mini-fuujin.gif",
-    "mini-garnet.gif",
-    "mini-jecht.gif",
-    "mini-kerocid.gif",
-    "mini-kimari.gif",
-    "mini-kiros.gif",
-    "mini-laguna.gif",
-    "mini-lani.gif",
-    "mini-lulu.gif",
-    "mini-marcus.gif",
-    "mini-mikoto.gif",
-    "mini-quina.gif",
-    "mini-quistis.gif",
-    "mini-raijin.gif",
-    "mini-red.gif",
-    "mini-rikku.gif",
-    "mini-rinoa.gif",
-    "mini-ruby.gif",
-    "mini-salamander.gif",
-    "mini-seif.gif",
-    "mini-selphie.gif",
-    "mini-sephi.gif",
-    "mini-seymore.gif",
-    "mini-shelinda.gif",
-    "mini-squall.gif",
-    "mini-steiner.gif",
-    "mini-tidus.gif",
-    "mini-tifa.gif",
-    "mini-vin.gif",
-    "mini-vivi.gif",
-    "mini-wakka.gif",
-    "mini-ward.gif",
-    "mini-yuffie.gif",
-    "mini-yuna.gif",
-    "mini-yunalesca.gif",
-    "mini-zell.gif",
-    "mini-zidane.gif",
-    "mog.gif",
-    "mr2.gif",
-    "ms_gw.gif",
-    "munba.gif",
-    "nami.gif",
-    "pel.gif",
-    "rufi.gif",
-    "sanji.gif",
-    "sarama.gif",
-    "shitan.gif",
-    "smoker.gif",
-    "syancs.gif",
-    "tashi.gif",
-    "usausa.gif",
-    "vivi.gif",
-    "zoro.gif",
-    # --- 追加キャラアイコン (既存のimg indexを崩さないよう末尾に追加) ---
-    "chop.gif",
-    "gf-efreet.gif",
-    "gf-karban.gif",
-    "gf-leviathan.gif",
-    "gf-siren.gif",
-    "ikon_m_c.gif",
-    "ikon_m_e.gif",
-    "ikon_m_f.gif",
-    "ikon_m_g.gif",
-    "ikon_m_m.gif",
-    "ikon_m_q.gif",
-    "ikon_m_sa.gif",
-    "ikon_m_st.gif",
-    "ikon_m_v.gif",
-    "ikon_m_z.gif",
-]
+# キャラクター立ち絵リスト（保存済みの画像番号を変更しない）
+Config["chara_images"] = {
+    0: "ana.gif", 1: "arce.gif", 2: "arlon.gif", 3: "balt.gif",
+    4: "bea.gif", 5: "bellmayl.gif", 6: "c_zoro.gif", 7: "corza.gif",
+    8: "dr_kureha.gif", 9: "elly.gif", 10: "emerada.gif", 11: "fei.gif",
+    12: "karuu.gif", 13: "kuina.gif", 14: "kuro.gif", 15: "kurokoda.gif",
+    16: "kuzya.gif", 17: "maru.gif", 18: "meso-s.gif", 19: "mini-aerith.gif",
+    20: "mini-auron.gif", 21: "mini-baku.gif", 22: "mini-barret.gif", 23: "mini-blank.gif",
+    24: "mini-braska.gif", 25: "mini-buricid.gif", 26: "mini-cait.gif", 27: "mini-cid.gif",
+    28: "mini-cid10.gif", 29: "mini-cid7.gif", 30: "mini-cinna.gif", 31: "mini-cloud.gif",
+    32: "mini-edea.gif", 33: "mini-eiko.gif", 34: "mini-el.gif", 35: "mini-ff9-01.gif",
+    36: "mini-ff9-02.gif", 37: "mini-ff9-03.gif", 38: "mini-ff9-04.gif", 39: "mini-ff9-05.gif",
+    40: "mini-ff9-06.gif", 41: "mini-ff9-07.gif", 42: "mini-flatley.gif", 43: "mini-freija.gif",
+    44: "mini-fuujin.gif", 45: "mini-garnet.gif", 46: "mini-jecht.gif", 47: "mini-kerocid.gif",
+    48: "mini-kimari.gif", 49: "mini-kiros.gif", 50: "mini-laguna.gif", 51: "mini-lani.gif",
+    52: "mini-lulu.gif", 53: "mini-marcus.gif", 54: "mini-mikoto.gif", 55: "mini-quina.gif",
+    56: "mini-quistis.gif", 57: "mini-raijin.gif", 58: "mini-red.gif", 59: "mini-rikku.gif",
+    60: "mini-rinoa.gif", 61: "mini-ruby.gif", 62: "mini-salamander.gif", 63: "mini-seif.gif",
+    64: "mini-selphie.gif", 65: "mini-sephi.gif", 66: "mini-seymore.gif", 67: "mini-shelinda.gif",
+    68: "mini-squall.gif", 69: "mini-steiner.gif", 70: "mini-tidus.gif", 71: "mini-tifa.gif",
+    72: "mini-vin.gif", 73: "mini-vivi.gif", 74: "mini-wakka.gif", 75: "mini-ward.gif",
+    76: "mini-yuffie.gif", 77: "mini-yuna.gif", 78: "mini-yunalesca.gif", 79: "mini-zell.gif",
+    80: "mini-zidane.gif", 81: "mog.gif", 82: "mr2.gif", 83: "ms_gw.gif",
+    84: "munba.gif", 85: "nami.gif", 86: "pel.gif", 87: "rufi.gif",
+    88: "sanji.gif", 89: "sarama.gif", 90: "shitan.gif", 91: "smoker.gif",
+    92: "syancs.gif", 93: "tashi.gif", 94: "usausa.gif", 95: "vivi.gif",
+    96: "zoro.gif",
+    # 追加画像は既存番号を崩さないよう末尾へ追加する。
+    97: "chop.gif", 98: "gf-efreet.gif", 99: "gf-karban.gif", 100: "gf-leviathan.gif",
+    101: "gf-siren.gif", 102: "ikon_m_c.gif", 103: "ikon_m_e.gif", 104: "ikon_m_f.gif",
+    105: "ikon_m_g.gif", 106: "ikon_m_m.gif", 107: "ikon_m_q.gif", 108: "ikon_m_sa.gif",
+    109: "ikon_m_st.gif", 110: "ikon_m_v.gif", 111: "ikon_m_z.gif",
+}
 
 # チョコボアイコン・アセット
-Config["choco_images"] = [
-    "cho-ml.gif",
-    "cho-gl.gif",
-    "cho-yl.gif",
-    "cho-kl.gif",
-    "cho-bl.gif",
-    "cho-wl.gif",
-    "cho-rl.gif",
-    "cho-pl.gif",
-]
+Config["choco_images"] = {
+    0: "cho-ml.gif", 1: "cho-gl.gif", 2: "cho-yl.gif", 3: "cho-kl.gif",
+    4: "cho-bl.gif", 5: "cho-wl.gif", 6: "cho-rl.gif", 7: "cho-pl.gif",
+}
+Config["chocobo_types"] = {
+    0: "普通", 1: "早熟", 2: "晩成", 3: "持続", 4: "超晩成", 5: "超早熟",
+}
 Config["img_farm"] = "images/chara/choco"
 Config["img_path"] = "images/chara"
 Config["farm_back"] = "images/farm.jpg"
@@ -363,40 +277,20 @@ Config["crace_back"] = "images/farm.jpg"
 
 
 # レベル進行段階・タイトル・職業一覧
-Config["titles"] = ["駆け出し", "プチ", "超", "極", "超極の殿堂"]
-Config["chara_jobs"] = [
-    "見習い戦士",
-    "戦士",
-    "ナイト",
-    "シーフ",
-    "竜騎士",
-    "赤魔道士",
-    "バード",
-    "忍者",
-    "召喚士",
-    "ビショップ",
-    "聖騎士",
-    "モンク",
-    "暗黒騎士",
-    "魔人",
-    "蒼魔道士",
-    "時魔道士",
-    "マシーナリー",
-    "グラディエーター",
-    "学者",
-    "バーサーカー",
-    "風水士",
-    "召喚術士",
-    "管理者",
-    "ものまね士",
-    "アニマルテイマー",
-    "アサシン",
-    "剣聖",
-    "バトルマスター",
-    "ホーリーナイト",
-    "歌姫",
-    "ナイトメアマイスター",
-]
+Config["titles"] = {
+    0: "駆け出し", 1: "プチ", 2: "超", 3: "極", 4: "超極の殿堂",
+}
+Config["chara_jobs"] = {
+    0: "見習い戦士", 1: "戦士", 2: "ナイト", 3: "シーフ",
+    4: "竜騎士", 5: "赤魔道士", 6: "バード", 7: "忍者",
+    8: "召喚士", 9: "ビショップ", 10: "聖騎士", 11: "モンク",
+    12: "暗黒騎士", 13: "魔人", 14: "蒼魔道士", 15: "時魔道士",
+    16: "マシーナリー", 17: "グラディエーター", 18: "学者", 19: "バーサーカー",
+    20: "風水士", 21: "召喚術士", 22: "管理者", 23: "ものまね士",
+    24: "アニマルテイマー", 25: "アサシン", 26: "剣聖", 27: "バトルマスター",
+    28: "ホーリーナイト", 29: "歌姫", 30: "ナイトメアマイスター",
+}
+Config["initial_job_ids"] = (0, 1, 2, 3)  # キャラ作成時に選択できる初期職業
 Config["jobs_html_path"] = (
     "html/manual.html#jobs"  # 職業説明(統合マニュアルの職業セクションへ)
 )
@@ -414,3 +308,24 @@ Config["max_choco_partner_list"] = 100  # お見合い候補リストの最大�
 # Mapped aliases for compatibility with legacy templates
 Config["chara_syoku"] = Config["chara_jobs"]
 Config["chara_img"] = Config["chara_images"]
+
+
+def _validate_id_maps():
+    """番号付きマスターが誤って配列へ戻らないよう起動時に検証します。"""
+    id_maps = (
+        "chara_images",
+        "choco_images",
+        "chocobo_types",
+        "titles",
+        "chara_jobs",
+    )
+    for map_name in id_maps:
+        values = Config[map_name]
+        if not isinstance(values, dict) or any(not isinstance(key, int) for key in values):
+            raise ValueError(f"{map_name} は整数IDをキーにした辞書で定義してください")
+
+    if not set(Config["initial_job_ids"]).issubset(Config["chara_jobs"]):
+        raise ValueError("initial_job_ids に未定義の職業IDが含まれています")
+
+
+_validate_id_maps()

@@ -83,8 +83,8 @@
                 <div class="layout-stack layout-stack--sm">
                     <label><b>初期職業:</b></label>
                     <select class="form-control" name="syoku">
-                        {% for syoku_name in chara_syoku_list %}
-                        <option value="{{ loop.index0 }}">{{ syoku_name }}</option>
+                        {% for syoku in chara_syoku_list %}
+                        <option value="{{ syoku.id }}">{{ syoku.name }}</option>
                         {% endfor %}
                     </select>
                     <div class="note-text">※職業ごとに初期能力値（力、知能、信仰心など）の割り振りが異なります。</div>

@@ -568,8 +568,8 @@ def farm_winner_view(winner_data=None):
         abilities.append({"label": label, "value": value, "image": rank_images[rank_index]})
 
     image_index = as_int(winner.get("no"))
-    images = Config.get("choco_images", [])
-    image = images[image_index] if 0 <= image_index < len(images) else ""
+    images = Config.get("choco_images", {})
+    image = images.get(image_index, images.get(0, "")) if isinstance(images, dict) else ""
     winner["run"] = as_int(winner.get("run"))
     winner["win"] = win_count
     winner["ren"] = as_int(winner.get("ren"))
@@ -625,5 +625,4 @@ def choco_g1_regist(user_id, g1_data):
     data = load_user_all(user_id) or {}
     data["choco_g1"] = g1_data
     save_user_unified(user_id, data)
-
 

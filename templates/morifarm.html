@@ -85,7 +85,7 @@
         <table class="farm-status-table">
             <tr>
                 <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza < types|length else "不明" }}</td>
+                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza in types else "不明" }}</td>
                 <td class="farm-lbl-header">父 / 母</td>
                 <td class="farm-val-cell">{{ cy.father }} / {{ cy.mother }}</td>
             </tr>
@@ -120,7 +120,7 @@
         <table class="farm-status-table">
             <tr>
                 <td class="farm-lbl-header">タイプ</td>
-                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza < types|length else "不明" }}</td>
+                <td class="farm-val-cell">{{ types[cy.waza] if cy.waza in types else "不明" }}</td>
                 <td class="farm-lbl-header">戦績</td>
                 <td class="farm-val-cell">{{ cy.run }} 戦 {{ cy.win }} 勝</td>
             </tr>

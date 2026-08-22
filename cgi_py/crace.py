@@ -361,7 +361,7 @@ def main():
     near = 0
     hitoritabi = False
     
-    types_str = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
+    types_str = config.Config["chocobo_types"]
 
     # レースのループ
     step = 0

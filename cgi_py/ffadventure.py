@@ -165,18 +165,14 @@ def main():
     
     # 称号
     title_idx = chara["title"]
-    if title_idx < 0 or title_idx >= len(config.Config['titles']):
-        title_idx = 0
-    syou = config.Config['titles'][title_idx]
+    syou = config.Config['titles'].get(title_idx, config.Config['titles'][0])
     
     # 宿屋代金の計算
     yado_daix = int(config.Config['inn_cost'] * chara["level"])
     
     # 職業名の取得
     job_idx = chara["job"]
-    if job_idx < 0 or job_idx >= len(config.Config['chara_jobs']):
-        job_idx = 0
-    job_name = config.Config['chara_jobs'][job_idx]
+    job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
     
     # HPパーセンテージ計算
     if chara["max_hp"] > 0:

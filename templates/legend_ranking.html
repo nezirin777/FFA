@@ -13,7 +13,7 @@
             <div class="system-rank-badge">#{{ loop.index }}</div>
             <div class="system-player-img-box">
                 <a href="login.py?mode=chara_sts&id={{ p.id }}">
-                    {% if p.img >= 0 and p.img < chara_img|length %}
+                    {% if p.img in chara_img %}
                     <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" class="system-player-img" alt="{{ p.name }}">
                     {% endif %}
                 </a><br>

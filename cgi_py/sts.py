@@ -113,7 +113,7 @@ def main():
         # 画像インデックスチェック
         try:
             chara_img_idx = int(chara_img_idx)
-            if chara_img_idx < 0 or chara_img_idx >= len(config.Config['chara_images']):
+            if chara_img_idx not in config.Config['chara_images']:
                 chara_img_idx = 0
         except ValueError:
             chara_img_idx = 0
@@ -192,9 +192,7 @@ def main():
 
         # 称号の取得
         syou_idx = chara.get("title", 0)
-        if syou_idx < 0 or syou_idx >= len(config.Config['titles']):
-            syou_idx = 0
-        syou_name = config.Config['titles'][syou_idx]
+        syou_name = config.Config['titles'].get(syou_idx, config.Config['titles'][0])
 
         # 極めたジョブのリスト
         syoku = common.syoku_load(user_id)
@@ -203,7 +201,7 @@ def main():
             for job_idx_str, level in syoku.items():
                 try:
                     job_idx = int(job_idx_str)
-                    if level >= 60 and job_idx < len(config.Config['chara_jobs']):
+                    if level >= 60 and job_idx in config.Config['chara_jobs']:
                         mastered_jobs.append(config.Config['chara_jobs'][job_idx])
                 except ValueError:
                     pass
@@ -233,7 +231,7 @@ def main():
 
         # ジョブ熟練度の全表示用（これまでのジョブ経験）
         all_jobs_status = []
-        for i, job_name in enumerate(config.Config['chara_jobs']):
+        for i, job_name in config.Config['chara_jobs'].items():
             # 管理ジョブは除外またはスキップ
             if job_name == "管理者" and chara.get("job") != i:
                 continue

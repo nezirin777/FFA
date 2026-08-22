@@ -100,7 +100,7 @@ def main():
         "e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif", "a.gif", "a.gif", "s.gif", "s.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif"
     ]
     # タイプ一覧
-    types = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
+    types = config.Config["chocobo_types"]
 
     # === トロフィー（重賞勝利履歴）の抽出 ===
     G1_RACES = {
@@ -195,7 +195,7 @@ def main():
             "sex": csex,
             "run": crun,
             "win": cwin,
-            "waza": types[choco_raw.get("type", 0)] if choco_raw.get("type", 0) < len(types) else "不明",
+            "waza": types.get(choco_raw.get("type", 0), "不明"),
             "cls": cls,
             "train": ctrain,
             "max": choco_raw.get("max", 10),

@@ -69,6 +69,11 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
 
+def choco_image_file(image_id):
+    """チョコボ画像IDから画像ファイルを取得します。"""
+    images = config.Config["choco_images"]
+    return images.get(image_id, images.get(0, ""))
+
 # Windows等で標準出力をUTF-8にするための設定
 def main():
     # CGIパラメータ解析
@@ -103,7 +108,7 @@ def main():
         "g.gif", "e.gif", "d.gif", "c.gif", "b.gif", "a.gif", "s.gif", "ss.gif"
     ]
     # タイプ一覧
-    types = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
+    types = config.Config["chocobo_types"]
 
     context = {
         "chara": chara,
@@ -142,7 +147,7 @@ def main():
                 
             # タイプ/技の取得
             ctype = choco_raw.get("type", 0)
-            waza = types[ctype] if ctype < len(types) else "不明"
+            waza = types.get(ctype, "不明")
             
             # 調子の判定
             clife = choco_raw.get("life", 1000)
@@ -160,7 +165,7 @@ def main():
             
             # チョコボ画像Noからファイル名を取得
             cno = choco_raw.get("no", 0)
-            img_file = config.Config['choco_images'][cno] if cno < len(config.Config['choco_images']) else config.Config['choco_images'][0]
+            img_file = choco_image_file(cno)
             
             choco_data = {
                 "name": choco_raw.get("name", "名無しのチョコボ"),
@@ -222,7 +227,7 @@ def main():
         # 自身のチョコボ情報
         cno = choco_raw.get("no", 0)
         ctype = choco_raw.get("type", 0)
-        waza = types[ctype] if ctype < len(types) else "不明"
+        waza = types.get(ctype, "不明")
         
         choco_info = {
             "no": cno,
@@ -303,14 +308,14 @@ def main():
             "name": choco_data["name"],
             "sex": choco_data["sex"],
             "cls": "新馬",
-            "waza": types[choco_data["type"]],
+            "waza": types.get(choco_data["type"], "不明"),
             "run": 0,
             "win": 0,
             "max": 10,
             "life": 100,
             "csta": "最悪",
             "money": 0,
-            "img_file": config.Config['choco_images'][choco_data["no"]],
+            "img_file": choco_image_file(choco_data["no"]),
             "no": choco_data["no"]
         }
         
@@ -622,7 +627,7 @@ def main():
         # お見合い結果の情報をcontextに格納
         choco_info = {
             "no": cno,
-            "waza": types[ctype],
+            "waza": types.get(ctype, "不明"),
             "father": father_name,
             "fblood": cfblood,
             "mother": mother_name,
@@ -733,7 +738,7 @@ def main():
             "money": money,
             "run": cfrun,
             "win": cfwin,
-            "waza": types[cftype]
+            "waza": types.get(cftype, "不明")
         }
         common.render_template("morifarm.html", context)
 
@@ -801,14 +806,14 @@ def main():
             "name": st_name,
             "sex": choco_raw.get("sex", 0),
             "cls": cls,
-            "waza": types[choco_raw.get("type", 0)],
+            "waza": types.get(choco_raw.get("type", 0), "不明"),
             "run": choco_raw.get("run", 0),
             "win": cwin,
             "max": choco_raw.get("max", 10),
             "life": clife,
             "csta": csta,
             "money": choco_raw.get("gold", 0) * 100,
-            "img_file": config.Config['choco_images'][cno],
+            "img_file": choco_image_file(cno),
             "no": cno
         }
         

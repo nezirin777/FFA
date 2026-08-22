@@ -196,7 +196,10 @@ def main():
             "pass": admin_pass,
             "chara": chara,
             "mode": mode,
-            "chara_syoku": config.Config['chara_jobs']
+            "chara_syoku": [
+                {"id": job_id, "name": job_name}
+                for job_id, job_name in config.Config['chara_jobs'].items()
+            ]
         }
         common.render_template("admin.html", context)
         return

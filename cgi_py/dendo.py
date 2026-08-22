@@ -185,7 +185,7 @@ def main():
     rank_imgs = [
         "e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif", "a.gif", "a.gif", "s.gif", "s.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif"
     ]
-    types = ['普通', '早熟', '晩成', '持続', '超晩成', '超早熟']
+    types = config.Config["chocobo_types"]
     
     formatted_dendo = []
 

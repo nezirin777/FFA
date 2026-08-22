@@ -150,7 +150,7 @@ def main():
                 
             try:
                 target_syoku = int(syoku_target_str)
-                if target_syoku < 0 or target_syoku >= len(config.Config['chara_jobs']):
+                if target_syoku not in config.Config['chara_jobs']:
                     common.release_lock(user_id)
                     common.show_error("指定された職業は存在しません。")
             except ValueError:
@@ -222,7 +222,7 @@ def main():
                 "chara": chara,
                 "user_id": user_id,
                 "msg_penalty": msg_penalty,
-                "job_name": config.Config['chara_jobs'][target_syoku]
+                "job_name": config.Config['chara_jobs'].get(target_syoku, "不明な職業")
             }
             common.render_template("tensyoku_result.html", context)
             
@@ -252,7 +252,7 @@ def main():
                     if req_ok:
                         job_info = {
                             "id": i,
-                            "name": config.Config['chara_jobs'][i],
+                            "name": config.Config['chara_jobs'].get(i, "不明な職業"),
                             "master_level": syoku_master[i]
                         }
                         available_jobs.append(job_info)

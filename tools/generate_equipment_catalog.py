@@ -112,7 +112,7 @@ def item_row(kind: str, label: str, item: dict[str, Any]) -> str:
 
 def build_groups() -> tuple[dict[int, list[tuple[str, str, dict[str, Any]]]], list[tuple[str, str, dict[str, Any]]]]:
     jobs = config.Config["chara_jobs"]
-    groups = {job_id: [] for job_id in range(len(jobs))}
+    groups = {job_id: [] for job_id in jobs}
     special: list[tuple[str, str, dict[str, Any]]] = []
 
     for kind, label, config_key in EQUIPMENT_TYPES:
@@ -154,7 +154,7 @@ def render_html() -> str:
     jobs = config.Config["chara_jobs"]
     navigation = []
     sections = []
-    for job_id, job_name in enumerate(jobs):
+    for job_id, job_name in jobs.items():
         if groups[job_id]:
             anchor = f"job-{job_id}"
             navigation.append(f'<a href="#{anchor}">{escape(job_id)}: {escape(job_name)}</a>')

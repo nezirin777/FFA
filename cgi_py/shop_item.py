@@ -110,7 +110,7 @@ def main():
             
         # 共通情報
         job_idx = chara["job"]
-        job_name = config.Config['chara_jobs'][job_idx]
+        job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
         shop_url = f"{config.Config['shop_item_script']}&id={user_id}"
         
         # 1. 購入処理

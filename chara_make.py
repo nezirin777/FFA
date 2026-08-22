@@ -57,6 +57,10 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 Config = config.Config
 
+def random_asset_id(assets):
+    """ID付きアセットから既存の番号をランダムに選びます。"""
+    return random.choice(tuple(assets))
+
 def get_all_players():
     """全プレイヤーデータをロードしてリストで返します"""
     players = []
@@ -176,10 +180,10 @@ def main():
         chara_img_idx_str = params.get("chara", "").strip()
         try:
             chara_img_idx = int(chara_img_idx_str)
-            if chara_img_idx < 0 or chara_img_idx >= len(Config['chara_images']):
-                chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
+            if chara_img_idx not in Config['chara_images']:
+                chara_img_idx = random_asset_id(Config['chara_images'])
         except ValueError:
-            chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
+            chara_img_idx = random_asset_id(Config['chara_images'])
             
         # 次の make_end フォーム送信用の新しい CSRF トークン生成
         csrf_token = token_generate(session)
@@ -217,10 +221,10 @@ def main():
         chara_img_idx_str = params.get("chara", "").strip()
         try:
             chara_img_idx = int(chara_img_idx_str)
-            if chara_img_idx < 0 or chara_img_idx >= len(Config['chara_images']):
-                chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
+            if chara_img_idx not in Config['chara_images']:
+                chara_img_idx = random_asset_id(Config['chara_images'])
         except ValueError:
-            chara_img_idx = random.randint(0, len(Config['chara_images']) - 1)
+            chara_img_idx = random_asset_id(Config['chara_images'])
             
         # 職業ごとの初期ステータス割り振り
         if syoku == 1: # 戦士
@@ -363,8 +367,14 @@ def main():
         
         context = {
             "csrf_token": csrf_token,
-            "chara_img_list": Config['chara_images'],
-            "chara_syoku_list": Config['chara_jobs'][:4], # 初期職業の4つ (0..3)
+            "chara_img_list": [
+                {"id": image_id, "file": image_file}
+                for image_id, image_file in Config['chara_images'].items()
+            ],
+            "chara_syoku_list": [
+                {"id": job_id, "name": Config['chara_jobs'][job_id]}
+                for job_id in Config['initial_job_ids']
+            ],
             "img_all_list": Config['img_all_list'],
             "vote_gazou": Config['vote_image']
         }

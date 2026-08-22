@@ -101,9 +101,9 @@ def get_legend_players():
         chara = common.chara_load(user_id)
         if not chara or int(chara.get("title", 0)) <= 0:
             continue
-        title_index = min(int(chara.get("title", 0)), len(config.Config["titles"]) - 1)
+        title_index = int(chara.get("title", 0))
         chara = dict(chara)
-        chara["title_name"] = config.Config["titles"][title_index]
+        chara["title_name"] = config.Config["titles"].get(title_index, config.Config["titles"][0])
         chara["battle_count"] = int(chara.get("battle_count", 0))
         chara["win_count"] = int(chara.get("win_count", 0))
         players.append(chara)

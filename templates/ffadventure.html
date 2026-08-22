@@ -481,7 +481,7 @@
             <div class="card ff-bbs-post-card">
                 <div class="card__body">
                     <div class="ff-bbs-post-head">
-                        {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
+                        {% if chara_img and p.img is not none and p.img in chara_img %}
                         <a href="{{ config.system_script }}?mode=chara_sts&id={{ p.id }}" title="{{ p.name }}のステータスを表示">
                             <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="{{ p.name }}" class="ff-bbs-avatar" width="32" height="32">
                         </a>

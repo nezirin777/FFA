@@ -568,7 +568,7 @@ def process_levelup(chara, exp_gained, syoku_master=None):
         chara["job_level"] += lvup_count
         
         # 熟練度が60に達し、マスター登録される場合
-        job_name = config.Config['chara_jobs'][job_idx] if job_idx < len(config.Config['chara_jobs']) else "不明な職業"
+        job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
         if chara["job_level"] >= 60 and old_job_level < 60:
             comment += f'<font class=red size=5>{job_name}をマスターしました！！</font><br>'
             if syoku_master is not None:

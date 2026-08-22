@@ -36,7 +36,7 @@
                         </td>
                         <td>
                             <a href="login.py?mode=chara_sts&id={{ p.id }}" class="rank-avatar-link">
-                                {% if chara_img and p.img is not none and p.img >= 0 and p.img < chara_img|length %}
+                                {% if chara_img and p.img is not none and p.img in chara_img %}
                                 <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" class="rank-avatar" alt="{{ p.name }}">
                                 {% endif %}
                             </a><br>
