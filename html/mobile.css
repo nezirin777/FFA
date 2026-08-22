@@ -21,8 +21,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    margin-bottom: var(--space-xs);
+  }
+
+  /* 確認ダイアログのボタンは横並びを維持する */
+  .modal-buttons .btn {
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
+    margin-bottom: 0;
   }
   
   /* 3. モバイル用マージン・パディング調整 */
@@ -31,7 +37,6 @@
   }
   
   .card {
-    padding: var(--space-s);
     margin-bottom: var(--space-s);
   }
   
@@ -73,18 +78,8 @@
     overflow-x: visible;
   }
 
-  .ff-choco-winner-wrapper {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .ff-choco-winner-link {
-    width: 100%;
-    text-align: right;
-  }
-
-  .farm-winner-board {
-    align-items: flex-start;
+  .ff-choco-winner-card {
+    padding: var(--space-s);
   }
 
   .farm-winner-abilities {
@@ -124,6 +119,9 @@
   .passchange-actions form {
     width: 100%;
   }
+  .passchange-actions form .btn {
+    width: 100%;
+  }
   
   .chara-make-actions {
     flex-direction: column;
@@ -131,6 +129,9 @@
     gap: var(--space-s);
   }
   .chara-make-actions form {
+    width: 100%;
+  }
+  .chara-make-actions form .btn {
     width: 100%;
   }
   
@@ -157,6 +158,9 @@
     gap: var(--space-s);
   }
   .tensyoku-result-actions form {
+    width: 100%;
+  }
+  .tensyoku-result-actions form .btn {
     width: 100%;
   }
   .tensyoku-nav-btn {
@@ -209,6 +213,7 @@
   
   .farm-winner-board {
     flex-direction: column;
+    align-items: center;
     text-align: center;
   }
   
@@ -217,8 +222,10 @@
     align-items: stretch;
     gap: var(--space-s);
   }
-  .farm-action-form {
+  form.farm-action-form {
     width: 100%;
+    flex-direction: column;
+    align-items: stretch;
   }
   .farm-btn,
   .farm-select {
