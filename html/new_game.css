@@ -2072,7 +2072,7 @@ img {
 
 .system-img-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 15px;
   background: rgba(0, 0, 0, 0.2);
   padding: 20px;
@@ -2082,10 +2082,12 @@ img {
 }
 
 .system-img-card {
+  box-sizing: border-box;
+  min-width: 0;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-s);
-  padding: 8px;
+  padding: 10px;
   text-align: center;
   transition: all var(--transition-fast, 0.2s);
 }
@@ -2097,8 +2099,10 @@ img {
 }
 
 .system-img-element {
-  width: 48px;
-  height: 48px;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-s);
   margin-bottom: var(--space-xs);
   display: block;
@@ -2106,9 +2110,19 @@ img {
 }
 
 .system-img-num {
+  display: block;
   font-weight: bold;
   color: var(--yellow);
   font-size: 0.8rem;
+}
+
+.system-img-name {
+  display: block;
+  min-width: 0;
+  color: var(--white);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .system-player-list {

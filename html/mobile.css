@@ -69,8 +69,8 @@
   }
   
   .ff-grid {
-    grid-template-columns: repeat(3, minmax(150px, 1fr));
-    overflow-x: auto;
+    grid-template-columns: 1fr;
+    overflow-x: visible;
   }
 
   .ff-choco-winner-wrapper {

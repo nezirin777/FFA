@@ -261,7 +261,11 @@ def main():
         # === 画像インデックス一覧表示 ===
         context = {
             "chara_img": [
-                {"id": image_id, "file": image_file}
+                {
+                    "id": image_id,
+                    "file": image_file,
+                    "name": os.path.splitext(os.path.basename(image_file))[0],
+                }
                 for image_id, image_file in config.Config['chara_images'].items()
             ]
         }
