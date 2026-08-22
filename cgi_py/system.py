@@ -231,7 +231,7 @@ def main():
         stats = calculate_stats(target_chara, target_item)
 
         # 称号名
-        syou_idx = target_chara.get("title", 0)
+        syou_idx = target_chara.get("title_id", 0)
         syou_name = config.Config['titles'].get(syou_idx, config.Config['titles'][0])
 
         # 極めたジョブのリスト

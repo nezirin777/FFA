@@ -165,7 +165,7 @@ def main():
             common.show_error("選択された戦術は存在しないか、使用する条件を満たしていません。")
 
         # 変更保存
-        chara["unused30"] = senjutu_no # Perlの$chara[30]に対応
+        chara["tactic_id"] = senjutu_no # 旧版の戦術番号列に対応
         
         common.get_lock(user_id)
         try:
@@ -185,7 +185,7 @@ def main():
     else:
         # === 戦術選択画面表示 (senjutu) ===
         # 現在の戦術を判定
-        now_tac_no = chara.get("unused30", 0)
+        now_tac_no = chara.get("tactic_id", 0)
         now_tac_name = "普通に戦う"
         now_tac_desc = "戦術を使用せずに戦います"
         

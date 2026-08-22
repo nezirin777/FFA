@@ -99,15 +99,15 @@ def get_legend_players():
         if not os.path.isdir(os.path.join(save_dir, user_id)):
             continue
         chara = common.chara_load(user_id)
-        if not chara or int(chara.get("title", 0)) <= 0:
+        if not chara or int(chara.get("title_id", 0)) <= 0:
             continue
-        title_index = int(chara.get("title", 0))
+        title_index = int(chara.get("title_id", 0))
         chara = dict(chara)
         chara["title_name"] = config.Config["titles"].get(title_index, config.Config["titles"][0])
         chara["battle_count"] = int(chara.get("battle_count", 0))
         chara["win_count"] = int(chara.get("win_count", 0))
         players.append(chara)
-    players.sort(key=lambda p: (-int(p.get("title", 0)), -int(p.get("level", 0)), p.get("name", "")))
+    players.sort(key=lambda p: (-int(p.get("title_id", 0)), -int(p.get("level", 0)), p.get("name", "")))
     return players
 def main():
     # 1. メンテナンスチェック
@@ -166,7 +166,7 @@ def main():
             boss_file_idx = 0
 
         # 称号レベル制限チェック
-        if chara["title"] < boss_file_idx:
+        if chara["title_id"] < boss_file_idx:
             common.release_lock(user_id)
             common.show_error("この階層に挑戦する資格がありません！")
 
@@ -248,8 +248,8 @@ def main():
                 finally:
                     common.release_lock("all_message_post")
                 
-                if chara["title"] < boss_file_idx + 1:
-                    chara["title"] = boss_file_idx + 1
+                if chara["title_id"] < boss_file_idx + 1:
+                    chara["title_id"] = boss_file_idx + 1
                 chara["boss_flag"] = config.Config['legend_progress_reset_value']
             else:
                 comment += f'<b><font size=5>{chara["name"]} は、戦闘に勝利した！！HPが少し回復した♪ 残り {chara["boss_flag"]} 体・・・</font></b><br>'

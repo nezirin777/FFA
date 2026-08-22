@@ -182,7 +182,7 @@ def main():
             # 転職実行
             chara["job"] = target_syoku
             if config.Config['reset_tactics_on_job_change']:
-                chara["unused30"] = 0 # 転職後の戦術（タクティクス）をクリア
+                chara["tactic_id"] = 0 # 転職後の戦術（タクティクス）をクリア
                 
             # 転職先職業の熟練度レベルをロードして設定
             chara["job_level"] = syoku_master[target_syoku]

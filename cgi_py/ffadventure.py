@@ -164,7 +164,7 @@ def main():
     next_ex = chara["level"] * config.Config['level_up_exp_coeff']
     
     # 称号
-    title_idx = chara["title"]
+    title_idx = chara["title_id"]
     syou = config.Config['titles'].get(title_idx, config.Config['titles'][0])
     
     # 宿屋代金の計算

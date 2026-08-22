@@ -174,7 +174,7 @@ def main():
 
         # 作戦（戦術）の取得
         tac_name = "普通に戦う"
-        tac_no = chara.get("unused30", 0) # Perlの$chara[30]に対応
+        tac_no = chara.get("tactic_id", 0) # 旧版の戦術番号列に対応
         tac_ex = "戦術を使用せずに戦います"
         
         tac_file_path = os.path.join(common.BASE_DIR, config.Config['tac_file'])
@@ -191,7 +191,7 @@ def main():
                 pass
 
         # 称号の取得
-        syou_idx = chara.get("title", 0)
+        syou_idx = chara.get("title_id", 0)
         syou_name = config.Config['titles'].get(syou_idx, config.Config['titles'][0])
 
         # 極めたジョブのリスト

@@ -23,6 +23,12 @@ from typing import Any, Iterable
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from sub_def.data_schema import order_user_data
+
 DEFAULT_OLD_ROOT = SCRIPT_DIR.parent
 DEFAULT_OUTPUT = SCRIPT_DIR / "users"
 DEFAULT_SHARED_OUTPUT = SCRIPT_DIR / "shared"
@@ -65,9 +71,9 @@ CHARA_COLUMNS = (
     ("last_time", 27, True),
     ("boss_flag", 28, True),
     ("armor_id", 29, True),
-    ("unused30", 30, True),
+    ("tactic_id", 30, True),
     ("accessory_id", 31, True),
-    ("title", 32, True),
+    ("title_id", 32, True),
     ("job_level", 33, True),
 )
 
@@ -502,7 +508,7 @@ def convert_winner(
                 **rates,
             },
         },
-        "unused30": to_int(cols[37]),
+        "tactic_id": to_int(cols[37]),
         "host": cols[38],
         "job_level": to_int(cols[39]),
         "last_challenger": {
@@ -679,6 +685,7 @@ def main() -> int:
     for chara_path in sorted(chara_dir.glob("*.cgi")):
         user = convert_user(chara_path, old_root, masters, legacy_masters)
         message_sent = user.pop("_message_sent", [])
+        user = order_user_data(user)
         converted += 1
         if not args.dry_run:
             user_dir = output / chara_path.stem

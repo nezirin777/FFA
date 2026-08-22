@@ -393,13 +393,13 @@
                                         <input type="hidden" name="id" value="{{ chara.id }}">
                                         <select class="form-control ff-boss-select" name="boss_file">
                                             <option value="0">うわさのほこら（初心者を口を開けて・・）</option>
-                                            {% if chara.title > 0 %}
+                                            {% if chara.title_id > 0 %}
                                                 <option value="1">古の神殿（熟練者も命を落とすという・・）</option>
                                             {% endif %}
-                                            {% if chara.title > 1 %}
+                                            {% if chara.title_id > 1 %}
                                                 <option value="2">勇者の洞窟（伝説の勇者が訪れたという・・）</option>
                                             {% endif %}
-                                            {% if chara.title > 2 %}
+                                            {% if chara.title_id > 2 %}
                                                 <option value="3">ガイアフォース（神のみが入ることを許されている・・）</option>
                                             {% endif %}
                                         </select>

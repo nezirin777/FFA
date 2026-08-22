@@ -113,7 +113,7 @@ DEFAULT_WINNER = {
             "description": ""
         }
     },
-    "unused30": 0,
+    "tactic_id": 0,
     "host": "127.0.0.1",
     "job_level": 0,
     "last_challenger": {
@@ -295,7 +295,7 @@ def main():
                             "description": common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
                         }
                     },
-                    "unused30": int(chara.get("unused30", 0)),
+                    "tactic_id": int(chara.get("tactic_id", 0)),
                     "host": chara["host"],
                     "job_level": int(chara["job_level"]),
                     "last_challenger": {

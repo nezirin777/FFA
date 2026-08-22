@@ -11,6 +11,7 @@ from typing import Any
 # パス解決のための親ディレクトリ参照
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from . import exLock
+from .data_schema import order_user_data
 
 try:
     import config
@@ -96,10 +97,12 @@ def load_user_all(user_id: str) -> dict[str, Any] | None:
     user_dir = _user_path(user_id)
     file_path = os.path.join(user_dir, "user_all.json")
     # ユーザー名単位の排他ロックを掛けて安全にロード
-    return load_data_with_lock(file_path, user_id)
+    data = load_data_with_lock(file_path, user_id)
+    return order_user_data(data) if isinstance(data, dict) else data
 
 def save_user_all(user_id: str, data: dict[str, Any]) -> None:
     """統合されたユーザーデータをアトミックに保存します。"""
+    data = order_user_data(data)
     if isinstance(data.get("chara"), dict):
         data["chara"].pop("site", None)
         data["chara"].pop("url", None)

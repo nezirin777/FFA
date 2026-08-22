@@ -84,7 +84,7 @@ DEFAULT_WINNER = {
             "description": ""
         }
     },
-    "unused30": 0,
+    "tactic_id": 0,
     "host": "127.0.0.1",
     "job_level": 0,
     "last_challenger": {

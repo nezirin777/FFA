@@ -2,39 +2,67 @@
   "chara": {
     "id": "test",
     "pass": "pbkdf2$/Qmn+365WCoTbVNM9CRaHg==$GKxwwHn4fpgwPoQgy2ik/0FsutjrewRHZgwtkDFQYWw=",
-    "site": "いくのＣＧＩのＨＰ",
-    "url": "http://www.eriicu.com",
     "name": "testキャラ",
-    "sex": 1,
     "img": 11,
+    "sex": 1,
+    "level": 34,
+    "max_hp": 2936,
+    "hp": 2936,
     "str": 54,
     "int": 25,
-    "dex": 27,
-    "vit": 54,
-    "agi": 33,
     "mnd": 20,
+    "vit": 54,
+    "dex": 27,
+    "agi": 33,
+    "cha": 19,
+    "karma": 20,
     "job": 1,
-    "hp": 2936,
-    "max_hp": 2936,
+    "job_level": 1,
     "exp": 3627,
-    "level": 34,
     "gold": 10000,
+    "bank": 1000,
+    "weapon_id": 1003,
+    "armor_id": 2002,
+    "accessory_id": 43,
     "battle_count": 56,
     "win_count": 40,
-    "comment": "テストです！",
-    "weapon_id": 1003,
     "battle_limit": 9986,
+    "boss_flag": 10,
+    "comment": "テストです！",
     "host": "127.0.0.1",
     "last_time": 1785390297,
-    "boss_flag": 10,
-    "armor_id": 2002,
-    "unused30": 0,
-    "accessory_id": 43,
-    "title": 0,
-    "job_level": 1,
-    "bank": 1000,
-    "cha": 19,
-    "karma": 20
+    "title_id": 0,
+    "tactic_id": 0
+  },
+  "equipment": {
+    "weapon": {
+      "name": "バスターソード",
+      "atk": 400,
+      "hit_rate": 0
+    },
+    "armor": {
+      "name": "アイアンアーマー",
+      "defense": 100,
+      "evasion_rate": 0
+    },
+    "accessory": {
+      "name": "オールボーナス",
+      "effect_id": 0,
+      "bonus": {
+        "str": 5,
+        "int": 5,
+        "mnd": 5,
+        "vit": 5,
+        "dex": 0,
+        "agi": 0,
+        "cha": 0,
+        "karma": 0
+      },
+      "hit_rate": 0,
+      "evasion_rate": 0,
+      "special_rate": 0,
+      "description": "オールボーナス（極小）"
+    }
   },
   "syoku": {
     "0": 34,
@@ -131,6 +159,17 @@
       "failed": 0
     }
   ],
+  "souko_weapon": [
+    {
+      "id": 1011,
+      "name": "メイジスタッフ",
+      "gold": 2500,
+      "atk": 80,
+      "hit_rate": 10
+    }
+  ],
+  "souko_armor": [],
+  "souko_accessory": [],
   "choco": {
     "id": "test",
     "pass": "test",
@@ -165,46 +204,5 @@
     "fblood": 4,
     "mother": "ネスサス",
     "mblood": 1
-  },
-  "equipment": {
-    "weapon": {
-      "name": "バスターソード",
-      "atk": 400,
-      "hit_rate": 0
-    },
-    "armor": {
-      "name": "アイアンアーマー",
-      "defense": 100,
-      "evasion_rate": 0
-    },
-    "accessory": {
-      "name": "オールボーナス",
-      "effect_id": 0,
-      "bonus": {
-        "str": 5,
-        "int": 5,
-        "mnd": 5,
-        "vit": 5,
-        "dex": 0,
-        "agi": 0,
-        "cha": 0,
-        "karma": 0
-      },
-      "description": "オールボーナス（極小）",
-      "hit_rate": 0,
-      "evasion_rate": 0,
-      "special_rate": 0
-    }
-  },
-  "souko_weapon": [
-    {
-      "id": 1011,
-      "name": "メイジスタッフ",
-      "gold": 2500,
-      "atk": 80,
-      "hit_rate": 10
-    }
-  ],
-  "souko_armor": [],
-  "souko_accessory": []
+  }
 }

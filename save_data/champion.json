@@ -48,7 +48,7 @@
       "special_rate": 0
     }
   },
-  "unused30": 80,
+  "tactic_id": 80,
   "host": "",
   "job_level": 60,
   "last_challenger": {
