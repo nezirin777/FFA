@@ -212,7 +212,7 @@
             <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn" value="チョコボ牧場に戻る">
         </form>
-        <form action="{{ config.script }}" method="POST">
+        <form action="{{ config.login_script }}" method="POST">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn" value="街に戻る">

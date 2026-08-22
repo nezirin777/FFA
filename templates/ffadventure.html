@@ -439,7 +439,7 @@
                         <!-- 道場（好きなキャラと模擬戦） -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🥋 道場（模擬戦）</span>
-                            <form action="{{ config.script_select }}" method="POST">
+                            <form action="{{ config.select_battle_script }}" method="POST">
                                 <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="mode" value="log_in">
                                 <input type="hidden" name="id" value="{{ chara.id }}">

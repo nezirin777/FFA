@@ -58,7 +58,7 @@
                         <input type="radio" name="no" value="{{ loop.index }}" required {% if loop.first %}checked{% endif %}>
                         <div class="battle-player-info">
                             <span class="battle-player-name">{{ op.name }} (第 {{ op.rank }} 位)</span>
-                            <span class="battle-player-sub">Lv.{{ op.level }} ({{ config.chara_syoku[op.job] }}) / HP: {{ op.hp }}</span>
+                            <span class="battle-player-sub">Lv.{{ op.level }} ({{ config.chara_jobs[op.job] }}) / HP: {{ op.hp }}</span>
                         </div>
                     </label>
                     {% else %}

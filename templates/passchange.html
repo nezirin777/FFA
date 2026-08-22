@@ -37,7 +37,7 @@
             ℹ️ あなたのパスワード設定は、前回 <b>{{ last_time }}</b> に ホスト <b>{{ last_host }}</b> から設定されました。
         </p>
 
-        <form action="{{ config.script_pass }}" method="POST">
+        <form action="{{ config.passchange_script }}" method="POST">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="passchan">
@@ -84,7 +84,7 @@
         </form>
     {% else %}
         <!-- パスワード変更用単語の新規登録フォーム -->
-        <form action="{{ config.script_pass }}" method="POST">
+        <form action="{{ config.passchange_script }}" method="POST">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mode" value="passset">
@@ -122,7 +122,7 @@
     
     <!-- 街に戻る -->
     <div class="passchange-actions">
-        <form action="{{ config.script }}" method="post">
+        <form action="{{ config.login_script }}" method="post">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn" value="街に戻る">
