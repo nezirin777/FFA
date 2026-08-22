@@ -111,6 +111,7 @@ def main():
     types = config.Config["chocobo_types"]
 
     context = {
+        "page_background": config.Config["chocobo_farm_background"],
         "chara": chara,
         "chara_log": chara_log,
         "mode": mode,
@@ -715,7 +716,7 @@ def main():
                 # 初期データが空の場合だけ、最初の1件として登録する。
                 lines = [new_entry]
 
-            max_items = config.Config.get("max_choco_partner_list", 100)
+            max_items = config.Config.get("chocobo_partner_list_limit", 100)
             lines = lines[:max_items]
                 
             common.choco_list_regist(list_type, lines)

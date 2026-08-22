@@ -280,8 +280,8 @@ def main():
     now = int(time.time())
     last_time = chara.get("last_time", 0)
     ltime = now - last_time
-    if ltime < config.Config['battle_cooldown']:
-        wait_sec = config.Config['battle_cooldown'] - ltime
+    if ltime < config.Config['pvp_race_cooldown_seconds']:
+        wait_sec = config.Config['pvp_race_cooldown_seconds'] - ltime
         common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。", back_ctx)
 
     # アクション時間更新
@@ -291,7 +291,7 @@ def main():
     # ribal0〜8.json はチョコボ関連マスタデータ、denchoco.json は殿堂データ (save_data/)
     if mode != "race_dendo":
         ribal_path = os.path.join(
-            common.BASE_DIR, config.Config["chocobo_data_dir"], ribal_file
+            common.BASE_DIR, config.Config["chocobo_race_data_dir"], ribal_file
         )
     else:
         ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
@@ -795,6 +795,7 @@ def main():
 
     # テンプレートに渡す
     context = {
+        "page_background": config.Config["chocobo_race_background"],
         "chara": chara,
         "chara_log": chara_log,
         "choco": choco,

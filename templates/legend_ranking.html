@@ -14,7 +14,7 @@
             <div class="system-player-img-box">
                 <a href="login.py?mode=chara_sts&id={{ p.id }}">
                     {% if p.img in chara_img %}
-                    <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" class="system-player-img" alt="{{ p.name }}">
+                    <img src="{{ config.character_image_path }}/{{ chara_img[p.img] }}" class="system-player-img" alt="{{ p.name }}">
                     {% endif %}
                 </a><br>
                 <a href="login.py?mode=chara_sts&id={{ p.id }}" class="system-player-name-link">{{ p.name }}</a>

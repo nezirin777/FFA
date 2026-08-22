@@ -164,7 +164,7 @@ def calculate_stats(chara, item):
 
     # 削除までの残り日数算出 (最終更新時間 + limit日数 - 現在時刻)
     now = int(time.time())
-    limit_sec = config.Config['delete_limit_days'] * 24 * 60 * 60
+    limit_sec = config.Config['character_delete_after_days'] * 24 * 60 * 60
     delete_time = chara.get("last_time", now) + limit_sec
     left_days = max(0, int((delete_time - now) / (24 * 60 * 60)))
 
@@ -252,7 +252,7 @@ def main():
             "syou_name": syou_name,
             "mastered_jobs": mastered_jobs,
             "esex": "男" if target_chara.get("sex") == 1 else "女",
-            "next_ex": target_chara.get("level", 1) * config.Config['level_up_coeff'],
+            "next_ex": target_chara.get("level", 1) * config.Config['level_up_exp_coeff'],
             **stats
         }
         common.render_template("system_chara_sts.html", context)

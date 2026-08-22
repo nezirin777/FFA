@@ -45,8 +45,8 @@
         <a href="{{ config.ranking_script }}">能力別ランキング</a> /
         <a href="{{ config.legend_script }}&view=ranking">レジェンドプレイス攻略者一覧</a> /
         <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> /
-        <a href="{{ config.img_all_list }}" target="_blank">アイコン画像一覧</a> /
-        <a href="{{ config.help_text }}" target="_blank">プレイマニュアル</a>
+        <a href="{{ config.character_image_list_script }}" target="_blank">{{ config.character_image_list_label }}</a> /
+        <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a>
     </div>
 
     <!-- 王者データ & オンラインリスト (グリッド) -->
@@ -55,7 +55,7 @@
         <div class="card card--primary ff-winner-card">
             <div class="ff-winner-wrapper">
                 <a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}">
-                    <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" width="48" height="48" alt="{{ winner.name }}">
+                    <img class="ff-avatar" src="{{ config.character_image_path }}/{{ config.chara_images[winner.img] }}" width="48" height="48" alt="{{ winner.name }}">
                 </a>
                 <div>
                     <b>現王者：<a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}"><span class="yellow">{{ winner.name }}</span></a> （{{ winner.win_count }}連勝中）</b>
@@ -68,7 +68,7 @@
         <!-- 冒険中リスト -->
         <div class="card ff-online-card">
             <div class="ff-online-content">
-                {{ guest_list_html | safe }}
+                {{ active_characters_html | safe }}
             </div>
         </div>
 
@@ -78,7 +78,7 @@
             <div class="ff-choco-winner-wrapper">
                 <a href="{{ config.chocofarm_script }}&id={{ chara.id }}" title="チョコボ牧場で詳細を見る">
                     {% if choco_winner.image %}
-                    <img class="ff-choco-winner-avatar" src="{{ config.img_farm }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
+                    <img class="ff-choco-winner-avatar" src="{{ config.chocobo_image_path }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
                     {% else %}
                     <span class="ff-choco-winner-placeholder">🐤</span>
                     {% endif %}
@@ -104,7 +104,7 @@
                     <div class="ff-chara-header">
                         <div class="ff-chara-avatar-box">
                             <a href="{{ config.system_script }}?mode=chara_sts&id={{ chara.id }}" title="キャラクターの詳細ステータスを表示">
-                                <img class="ff-avatar" src="{{ config.img_path }}/{{ config.chara_images[chara.img] }}" width="48" height="48" alt="{{ chara.name }}">
+                                <img class="ff-avatar" src="{{ config.character_image_path }}/{{ config.chara_images[chara.img] }}" width="48" height="48" alt="{{ chara.name }}">
                             </a><br>
                             <span class="small-text">{{ esex }}</span>
                         </div>
@@ -383,7 +383,7 @@
                         <!-- レジェンドプレイス -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🐉 レジェンドプレイス</span>
-                            {% if not chara.battle_count or chara.boss_flag != config.boss_cooldown %}
+                            {% if not chara.battle_count or chara.boss_flag != config.legend_progress_reset_value %}
                                 <small class="red">※一度チャンプに挑戦してください</small>
                             {% else %}
                                 <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">
@@ -458,7 +458,7 @@
     <div id="ff-bbs" class="ff-bbs-section">
         <div class="ff-section-header">
             <h3 class="yellow">【冒険者の掲示板】</h3>
-            <span class="note-text">最新 {{ config.max_lines }} 件を表示</span>
+            <span class="note-text">最新 {{ config.bbs_display_limit }} 件を表示</span>
         </div>
 
         <div class="card ff-bbs-compose-card">
@@ -483,7 +483,7 @@
                     <div class="ff-bbs-post-head">
                         {% if chara_img and p.img is not none and p.img in chara_img %}
                         <a href="{{ config.system_script }}?mode=chara_sts&id={{ p.id }}" title="{{ p.name }}のステータスを表示">
-                            <img src="{{ config.img_path }}/{{ chara_img[p.img] }}" alt="{{ p.name }}" class="ff-bbs-avatar" width="32" height="32">
+                            <img src="{{ config.character_image_path }}/{{ chara_img[p.img] }}" alt="{{ p.name }}" class="ff-bbs-avatar" width="32" height="32">
                         </a>
                         {% endif %}
                         <div class="ff-bbs-post-meta">

@@ -56,9 +56,9 @@ from sub_def import common  # common.pyのsub_defへの移動に伴うインポ�
 
 def update_winner_hp(user_id, max_hp):
     """
-    王者が宿屋に泊まった場合、王者ファイル(winner.json)の現在HPを最大HPに回復させて保存します。
+    王者が宿屋に泊まった場合、人間チャンプの現在HPを最大HPに回復させて保存します。
     """
-    winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
+    winner_path = os.path.join(common.BASE_DIR, config.Config['champion_file'])
     if not os.path.exists(winner_path):
         return
         
@@ -99,7 +99,7 @@ def main():
             common.show_error("キャラクターが見つかりません。")
             
         # 4. 宿代の計算
-        yado_daix = int(config.Config['inn_cost'] * chara["level"])
+        yado_daix = int(config.Config['inn_cost_per_level'] * chara["level"])
         
         # 5. 所持金不足チェック
         if chara["gold"] < yado_daix:
@@ -112,7 +112,7 @@ def main():
         # 6. 回復処理と所持金減算
         chara["hp"] = chara["max_hp"]
         chara["gold"] -= yado_daix
-        chara["boss_flag"] = config.Config['boss_cooldown']  # ボスフラグを回復
+        chara["boss_flag"] = config.Config['legend_progress_reset_value']  # 伝説の戦いを挑戦可能に戻す
         
         # 7. データの保存
         common.chara_regist(user_id, chara)

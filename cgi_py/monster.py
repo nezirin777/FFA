@@ -122,9 +122,9 @@ def main():
         # 3. 待機時間（クールダウン）チェック
         now = int(time.time())
         ltime = now - chara["last_time"]
-        if ltime < config.Config['monster_cooldown']:
+        if ltime < config.Config['training_cooldown_seconds']:
             common.release_lock(user_id)
-            common.show_error(f"まだ行動できません！ (あと {config.Config['monster_cooldown'] - ltime} 秒)")
+            common.show_error(f"まだ行動できません！ (あと {config.Config['training_cooldown_seconds'] - ltime} 秒)")
 
         # 4. 各モード固有のチェックとモンスターファイルの選択
         enemy_list = []
@@ -162,11 +162,11 @@ def main():
             
             # レベルによる切り替え
             lvl = chara["level"]
-            if lvl < config.Config['genei_level_low']:
+            if lvl < config.Config['monster_level_threshold_lv2']:
                 target_file = config.Config['monster_lv1_file']
-            elif lvl < config.Config['genei_level_high']:
+            elif lvl < config.Config['monster_level_threshold_lv3']:
                 target_file = config.Config['monster_lv2_file']
-            elif lvl < config.Config['genei_level_max']:
+            elif lvl < config.Config['monster_level_threshold_lv4']:
                 target_file = config.Config['monster_lv3_file']
             else:
                 target_file = config.Config['monster_lv4_file']

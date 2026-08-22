@@ -40,8 +40,8 @@ Config["cookie_name"] = "FFAPYCOOKIE"  # 旧版互換のログインCookie名
 Config["session_expiry"] = 1800  # セッション有効期限（秒、30分）
 
 # 長期間プレイされていないキャラクターの自動削除基準。
-Config["delete_limit_days"] = 60  # 最終戦闘から削除判定までの日数
-Config["active_time"] = 120  # アクティブプレイヤー判定時間（秒）
+Config["character_delete_after_days"] = 60  # 最終戦闘から自動削除判定までの日数
+Config["active_character_timeout_seconds"] = 120  # 他キャラクターを「現在冒険中」と表示する有効秒数
 
 # 同一IP/ホストからの複数登録制限。
 Config["single_account_per_host"] = True
@@ -57,8 +57,16 @@ Config["protected_user_backup_dir"] = os.path.join(
     Config["save_dir"], "protected_users"
 )
 
-# チャンプデータはプレイ中に更新されるため、セーブ領域に保存する。
-Config["winner_file"] = os.path.join(Config["save_dir"], "winner.json")
+# 人間チャンプのデータ。対人戦や宿屋で更新される。
+Config["champion_file"] = os.path.join(Config["save_dir"], "champion.json")
+# チョコボチャンプのデータ。王者決定戦の結果で更新される。
+Config["chocobo_champion_file"] = os.path.join(
+    Config["save_dir"], "chocobo_champion.json"
+)
+# 現在アクセス中のキャラクター一覧。一定時間ごとに古い記録を整理する。
+Config["active_characters_file"] = os.path.join(
+    Config["save_dir"], "active_characters.json"
+)
 
 
 # ============================================================================
@@ -72,33 +80,35 @@ Config["max_gold"] = 999999999999  # 所持金の上限
 Config["max_bank"] = 999999999999000  # 銀行預金の上限
 
 # 経験値・報酬・宿屋の基本値。
-Config["inn_cost"] = 10  # 宿泊費の基本係数
-Config["prize_money"] = 500  # 対戦報酬の基本額
-Config["base_exp"] = 30  # 戦闘で得られる基本経験値
-Config["level_up_coeff"] = 300  # 次レベルまでの経験値計算係数
+Config["inn_cost_per_level"] = 10  # 宿泊費のレベル1あたりの係数
+Config["battle_reward_factor"] = 500  # 対戦賞金の乱数上限・連勝賞金の係数
+Config["pvp_base_exp"] = 30  # 対人戦で得られる基本経験値
+Config["level_up_exp_coeff"] = 300  # 次レベルまでの必要経験値に掛ける係数
 
-# 各種戦闘の再実行待ち時間（秒）。
-Config["battle_cooldown"] = 20  # 対人戦・天下一武道会
-Config["monster_cooldown"] = 20  # モンスター修行
-Config["boss_cooldown"] = 10  # 伝説の戦い
+# 各種行動の再実行待ち時間（秒）。
+Config["pvp_race_cooldown_seconds"] = 20  # 対人戦・チョコボレース・天下一武道会
+Config["training_cooldown_seconds"] = 20  # モンスター修行・チョコボ訓練・伝説の戦い
+
+# 伝説の戦いの進行フラグを「挑戦可能」に戻す保存値。時間ではない。
+Config["legend_progress_reset_value"] = 10
 
 # 戦闘回数と戦闘処理の上限。
-Config["battle_limit"] = 9999  # 1日の対人戦回数上限
+Config["training_battle_limit"] = 9999  # モンスター修行・伝説戦の残り回数初期値／補充値
 Config["max_turns"] = 150  # 1戦闘の最大ターン数
 Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
 
 # 旧版 wbattle.pl から引き継いだ戦闘判定値。
 # 計算式と保存データの互換性に関わるため、意味を確認せず変更しないこと。
-Config["level_sa"] = 15  # 初手逆転必殺判定に使うレベル係数
-Config["gyakuten"] = 100  # 初手逆転必殺判定の乱数上限
+Config["counterattack_level_gap"] = 15  # 初手逆転必殺判定に必要なレベル差
+Config["counterattack_damage_multiplier"] = 100  # 初手逆転必殺時のダメージ倍率
 
 # 転職後の戦術クリア設定。1の場合、転職後に戦術を未習得へ戻す。
-Config["master_tac_limit"] = 1
+Config["reset_tactics_on_job_change"] = 1  # 転職時に戦術を未習得へ戻す
 
-# 幻影闘技場のレベル制限。
-Config["genei_level_low"] = 100
-Config["genei_level_high"] = 500
-Config["genei_level_max"] = 1000
+# 通常モンスターの難易度を切り替えるキャラクターレベル境界。
+Config["monster_level_threshold_lv2"] = 100  # これ未満は初級、それ以上は中級候補
+Config["monster_level_threshold_lv3"] = 500  # これ未満は中級、それ以上は上級候補
+Config["monster_level_threshold_lv4"] = 1000  # これ未満は上級、それ以上は最上級
 Config["isekai_level"] = 300  # 異世界へ入場できる最低レベル
 
 
@@ -106,8 +116,8 @@ Config["isekai_level"] = 300  # 異世界へ入場できる最低レベル
 # 4. 表示・お知らせ・入力制限
 # ============================================================================
 Config["main_title"] = "FFA改 Vips Ver 3.00"  # サイト・ページの基本タイトル
-Config["help_text"] = "html/manual.html"  # 遊び方・職業説明マニュアル
-Config["help_text_url"] = "プレイマニュアル"  # マニュアルリンクの表示名
+Config["manual_path"] = "html/manual.html"  # 遊び方・職業説明マニュアルのURL
+Config["manual_link_label"] = "プレイマニュアル"  # マニュアルリンクの表示名
 
 # 画面上部のテロップと公開トップのお知らせ。admin_messageはHTMLを含む。
 Config["telop_message"] = (
@@ -149,7 +159,7 @@ Config["passchange_script"] = "login.py?mode=passchange"
 Config["tensyoku_script"] = "login.py?mode=tensyoku"
 Config["system_script"] = "login.py"  # modeパラメータを後ろに付けて使用
 Config["ranking_script"] = "login.py?mode=rank"
-Config["img_all_list"] = "login.py?mode=img_list"
+Config["character_image_list_script"] = "login.py?mode=img_list"
 
 # ショップ・施設。
 Config["shop_item_script"] = "login.py?mode=shop_item"
@@ -197,8 +207,8 @@ Config["max_accessories"] = 8
 
 # チョコボ牧場の補助マスター。
 Config["hint_file"] = "data/hint.json"
-Config["chocobo_file"] = "data/chocobo/chocobofile.json"  # 野生チョコボ
-Config["chocobo_data_dir"] = "data/chocobo"
+Config["wild_chocobo_file"] = "data/chocobo/chocobofile.json"  # 購入候補となる野生チョコボ
+Config["chocobo_race_data_dir"] = "data/chocobo"  # チョコボレースのライバルデータ格納先
 Config["chocobo_rival_files"] = {
     0: "ribal0.json",
     1: "ribal1.json",
@@ -224,21 +234,23 @@ Config["legend_boss_lv2_file"] = "data/monsters/legend_boss_lv2.json"
 Config["legend_boss_lv3_file"] = "data/monsters/legend_boss_lv3.json"
 Config["legend_boss_lv4_file"] = "data/monsters/legend_boss_lv4.json"
 
-# 伝説の戦いの難易度に応じた背景画像・BGM。
+# 伝説の戦いの難易度に応じた背景画像。
 Config["legend_battle_media"] = {
     "final": {
         "background": "images/last_boss_back.gif",
-        "midi": "data/last_boss.mid",
     },
     "high": {
         "background": "images/boss_back.gif",
-        "midi": "data/boss1.mid",
     },
     "normal": {
         "background": "images/boss2_back.gif",
-        "midi": "data/boss2.mid",
     },
 }
+
+# 旧版のfarm_back/crace_backに相当する牧場・レース背景。
+# 牧場系画面のデザインを変更しても、背景差し替え箇所は設定で管理する。
+Config["chocobo_farm_background"] = "images/farm.jpg"
+Config["chocobo_race_background"] = "images/farm.jpg"
 
 
 # ============================================================================
@@ -289,10 +301,8 @@ Config["choco_images"] = {
     6: "cho-rl.gif",
     7: "cho-pl.gif",
 }
-Config["img_path"] = "images/chara"  # キャラクター画像のURL基準
-Config["img_farm"] = "images/chara/choco"  # チョコボ画像のURL基準
-Config["farm_back"] = "images/farm.jpg"  # チョコボ牧場背景
-Config["crace_back"] = "images/farm.jpg"  # チョコボレース背景
+Config["character_image_path"] = "images/chara"  # キャラクター画像のURL基準
+Config["chocobo_image_path"] = "images/chara/choco"  # チョコボ画像のURL基準
 
 # チョコボの成長タイプ。チョコボデータのtypeと対応する。
 Config["chocobo_types"] = {
@@ -361,11 +371,11 @@ Config["jobs_html_path"] = "html/manual.html#jobs"  # 職業説明へのリン�
 # ============================================================================
 # 9. 表示件数・コミュニケーション上限・外部リンク
 # ============================================================================
-Config["max_lines"] = 20  # 戦闘・履歴ログの最大表示行数
+Config["bbs_display_limit"] = 20  # 街に表示する掲示板投稿数
 Config["max_all_messages"] = 20  # 全体ニュースの最大保持・表示件数
-Config["max_bbs_posts"] = 50  # 掲示板に保持する最大投稿数
-Config["max_choco_partner_list"] = 100  # お見合い候補リストの最大件数
-Config["vote_image"] = "アイコン一覧"  # 外部投票ページへの表示名
+Config["bbs_storage_limit"] = 50  # 掲示板ファイルに保持する投稿数
+Config["chocobo_partner_list_limit"] = 100  # お見合い候補として保持する最大件数
+Config["character_image_list_label"] = "アイコン一覧"  # キャラクター画像一覧リンクの表示名
 
 
 # ============================================================================

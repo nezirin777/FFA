@@ -28,7 +28,7 @@
         </div>
         <div class="admin-menu-card">
             <h3>長期間放置キャラの削除</h3>
-            <p class="admin-menu-card__desc">前回戦闘・主要行動から一定期間（{{ config.delete_limit_days }}日）以上経過したキャラクターを一括削除します。</p>
+            <p class="admin-menu-card__desc">前回戦闘・主要行動から一定期間（{{ config.character_delete_after_days }}日）以上経過したキャラクターを一括削除します。</p>
             <form action="admin.py" method="POST" onsubmit="return confirm('本当に削除してよろしいですか？');">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="pass" value="{{ pass }}">

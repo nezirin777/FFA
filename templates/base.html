@@ -16,12 +16,7 @@
 
     {% block head %}{% endblock %}
 </head>
-<body>
-
-    <!-- 音楽再生 (MIDI設定) -->
-    {% if config.midi_set and midi %}
-    <embed src="{{ midi }}" type="audio/midi" height="2" autostart="true" repeat="true" save="false" volume="100" width="2">
-    {% endif %}
+<body{% if page_background %} style="background-image: url('{{ page_background }}');"{% endif %}>
 
     <!-- メインコンテンツ -->
     <div id="main-content">

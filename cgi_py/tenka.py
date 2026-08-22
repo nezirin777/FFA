@@ -195,8 +195,8 @@ def main():
         time_diff = now - last_time
         
         # 戦闘制限時間チェック (b_time秒)
-        if time_diff < config.Config['battle_cooldown']:
-            left_time = config.Config['battle_cooldown'] - time_diff
+        if time_diff < config.Config['pvp_race_cooldown_seconds']:
+            left_time = config.Config['pvp_race_cooldown_seconds'] - time_diff
             context = {
                 "chara": chara,
                 "chara_log": chara_log,
@@ -208,9 +208,9 @@ def main():
 
         # 対戦相手の決定
         # current_round = int(in_params.get("no", 1))
-        # aite_idx = config.Config['tenka_count'] + chara["boss_flag"] - config.Config['boss_cooldown'] - 1
+        # aite_idx = config.Config['tenka_count'] + chara["boss_flag"] - config.Config['legend_progress_reset_value'] - 1
         boss_flag = chara.get("boss_flag", 0)
-        aite_idx = config.Config['tenka_count'] + boss_flag - config.Config['boss_cooldown'] - 1
+        aite_idx = config.Config['tenka_count'] + boss_flag - config.Config['legend_progress_reset_value'] - 1
         requested_round = common.to_int(in_params.get("no", "1"), 1)
         expected_round = config.Config['tenka_count'] - aite_idx
         if requested_round != expected_round:
@@ -231,7 +231,7 @@ def main():
             item = load_aite_equipped_item(user_id)
             
         # 賞金決定
-        gold_reward = random.randint(1, config.Config['prize_money']) * int(winner.get("level", 1))
+        gold_reward = random.randint(1, config.Config['battle_reward_factor']) * int(winner.get("level", 1))
         
         # シミュレータ起動
         # 対人戦なので is_player_enemy=True に設定
@@ -265,7 +265,7 @@ def main():
                 chara["gold"] = 0
                 
             chara["boss_flag"] = boss_flag - 1 # 1段階勝ち抜け
-            chara["battle_limit"] = config.Config['battle_limit']
+            chara["battle_limit"] = config.Config['training_battle_limit']
             
             # レベルアップ処理
             syoku = common.syoku_load(user_id) or {}
@@ -273,7 +273,7 @@ def main():
             comment += lv_comment
             
             # 武道会制覇の判定
-            next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['boss_cooldown']
+            next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['legend_progress_reset_value']
             if next_winner == 0:
                 # 制覇達成
                 comment += f"<br><span class='yellow'>🏆 見事に天下一武道会で優勝したクポ！おめでとうクポ！</span>"
@@ -338,7 +338,7 @@ def main():
         finally:
             common.release_lock(user_id)
             
-        next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['boss_cooldown']
+        next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['legend_progress_reset_value']
         juni = config.Config['tenka_count'] - common.to_int(in_params.get("no", "1"), 1) + 1
         
         context = {
@@ -360,12 +360,12 @@ def main():
     else:
         # === 武道会ロビー表示 (log_in) ===
         # 1. ボス撃破フラグのチェック
-        # ボス撃破フラグが config.Config['boss_cooldown'] (10) 未満、またはそれに一致しない
+        # ボス撃破フラグが挑戦可能を示す値未満、またはそれに一致しない
         # Perlでは $chara[28] != $boss のとき「チャンプに挑戦して下さい」となる
         can_challenge = True
         challenge_error_msg = ""
         
-        if chara.get("boss_flag", 0) < config.Config['boss_cooldown']:
+        if chara.get("boss_flag", 0) < config.Config['legend_progress_reset_value']:
             can_challenge = False
             challenge_error_msg = "天下一武道会に挑戦するには、まず通常のボス(10階)を撃破しておく必要がありますクポ。"
             
@@ -391,14 +391,14 @@ def main():
                 chara_rank = idx + 1
                 break
 
-        limit_count = chara.get("boss_flag", 0) + config.Config['tenka_count'] - config.Config['boss_cooldown']
+        limit_count = chara.get("boss_flag", 0) + config.Config['tenka_count'] - config.Config['legend_progress_reset_value']
         limit_count = max(0, limit_count)
 
         opponents = []
         if limit_count > 0 and len(members) >= config.Config['tenka_count']:
             # 現在戦う相手のインデックス
             boss_flag = chara.get("boss_flag", 0)
-            aite_idx = config.Config['tenka_count'] + boss_flag - config.Config['boss_cooldown'] - 1
+            aite_idx = config.Config['tenka_count'] + boss_flag - config.Config['legend_progress_reset_value'] - 1
             if 0 <= aite_idx < len(members):
                 op_chara = members[aite_idx]
                 opponents.append({

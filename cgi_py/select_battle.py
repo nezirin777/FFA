@@ -148,8 +148,8 @@ def main():
         # クールダウン時間チェック
         now = int(time.time())
         ltime = now - chara["last_time"]
-        if ltime < config.Config['battle_cooldown']:
-            common.show_error(f"まだ行動できません！ (あと {config.Config['battle_cooldown'] - ltime} 秒)")
+        if ltime < config.Config['pvp_race_cooldown_seconds']:
+            common.show_error(f"まだ行動できません！ (あと {config.Config['pvp_race_cooldown_seconds'] - ltime} 秒)")
 
         if not aite_id and not aite_name:
             common.show_error("対戦相手が指定されていません。")

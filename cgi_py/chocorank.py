@@ -215,6 +215,7 @@ def main():
     ]
     
     context = {
+        "page_background": config.Config["chocobo_farm_background"],
         "mode": mode,
         "chara": chara,
         "chara_log": chara_log,

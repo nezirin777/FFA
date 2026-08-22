@@ -316,32 +316,44 @@ def souko_regist(user_id, item_type, data):
     save_user_unified(user_id, u_data)
 
 
-# === 5. オンラインゲスト更新・表示 ===
-def update_and_get_guests(user_id, chara_name):
+# === 5. アクティブキャラクター更新・表示 ===
+def update_and_get_active_characters(user_id, chara_name):
     """
-    ゲストの生存時間を更新し、現在のアクティブな冒険者一覧HTMLを返します。
+    現在アクセス中の他キャラクターを更新し、一覧HTMLを返します。
+
+    ここでいう「アクティブ」はテスト用ゲストアカウントの意味ではなく、
+    一定時間以内に街や牧場へアクセスしたキャラクターを指します。
     """
     from sub_def.file_ops import load_data_with_lock, save_data_atomically
-    guest_path = os.path.join(Config['save_dir'], "guest.json")
+    active_character_path = Config["active_characters_file"]
     now = int(time.time())
-    
-    guests = load_data_with_lock(guest_path, "guest") or []
-    
-    # 指定秒以内のアクティブユーザーを抽出（自分自身を除く）
-    active_guests = [g for g in guests if g["time"] + Config['active_time'] > now and g["id"] != user_id]
-    
+
+    characters = load_data_with_lock(active_character_path, "active_characters") or []
+
+    # 指定秒以内のアクティブキャラクターを抽出（自分自身を除く）。
+    active_characters = [
+        character
+        for character in characters
+        if character["time"] + Config["active_character_timeout_seconds"] > now
+        and character["id"] != user_id
+    ]
+
     if user_id:
-        # 自分を追加
-        active_guests.append({"time": now, "name": chara_name, "id": user_id})
-        
-    save_data_atomically(active_guests, guest_path, "guest")
-        
+        active_characters.append({"time": now, "name": chara_name, "id": user_id})
+
+    save_data_atomically(
+        active_characters, active_character_path, "active_characters"
+    )
+
     # HTMLリンク構築
     links = []
-    for g in active_guests:
-        links.append(f'<a href="{Config["system_script"]}?mode=chara_sts&id={g["id"]}">{g["name"]}</a><font size="1" color="#ffff00">★</font>')
-        
-    num = len(active_guests)
+    for character in active_characters:
+        links.append(
+            f'<a href="{Config["system_script"]}?mode=chara_sts&id={character["id"]}">'
+            f'{character["name"]}</a><font size="1" color="#ffff00">★</font>'
+        )
+
+    num = len(active_characters)
     html = f'<font size=2 color=#aaaaff>現在冒険中の人(<B>{num}人</B>)：</font>\n'
     if links:
         html += "".join(links)
@@ -492,16 +504,16 @@ def choco_delete(user_id, reset_g1=True):
         data["choco_g1"] = {}
     save_user_unified(user_id, data)
 
-def farm_winner_load():
+def chocobo_champion_load():
     """農場王者データをロードします"""
     from sub_def.file_ops import load_data_with_lock
-    file_path = os.path.join(Config['save_dir'], "farm_winner.json")
-    return load_data_with_lock(file_path, "farm_winner")
+    file_path = Config["chocobo_champion_file"]
+    return load_data_with_lock(file_path, "chocobo_champion")
 
-def farm_winner_view(winner_data=None):
+def chocobo_champion_view(winner_data=None):
     """チョコボチャンプを各画面で共通表示するためのデータを作成します。"""
     if winner_data is None:
-        winner_data = farm_winner_load()
+        winner_data = chocobo_champion_load()
     winner = dict(winner_data) if isinstance(winner_data, dict) else {}
     if not winner:
         winner = {
@@ -591,16 +603,16 @@ def farm_winner_view(winner_data=None):
         "abilities": abilities,
     }
 
-def farm_winner_regist(winner_data):
+def chocobo_champion_register(winner_data):
     """農場王者データを保存します"""
     from sub_def.file_ops import save_data_atomically
-    file_path = os.path.join(Config['save_dir'], "farm_winner.json")
-    save_data_atomically(winner_data, file_path, "farm_winner")
+    file_path = Config["chocobo_champion_file"]
+    save_data_atomically(winner_data, file_path, "chocobo_champion")
 
 def choco_master_load():
     """野生チョコボの購入用マスターデータをロードします。"""
     from sub_def.file_ops import load_data_with_lock
-    file_path = os.path.join(BASE_DIR, Config["chocobo_file"])
+    file_path = os.path.join(BASE_DIR, Config["wild_chocobo_file"])
     return load_data_with_lock(file_path, "chocobo_master") or []
 
 def choco_list_load(list_type):
@@ -625,4 +637,3 @@ def choco_g1_regist(user_id, g1_data):
     data = load_user_all(user_id) or {}
     data["choco_g1"] = g1_data
     save_user_unified(user_id, data)
-

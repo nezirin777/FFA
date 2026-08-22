@@ -268,7 +268,7 @@ def main():
             "mastered_jobs": mastered_jobs,
             "all_jobs_status": all_jobs_status,
             "esex": "男" if chara.get("sex") == 1 else "女",
-            "next_ex": chara.get("level", 1) * config.Config['level_up_coeff'],
+            "next_ex": chara.get("level", 1) * config.Config['level_up_exp_coeff'],
             # バー幅
             "bw_str": bw_str, "bw_int": bw_int, "bw_mnd": bw_mnd, "bw_vit": bw_vit,
             "bw_dex": bw_dex, "bw_agi": bw_agi, "bw_cha": bw_cha, "bw_karma": bw_karma,

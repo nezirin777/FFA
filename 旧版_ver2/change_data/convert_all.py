@@ -426,7 +426,7 @@ def convert_winner(
     masters: dict[str, dict[int, dict[str, Any]]],
     legacy_masters: Iterable[dict[str, Any]],
 ) -> dict[str, Any] | None:
-    """Ver2の54項目winner.cgiをVer3のwinner.jsonへ変換する。"""
+    """Ver2の54項目winner.cgiをVer3のchampion.jsonへ変換する。"""
     if not path.exists():
         return None
     cols = split_legacy_fields(path)
@@ -642,13 +642,13 @@ def parse_args() -> argparse.Namespace:
         "--shared-output",
         type=Path,
         default=DEFAULT_SHARED_OUTPUT,
-        help="winner.json・all_message.jsonの出力先 (既定: change_data/shared)",
+        help="champion.json・all_message.jsonの出力先 (既定: change_data/shared)",
     )
     parser.add_argument(
-        "--winner-output",
+        "--champion-output",
         type=Path,
         default=None,
-        help="winner.jsonだけ別の場所へ出力する (省略時はshared-output内。運用時はsave_data/winner.jsonを指定)",
+        help="champion.jsonだけ別の場所へ出力する (省略時はshared-output内。運用時はsave_data/champion.jsonを指定)",
     )
     parser.add_argument(
         "--dry-run",
@@ -663,10 +663,10 @@ def main() -> int:
     old_root = args.old_root.resolve()
     output = args.output.resolve()
     shared_output = args.shared_output.resolve()
-    winner_output = (
-        args.winner_output.resolve()
-        if args.winner_output
-        else shared_output / "winner.json"
+    champion_output = (
+        args.champion_output.resolve()
+        if args.champion_output
+        else shared_output / "champion.json"
     )
     masters = load_current_masters(args.current_root.resolve())
     legacy_masters = load_legacy_accessories(old_root)
@@ -697,8 +697,8 @@ def main() -> int:
     if not args.dry_run:
         shared_output.mkdir(parents=True, exist_ok=True)
         if winner is not None:
-            winner_output.parent.mkdir(parents=True, exist_ok=True)
-            with winner_output.open("w", encoding="utf-8") as handle:
+            champion_output.parent.mkdir(parents=True, exist_ok=True)
+            with champion_output.open("w", encoding="utf-8") as handle:
                 json.dump(winner, handle, ensure_ascii=False, indent=2)
         with (shared_output / "all_message.json").open("w", encoding="utf-8") as handle:
             json.dump(all_message, handle, ensure_ascii=False, indent=2)
@@ -709,7 +709,7 @@ def main() -> int:
         print(f"ユーザーデータ出力先: {output}")
         print(f"共有データ出力先: {shared_output}")
         if winner is not None:
-            print(f"チャンプデータ出力先: {winner_output}")
+            print(f"チャンプデータ出力先: {champion_output}")
     return 0
 
 

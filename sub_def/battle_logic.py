@@ -334,20 +334,20 @@ class BattleSimulator:
 
             # 旧版 wbattle.pl battle_clt の初手逆転必殺判定。
             if s.is_player_enemy and s.i == 1:
-                level_sa = int(config.Config.get("level_sa", 15))
-                gyakuten = int(config.Config.get("gyakuten", 100))
+                counterattack_level_gap = int(config.Config.get("counterattack_level_gap", 15))
+                counterattack_damage_multiplier = int(config.Config.get("counterattack_damage_multiplier", 100))
                 player_weapon_dmg = s.item["weapon"]["atk"]
                 winner_weapon_dmg = s.winner_item["weapon"]["atk"]
                 if (
-                    int(s.winner.get("level", 0)) - int(s.chara.get("level", 0)) >= level_sa
+                    int(s.winner.get("level", 0)) - int(s.chara.get("level", 0)) >= counterattack_level_gap
                     or player_weapon_dmg < winner_weapon_dmg
                 ):
-                    s.dmg1 = s.dmg1 * gyakuten
+                    s.dmg1 = s.dmg1 * counterattack_damage_multiplier
                     s.sake2 -= 999999
                     s.winner_item["weapon"]["atk"] = 0
                     s.com1 += "<font color=\"blue\" size=5>逆転必殺技発動！！</font><br>"
                 if (
-                    int(s.chara.get("level", 0)) - int(s.winner.get("level", 0)) >= level_sa
+                    int(s.chara.get("level", 0)) - int(s.winner.get("level", 0)) >= counterattack_level_gap
                     or s.winner_item["weapon"]["atk"] < s.item["armor"]["defense"]
                 ):
                     s.dmg2 = s.dmg2 * 100
@@ -527,10 +527,10 @@ def process_levelup(chara, exp_gained, syoku_master=None):
         sy_limits[7] = job_data.get("limit_karma", 0)
 
     # レベルアップ基本係数
-    lv_up_coeff = config.Config['level_up_coeff']
+    level_up_exp_coeff = config.Config['level_up_exp_coeff']
     
-    while chara["level"] < config.Config['max_level'] and chara["exp"] >= (chara["level"] * lv_up_coeff):
-        chara["exp"] -= int(chara["level"] * lv_up_coeff)
+    while chara["level"] < config.Config['max_level'] and chara["exp"] >= (chara["level"] * level_up_exp_coeff):
+        chara["exp"] -= int(chara["level"] * level_up_exp_coeff)
         lvup_count += 1
         chara["level"] += 1
         

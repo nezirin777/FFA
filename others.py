@@ -103,7 +103,7 @@ DEFAULT_WINNER = {
 }
 
 def get_winner():
-    winner_path = os.path.join(common.BASE_DIR, Config['winner_file'])
+    winner_path = os.path.join(common.BASE_DIR, Config['champion_file'])
     if not os.path.exists(winner_path):
         return DEFAULT_WINNER
     try:
@@ -151,7 +151,7 @@ def main():
     # チャンプデータの読み込み
     winner = get_winner()
     # 公開トップにも、牧場と同じチョコボチャンプ情報を表示する。
-    choco_winner = common.farm_winner_view()
+    choco_winner = common.chocobo_champion_view()
     
     # クラス名算出
     class_flg = int(winner["job_level"] / 10)
@@ -229,7 +229,7 @@ def main():
             test_playable = False
             
     # 現在の冒険者一覧HTML取得
-    guests_html = common.update_and_get_guests("", "")
+    active_characters_html = common.update_and_get_active_characters("", "")
     
     # テンプレートレンダリング (CSRFトークンを注入)
     context = {
@@ -248,7 +248,7 @@ def main():
         "hit_base": hit_base,
         "kaihi_base": kaihi_base,
         "waza_base": waza_base,
-        "guests_html": guests_html
+        "active_characters_html": active_characters_html
     }
     render_template("others.html", context, extra_headers=[cookie_header])
 

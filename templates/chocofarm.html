@@ -11,7 +11,7 @@
     <div class="farm-winner-board">
         <div class="farm-winner-img">
             {% if winner_img %}
-                <img src="{{ config.img_farm }}/{{ winner_img }}" alt="Winner Chocobo">
+                <img src="{{ config.chocobo_image_path }}/{{ winner_img }}" alt="Winner Chocobo">
             {% else %}
                 🐤
             {% endif %}
@@ -31,7 +31,7 @@
         {% for ability in winner_view.abilities %}
         <div class="farm-winner-ability">
             <span>{{ ability.label }}</span>
-            <img src="{{ config.img_farm }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
+            <img src="{{ config.chocobo_image_path }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
             <b>{{ ability.value }}</b>
         </div>
         {% endfor %}

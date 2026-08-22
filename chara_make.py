@@ -271,10 +271,10 @@ def main():
             "win_count": 0,
             "comment": "よろしくお願いします！",
             "weapon_id": 0,
-            "battle_limit": Config['battle_limit'],
+            "battle_limit": Config['training_battle_limit'],
             "host": remote_addr,
             "last_time": now,
-            "boss_flag": Config['boss_cooldown'],
+            "boss_flag": Config['legend_progress_reset_value'],
             "armor_id": 0,
             "unused30": 0,
             "accessory_id": 0,
@@ -375,8 +375,8 @@ def main():
                 {"id": job_id, "name": Config['chara_jobs'][job_id]}
                 for job_id in Config['initial_job_ids']
             ],
-            "img_all_list": Config['img_all_list'],
-            "vote_gazou": Config['vote_image']
+            "character_image_list_url": Config['character_image_list_script'],
+            "character_image_list_label": Config['character_image_list_label']
         }
         common.render_template("chara_make.html", context, extra_headers=[cookie_header])
 

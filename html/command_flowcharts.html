@@ -109,8 +109,8 @@ FLOW("public","公開トップ・ゲスト","入口",[],[
     S("config.py","Config['maintenance_mode']","check","メンテナンス中はエラー画面"),
     S("sub_def.crypto.py","get_session() / save_session()","data","暗号化セッションと記憶済みユーザーを確認"),
     S("sub_def.file_ops.py","load_user_all(user_id)","data","ログイン中なら本人データを読み込む"),
-    S("others.py","get_winner() / common.farm_winner_view()","data","人間チャンプとチョコボチャンプを取得"),
-    S("sub_def.common.py","update_and_get_guests()","logic","オンライン表示用の共有データを更新"),
+    S("others.py","get_winner() / common.chocobo_champion_view()","data","人間チャンプとチョコボチャンプを取得"),
+    S("sub_def.common.py","update_and_get_active_characters()","logic","アクティブキャラクター表示用の共有データを更新"),
     S("sub_def.utils.py","render_template('others.html')","out","ログイン前トップを表示")
   ]),
   SEC("公開モードの扱い",[
@@ -188,8 +188,8 @@ FLOW("main","街・キャラクターデータ","拠点・表示",["main"],[
     S("sub_def.common.py","decode_params() / get_cookie() / parse_cookie_user()","check","表示対象のユーザーIDと認証Cookieを確定"),
     S("sub_def.common.py","chara_load(user_id)","data","キャラクター基本能力・状態をロード"),
     S("sub_def.common.py","equipment_load(user_id)","data","武器・防具・装飾品をロード"),
-    S("cgi_py/ffadventure.py","get_winner() / farm_winner_view()","data","人間チャンプ・チョコボチャンプを取得"),
-    S("sub_def.common.py","update_and_get_guests()","logic","オンライン表示を更新"),
+    S("cgi_py/ffadventure.py","get_winner() / chocobo_champion_view()","data","人間チャンプ・チョコボチャンプを取得"),
+    S("sub_def.common.py","update_and_get_active_characters()","logic","アクティブキャラクター表示を更新"),
     S("sub_def.common.py","bbs_load()","data","掲示板を取得"),
     S("sub_def.common.py","accessory_description()","util","装飾品の効果説明を取得"),
     S("sub_def.utils.py","render_template('ffadventure.html')","out","街・能力・装備・掲示板を表示")
@@ -301,8 +301,8 @@ FLOW("choco","チョコボ牧場・森","チョコボ",["chocofarm","morifarm","
   SEC("牧場表示: cgi_py/chocofarm.py",[
     S("cgi_py/chocofarm.py","main()","entry","牧場トップを表示"),
     S("sub_def.common.py","chara_load() / equipment_load() / choco_load() / choco_g1_load()","data","キャラ・装備・チョコボ・G1記録を取得"),
-    S("sub_def.common.py","is_choco_owned() / farm_winner_view()","check","所持状態とチョコボチャンプを確認"),
-    S("sub_def.common.py","update_and_get_guests()","logic","牧場のオンライン表示を更新"),
+    S("sub_def.common.py","is_choco_owned() / chocobo_champion_view()","check","所持状態とチョコボチャンプを確認"),
+    S("sub_def.common.py","update_and_get_active_characters()","logic","牧場のアクティブキャラクター表示を更新"),
     S("sub_def.utils.py","render_template('chocofarm.html')","out")
   ]),
   SEC("森・お見合い・引退: cgi_py/morifarm.py",[
@@ -338,10 +338,10 @@ FLOW("races","チョコボレース","チョコボ",["crace","farmrace"],[
   ]),
   SEC("チャンプ挑戦レース: cgi_py/farmrace.py",[
     S("cgi_py/farmrace.py","main()","entry","チョコボチャンプへ挑戦"),
-    S("sub_def.common.py","require_owner() / choco_load() / farm_winner_load()","data","本人・出走チョコボ・現チャンプを取得"),
+    S("sub_def.common.py","require_owner() / choco_load() / chocobo_champion_load()","data","本人・出走チョコボ・現チャンプを取得"),
     S("cgi_py/farmrace.py","名前・体力・待機時間・自身が王者かを確認","check","出走条件を検証","NG → back_ctx付きshow_error()"),
     S("cgi_py/farmrace.py","レースシミュレーションと報酬計算","logic","勝敗・賞金・新チャンプを決定"),
-    S("sub_def.common.py","chara_regist() / choco_regist() / farm_winner_regist()","data","キャラ・チョコボ・共有チャンプを保存"),
+    S("sub_def.common.py","chara_regist() / choco_regist() / chocobo_champion_register()","data","キャラ・チョコボ・共有チャンプを保存"),
     S("sub_def.common.py","all_message_regist()","data","チャンプ交代ニュースを記録"),
     S("sub_def.utils.py","render_template('farmrace.html')","out")
   ])

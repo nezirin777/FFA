@@ -132,12 +132,12 @@ def main():
     now = int(time.time())
     last_time = chara.get("last_time", 0)
     ltime = now - last_time
-    if ltime < config.Config['battle_cooldown']:
-        wait_sec = config.Config['battle_cooldown'] - ltime
+    if ltime < config.Config['pvp_race_cooldown_seconds']:
+        wait_sec = config.Config['pvp_race_cooldown_seconds'] - ltime
         common.show_error(f"まだレースに出走できません。あと {wait_sec} 秒お待ちください。", back_ctx)
 
     # 王者データのロード
-    winner = common.farm_winner_load()
+    winner = common.chocobo_champion_load()
     if not winner:
         # 初期王者設定
         winner = {
@@ -608,14 +608,15 @@ def main():
         common.release_lock(user_id)
 
     # 王者データの保存
-    common.get_lock("farm_winner")
+    common.get_lock("chocobo_champion")
     try:
-        common.farm_winner_regist(new_winner)
+        common.chocobo_champion_register(new_winner)
     finally:
-        common.release_lock("farm_winner")
+        common.release_lock("chocobo_champion")
 
     # 完了画面用 context
     context = {
+        "page_background": config.Config["chocobo_race_background"],
         "chara": chara,
         "chara_log": chara_log,
         "choco": choco,

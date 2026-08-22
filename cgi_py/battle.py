@@ -158,14 +158,14 @@ def main():
         # 待機時間（クールダウン）チェック
         now = int(time.time())
         ltime = now - chara["last_time"]
-        if ltime < config.Config['battle_cooldown']:
+        if ltime < config.Config['pvp_race_cooldown_seconds']:
             common.release_lock(user_id)
-            common.show_error(f"まだ行動できません！ (あと {config.Config['battle_cooldown'] - ltime} 秒)")
+            common.show_error(f"まだ行動できません！ (あと {config.Config['pvp_race_cooldown_seconds'] - ltime} 秒)")
 
         # 王者データのロックを取得してロード
         common.get_lock("winner")
         try:
-            winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
+            winner_path = os.path.join(common.BASE_DIR, config.Config['champion_file'])
             if not os.path.exists(winner_path):
                 winner = DEFAULT_WINNER
             else:
@@ -222,7 +222,7 @@ def main():
 
             gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
-            exp_gained = config.Config['base_exp'] # 対人戦の基本経験値
+            exp_gained = config.Config['pvp_base_exp'] # 対人戦の基本経験値
 
             # 旧版の対人戦績は結果分岐より先に挑戦者へ反映する。
             chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
@@ -241,7 +241,7 @@ def main():
                 new_winner_gold = int(
                     winner.get("win_count", 0)
                     * chara.get("level", 1)
-                    * config.Config["prize_money"]
+                    * config.Config["battle_reward_factor"]
                 )
 
                 # 新しい王者レコードを組み立てる
@@ -331,7 +331,7 @@ def main():
                 winner["gold"] = int(winner.get("gold", 0)) + int(
                     winner["win_count"]
                     * chara.get("level", 1)
-                    * config.Config["prize_money"]
+                    * config.Config["battle_reward_factor"]
                 )
                     
                 # 最後の挑戦者情報として自分を記録

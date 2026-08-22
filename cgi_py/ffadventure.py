@@ -78,7 +78,7 @@ def get_winner():
     """
     王者データを読み込み、辞書として返します。
     """
-    winner_path = os.path.join(common.BASE_DIR, config.Config['winner_file'])
+    winner_path = os.path.join(common.BASE_DIR, config.Config['champion_file'])
     default_winner = {
         "id": "sys", "name": "無名の剣士", "img": 0, "hp": 1000, "max_hp": 1000, "win_count": 0
     }
@@ -145,30 +145,30 @@ def main():
     # 5. 王者データの取得
     winner = get_winner()
     # チョコボチャンプは人間側のチャンプとは別の共有セーブデータです。
-    choco_winner = common.farm_winner_view()
+    choco_winner = common.chocobo_champion_view()
     
     # 6. 行動制限時間・待機時間の計算
     now = int(time.time())
     ltime = now - chara["last_time"]
-    vtime = config.Config['battle_cooldown'] - ltime
+    vtime = config.Config['pvp_race_cooldown_seconds'] - ltime
     ztime = vtime + 1 if vtime >= 0 else 0
     
     # ボスフラグ進行度の調整
-    if chara["boss_flag"] < config.Config['boss_cooldown']:
+    if chara["boss_flag"] < config.Config['legend_progress_reset_value']:
         chara["boss_flag"] = 0
         
     # 性別表記
     esex = "男" if chara["sex"] else "女"
     
     # レベルアップ必要経験値
-    next_ex = chara["level"] * config.Config['level_up_coeff']
+    next_ex = chara["level"] * config.Config['level_up_exp_coeff']
     
     # 称号
     title_idx = chara["title"]
     syou = config.Config['titles'].get(title_idx, config.Config['titles'][0])
     
     # 宿屋代金の計算
-    yado_daix = int(config.Config['inn_cost'] * chara["level"])
+    yado_daix = int(config.Config['inn_cost_per_level'] * chara["level"])
     
     # 職業名の取得
     job_idx = chara["job"]
@@ -188,11 +188,11 @@ def main():
         # キーが無い場合は追加
         chara["bank"] = chara.get("unused33", 0)
         
-    # 7. オンラインゲスト更新・取得
-    guest_list_html = common.update_and_get_guests(user_id, chara["name"])
+    # 7. アクティブキャラクター一覧の更新・取得
+    active_characters_html = common.update_and_get_active_characters(user_id, chara["name"])
     
     # 8. 掲示板の取得
-    bbs_posts = common.bbs_load()[:config.Config['max_lines']]
+    bbs_posts = common.bbs_load()[:config.Config['bbs_display_limit']]
     all_messages = common.all_message_load()[:config.Config['max_all_messages']]
     accessory_description = common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
 
@@ -218,7 +218,7 @@ def main():
         "yado_daix": yado_daix,
         "job_name": job_name,
         "hp_percent": hp_percent,
-        "guest_list_html": guest_list_html,
+        "active_characters_html": active_characters_html,
         "bbs_posts": bbs_posts,
         "all_messages": all_messages,
         "chara_img": config.Config['chara_images'],

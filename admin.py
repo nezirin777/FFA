@@ -290,7 +290,7 @@ def main():
     elif mode == "del_noplay":
         players = get_all_players()
         now = int(time.time())
-        limit_seconds = config.Config['delete_limit_days'] * 24 * 60 * 60
+        limit_seconds = config.Config['character_delete_after_days'] * 24 * 60 * 60
         
         deleted_count = 0
         deleted_names = []

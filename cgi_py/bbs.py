@@ -60,8 +60,8 @@ def main():
                 "host": os.environ.get("REMOTE_ADDR", "127.0.0.1"),
             })
             # 上限を超えた古い投稿は破棄
-            if len(posts) > config.Config['max_bbs_posts']:
-                posts = posts[:config.Config['max_bbs_posts']]
+            if len(posts) > config.Config['bbs_storage_limit']:
+                posts = posts[:config.Config['bbs_storage_limit']]
             common.bbs_regist(posts)
         finally:
             common.release_lock("bbs_post")

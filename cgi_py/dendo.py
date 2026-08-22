@@ -257,6 +257,7 @@ def main():
         })
 
     context = {
+        "page_background": config.Config["chocobo_farm_background"],
         "chara": chara,
         "chara_log": chara_log,
         "dendo_list": formatted_dendo,

@@ -152,7 +152,7 @@ def main():
             common.release_lock(user_id)
             common.show_error("一度チャンプに挑戦してください。")
 
-        if int(chara.get("boss_flag", 0)) != int(config.Config["boss_cooldown"]):
+        if int(chara.get("boss_flag", 0)) != int(config.Config["legend_progress_reset_value"]):
             common.release_lock(user_id)
             common.show_error("まだレジェンドプレイスへ挑戦できません。")
 
@@ -173,7 +173,7 @@ def main():
         # 待機時間（クールダウン）チェック
         now = int(time.time())
         ltime = now - chara["last_time"]
-        vtime = config.Config['monster_cooldown'] - ltime
+        vtime = config.Config['training_cooldown_seconds'] - ltime
         if vtime > 0:
             # 待機時間エラー
             common.release_lock(user_id)
@@ -246,18 +246,18 @@ def main():
                 
                 if chara["title"] < boss_file_idx + 1:
                     chara["title"] = boss_file_idx + 1
-                chara["boss_flag"] = config.Config['boss_cooldown']
+                chara["boss_flag"] = config.Config['legend_progress_reset_value']
             else:
                 comment += f'<b><font size=5>{chara["name"]} は、戦闘に勝利した！！HPが少し回復した♪ 残り {chara["boss_flag"]} 体・・・</font></b><br>'
         elif win == 2:
             # 引き分け
             exp_gained = int(exp_gained / 2)
-            chara["boss_flag"] = config.Config['boss_cooldown']
+            chara["boss_flag"] = config.Config['legend_progress_reset_value']
             comment += f'<b><font size=5>{chara["name"]} は、逃げ出した・・・♪</font></b><br>'
         else:
             # 敗北
             exp_gained = 1
-            chara["boss_flag"] = config.Config['boss_cooldown']
+            chara["boss_flag"] = config.Config['legend_progress_reset_value']
             chara["gold"] = int(chara["gold"] / 100) # ゴールド激減
             comment += f'<b><font size=5>{chara["name"]} は、戦闘に負けた・・・。</font></b><br>'
 
@@ -292,7 +292,7 @@ def main():
         common.release_lock(user_id)
 
     # 背景・音楽の調整
-    boss_h = int(config.Config['boss_cooldown'] / 2)
+    boss_h = int(config.Config['legend_progress_reset_value'] / 2)
     if chara["boss_flag"] == 1:
         media = config.Config["legend_battle_media"]["final"]
     elif chara["boss_flag"] >= boss_h:
@@ -300,10 +300,10 @@ def main():
     else:
         media = config.Config["legend_battle_media"]["normal"]
     backgif = media["background"]
-    midi = media["midi"]
 
     # レンダリング
     context = {
+        "page_background": backgif,
         "chara": chara,
         "enemy_name": enemy_data["name"],
         "logs": logs,
@@ -314,7 +314,6 @@ def main():
         "mode": "boss",
         "boss_file": boss_file_idx,
         "backgif": backgif,
-        "midi": midi,
     }
     common.render_template("monster_result.html", context)
 

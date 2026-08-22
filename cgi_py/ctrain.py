@@ -125,8 +125,8 @@ def main():
     now = int(time.time())
     last_time = chara.get("last_time", 0)
     ltime = now - last_time
-    if ltime < config.Config['monster_cooldown']:
-        wait_sec = config.Config['monster_cooldown'] - ltime
+    if ltime < config.Config['training_cooldown_seconds']:
+        wait_sec = config.Config['training_cooldown_seconds'] - ltime
         common.show_error(f"まだトレーニングできません。あと {wait_sec} 秒お待ちください。", back_ctx)
 
     # アクション時間を更新
@@ -463,6 +463,7 @@ def main():
 
     # テンプレートへの受け渡しコンテキスト
     context = {
+        "page_background": config.Config["chocobo_farm_background"],
         "chara": chara,
         "chara_log": chara_log,
         "choco": choco,

@@ -92,7 +92,7 @@ def main():
     g1_raw = common.choco_g1_load(user_id) if has_choco else None
     
     # 歴代王者データのロード
-    winner_view = common.farm_winner_view()
+    winner_view = common.chocobo_champion_view()
     winner_raw = winner_view["raw"]
 
     # アルファベット能力ランク画像
@@ -129,8 +129,8 @@ def main():
     last_time = chara.get("last_time", 0)
     ltime = now - last_time
     
-    train_wait = config.Config['monster_cooldown'] - ltime
-    race_wait = config.Config['battle_cooldown'] - ltime
+    train_wait = config.Config['training_cooldown_seconds'] - ltime
+    race_wait = config.Config['pvp_race_cooldown_seconds'] - ltime
     
     time_limits = {
         "train_ok": train_wait <= 0,
@@ -305,10 +305,11 @@ def main():
             else:
                 trophy_names.append(str(t))
 
-    # ゲスト表示更新
-    update_and_get_guests = common.update_and_get_guests(user_id, chara["name"])
+    # アクティブキャラクター表示更新
+    active_characters_html = common.update_and_get_active_characters(user_id, chara["name"])
 
     context = {
+        "page_background": config.Config["chocobo_farm_background"],
         "chara": chara,
         "chara_log": chara_log,
         "equipment": item,
@@ -327,7 +328,7 @@ def main():
         "g2_race": g2_race,
         "g2_nokori": g2_nokori,
         "mog_advice": mog_advice,
-        "update_and_get_guests": update_and_get_guests,
+        "active_characters_html": active_characters_html,
         
         "choco_name": choco_name,
         "choco_class": choco_class,

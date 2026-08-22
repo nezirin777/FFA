@@ -107,8 +107,8 @@ def get_available_tactics(chara, syoku):
         if t["no"] != 0:
             available_tacs.append(t)
             
-    # 2. マスターした他職業の戦術を追加 (config.Config['master_tac_limit'] == 1 の場合)
-    if config.Config['master_tac_limit'] == 1 and syoku:
+    # 2. マスターした他職業の戦術を追加（転職時の戦術リセット設定が有効な場合）
+    if config.Config['reset_tactics_on_job_change'] == 1 and syoku:
         for job_idx_str, level in syoku.items():
             try:
                 job_idx = int(job_idx_str)

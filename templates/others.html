@@ -21,8 +21,8 @@
         <a href="{{ config.ranking_script }}">能力別ランキング</a> |
         <a href="{{ config.legend_script }}&view=ranking">レジェンドプレイス攻略者一覧</a> |
         <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> |
-        <a href="{{ config.img_all_list }}" target="_blank">アイコン画像一覧</a> |
-        <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a> |
+        <a href="{{ config.character_image_list_script }}" target="_blank">{{ config.character_image_list_label }}</a> |
+        <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a> |
         <a href="https://oktaviacgi-games.com/" target="_blank">おくたのCGIげーむす</a>
       </div>
     </div>
@@ -113,7 +113,7 @@
 
     <!-- 現在の冒険者一覧 -->
     <div class="others-guest-box">
-        {{ guests_html|safe }}
+        {{ active_characters_html|safe }}
     </div>
 
     <!-- 上段: 人間チャンプとチョコボチャンプ -->
@@ -130,7 +130,7 @@
                     <!-- チャンプの顔グラ & 基本情報 -->
                     <div class="others-champ-avatar-box">
                         <a href="{{ config.system_script }}?mode=chara_sts&id={{ winner.id }}">
-                            <img class="others-champ-avatar" src="{{ config.img_path }}/{{ config.chara_images[winner.img] }}" alt="{{ winner.name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';">
+                            <img class="others-champ-avatar" src="{{ config.character_image_path }}/{{ config.chara_images[winner.img] }}" alt="{{ winner.name }}" onerror="this.onerror=null; this.src='images/chara/mog.gif';">
                         </a>
                         <b>{{ winner.name }}</b>
                         <span>{{ winner.sex == 1 and '男' or '女' }} / {{ config.chara_jobs[winner.job] }}</span>
@@ -198,7 +198,7 @@
             <div class="farm-winner-board">
                 <div class="farm-winner-img">
                     {% if choco_winner.image %}
-                    <img src="{{ config.img_farm }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
+                    <img src="{{ config.chocobo_image_path }}/{{ choco_winner.image }}" alt="{{ choco_winner.name }}">
                     {% else %}
                     🐤
                     {% endif %}
@@ -217,7 +217,7 @@
                 {% for ability in choco_winner.abilities %}
                 <div class="farm-winner-ability">
                     <span>{{ ability.label }}</span>
-                    <img src="{{ config.img_farm }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
+                    <img src="{{ config.chocobo_image_path }}/{{ ability.image }}" alt="{{ ability.label }} {{ ability.value }}">
                     <b>{{ ability.value }}</b>
                 </div>
                 {% endfor %}
@@ -235,8 +235,8 @@
                 <li>メイン画面から「戦闘（対人戦・モンスター修行）」、「ショップでの売買」、「倉庫整理」などの行動を選択してゲームを進めます。</li>
                 <li>一度キャラクターを作成したら、次回以降はログインして前回の続きから遊べます。新規登録は<b>1人につき1キャラクターのみ</b>です。</li>
                 <li>初期能力値は選択した職業ごとに決まります。レベルアップ時は職業の成長上限に基づき、各能力がそれぞれ50%の確率で上昇するため、伸ばしたい能力に合う職業を選ぶことが重要です。</li>
-                <li><b>{{ config.delete_limit_days }}日以上</b>戦闘を行わずに放置すると、データ削除対象となり削除されることがありますのでご注意ください。</li>
-                <li>一度戦闘を行うと、再戦闘までに <b>{{ config.battle_cooldown }}秒</b> のクールダウン時間が必要です。</li>
+                <li><b>{{ config.character_delete_after_days }}日以上</b>戦闘を行わずに放置すると、データ削除対象となり削除されることがありますのでご注意ください。</li>
+                <li>一度対人戦やレースを行うと、再実行までに <b>{{ config.pvp_race_cooldown_seconds }}秒</b> の待機時間が必要です。</li>
             </ol>
         </div>
     </section>
@@ -256,7 +256,7 @@
         <div class="u-text-center">
             <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> |
             <a href="{{ config.ranking_script }}">能力別ランキング</a> |
-            <a href="{{ config.help_text }}" target="_blank">{{ config.help_text_url }}</a> |
+            <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a> |
             <a href="https://oktaviacgi-games.com/" target="_blank">おくたのCGIげーむす</a>
         </div>
 
