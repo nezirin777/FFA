@@ -49,7 +49,7 @@
         <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a>
     </div>
 
-    <!-- 王者データ & オンラインリスト (グリッド) -->
+    <!-- 王者・チョコボチャンプ・冒険中リスト -->
     <div class="ff-grid">
         <!-- 王者データ -->
         <div class="card card--primary ff-winner-card">
@@ -62,13 +62,6 @@
                     <br>
                     <span class="small-text">王者HP：</span><b><span class="red">{{ winner.hp }}</span> / {{ winner.max_hp }}</b>
                 </div>
-            </div>
-        </div>
-
-        <!-- 冒険中リスト -->
-        <div class="card ff-online-card">
-            <div class="ff-online-content">
-                {{ active_characters_html | safe }}
             </div>
         </div>
 
@@ -89,6 +82,13 @@
                     <span>出走 {{ choco_winner.run }}戦 / 勝数 {{ choco_winner.win }}勝 / 連勝 {{ choco_winner.streak }}勝</span>
                 </div>
                 <a class="ff-choco-winner-link" href="{{ config.chocofarm_script }}&id={{ chara.id }}">牧場で詳細</a>
+            </div>
+        </div>
+
+        <!-- 冒険中リスト -->
+        <div class="card ff-online-card">
+            <div class="ff-online-content">
+                {{ active_characters_html | safe }}
             </div>
         </div>
     </div>

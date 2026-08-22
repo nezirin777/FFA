@@ -17,15 +17,21 @@
         </div>
     </div>
 
-    <!-- レース実況ログ -->
-    <div class="battle-log">
-        {% for t in turns %}
-        {% if t.comment %}
-        <div class="battle-log-line">
-            <span class="battle-log-turn-title">▶</span> {{ t.comment | safe }}
+    <!-- レース実況ログ（旧版のアナウンサー表示を再現） -->
+    <div class="race-commentary">
+        <div class="race-announcer">
+            <img src="{{ config.character_image_path }}/{{ config.chocobo_race_announcer_image }}" alt="レースアナウンサー">
+            <span>レース実況</span>
         </div>
-        {% endif %}
-        {% endfor %}
+        <div class="battle-log">
+            {% for t in turns %}
+            {% if t.comment %}
+            <div class="battle-log-line">
+                <span class="battle-log-turn-title">▶</span> {{ t.comment | safe }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
     </div>
 
     <!-- レース結果 -->

@@ -834,12 +834,66 @@ img {
 
 .ff-grid {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
   gap: var(--space-m);
+  align-items: stretch;
+  overflow-x: auto;
+}
+
+.ff-grid > .card {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.ff-winner-card,
+.ff-online-card,
+.ff-choco-winner-card {
+  min-height: 130px;
+}
+
+.ff-winner-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  min-width: 0;
+  height: 100%;
+  padding: var(--space-m);
+}
+
+.ff-winner-wrapper > a {
+  flex: 0 0 auto;
+}
+
+.ff-winner-wrapper > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ff-winner-card .ff-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+.ff-online-card {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--space-m);
+}
+
+.ff-online-content {
+  min-width: 0;
+  width: 100%;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.ff-online-content a {
+  display: inline-block;
+  margin: 0 var(--space-s) var(--space-xs) 0;
+  overflow-wrap: anywhere;
 }
 
 .ff-choco-winner-card {
-  grid-column: 1 / -1;
   border-color: var(--yellow);
 }
 
@@ -850,9 +904,11 @@ img {
 }
 
 .ff-choco-winner-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-m);
+  gap: var(--space-s) var(--space-m);
+  min-width: 0;
 }
 
 .ff-choco-winner-avatar,
@@ -882,6 +938,8 @@ img {
 }
 
 .ff-choco-winner-link {
+  grid-column: 1 / -1;
+  justify-self: end;
   white-space: nowrap;
 }
 
@@ -3127,6 +3185,47 @@ img {
   border-bottom: 2px solid var(--dark);
   padding-bottom: var(--space-s);
   margin-bottom: var(--space-m);
+}
+
+.race-commentary {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--space-m);
+  padding: var(--space-m);
+  border: 1px solid var(--blue);
+  border-radius: var(--radius-m);
+  background: rgba(0, 0, 35, 0.82);
+}
+
+.race-announcer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-xs);
+  min-width: 0;
+  padding: var(--space-xs);
+  border: 1px solid var(--sky-blue);
+  border-radius: var(--radius-s);
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--yellow);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.race-announcer img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: #000;
+}
+
+.race-commentary .battle-log {
+  min-width: 0;
+  margin: 0;
 }
 
 .farm-status-table {

@@ -252,6 +252,7 @@ Config["legend_battle_media"] = {
 # 牧場系画面のデザインを変更しても、背景差し替え箇所は設定で管理する。
 Config["chocobo_farm_background"] = "images/farm.jpg"
 Config["chocobo_race_background"] = "images/farm.jpg"
+Config["chocobo_race_announcer_image"] = "ana.gif"  # レース実況欄のアナウンサー画像
 
 
 # ============================================================================
