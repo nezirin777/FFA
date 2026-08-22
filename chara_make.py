@@ -339,17 +339,22 @@ def main():
         }
         save_user_all(user_id, user_data)
         
-        # 5. 全体システムニュースへの登録
-        all_msgs = common.all_message_load()
-        new_msg = {
-            "id": "system",
-            "name": "システム",
-            "time": common.get_time_str(now),
-            "message": f"{c_name}さんが新たに冒険者として登録されました！皆さんよろしく！",
-            "host": "system"
-        }
-        all_msgs.insert(0, new_msg)
-        common.all_message_regist(all_msgs[:Config['max_all_messages']])
+        # 5. 全体システムニュースへの登録。
+        # キャラ作成が同時に行われても、既存ニュースを取りこぼさないよう共有ロックを使う。
+        common.get_lock("all_message_post")
+        try:
+            all_msgs = common.all_message_load()
+            new_msg = {
+                "id": "system",
+                "name": "システム",
+                "time": common.get_time_str(now),
+                "message": f"{c_name}さんが新たに冒険者として登録されました！皆さんよろしく！",
+                "host": "system"
+            }
+            all_msgs.insert(0, new_msg)
+            common.all_message_regist(all_msgs[:Config['all_message_storage_limit']])
+        finally:
+            common.release_lock("all_message_post")
         
         # 登録完了時、自動的に暗号化セッションを発行してメイン画面へダイレクトログイン (F5多重送信防止)
         session_data = {

@@ -469,8 +469,8 @@ def main():
                 "message": f"👑 【新王者誕生】{chara['name']}の愛馬 {cname} が、王者 {wcname} を倒し、サブウッドチョコボの新王者になりましたクポ！連勝記録がスタートするクポ！"
             }
             all_msgs.insert(0, new_msg)
-            if len(all_msgs) > config.Config['max_all_messages']:
-                all_msgs = all_msgs[:config.Config['max_all_messages']]
+            if len(all_msgs) > config.Config['all_message_storage_limit']:
+                all_msgs = all_msgs[:config.Config['all_message_storage_limit']]
             common.all_message_regist(all_msgs)
         finally:
             common.release_lock("all_message_post")

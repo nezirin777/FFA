@@ -127,7 +127,13 @@ def main():
 
     # データ改変・削除を伴う操作はCSRFトークン検証を必須とする
     method = os.environ.get("REQUEST_METHOD", "GET").upper()
-    if method == "POST" and mode in ("save", "del_chara", "del_noplay", "restore_protected"):
+    if method == "POST" and mode in (
+        "save",
+        "del_chara",
+        "del_noplay",
+        "restore_protected",
+        "post_all_message",
+    ):
         from sub_def.crypto import get_session, token_check
         token_check(params, get_session())
 
@@ -136,6 +142,43 @@ def main():
         context = {
             "pass": admin_pass,
             "mode": mode
+        }
+        common.render_template("admin.html", context)
+        return
+
+    # 1.1 管理者による全体ニュース投稿
+    elif mode == "post_all_message":
+        message = params.get("message", "").strip()
+        if not message:
+            common.show_error("全体ニュースの本文を入力してください。")
+        if len(message) > config.Config["all_message_input_limit"]:
+            common.show_error(
+                f"全体ニュースは{config.Config['all_message_input_limit']}文字以内で入力してください。"
+            )
+
+        common.get_lock("all_message_post")
+        try:
+            all_messages = common.all_message_load()
+            all_messages.insert(
+                0,
+                {
+                    "id": "admin",
+                    "name": "管理人",
+                    "time": common.get_time_str(),
+                    "message": message,
+                    "host": "admin",
+                },
+            )
+            common.all_message_regist(
+                all_messages[: config.Config["all_message_storage_limit"]]
+            )
+        finally:
+            common.release_lock("all_message_post")
+
+        context = {
+            "pass": admin_pass,
+            "mode": "kanri_top",
+            "message": "全体ニュースを投稿しました。",
         }
         common.render_template("admin.html", context)
         return

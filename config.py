@@ -8,7 +8,6 @@
 
 import os
 
-
 Config = {}
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,9 +23,7 @@ Config["template_dir"] = os.path.join(BASE_DIR, "templates")
 # 管理画面のパスワードとセッション署名用秘密鍵。
 # 本番環境では必ず環境変数を設定し、既定値のまま公開しないこと。
 Config["admin_password"] = os.environ.get("FFA_ADMIN_PASSWORD", "1111")
-Config["secret_key"] = os.environ.get(
-    "FFA_SECRET_KEY", "ffa_secret_key_vips_ver3"
-)
+Config["secret_key"] = os.environ.get("FFA_SECRET_KEY", "ffa_secret_key_vips_ver3")
 
 # メンテナンス中はログイン後のゲーム処理を停止する。
 Config["maintenance_mode"] = 0  # 1: 有効 / 0: 無効
@@ -41,7 +38,9 @@ Config["session_expiry"] = 1800  # セッション有効期限（秒、30分）
 
 # 長期間プレイされていないキャラクターの自動削除基準。
 Config["character_delete_after_days"] = 60  # 最終戦闘から自動削除判定までの日数
-Config["active_character_timeout_seconds"] = 120  # 他キャラクターを「現在冒険中」と表示する有効秒数
+Config["active_character_timeout_seconds"] = (
+    120  # 他キャラクターを「現在冒険中」と表示する有効秒数
+)
 
 # 同一IP/ホストからの複数登録制限。
 Config["single_account_per_host"] = True
@@ -207,7 +206,9 @@ Config["max_accessories"] = 8
 
 # チョコボ牧場の補助マスター。
 Config["hint_file"] = "data/hint.json"
-Config["wild_chocobo_file"] = "data/chocobo/chocobofile.json"  # 購入候補となる野生チョコボ
+Config["wild_chocobo_file"] = (
+    "data/chocobo/chocobofile.json"  # 購入候補となる野生チョコボ
+)
 Config["chocobo_race_data_dir"] = "data/chocobo"  # チョコボレースのライバルデータ格納先
 Config["chocobo_rival_files"] = {
     0: "ribal0.json",
@@ -258,36 +259,119 @@ Config["chocobo_race_background"] = "images/farm.jpg"
 # ============================================================================
 # キャラクター立ち絵。既存画像のIDは変更・再採番しないこと。
 Config["chara_images"] = {
-    0: "ana.gif", 1: "arce.gif", 2: "arlon.gif", 3: "balt.gif",
-    4: "bea.gif", 5: "bellmayl.gif", 6: "c_zoro.gif", 7: "corza.gif",
-    8: "dr_kureha.gif", 9: "elly.gif", 10: "emerada.gif", 11: "fei.gif",
-    12: "karuu.gif", 13: "kuina.gif", 14: "kuro.gif", 15: "kurokoda.gif",
-    16: "kuzya.gif", 17: "maru.gif", 18: "meso-s.gif", 19: "mini-aerith.gif",
-    20: "mini-auron.gif", 21: "mini-baku.gif", 22: "mini-barret.gif", 23: "mini-blank.gif",
-    24: "mini-braska.gif", 25: "mini-buricid.gif", 26: "mini-cait.gif", 27: "mini-cid.gif",
-    28: "mini-cid10.gif", 29: "mini-cid7.gif", 30: "mini-cinna.gif", 31: "mini-cloud.gif",
-    32: "mini-edea.gif", 33: "mini-eiko.gif", 34: "mini-el.gif", 35: "mini-ff9-01.gif",
-    36: "mini-ff9-02.gif", 37: "mini-ff9-03.gif", 38: "mini-ff9-04.gif", 39: "mini-ff9-05.gif",
-    40: "mini-ff9-06.gif", 41: "mini-ff9-07.gif", 42: "mini-flatley.gif", 43: "mini-freija.gif",
-    44: "mini-fuujin.gif", 45: "mini-garnet.gif", 46: "mini-jecht.gif", 47: "mini-kerocid.gif",
-    48: "mini-kimari.gif", 49: "mini-kiros.gif", 50: "mini-laguna.gif", 51: "mini-lani.gif",
-    52: "mini-lulu.gif", 53: "mini-marcus.gif", 54: "mini-mikoto.gif", 55: "mini-quina.gif",
-    56: "mini-quistis.gif", 57: "mini-raijin.gif", 58: "mini-red.gif", 59: "mini-rikku.gif",
-    60: "mini-rinoa.gif", 61: "mini-ruby.gif", 62: "mini-salamander.gif", 63: "mini-seif.gif",
-    64: "mini-selphie.gif", 65: "mini-sephi.gif", 66: "mini-seymore.gif", 67: "mini-shelinda.gif",
-    68: "mini-squall.gif", 69: "mini-steiner.gif", 70: "mini-tidus.gif", 71: "mini-tifa.gif",
-    72: "mini-vin.gif", 73: "mini-vivi.gif", 74: "mini-wakka.gif", 75: "mini-ward.gif",
-    76: "mini-yuffie.gif", 77: "mini-yuna.gif", 78: "mini-yunalesca.gif", 79: "mini-zell.gif",
-    80: "mini-zidane.gif", 81: "mog.gif", 82: "mr2.gif", 83: "ms_gw.gif",
-    84: "munba.gif", 85: "nami.gif", 86: "pel.gif", 87: "rufi.gif",
-    88: "sanji.gif", 89: "sarama.gif", 90: "shitan.gif", 91: "smoker.gif",
-    92: "syancs.gif", 93: "tashi.gif", 94: "usausa.gif", 95: "vivi.gif",
+    0: "ana.gif",
+    1: "arce.gif",
+    2: "arlon.gif",
+    3: "balt.gif",
+    4: "bea.gif",
+    5: "bellmayl.gif",
+    6: "c_zoro.gif",
+    7: "corza.gif",
+    8: "dr_kureha.gif",
+    9: "elly.gif",
+    10: "emerada.gif",
+    11: "fei.gif",
+    12: "karuu.gif",
+    13: "kuina.gif",
+    14: "kuro.gif",
+    15: "kurokoda.gif",
+    16: "kuzya.gif",
+    17: "maru.gif",
+    18: "meso-s.gif",
+    19: "mini-aerith.gif",
+    20: "mini-auron.gif",
+    21: "mini-baku.gif",
+    22: "mini-barret.gif",
+    23: "mini-blank.gif",
+    24: "mini-braska.gif",
+    25: "mini-buricid.gif",
+    26: "mini-cait.gif",
+    27: "mini-cid.gif",
+    28: "mini-cid10.gif",
+    29: "mini-cid7.gif",
+    30: "mini-cinna.gif",
+    31: "mini-cloud.gif",
+    32: "mini-edea.gif",
+    33: "mini-eiko.gif",
+    34: "mini-el.gif",
+    35: "mini-ff9-01.gif",
+    36: "mini-ff9-02.gif",
+    37: "mini-ff9-03.gif",
+    38: "mini-ff9-04.gif",
+    39: "mini-ff9-05.gif",
+    40: "mini-ff9-06.gif",
+    41: "mini-ff9-07.gif",
+    42: "mini-flatley.gif",
+    43: "mini-freija.gif",
+    44: "mini-fuujin.gif",
+    45: "mini-garnet.gif",
+    46: "mini-jecht.gif",
+    47: "mini-kerocid.gif",
+    48: "mini-kimari.gif",
+    49: "mini-kiros.gif",
+    50: "mini-laguna.gif",
+    51: "mini-lani.gif",
+    52: "mini-lulu.gif",
+    53: "mini-marcus.gif",
+    54: "mini-mikoto.gif",
+    55: "mini-quina.gif",
+    56: "mini-quistis.gif",
+    57: "mini-raijin.gif",
+    58: "mini-red.gif",
+    59: "mini-rikku.gif",
+    60: "mini-rinoa.gif",
+    61: "mini-ruby.gif",
+    62: "mini-salamander.gif",
+    63: "mini-seif.gif",
+    64: "mini-selphie.gif",
+    65: "mini-sephi.gif",
+    66: "mini-seymore.gif",
+    67: "mini-shelinda.gif",
+    68: "mini-squall.gif",
+    69: "mini-steiner.gif",
+    70: "mini-tidus.gif",
+    71: "mini-tifa.gif",
+    72: "mini-vin.gif",
+    73: "mini-vivi.gif",
+    74: "mini-wakka.gif",
+    75: "mini-ward.gif",
+    76: "mini-yuffie.gif",
+    77: "mini-yuna.gif",
+    78: "mini-yunalesca.gif",
+    79: "mini-zell.gif",
+    80: "mini-zidane.gif",
+    81: "mog.gif",
+    82: "mr2.gif",
+    83: "ms_gw.gif",
+    84: "munba.gif",
+    85: "nami.gif",
+    86: "pel.gif",
+    87: "rufi.gif",
+    88: "sanji.gif",
+    89: "sarama.gif",
+    90: "shitan.gif",
+    91: "smoker.gif",
+    92: "syancs.gif",
+    93: "tashi.gif",
+    94: "usausa.gif",
+    95: "vivi.gif",
     96: "zoro.gif",
     # 追加画像は必ず新しいIDを割り当て、既存IDの意味を変えないこと。
-    97: "chop.gif", 98: "gf-efreet.gif", 99: "gf-karban.gif", 100: "gf-leviathan.gif",
-    101: "gf-siren.gif", 102: "ikon_m_c.gif", 103: "ikon_m_e.gif", 104: "ikon_m_f.gif",
-    105: "ikon_m_g.gif", 106: "ikon_m_m.gif", 107: "ikon_m_q.gif", 108: "ikon_m_sa.gif",
-    109: "ikon_m_st.gif", 110: "ikon_m_v.gif", 111: "ikon_m_z.gif",
+    97: "chop.gif",
+    98: "gf-efreet.gif",
+    99: "gf-karban.gif",
+    100: "gf-leviathan.gif",
+    101: "gf-siren.gif",
+    102: "ikon_m_c.gif",
+    103: "ikon_m_e.gif",
+    104: "ikon_m_f.gif",
+    105: "ikon_m_g.gif",
+    106: "ikon_m_m.gif",
+    107: "ikon_m_q.gif",
+    108: "ikon_m_sa.gif",
+    109: "ikon_m_st.gif",
+    110: "ikon_m_v.gif",
+    111: "ikon_m_z.gif",
 }
 
 # チョコボ画像。チョコボデータのnoと対応する。
@@ -371,11 +455,18 @@ Config["jobs_html_path"] = "html/manual.html#jobs"  # 職業説明へのリン�
 # ============================================================================
 # 9. 表示件数・コミュニケーション上限・外部リンク
 # ============================================================================
-Config["bbs_display_limit"] = 20  # 街に表示する掲示板投稿数
-Config["max_all_messages"] = 20  # 全体ニュースの最大保持・表示件数
-Config["bbs_storage_limit"] = 50  # 掲示板ファイルに保持する投稿数
+Config["bbs_display_limit"] = 100  # 街のスクロール枠に読み込む掲示板投稿数
+Config["bbs_storage_limit"] = 100  # 掲示板ファイルに保持する投稿数
+Config["all_message_display_limit"] = 20  # 街のスクロール枠に読み込む全体ニュース件数
+Config["all_message_storage_limit"] = 20  # 全体ニュースファイルに保持する件数
+Config["all_message_input_limit"] = (
+    500  # 管理画面から投稿できる全体ニュース本文の最大文字数
+)
+Config["tenka_log_limit"] = 20  # 天下一武道会の制覇履歴表示・保存件数
 Config["chocobo_partner_list_limit"] = 100  # お見合い候補として保持する最大件数
-Config["character_image_list_label"] = "アイコン一覧"  # キャラクター画像一覧リンクの表示名
+Config["character_image_list_label"] = (
+    "アイコン一覧"  # キャラクター画像一覧リンクの表示名
+)
 
 
 # ============================================================================

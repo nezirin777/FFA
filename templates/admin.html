@@ -46,6 +46,17 @@
                 <button type="submit" class="btn">保護ユーザーを復元</button>
             </form>
         </div>
+        <div class="admin-menu-card">
+            <h3>全体ニュース投稿</h3>
+            <p class="admin-menu-card__desc">街の全体ニュースへ管理人名義でお知らせを投稿します。</p>
+            <form action="admin.py" method="POST" class="admin-news-form">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="pass" value="{{ pass }}">
+                <input type="hidden" name="mode" value="post_all_message">
+                <textarea name="message" class="admin-form-input admin-news-textarea" maxlength="{{ config.all_message_input_limit }}" rows="4" placeholder="全体ニュース本文を入力してください" required></textarea>
+                <button type="submit" class="btn">ニュースを投稿</button>
+            </form>
+        </div>
     </div>
 
     <!-- 2. 全キャラクター表示 -->

@@ -378,11 +378,12 @@ FLOW("admin","管理画面","管理",[],[
     S("admin.py","main()","entry","管理画面の入口"),
     S("sub_def.common.py","decode_params()","util","管理フォームを解析"),
     S("admin.py","admin_password / token_check","check","管理者パスワードとCSRFを確認","NG → show_error()"),
-    S("admin.py","mode=kanri_top / kanri_all / data","logic","管理画面、全員一覧、個別データ編集を分岐"),
+    S("admin.py","mode=kanri_top / kanri_all / data / post_all_message","logic","管理画面、全員一覧、個別データ編集、全体ニュース投稿を分岐"),
     S("sub_def.utils.py","render_template('admin.html')","out")
   ]),
   SEC("保存・削除・復元",[
     S("admin.py","mode=save","entry","キャラクターデータを編集して保存"),
+    S("admin.py","mode=post_all_message","entry","管理人名義で全体ニュースを投稿"),
     S("sub_def.common.py","chara_regist()","data","入力値を検証して個別データを保存"),
     S("admin.py","mode=del_chara / del_noplay","entry","指定キャラまたは放置キャラを削除"),
     S("admin.py","get_protected_user_ids()","check","testなど保護対象を削除対象から除外"),

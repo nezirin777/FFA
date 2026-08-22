@@ -289,8 +289,8 @@ def main():
                         "time": common.get_time_str()
                     })
                     # 20件までに制限
-                    if len(logs) > config.Config['max_all_messages']:
-                        logs = logs[:config.Config['max_all_messages']]
+                    if len(logs) > config.Config['tenka_log_limit']:
+                        logs = logs[:config.Config['tenka_log_limit']]
                     save_tenka_logs(logs)
                 finally:
                     common.release_lock("tenka_logs")
@@ -306,8 +306,8 @@ def main():
                         "message": f"🎉 【天下一制覇】{chara['name']}さんが見事に天下一武道会を制覇し、最強の座に輝かれましたクポ！"
                     }
                     all_msgs.insert(0, new_msg)
-                    if len(all_msgs) > config.Config['max_all_messages']:
-                        all_msgs = all_msgs[:config.Config['max_all_messages']]
+                    if len(all_msgs) > config.Config['all_message_storage_limit']:
+                        all_msgs = all_msgs[:config.Config['all_message_storage_limit']]
                     common.all_message_regist(all_msgs)
                 finally:
                     common.release_lock("all_message_post")

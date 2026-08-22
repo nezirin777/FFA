@@ -193,7 +193,7 @@ def main():
     
     # 8. 掲示板の取得
     bbs_posts = common.bbs_load()[:config.Config['bbs_display_limit']]
-    all_messages = common.all_message_load()[:config.Config['max_all_messages']]
+    all_messages = common.all_message_load()[:config.Config['all_message_display_limit']]
     accessory_description = common.accessory_description(item.get("accessory", {}), chara.get("accessory_id", 0))
 
     # 街の基本能力値欄でも、旧版と同じく装備補正を併記する。

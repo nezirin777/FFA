@@ -232,17 +232,21 @@ def main():
                 # 階層クリア！
                 comment += f'<b><span class="yellow u-text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
                 
-                # 全体メッセージに投稿
-                all_msgs = common.all_message_load()
-                new_msg = {
-                    "id": "sys",
-                    "name": "【天の声】",
-                    "time": common.get_time_str(),
-                    "message": f"{chara['name']}さんが新たにレジェンドプレイスを攻略され、称号が上がりました！",
-                    "host": "system"
-                }
-                all_msgs.insert(0, new_msg)
-                common.all_message_regist(all_msgs[:config.Config['max_all_messages']])
+                # 全体メッセージに投稿。管理投稿や他イベントとの上書きを防ぐ。
+                common.get_lock("all_message_post")
+                try:
+                    all_msgs = common.all_message_load()
+                    new_msg = {
+                        "id": "sys",
+                        "name": "【天の声】",
+                        "time": common.get_time_str(),
+                        "message": f"{chara['name']}さんが新たにレジェンドプレイスを攻略され、称号が上がりました！",
+                        "host": "system"
+                    }
+                    all_msgs.insert(0, new_msg)
+                    common.all_message_regist(all_msgs[:config.Config['all_message_storage_limit']])
+                finally:
+                    common.release_lock("all_message_post")
                 
                 if chara["title"] < boss_file_idx + 1:
                     chara["title"] = boss_file_idx + 1
