@@ -140,8 +140,8 @@ def zero_accessory() -> dict[str, Any]:
 
 def empty_item() -> dict[str, Any]:
     return {
-        "weapon": {"name": "素手", "dmg": 0, "effect": 0},
-        "armor": {"name": "衣服", "def": 0, "effect": 0},
+        "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+        "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
         "accessory": zero_accessory(),
     }
 
@@ -154,11 +154,11 @@ def load_json(path: Path, default: Any) -> Any:
 
 
 def load_current_masters(root: Path) -> dict[str, dict[int, dict[str, Any]]]:
-    """現行マスターを読み、倉庫用の旧形式差分をここで吸収する。"""
+    """現行マスターを読み、倉庫へ保存する形式に正規化する。"""
     paths = {
-        "item": root / "data" / "item" / "item.json",
-        "def": root / "data" / "def" / "def.json",
-        "acs": root / "data" / "acs" / "acs.json",
+        "weapon": root / "data" / "weapon.json",
+        "armor": root / "data" / "armor.json",
+        "accessory": root / "data" / "accessory.json",
     }
     masters: dict[str, dict[int, dict[str, Any]]] = {key: {} for key in paths}
     for kind, path in paths.items():
@@ -167,7 +167,7 @@ def load_current_masters(root: Path) -> dict[str, dict[int, dict[str, Any]]]:
             item_id = to_int(row.get("no"))
             if not item_id:
                 continue
-            if kind == "acs":
+            if kind == "accessory":
                 bonus = row.get("bonus", {})
                 normalized = {
                     "id": item_id,
@@ -177,19 +177,27 @@ def load_current_masters(root: Path) -> dict[str, dict[int, dict[str, Any]]]:
                     "bonus": {
                         key: to_int(bonus.get(key)) for key in CANONICAL_STATS
                     },
-                    "description": html.unescape(str(row.get("description", ""))),
                     **{
                         key: to_int(row.get(key))
                         for key in CANONICAL_ACCESSORY_RATES
                     },
+                    "description": html.unescape(str(row.get("description", ""))),
+                }
+            elif kind == "weapon":
+                normalized = {
+                    "id": item_id,
+                    "name": html.unescape(str(row.get("name", ""))),
+                    "atk": to_int(row.get("atk")),
+                    "gold": to_int(row.get("gold")),
+                    "hit_rate": to_int(row.get("hit_rate")),
                 }
             else:
                 normalized = {
                     "id": item_id,
                     "name": html.unescape(str(row.get("name", ""))),
-                    "power": to_int(row.get("power")),
+                    "defense": to_int(row.get("defense")),
                     "gold": to_int(row.get("gold")),
-                    "effect": to_int(row.get("effect", row.get("hit"))),
+                    "evasion_rate": to_int(row.get("evasion_rate")),
                 }
             masters[kind][item_id] = normalized
     return masters
@@ -231,13 +239,13 @@ def accessory_description(
     legacy_masters: Iterable[dict[str, Any]],
 ) -> str:
     """旧版 item に説明文がない場合も、名前または能力値から補完する。"""
-    for row in masters["acs"].values():
+    for row in masters["accessory"].values():
         if row["name"] == name and row.get("description"):
             return row["description"]
     for row in legacy_masters:
         if row["name"] == name and row.get("description"):
             return row["description"]
-    for row in masters["acs"].values():
+    for row in masters["accessory"].values():
         if row.get("effect_id") != effect_id:
             continue
         if row.get("bonus") == bonus and all(row.get(key, 0) == rates[key] for key in rates):
@@ -291,13 +299,13 @@ def convert_item(
     return {
         "weapon": {
             "name": html.unescape(cols[0]) or "素手",
-            "dmg": to_int(cols[1]),
-            "effect": to_int(cols[2]),
+            "atk": to_int(cols[1]),
+            "hit_rate": to_int(cols[2]),
         },
         "armor": {
             "name": html.unescape(cols[3]) or "衣服",
-            "def": to_int(cols[4]),
-            "effect": to_int(cols[5]),
+            "defense": to_int(cols[4]),
+            "evasion_rate": to_int(cols[5]),
         },
         "accessory": {
             "name": name,
@@ -375,31 +383,31 @@ def convert_souko_file(path: Path, kind: str) -> list[dict[str, Any]]:
         cols = split_legacy_line(line)
         if not cols:
             continue
-        if kind in {"item", "def"}:
+        if kind in {"weapon", "armor"}:
             cols += [""] * (5 - len(cols))
             item_id = to_int(cols[0])
             if not item_id:
                 continue
-            if kind == "item":
+            if kind == "weapon":
                 result.append({
                     "id": item_id,
                     "name": cols[1],
-                    "power": to_int(cols[2]),
+                    "atk": to_int(cols[2]),
                     "gold": to_int(cols[3]),
-                    "effect": to_int(cols[4]),
+                    "hit_rate": to_int(cols[4]),
                 })
             else:
                 result.append({
                     "id": item_id,
                     "name": cols[1],
-                    "power": to_int(cols[2]),
+                    "defense": to_int(cols[2]),
                     "gold": to_int(cols[3]),
-                    "effect": to_int(cols[4]),
+                    "evasion_rate": to_int(cols[4]),
                 })
             continue
 
         # アクセサリー倉庫は、ID・名前・価格・効果IDに続いて、
-        # str,int,mnd,vit,dex,agi,cha,karma,命中,必殺,回避,説明文の順。
+        # str,int,mnd,vit,dex,agi,cha,karma,命中,回避,必殺,説明文の順。
         cols += [""] * (16 - len(cols))
         item_id = to_int(cols[0])
         if not item_id:
@@ -420,8 +428,8 @@ def convert_souko_file(path: Path, kind: str) -> list[dict[str, Any]]:
                 "karma": to_int(cols[11]),
             },
             "hit_rate": to_int(cols[12]),
-            "special_rate": to_int(cols[13]),
-            "evasion_rate": to_int(cols[14]),
+            "evasion_rate": to_int(cols[13]),
+            "special_rate": to_int(cols[14]),
             "description": cols[15] or "効果なし",
         })
     return result
@@ -492,13 +500,13 @@ def convert_winner(
         "equipped_item": {
             "weapon": {
                 "name": cols[21] or "素手",
-                "dmg": to_int(cols[22]),
-                "effect": to_int(cols[23]),
+                "atk": to_int(cols[22]),
+                "hit_rate": to_int(cols[23]),
             },
             "armor": {
                 "name": cols[24] or "衣服",
-                "def": to_int(cols[25]),
-                "effect": to_int(cols[26]),
+                "defense": to_int(cols[25]),
+                "evasion_rate": to_int(cols[26]),
             },
             "accessory": {
                 "name": accessory_name,
@@ -524,13 +532,31 @@ def convert_winner(
 
 
 def validate_user(user: dict[str, Any], source: Path) -> None:
+    forbidden_top_level = [
+        key
+        for key in ("item", "souko_item", "souko_def", "souko_acs")
+        if key in user
+    ]
+    if forbidden_top_level:
+        raise ValueError(
+            f"{source}: 旧装備・倉庫キーが残っています {forbidden_top_level}"
+        )
+
     chara = user["chara"]
     missing = [key for key in CANONICAL_STATS if key not in chara]
     forbidden = [key for key in ("lck", "lp", "site", "url") if key in chara]
     if missing or forbidden:
         raise ValueError(f"{source}: キャラ能力値キーが不正です missing={missing} forbidden={forbidden}")
 
-    accessory = user["item"]["accessory"]
+    equipment = user["equipment"]
+    weapon = equipment["weapon"]
+    armor = equipment["armor"]
+    if set(weapon) != {"name", "atk", "hit_rate"}:
+        raise ValueError(f"{source}: 武器データのキーが不正です")
+    if set(armor) != {"name", "defense", "evasion_rate"}:
+        raise ValueError(f"{source}: 防具データのキーが不正です")
+
+    accessory = equipment["accessory"]
     if set(accessory["bonus"]) != set(CANONICAL_STATS):
         raise ValueError(f"{source}: アクセサリーボーナスのキーが不正です")
     forbidden = [key for key in ("lck", "lp", "attrib", "spare1", "spare2", "spare3") if key in accessory]
@@ -553,8 +579,12 @@ def convert_user(
     charalog2_path = old_root / "charalog2" / f"{user_id}.cgi"
     bank_path = old_root / "banklog" / f"{user_id}.cgi"
     souko_paths = {
-        kind: old_root / "souko" / kind / f"{user_id}.cgi"
-        for kind in ("item", "def", "acs")
+        kind: old_root / "souko" / source_kind / f"{user_id}.cgi"
+        for kind, source_kind in (
+            ("weapon", "item"),
+            ("armor", "def"),
+            ("accessory", "acs"),
+        )
     }
 
     chara = convert_chara(chara_path)
@@ -571,7 +601,7 @@ def convert_user(
             lines.append("0")
 
     warehouse = {}
-    for index, kind in enumerate(("item", "def", "acs")):
+    for index, kind in enumerate(("weapon", "armor", "accessory")):
         if souko_paths[kind].exists():
             warehouse[kind] = convert_souko_file(souko_paths[kind], kind)
         else:
@@ -583,13 +613,13 @@ def convert_user(
 
     user = {
         "chara": chara,
-        "item": item,
+        "equipment": item,
         "syoku": convert_syoku(syoku_path),
         "login_log": convert_login_log(old_root / "loginlog" / f"{user_id}.cgi"),
         "message": convert_message_log(old_root / "message" / f"{user_id}.cgi"),
-        "souko_item": warehouse["item"],
-        "souko_def": warehouse["def"],
-        "souko_acs": warehouse["acs"],
+        "souko_weapon": warehouse["weapon"],
+        "souko_armor": warehouse["armor"],
+        "souko_accessory": warehouse["accessory"],
         "choco": {},
         "choco_g1": {},
         # main()でuser_all.jsonとは別のmessage_sent.jsonへ保存する。
