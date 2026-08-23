@@ -127,6 +127,25 @@ def main():
     # パスワード検証（IDOR対策: ログイン中の本人のみ自分のホーム画面を表示できる）
     if c_id != user_id or c_pass != chara["pass"]:
         common.show_error("認証に失敗しました。再度ログインしてください。")
+
+    # レジェンド攻略結果・待機画面から街へ戻る場合の中断処理。
+    # 旧版では攻略中の進行値を街の通常画面から利用できない状態に戻していたため、
+    # 明示的に中断した場合も保存データを新しい攻略開始状態へ戻す。
+    if params.get("legend_cancel") == "1":
+        if os.environ.get("REQUEST_METHOD", "GET").upper() != "POST":
+            common.show_error("不正な中断リクエストです。画面のボタンから操作してください。")
+        from sub_def.crypto import get_session, token_check
+        token_check(params, get_session())
+
+        common.get_lock(user_id)
+        try:
+            latest_chara = common.chara_load(user_id)
+            if latest_chara:
+                latest_chara["boss_flag"] = config.Config["legend_progress_reset_value"]
+                common.chara_regist(user_id, latest_chara)
+                chara = latest_chara
+        finally:
+            common.release_lock(user_id)
         
     # 4. 所持アイテムのロード
     item = common.equipment_load(user_id)
@@ -152,7 +171,7 @@ def main():
     ltime = now - chara["last_time"]
     vtime = config.Config['pvp_race_cooldown_seconds'] - ltime
     ztime = vtime + 1 if vtime >= 0 else 0
-    
+
     # 性別表記
     esex = "男" if chara["sex"] else "女"
     

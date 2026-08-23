@@ -74,7 +74,18 @@
             <input type="submit" class="btn" value="さらに奥へ進む">
         </form>
         {% endif %}
+        {% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}
+        <form action="{{ config.main_script }}" method="POST"
+              data-confirm="レジェンドプレイスの攻略を中断して街へ戻ります。現在の進行状態はリセットされます。よろしいですか？"
+              data-loading="攻略を中断しています...">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="legend_cancel" value="1">
+            <input type="submit" class="btn btn-secondary" value="街に戻る（進行をリセット）">
+        </form>
+        {% else %}
         <a href="{{ config.login_script }}?id={{ chara.id }}" class="btn">街に戻る</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

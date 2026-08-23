@@ -260,6 +260,12 @@ def main():
         else:
             comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'
 
+        # 旧版 mbattle.pl の sentoukeka と同じく、通常修行・幻影の城・異世界を
+        # 挟んだ場合はレジェンドプレイスの連続攻略を終了する。
+        # レジェンドを続ける場合だけ、結果画面の「さらに奥へ進む」から
+        # legend.py を直接呼び出して boss_flag を保持する。
+        chara["boss_flag"] = config.Config["legend_progress_reset_value"]
+
         # 旧版では通常修行・幻影の城・異世界のいずれも戦闘回数へ集計する。
         chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
         if win == 1:
