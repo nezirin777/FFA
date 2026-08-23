@@ -229,6 +229,12 @@ def main():
             if win == 1:
                 chara["win_count"] = int(chara.get("win_count", 0)) + 1
 
+            # 旧版の battle.cgi と同じく、チャンプ戦を終えたら
+            # レジェンドプレイスの挑戦権を新しい攻略開始状態へ戻す。
+            # これがないと、途中階層で街へ戻った後にチャンプへ挑戦しても
+            # boss_flag が残り、レジェンドプレイスへ再入場できなくなる。
+            chara["boss_flag"] = config.Config["legend_progress_reset_value"]
+
             if win == 1 or win == 2:
                 # 挑戦者の勝利または引き分け ➔ 挑戦者が新しい王者になる！
                 chara["gold"] += gold_gained

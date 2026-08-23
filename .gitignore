@@ -31,3 +31,8 @@ save_data/*
 **/sousin/*.*
 
 **/change_data/**/
+
+旧版_ver1/datalog/**
+旧版_ver1/savelog/**
+旧版_ver2/datalog/**
+旧版_ver2/savelog/**

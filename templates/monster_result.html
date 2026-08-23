@@ -65,6 +65,15 @@
     </div>
 
     <div class="battle-back-actions">
+        {% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}
+        <form action="{{ config.legend_script }}" method="POST">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="mode" value="boss">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="boss_file" value="{{ boss_file }}">
+            <input type="submit" class="btn" value="さらに奥へ進む">
+        </form>
+        {% endif %}
         <a href="{{ config.login_script }}?id={{ chara.id }}" class="btn">街に戻る</a>
     </div>
 </div>

@@ -65,6 +65,42 @@ except ImportError:
 # O(1)メンバーシップテストのための定数定義 (ガイドライン2.4に準拠し、線形探索を回避して高速化)
 _SPECIAL_MODES: frozenset[str] = frozenset({"isekiai", "genei"})
 _ACCESSORY_BONUS_STATS = common.STAT_KEYS
+_TACTIC_ACTIVATION_DENOMINATORS = {
+    "激高": 60,
+    "高": 80,
+    "中": 100,
+    "低": 120,
+    "超低": 180,
+    "激低": 200,
+}
+
+
+def _load_tactic_activation_denominators():
+    """戦術説明の発動率表記を、判定に使う乱数幅へ変換する。"""
+    result = {}
+    try:
+        path = os.path.join(common.BASE_DIR, config.Config["tac_file"])
+        with open(path, "r", encoding="utf-8") as file:
+            tactics = common.decode_html_entities(json.load(file))
+    except (OSError, TypeError, ValueError, KeyError):
+        return result
+
+    # 長い表記を先に確認する（「激低」を「低」と誤認しないため）。
+    labels = ("激高", "超低", "激低", "高", "中", "低")
+    for tactic in tactics:
+        if tactic.get("activation_denominator") is not None:
+            result[int(tactic["no"])] = max(1, int(tactic["activation_denominator"]))
+            continue
+        description = str(tactic.get("desc", ""))
+        for label in labels:
+            if f"発動率{label}" in description:
+                result[int(tactic["no"])] = _TACTIC_ACTIVATION_DENOMINATORS[label]
+                break
+    return result
+
+
+_TACTIC_ACTIVATION_DENOMINATORS_BY_ID = _load_tactic_activation_denominators()
+
 
 def _with_accessory_bonus(chara, accessory):
     """旧版 acs_add 相当。戦闘用コピーにだけ通常ステータスボーナスを加算する。"""
@@ -140,6 +176,8 @@ class BattleState:
         self.kaihuku1 = ""
         self.kaihuku2 = ""
         self.huin = 0
+        self.instant_kill1 = False
+        self.instant_kill2 = False
         
         # バフ・制限数など
         self.syukuhuku = 0
@@ -149,6 +187,8 @@ class BattleState:
         self.wa_22lmt = 0
         self.hpplus1 = 0
         self.hpplus2 = 0
+        self.damage_heal_ratio1 = 0
+        self.damage_heal_ratio2 = 0
         self.charadown = {}
         
         # ターンカウンタ
@@ -160,6 +200,8 @@ class BattleState:
         self.a_hitup = 0
         self.a_kaihiup = 0
         self.a_wazaup = 0
+        self.player_activation_denominator = None
+        self.winner_activation_denominator = None
 
     def available_gold(self):
         return self.player_gold
@@ -221,6 +263,19 @@ def get_job_dmg(job, chara, weapon_dmg):
     else:
         return all_stats() + weapon_dmg
 
+
+def get_tactic_id(chara):
+    """戦闘で使用する戦術IDを取得する（旧版 chara[30] / winner[37] 相当）。"""
+    try:
+        return max(0, int((chara or {}).get("tactic_id", 0)))
+    except (TypeError, ValueError):
+        return 0
+
+
+def get_tactic_activation_denominator(chara):
+    """選択中の戦術に設定された発動率の乱数幅を返す。"""
+    return _TACTIC_ACTIVATION_DENOMINATORS_BY_ID.get(get_tactic_id(chara))
+
 class BattleSimulator:
     """
     戦闘実行シミュレーター。
@@ -235,6 +290,9 @@ class BattleSimulator:
             enemy_accessory = effective_enemy.get("equipped_item", {}).get("accessory", {})
             effective_enemy = _with_accessory_bonus(effective_enemy, enemy_accessory)
         self.state = BattleState(mode, effective_chara, effective_item, effective_enemy, is_player_enemy)
+        self.state.player_activation_denominator = get_tactic_activation_denominator(self.state.chara)
+        if is_player_enemy:
+            self.state.winner_activation_denominator = get_tactic_activation_denominator(self.state.winner)
         self.battle_logs = []
         
     def simulate(self):
@@ -275,7 +333,11 @@ class BattleSimulator:
             s.dmgme1 = 0
             s.hpplus1 = 0
             s.hpplus2 = 0
+            s.damage_heal_ratio1 = 0
+            s.damage_heal_ratio2 = 0
             s.huin = 0
+            s.instant_kill1 = False
+            s.instant_kill2 = False
             
             # === 2. プレイヤー必殺技発動判定 (tyosenwaza / hissatu) ===
             s.waza_ritu = int(s.chara["karma"] / 15) + 10 + s.chara["job_level"]
@@ -305,8 +367,10 @@ class BattleSimulator:
                 s.waza_ritu += 999
                 s.com1 += "<br><font class=\"red\" size=4><b>LIMIT BREAK!!</b></font>"
                 
-            # ジョブ必殺技の動的実行 (tech_X.hissatu)
-            skills.run_skill("tech", s.chara["job"], "hissatu", s)
+            # 戦術必殺技の動的実行。職業IDではなく選択中の戦術IDを使う。
+            # 旧版 battle.pl は chara[30]、対人戦の王者側は winner[37] を
+            # tech/wtech のファイル番号として読み込んでいた。
+            skills.run_skill("tech", get_tactic_id(s.chara), "hissatu", s)
             
             # === 3. 敵スキル発動判定 ===
             if s.is_player_enemy:
@@ -315,8 +379,8 @@ class BattleSimulator:
                 if int(s.winner["max_hp"] / 10) > s.mhp and random.randrange(4) > 1:
                     s.wwaza_ritu += 999
                     s.com2 += "<br><font class=\"red\" size=4><b>LIMIT BREAK!!</b></font>"
-                # 敵プレイヤーの必殺技
-                skills.run_skill("wtech", s.winner["job"], "hissatu", s)
+                # 敵プレイヤーの必殺技も、王者側の選択戦術を使用する。
+                skills.run_skill("wtech", get_tactic_id(s.winner), "hissatu", s)
             else:
                 # 敵モンスターのスキル (mons_X.mons_waza)
                 skills.run_skill("mons", s.monstac, "mons_waza", s)
@@ -324,10 +388,10 @@ class BattleSimulator:
             # === 4. 職業の後発効果とアクセサリー効果 (acs_waza / wacs_waza) ===
             # 旧版では必殺技(hissatu)とは別に、通常攻撃後の atowaza と
             # アクセサリー固有効果の acskouka をこの順で実行していた。
-            skills.run_skill("tech", s.chara["job"], "atowaza", s)
+            skills.run_skill("tech", get_tactic_id(s.chara), "atowaza", s)
             skills.run_skill("acstech", s.item["accessory"]["effect_id"], "acskouka", s)
             if s.is_player_enemy:
-                skills.run_skill("wtech", s.winner["job"], "watowaza", s)
+                skills.run_skill("wtech", get_tactic_id(s.winner), "watowaza", s)
                 skills.run_skill("wacstech", s.winner_item["accessory"]["effect_id"], "wacskouka", s)
             else:
                 skills.run_skill("mons", s.monstac, "mons_atowaza", s)
@@ -444,6 +508,25 @@ class BattleSimulator:
             if sake2 > random.randrange(100):
                 s.dmg1 = 0
                 s.com1 += f"<br><span class=\"red u-text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
+
+            # 一撃必殺系は回避判定を抜けた後も、最低限現在HP分を保証する。
+            if s.instant_kill1 and s.dmg1 > 0:
+                s.dmg1 = max(s.dmg1, s.mhp)
+            if s.instant_kill2 and s.dmg2 > 0:
+                s.dmg2 = max(s.dmg2, s.khp)
+
+            # ドレイン系は「実際に与えたダメージ」を基準に回復する。
+            # 防御・回避後に計算することで、空振り時の不正な回復を防ぐ。
+            if s.damage_heal_ratio1:
+                damage_heal1 = max(0, int(s.dmg1 * s.damage_heal_ratio1))
+                s.hpplus1 += damage_heal1
+                if damage_heal1:
+                    s.kaihuku1 += f"{s.chara['name']} のＨＰが {damage_heal1} 回復した！♪"
+            if s.damage_heal_ratio2:
+                damage_heal2 = max(0, int(s.dmg2 * s.damage_heal_ratio2))
+                s.hpplus2 += damage_heal2
+                if damage_heal2:
+                    s.kaihuku2 += f"{s.winner['name']} のＨＰが {damage_heal2} 回復した！♪"
                 
             # === 7. HPの減算処理 (hp_sum) ===
             s.khp = s.khp - s.dmg2 - s.dmgme1 + s.hpplus1

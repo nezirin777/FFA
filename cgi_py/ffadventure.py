@@ -153,10 +153,6 @@ def main():
     vtime = config.Config['pvp_race_cooldown_seconds'] - ltime
     ztime = vtime + 1 if vtime >= 0 else 0
     
-    # ボスフラグ進行度の調整
-    if chara["boss_flag"] < config.Config['legend_progress_reset_value']:
-        chara["boss_flag"] = 0
-        
     # 性別表記
     esex = "男" if chara["sex"] else "女"
     

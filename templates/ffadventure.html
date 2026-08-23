@@ -383,7 +383,7 @@
                         <!-- レジェンドプレイス -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🐉 レジェンドプレイス</span>
-                            {% if not chara.battle_count or chara.boss_flag != config.legend_progress_reset_value %}
+                            {% if not chara.battle_count %}
                                 <small class="red">※一度チャンプに挑戦してください</small>
                             {% else %}
                                 <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">

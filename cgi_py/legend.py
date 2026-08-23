@@ -152,10 +152,6 @@ def main():
             common.release_lock(user_id)
             common.show_error("一度チャンプに挑戦してください。")
 
-        if int(chara.get("boss_flag", 0)) != int(config.Config["legend_progress_reset_value"]):
-            common.release_lock(user_id)
-            common.show_error("まだレジェンドプレイスへ挑戦できません。")
-
         if chara["battle_limit"] <= 0:
             common.release_lock(user_id)
             common.show_error("これ以上修行はできません（回数制限）。")
