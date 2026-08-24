@@ -131,12 +131,15 @@ def main():
     
     train_wait = config.Config['training_cooldown_seconds'] - ltime
     race_wait = config.Config['pvp_race_cooldown_seconds'] - ltime
+    choco_life = int(choco_raw.get("life", 0)) if has_choco else 0
     
     time_limits = {
         "train_ok": train_wait <= 0,
         "train_wait": max(0, train_wait),
         "race_ok": race_wait <= 0,
-        "race_wait": max(0, race_wait)
+        "race_wait": max(0, race_wait),
+        "train_life_ok": choco_life >= 200,
+        "race_life_ok": choco_life >= 400,
     }
 
     # === 王者かどうかの判定 ===

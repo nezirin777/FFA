@@ -3345,6 +3345,10 @@ img {
   align-items: center;
 }
 
+form.farm-action-form[hidden] {
+  display: none !important;
+}
+
 .farm-btn {
   background: linear-gradient(135deg, #222266 0%, #111144 100%);
   border: 1px solid var(--link-color);

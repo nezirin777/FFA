@@ -23,6 +23,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     loadToastPosition();
     initToastPositionSelector();
+    initCountdowns();
 
     const flashes = Array.isArray(window.FFA_FLASH_MESSAGES)
       ? window.FFA_FLASH_MESSAGES
@@ -93,6 +94,38 @@
         const label = button.textContent.trim() || nextPosition;
         showToast(`メッセージ表示位置を「${label}」に変更しました。`, "success", 2000);
       });
+    });
+  }
+
+  function initCountdowns() {
+    document.querySelectorAll("[data-countdown-seconds]").forEach((element) => {
+      let remaining = Number.parseInt(element.dataset.countdownSeconds, 10);
+      if (!Number.isFinite(remaining) || remaining <= 0) return;
+
+      const template = element.dataset.countdownTemplate || "あと {seconds} 秒";
+      const render = () => {
+        element.textContent = template.replace("{seconds}", String(remaining));
+      };
+
+      render();
+      const timer = window.setInterval(() => {
+        remaining -= 1;
+        if (remaining > 0) {
+          render();
+          return;
+        }
+
+        window.clearInterval(timer);
+        const targetId = element.dataset.countdownRevealTarget;
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (target) {
+          element.setAttribute("hidden", "");
+          target.removeAttribute("hidden");
+          return;
+        }
+
+        element.textContent = "利用できます";
+      }, 1000);
     });
   }
 
