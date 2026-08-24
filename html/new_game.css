@@ -2523,6 +2523,39 @@ img {
   margin: 0;
 }
 
+/* --- Strategy Change Result --- */
+.tac-result-container {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.tac-result-card {
+  margin-bottom: var(--space-m);
+}
+
+.tac-result-card .card__body {
+  text-align: center;
+}
+
+.tac-result-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-m);
+  margin-top: var(--space-m);
+}
+
+.tac-result-actions form {
+  margin: 0;
+}
+
+.tac-result-btn {
+  min-width: 150px;
+}
+
 /* ====================================================== */
 /* 17. Job Change (転職)                                    */
 /* ====================================================== */
