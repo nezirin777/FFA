@@ -444,6 +444,10 @@ class BattleSimulator:
             ci_plus = s.item["weapon"]["hit_rate"] + s.item["accessory"]["hit_rate"]
             cd_plus = s.item["armor"]["evasion_rate"] + s.item["accessory"]["evasion_rate"]
             hit_ritu = int(s.chara["dex"] / 10) + 51 + ci_plus
+            defense_blocked1 = False
+            defense_blocked2 = False
+            player_evaded = False
+            enemy_evaded = False
 
             if s.is_player_enemy:
                 # 対人戦は旧版 wbattle.pl の双方計算を使う。
@@ -472,6 +476,7 @@ class BattleSimulator:
                 sake2 = s.mkahi - hit_ritu + s.sake2
 
             # 被ダメージの防御力減算。対人戦は相手防具にも同じ処理を行う。
+            raw_dmg2 = s.dmg2
             if s.dmg2 < 0:
                 pass
             elif s.dmg2 < s.item["armor"]["defense"]:
@@ -480,6 +485,7 @@ class BattleSimulator:
                 s.dmg2 = s.dmg2 - s.item["armor"]["defense"]
 
             if s.is_player_enemy:
+                raw_dmg1 = s.dmg1
                 if s.dmg1 < 0:
                     pass
                 elif s.dmg1 < s.winner_item["armor"]["defense"]:
@@ -497,23 +503,51 @@ class BattleSimulator:
                     s.dmg1 = int(s.dmg1 / 4)
                 elif s.winner["job"] > 7:
                     s.dmg1 = int(s.dmg1 / 2)
+            defense_blocked2 = raw_dmg2 > 0 and s.dmg2 == 0
+            defense_blocked1 = (
+                s.is_player_enemy and raw_dmg1 > 0 and s.dmg1 == 0
+            )
 
             # プレイヤー回避判定
             evade_roll_max = 100 if s.is_player_enemy else 300
             if sake1 > random.randrange(evade_roll_max):
                 s.dmg2 = 0
+                player_evaded = True
                 s.com2 += f"<br><span class=\"red u-text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
             # 敵回避判定
             if sake2 > random.randrange(100):
                 s.dmg1 = 0
+                enemy_evaded = True
                 s.com1 += f"<br><span class=\"red u-text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
 
+            if defense_blocked1 and not enemy_evaded:
+                s.com1 += (
+                    f"<br><span class=\"yellow u-text-small\"><b>"
+                    f"{s.chara['name']}は {s.mname} にダメージを与えることができなかった！"
+                    f"</b></span>"
+                )
             # 一撃必殺系は回避判定を抜けた後も、最低限現在HP分を保証する。
             if s.instant_kill1 and s.dmg1 > 0:
                 s.dmg1 = max(s.dmg1, s.mhp)
             if s.instant_kill2 and s.dmg2 > 0:
                 s.dmg2 = max(s.dmg2, s.khp)
+
+            # 先制攻撃で敵が倒れた場合は、敵の攻撃を不発として明示する。
+            enemy_will_be_defeated = s.mhp - s.dmg1 + s.hpplus2 <= 0
+            if enemy_will_be_defeated and not enemy_evaded:
+                s.dmg2 = 0
+                s.com2 = (
+                    f"<span class=\"yellow u-text-small\"><b>"
+                    f"{s.mname}はすでに倒れていた！"
+                    f"</b></span>"
+                )
+            elif defense_blocked2 and not player_evaded:
+                s.com2 += (
+                    f"<br><span class=\"yellow u-text-small\"><b>"
+                    f"{s.mname}は {s.chara['name']} にダメージを与えることができなかった！"
+                    f"</b></span>"
+                )
 
             # ドレイン系は「実際に与えたダメージ」を基準に回復する。
             # 防御・回避後に計算することで、空振り時の不正な回復を防ぐ。
