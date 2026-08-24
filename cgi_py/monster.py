@@ -228,12 +228,16 @@ def main():
         chara["hp"] = restored_hp
 
         # 勝敗処理
+        theft_adjustment = (
+            int(simulator.state.gold_reward_bonus)
+            - int(simulator.state.gold_reward_penalty)
+        )
         if win == 1:
             # 旧版 sentoukeka 相当: 基本報酬 + 1〜基本報酬の範囲。
             base_gold = max(0, int(enemy_data["gold"]))
-            gold_gained = base_gold + random.randrange(max(1, base_gold)) + 1
-            gold_gained += simulator.state.gold_reward_bonus
-            gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
+            base_reward = base_gold + random.randrange(max(1, base_gold)) + 1
+            # 盗み分は勝利報酬へ一度だけ合算する。
+            gold_gained = max(0, base_reward + theft_adjustment)
             exp_gained = enemy_data["ex"]
             
             # 幻影の城のお宝追加判定
@@ -258,7 +262,19 @@ def main():
             chara["gold"] = int(chara["gold"] / 100)
             comment += f'<span class="red u-text-large">戦闘に敗北しました・・・</span><br>'
         else:
+            # 引き分けは基礎報酬を支給せず、戦闘中に発生した盗み分だけ反映する。
+            gold_gained = theft_adjustment
+            chara["gold"] += gold_gained
+            if chara["gold"] > config.Config['max_gold']:
+                chara["gold"] = config.Config['max_gold']
+            if chara["gold"] < 0:
+                chara["gold"] = 0
+
             comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'
+            if gold_gained > 0:
+                comment += f'<span class="green u-text-large">盗んだお金 {gold_gained} G を獲得しました。</span><br>'
+            elif gold_gained < 0:
+                comment += f'<span class="red u-text-large">お金を {abs(gold_gained)} G 失いました。</span><br>'
 
         # 旧版 mbattle.pl の sentoukeka と同じく、通常修行・幻影の城・異世界を
         # 挟んだ場合はレジェンドプレイスの連続攻略を終了する。

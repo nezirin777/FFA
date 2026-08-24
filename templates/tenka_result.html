@@ -36,7 +36,7 @@
         {{ comment | safe }}
         <div class="post-form-note u-mt-s">
             （獲得経験値: <b class="green">+{{ exp_gained }} exp</b>
-            {% if win == 1 %} / 獲得賞金: <b class="yellow">+{{ gold_reward }} G</b>{% endif %}）
+            {% if gold_gained != 0 %} / 所持金変動: <b class="{% if gold_gained > 0 %}yellow{% else %}red{% endif %}">{{ '%+d'|format(gold_gained) }} G</b>{% endif %}）
         </div>
     </div>
 

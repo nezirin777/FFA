@@ -249,15 +249,21 @@ def main():
         chara["hp"] = restored_hp
 
         comment = ""
+        gold_gained = 0
         exp_gained = 0
+        theft_adjustment = (
+            int(simulator.state.gold_reward_bonus)
+            - int(simulator.state.gold_reward_penalty)
+        )
         
         if win == 1:
             # 勝利
             exp_gained = max(10, int(winner.get("level", 1) * 2))
             total_reward = max(
                 0,
-                gold_reward + simulator.state.gold_reward_bonus - simulator.state.gold_reward_penalty,
+                gold_reward + theft_adjustment,
             )
+            gold_gained = total_reward
             chara["gold"] += total_reward
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
@@ -313,8 +319,23 @@ def main():
                     common.release_lock("all_message_post")
             else:
                 comment += f"<br>戦闘勝利！次の対戦に進めるクポ。"
+        elif win == 2:
+            # 引き分けは敗北扱いにせず、盗み分だけを一度反映する。
+            exp_gained = max(5, int(winner.get("level", 1) * 0.5))
+            gold_gained = theft_adjustment
+            chara["gold"] += gold_gained
+            if chara["gold"] > config.Config['max_gold']:
+                chara["gold"] = config.Config['max_gold']
+            if chara["gold"] < 0:
+                chara["gold"] = 0
+
+            comment += f"<br><span class='yellow'>引き分けですクポ。所持金の半減はありません。</span>"
+            if gold_gained > 0:
+                comment += f"<br><span class='green'>盗んだお金 {gold_gained} G を獲得しました。</span>"
+            elif gold_gained < 0:
+                comment += f"<br><span class='red'>お金を {abs(gold_gained)} G 失いました。</span>"
         else:
-            # 敗北または引き分け
+            # 敗北時のみ所持金を半分にする。
             exp_gained = max(5, int(winner.get("level", 1) * 0.5))
             chara["gold"] = int(chara["gold"] / 2) # お金半分
             
@@ -351,6 +372,7 @@ def main():
             "win": win,
             "next_winner": next_winner,
             "gold_reward": gold_reward,
+            "gold_gained": gold_gained,
             "exp_gained": exp_gained,
             "battle_logs": battle_logs,
             "comment": comment

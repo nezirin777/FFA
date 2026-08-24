@@ -215,10 +215,16 @@ def main():
         comment = ""
         gold_gained = 0
         exp_gained = enemy_data["ex"]
+        theft_adjustment = (
+            int(simulator.state.gold_reward_bonus)
+            - int(simulator.state.gold_reward_penalty)
+        )
 
         if win == 1:
             chara["win_count"] += 1
-            gold_gained = enemy_data["gold"] + random.randrange(max(1, int(enemy_data["gold"]))) + 1
+            base_reward = enemy_data["gold"] + random.randrange(max(1, int(enemy_data["gold"]))) + 1
+            # 盗み分は勝利報酬へ一度だけ合算する。
+            gold_gained = max(0, base_reward + theft_adjustment)
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
@@ -252,8 +258,20 @@ def main():
         elif win == 2:
             # 引き分け
             exp_gained = int(exp_gained / 2)
+            # 引き分けは基礎報酬を支給せず、盗み分だけを反映する。
+            gold_gained = theft_adjustment
+            chara["gold"] += gold_gained
+            if chara["gold"] > config.Config['max_gold']:
+                chara["gold"] = config.Config['max_gold']
+            if chara["gold"] < 0:
+                chara["gold"] = 0
+
             chara["boss_flag"] = config.Config['legend_progress_reset_value']
             comment += f'<b><font size=5>{chara["name"]} は、逃げ出した・・・♪</font></b><br>'
+            if gold_gained > 0:
+                comment += f'<span class="green">盗んだお金 {gold_gained} G を獲得しました。</span><br>'
+            elif gold_gained < 0:
+                comment += f'<span class="red">お金を {abs(gold_gained)} G 失いました。</span><br>'
         else:
             # 敗北
             exp_gained = 1
