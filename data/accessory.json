@@ -2320,9 +2320,9 @@
       "karma": 0
     },
     "description": "オールボーナス（？？？？）＆？？？？",
-    "hit_rate": 0,
-    "evasion_rate": 0,
-    "special_rate": 0,
+    "hit_rate": 350,
+    "evasion_rate": 350,
+    "special_rate": 350,
     "job_ids": [
       30
     ]
@@ -2366,9 +2366,9 @@
       "karma": 0
     },
     "description": "オールボーナス（極悪）",
-    "hit_rate": 0,
-    "evasion_rate": 0,
-    "special_rate": 0,
+    "hit_rate": 999,
+    "evasion_rate": 999,
+    "special_rate": 9999,
     "job_ids": [
       30
     ]
