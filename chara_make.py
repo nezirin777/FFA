@@ -227,16 +227,16 @@ def main():
             chara_img_idx = random_asset_id(Config['chara_images'])
             
         # 職業ごとの初期ステータス割り振り
-        if syoku == 1: # 戦士
+        if syoku == 1: # 黒魔道士
             n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 9, 14, 10, 9, 11, 8, 10
             karma = 5
-        elif syoku == 2: # ナイト
+        elif syoku == 2: # 白魔道士
             n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 9, 10, 12, 9, 11, 8, 12
             karma = 5
         elif syoku == 3: # シーフ
             n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 11, 8, 8, 11, 13, 8, 12
             karma = 5
-        else: # 見習い戦士
+        else: # ソルジャー
             n_str, n_int, n_mnd, n_vit, n_dex, n_agi, n_cha = 13, 8, 8, 13, 11, 10, 8
             karma = 5
             
