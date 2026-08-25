@@ -47,6 +47,26 @@
             </form>
         </div>
         <div class="admin-menu-card">
+            <h3>日次セーブバックアップ</h3>
+            <p class="admin-menu-card__desc">ログイン時に1日1回作成し、最大{{ config.backup_retention_days }}日分を保持します。復元前にメンテナンスモードを有効にしてください。</p>
+            {% if backup_entries %}
+            <form action="admin.py" method="POST" class="admin-news-form" onsubmit="return confirm('選択したバックアップへセーブデータを復元します。現在の状態も退避されますが、実行してよろしいですか？');">
+                <input type="hidden" name="s" value="{{ csrf_token }}">
+                <input type="hidden" name="pass" value="{{ pass }}">
+                <input type="hidden" name="mode" value="backup_restore">
+                <label for="backup-name">復元する日付</label>
+                <select id="backup-name" name="backup_name" class="admin-form-input" required>
+                    {% for backup in backup_entries %}
+                    <option value="{{ backup.name }}">{{ backup.name }}（{{ backup.files }}ファイル / {{ backup.size }} / {{ backup.created_at_text }}）</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn--danger">選択したバックアップを復元</button>
+            </form>
+            {% else %}
+            <p class="admin-menu-card__desc">利用可能な日次バックアップはありません。</p>
+            {% endif %}
+        </div>
+        <div class="admin-menu-card">
             <h3>全体ニュース投稿</h3>
             <p class="admin-menu-card__desc">街の全体ニュースへ管理人名義でお知らせを投稿します。</p>
             <form action="admin.py" method="POST" class="admin-news-form">

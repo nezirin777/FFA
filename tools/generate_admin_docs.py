@@ -592,7 +592,7 @@ python 旧版_ver2/change_data/convert_all.py --output &lt;検証用出力&gt; -
 def operations_specs() -> str:
     c = config.Config
     body = f"""
-<div class="note">この資料は現行コードの管理画面と保存処理を基準にしています。現在、通常データの定期バックアップ機能はありません。保護ユーザー復元機能はありますが、復元元バックアップを自動作成する処理とは別物です。</div>
+<div class="note">この資料は現行コードの管理画面と保存処理を基準にしています。通常データはログインを契機に1日1回バックアップされ、最大{num(c['backup_retention_days'])}日分を保持します。保護ユーザー用の固定バックアップ自動作成は別途未実装です。</div>
 <h2>管理画面の機能</h2>
 {table(["機能", "操作", "保存・削除対象", "備考"], [
     ["登録者一覧", "kanri_all", "save_data/&lt;ID&gt;を一覧表示", "最終行動日時、ホスト、所持金などを確認する。"],
@@ -600,6 +600,7 @@ def operations_specs() -> str:
     ["個別削除", "del_chara", "対象ユーザーのディレクトリ全体", "protected_user_idsのユーザーは削除不可。削除前バックアップは作成しない。"],
     ["放置キャラ一括削除", "del_noplay", "最終行動から一定日数を超えたユーザー", f"{num(c['character_delete_after_days'])}日を基準に管理者が手動実行。自動スケジューラではない。"],
     ["保護ユーザー復元", "restore_protected", "protected_users/&lt;ID&gt;/user_all.json → save_data/&lt;ID&gt;/user_all.json", "復元元が存在し、chara.idが一致する場合だけ復元する。"],
+    ["日次バックアップ復元", "backup_restore", "backups/YYYY-MM-DD → save_data", "メンテナンスモード中のみ実行。復元前の現行データはpre_restore_日時へ退避する。"],
     ["全体ニュース投稿", "post_all_message", "save_data/all_message.json", f"管理人名義で投稿し、最大{num(c['all_message_storage_limit'])}件に切り詰める。"],
     ["マスター管理", "master_list / master_save / master_delete", "data/syoku.json等", "職業、戦術、武器、防具、装飾品を検証付きで編集する。"],
     ["倉庫追加", "player_item_add", "対象ユーザーのsouko_*", "現行マスターから装備を作り、倉庫上限を検証する。"],
@@ -613,22 +614,23 @@ def operations_specs() -> str:
 ], row_headers=True)}
 <h2>バックアップ機能の確認結果</h2>
 {table(["対象", "実装状況", "確認内容"], [
-    ["通常セーブの定期バックアップ", "未実装", "save_dataを日時付きで複製する処理、世代管理、復元UIはない。"],
+    ["通常セーブの定期バックアップ", "実装済み", f"ログイン処理からensure_daily_backup()を呼び、backups/YYYY-MM-DDへ{num(c['backup_retention_days'])}日分を保持する。同日中は二重作成しない。"],
     ["保護ユーザーの自動バックアップ", "未実装", "protected_user_backup_dirの設定と復元処理はあるが、そこへuser_all.jsonをコピーする作成処理はない。"],
     ["保護ユーザーの復元", "実装済み", "admin.pyのrestore_protected。復元元が事前に手動配置されている場合だけ機能する。"],
-    ["アトミック保存", "実装済み", "一時JSONへ書き込み、flush/fsync後にos.replaceする。これはバックアップではなく書き込み中断時の破損対策。"],
+    ["アトミック保存", "実装済み", "一時JSONへ書き込み、flush/fsync後にos.replaceする。バックアップ作成・復元とbackup_snapshotロックで直列化する。"],
     ["Git履歴", "運用バックアップではない", "過去コミットに保存データが含まれると漏えい・復元リスクになるため、.gitignoreと履歴管理を別途確認する。"],
 ], row_headers=True)}
-<h2>現状での手動バックアップ手順</h2>
+<h2>日次バックアップと復元手順</h2>
 {table(["手順", "内容"], [
-    ["1", "ゲーム停止または書き込みが発生しない時間帯にする。"],
-    ["2", "save_data全体とConfig.py/config.pyを同一の日時付きディレクトリへコピーする。"],
-    ["3", "コピー後にuser_all.json、champion.json、chocobo_champion.json、all_message.jsonのJSON構文を確認する。"],
-    ["4", "保護ユーザーを復元したい場合は、save_data/protected_users/&lt;ID&gt;/user_all.jsonとしてchara.idが一致するファイルを配置する。"],
-    ["5", "バックアップにはパスワードハッシュや個人データが含まれるため、Web公開ディレクトリ外・アクセス制限下で保管する。"],
+    ["1", "最初のユーザーログイン時にsave_data全体をbackups/YYYY-MM-DDへコピーする。cronや常駐プロセスは使用しない。"],
+    ["2", f"{num(c['backup_retention_days'])}日を超えた日付フォルダを自動削除する。"],
+    ["3", "管理画面で復元対象日を選び、config.pyのmaintenance_modeを1にしてから復元する。"],
+    ["4", "復元前の状態はbackups/pre_restore_YYYYMMDD_HHMMSSへ退避される。"],
+    ["5", "保護ユーザー復元を使う場合は、save_data/protected_users/&lt;ID&gt;/user_all.jsonとしてchara.idが一致するファイルを別途手動配置する。"],
+    ["6", "バックアップにはパスワードハッシュや個人データが含まれるため、Web公開ディレクトリ外・アクセス制限下で保管する。"],
 ], row_headers=True)}
 <h2>関連設定・ソース</h2>
-<p class="source"><code>config.py</code> の character_delete_after_days / protected_user_ids / protected_user_backup_dir / save_dir、<code>admin.py</code>、<code>sub_def/file_ops.py</code></p>
+<p class="source"><code>config.py</code> の character_delete_after_days / protected_user_ids / protected_user_backup_dir / save_dir / backup_dir / backup_retention_days、<code>sub_def/backup.py</code>、<code>admin.py</code>、<code>sub_def/file_ops.py</code></p>
 """
     return page("管理画面・自動削除・バックアップ運用手順書", "管理画面の操作、放置キャラクター削除、テストユーザー保護、現行バックアップ機能の有無と手動運用を確認する資料", body)
 
@@ -666,6 +668,7 @@ def security_specs() -> str:
     ["ユーザーデータ", "ユーザーID.lock / os.mkdirベースのディレクトリロック", "同一キャラクターの所持金、装備、戦闘結果、チョコボなどの同時更新を直列化する。"],
     ["新規登録", "character_creation.lock", "確認画面を複数タブから送信した場合も、ID・名前・ホストの再確認と登録を一つの区間で行う。"],
     ["共有データ", "winner、all_message_post、bbs_post、tenka_*、rirekiなど", "チャンプ、ニュース、掲示板、履歴の取りこぼし・上書きを防ぐ。"],
+    ["バックアップ", "backup_snapshot / backup_restore", "日次コピー・復元中の保存処理を待たせ、復元操作を一つに直列化する。"],
     ["タイムアウト", "common.get_lockは10秒、file_opsのexLockは15秒が既定", "取得できない場合はTimeoutError。finallyでrelease_lock/unlockする。"],
     ["アトミック保存", "同じディレクトリの一時JSONへ書き、flush/fsync後にos.replace", "書き込み途中のJSONを本体として見せない。"],
 ], row_headers=True)}

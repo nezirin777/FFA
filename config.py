@@ -20,6 +20,11 @@ Config["save_dir"] = os.path.join(BASE_DIR, "save_data")
 Config["lock_dir"] = os.path.join(BASE_DIR, "lock")
 Config["template_dir"] = os.path.join(BASE_DIR, "templates")
 
+# 日次セーブバックアップ。save_dataの外に置き、バックアップ自身を再コピーしない。
+Config["backup_dir"] = os.path.join(BASE_DIR, "backups")
+Config["backup_enabled"] = True
+Config["backup_retention_days"] = 40
+
 # 管理画面のパスワードとセッション署名用秘密鍵。
 # 本番環境では必ず環境変数を設定し、既定値のまま公開しないこと。
 Config["admin_password"] = os.environ.get("FFA_ADMIN_PASSWORD", "1111")

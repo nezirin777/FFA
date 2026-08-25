@@ -164,6 +164,11 @@ def main():
             from sub_def.file_ops import save_user_all
             chara["last_time"] = int(time.time())
             save_user_all(user_id, user_data)
+
+        # その日の最初のログインを契機に日次バックアップを作成する。
+        # バックアップ失敗でゲームへのログインを止めない処理になっている。
+        from sub_def.backup import ensure_daily_backup
+        ensure_daily_backup()
         
         # ユーザーID保存用のクッキーを設定 (Remember Me用、有効期限30日)
         from http import cookies

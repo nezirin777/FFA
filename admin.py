@@ -442,6 +442,7 @@ def main():
         "del_chara",
         "del_noplay",
         "restore_protected",
+        "backup_restore",
         "post_all_message",
         "master_save",
         "master_delete",
@@ -452,9 +453,11 @@ def main():
 
     # 1. 管理画面トップ
     if mode == "kanri_top":
+        from sub_def.backup import list_daily_backups
         context = {
             "pass": admin_pass,
-            "mode": mode
+            "mode": mode,
+            "backup_entries": list_daily_backups(),
         }
         common.render_template("admin.html", context)
         return
@@ -661,7 +664,29 @@ def main():
         common.render_template("admin.html", context)
         return
 
-    # 1.5 保護ユーザー復元
+    # 1.5 日次バックアップ復元
+    elif mode == "backup_restore":
+        from sub_def.backup import list_daily_backups, restore_daily_backup
+
+        backup_name = params.get("backup_name", "").strip()
+        try:
+            emergency_name = restore_daily_backup(backup_name)
+        except (ValueError, RuntimeError, OSError) as error:
+            common.show_error(f"バックアップを復元できません: {error}")
+
+        context = {
+            "pass": admin_pass,
+            "mode": "kanri_top",
+            "backup_entries": list_daily_backups(),
+            "message": (
+                f"{backup_name}のバックアップを復元しました。"
+                f"復元前の状態はbackups/{emergency_name}へ退避しています。"
+            ),
+        }
+        common.render_template("admin.html", context)
+        return
+
+    # 1.6 保護ユーザー復元
     elif mode == "restore_protected":
         restored, unavailable = restore_protected_users()
         players = get_all_players()

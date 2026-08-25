@@ -12,6 +12,9 @@ save_data/*
 !save_data/champion.json
 !save_data/protected_users/
 !save_data/protected_users/**
+
+# 実データを含む日次バックアップはGitで管理しない
+backups/
 **/banklog/*.*
 **/charalog/*.*
 **/charalog2/*.*
