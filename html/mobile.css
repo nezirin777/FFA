@@ -186,6 +186,17 @@
   .tensyoku-nav-btn {
     width: 100%;
   }
+
+  .shop-trade-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-s);
+  }
+
+  .shop-trade-nav form,
+  .shop-trade-nav .shop-trade-btn {
+    width: 100%;
+  }
   
   .souko-grid {
     grid-template-columns: 1fr;

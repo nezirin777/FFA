@@ -109,7 +109,12 @@
         </div>
     </form>
 
-    <div class="u-text-center">
+    <div class="shop-trade-nav u-text-center">
+        <form action="{{ config.souko_script }}" method="POST" class="u-m-0">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="submit" class="btn shop-trade-btn shop-trade-btn--sm" value="📦 倉庫へ">
+        </form>
         <form action="{{ config.main_script }}" method="POST" class="u-m-0">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">

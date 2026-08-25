@@ -1426,6 +1426,18 @@ img {
   max-width: 200px;
 }
 
+.shop-trade-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  justify-content: center;
+  align-items: center;
+}
+
+.shop-trade-nav form {
+  margin: 0;
+}
+
 .shop-table {
   width: 100%;
   border-collapse: collapse;

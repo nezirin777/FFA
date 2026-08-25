@@ -1,5 +1,0 @@
-=== Analyzing Template Styles and Classes ===
-
-Summary:
-Total static style violations: 0
-Total 4+ class violations: 0
