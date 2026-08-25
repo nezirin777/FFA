@@ -436,6 +436,40 @@ img {
   box-shadow: 0 0 8px rgba(255, 255, 85, 0.18);
 }
 
+.number-format-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-s);
+}
+
+.number-format-btn {
+  min-height: 40px;
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  background: rgba(0, 0, 0, 0.42);
+  color: var(--white);
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s),
+    border-color var(--transition-fast, 0.2s),
+    color var(--transition-fast, 0.2s),
+    box-shadow var(--transition-fast, 0.2s);
+}
+
+.number-format-btn:hover {
+  border-color: var(--sky-blue);
+  background-color: rgba(100, 181, 246, 0.12);
+  color: #fff;
+}
+
+.number-format-btn.active,
+.number-format-btn[aria-pressed="true"] {
+  border-color: var(--yellow);
+  background-color: rgba(255, 255, 85, 0.12);
+  color: var(--yellow);
+  box-shadow: 0 0 8px rgba(255, 255, 85, 0.18);
+}
+
 /* ====================================================== */
 /* 6. Badge / Label Core                                  */
 /* ====================================================== */

@@ -12,6 +12,8 @@
   const DEFAULT_TIMEOUT_SECONDS = 25;
   const TOAST_POSITION_KEY = "toast-position";
   const DEFAULT_TOAST_POSITION = "toast-top-center";
+  const NUMBER_FORMAT_KEY = "number-format";
+  const DEFAULT_NUMBER_FORMAT = "plain";
   const TOAST_POSITIONS = [
     "toast-top-center",
     "toast-center",
@@ -19,10 +21,14 @@
     "toast-bottom-left",
     "toast-bottom-right",
   ];
+  const NUMBER_FORMATS = ["comma", "plain"];
+  const originalNumberText = new WeakMap();
 
   document.addEventListener("DOMContentLoaded", () => {
     loadToastPosition();
     initToastPositionSelector();
+    loadNumberFormat();
+    initNumberFormatSelector();
     initCountdowns();
 
     const flashes = Array.isArray(window.FFA_FLASH_MESSAGES)
@@ -95,6 +101,90 @@
         showToast(`メッセージ表示位置を「${label}」に変更しました。`, "success", 2000);
       });
     });
+  }
+
+  function normalizeNumberFormat(format) {
+    return NUMBER_FORMATS.includes(format) ? format : DEFAULT_NUMBER_FORMAT;
+  }
+
+  function setNumberFormat(format, persist = true) {
+    const nextFormat = normalizeNumberFormat(format);
+
+    document.querySelectorAll(".number-format-btn").forEach((button) => {
+      const active = button.dataset.numberFormat === nextFormat;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+
+    if (persist) {
+      try {
+        localStorage.setItem(NUMBER_FORMAT_KEY, nextFormat);
+      } catch {
+        // localStorageが使えない環境では現在ページ内の反映だけ行う。
+      }
+    }
+
+    applyNumberFormat(nextFormat);
+    return nextFormat;
+  }
+
+  function loadNumberFormat() {
+    let savedFormat = DEFAULT_NUMBER_FORMAT;
+    try {
+      savedFormat = localStorage.getItem(NUMBER_FORMAT_KEY) || DEFAULT_NUMBER_FORMAT;
+    } catch {
+      savedFormat = DEFAULT_NUMBER_FORMAT;
+    }
+    setNumberFormat(savedFormat, false);
+  }
+
+  function initNumberFormatSelector() {
+    document.querySelectorAll(".number-format-selector").forEach((selector) => {
+      selector.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!target || typeof target.closest !== "function") return;
+
+        const button = target.closest(".number-format-btn");
+        if (!button || !selector.contains(button)) return;
+
+        const nextFormat = setNumberFormat(button.dataset.numberFormat);
+        const label = button.textContent.trim() || nextFormat;
+        showToast(`数値表示を「${label}」に変更しました。`, "success", 2000);
+      });
+    });
+  }
+
+  function applyNumberFormat(format) {
+    if (!document.body) return;
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+    while (node) {
+      const parent = node.parentElement;
+      const skip = !parent || parent.closest(
+        "script, style, textarea, input, select, option, button, [data-number-format='off']"
+      );
+
+      if (!skip) {
+        if (!originalNumberText.has(node)) {
+          originalNumberText.set(node, node.nodeValue || "");
+        }
+        const original = originalNumberText.get(node);
+        node.nodeValue = format === "comma"
+          ? addNumberCommas(original)
+          : original;
+      }
+
+      node = walker.nextNode();
+    }
+  }
+
+  function addNumberCommas(text) {
+    // 4桁以上の数値だけを対象にし、FF10のような名前中の数字は変更しない。
+    return text.replace(
+      /(^|[^\w])([+-]?)([1-9]\d{3,})(?!\w)/g,
+      (_match, prefix, sign, digits) => `${prefix}${sign}${digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+    );
   }
 
   function initCountdowns() {
@@ -364,6 +454,7 @@
     toast.setAttribute("role", "status");
     toast.textContent = toastData.message;
     container.appendChild(toast);
+    applyNumberFormat(getStoredNumberFormat());
 
     await sleep(toastData.duration);
     toast.classList.add("toast--fade-out");
@@ -377,6 +468,14 @@
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
+  }
+
+  function getStoredNumberFormat() {
+    try {
+      return normalizeNumberFormat(localStorage.getItem(NUMBER_FORMAT_KEY));
+    } catch {
+      return DEFAULT_NUMBER_FORMAT;
+    }
   }
 
   function postNavigate(url, params = {}) {
@@ -420,6 +519,7 @@
   window.showToast = showToast;
   window.setUILock = setUILock;
   window.setToastPosition = setToastPosition;
+  window.setNumberFormat = setNumberFormat;
   window.postNavigate = postNavigate;
   window.safeFetch = safeFetch;
 })();
