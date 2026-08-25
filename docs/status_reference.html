@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>保存キー・能力値リファレンス</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #1f2937; background: #f3f6f8; line-height: 1.55; }
+main { width: min(1540px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 60px; }
+h1 { margin: 0 0 8px; color: #123b4a; line-height: 1.25; }
+h2 { margin: 34px 0 12px; color: #155e75; line-height: 1.3; }
+h3 { margin: 24px 0 8px; color: #0f3d4a; }
+.lead { margin: 0 0 18px; color: #52616b; }
+.doc-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+.doc-nav a { padding: 7px 10px; color: #075985; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; text-decoration: none; }
+.doc-nav a:hover { background: #bae6fd; }
+.note { padding: 12px 14px; color: #475569; background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; }
+.source { color: #64748b; font-size: .9rem; }
+.card { margin: 14px 0; padding: 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.card h3 { margin-top: 0; }
+.table-wrap { margin: 12px 0 24px; overflow-x: auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+th, td { padding: 8px 10px; border-top: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+thead th { color: #334155; background: #f8fafc; border-top: 0; white-space: nowrap; font-size: .9rem; }
+tbody th { color: #0f3d4a; font-weight: 600; white-space: nowrap; }
+code { padding: 1px 4px; color: #0f3d4a; background: #e6f4f1; border-radius: 4px; }
+.tag { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 6px; color: #155e75; background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 4px; font-size: .86rem; }
+.muted { color: #64748b; }
+.small { font-size: .9rem; }
+.formula { margin: 8px 0; padding: 10px 12px; color: #334155; background: #f8fafc; border-left: 4px solid #38bdf8; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+@media (max-width: 760px) { main { width: min(100% - 16px, 1540px); padding-top: 18px; } table { min-width: 680px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>保存キー・能力値リファレンス</h1>
+  <p class="lead">キャラクター、装備、モンスター、戦闘結果で使うキーの意味を確認する管理資料</p>
+  <nav class="doc-nav" aria-label="管理者向け資料"><a href="index.html">資料一覧</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
+  
+<div class="note">このページは保存JSONを直接読むときの辞書です。能力値の並びは旧版の意味順を維持し、内部キーも意味が一致する現行名に統一しています。<br><span class="source">正本: sub_def/data_schema.py / sub_def/battle_logic.py / sub_def/skills.py</span></div>
+<h2>キャラクターデータ</h2>
+<div class="table-wrap"><table><thead><tr><th>キー</th><th>意味</th></tr></thead><tbody><tr><th scope="row">id</th><td>ログイン・保存データの識別子</td></tr><tr><th scope="row">pass</th><td>PBKDF2形式のパスワードハッシュ</td></tr><tr><th scope="row">name</th><td>キャラクター名</td></tr><tr><th scope="row">img</th><td>config.py の chara_images の画像番号</td></tr><tr><th scope="row">sex</th><td>性別。0=女、1=男</td></tr><tr><th scope="row">level</th><td>キャラクターレベル</td></tr><tr><th scope="row">max_hp / hp</th><td>最大HP / 現在HP</td></tr><tr><th scope="row">str</th><td>力</td></tr><tr><th scope="row">int</th><td>知能</td></tr><tr><th scope="row">mnd</th><td>信仰心</td></tr><tr><th scope="row">vit</th><td>生命力</td></tr><tr><th scope="row">dex</th><td>器用さ</td></tr><tr><th scope="row">agi</th><td>速さ</td></tr><tr><th scope="row">cha</th><td>魅力</td></tr><tr><th scope="row">karma</th><td>カルマ</td></tr><tr><th scope="row">job / job_level</th><td>現在の職業ID / 現職の熟練度レベル</td></tr><tr><th scope="row">exp</th><td>次のレベルアップ判定に使う保有経験値</td></tr><tr><th scope="row">gold / bank</th><td>所持金 / 銀行預金</td></tr><tr><th scope="row">weapon_id / armor_id / accessory_id</th><td>装備マスターのNo.</td></tr><tr><th scope="row">battle_count / win_count</th><td>戦闘回数 / 勝利数。ランキング・勝率表示に使う</td></tr><tr><th scope="row">battle_limit</th><td>通常戦闘・レジェンドの残り回数。チャンプ戦・天下一後に補充</td></tr><tr><th scope="row">boss_flag</th><td>レジェンド・天下一の進行フラグ。10は挑戦可能状態</td></tr><tr><th scope="row">comment</th><td>戦闘クリティカル表示などに使うキャラクターコメント</td></tr><tr><th scope="row">host</th><td>最終保存時の接続元</td></tr><tr><th scope="row">last_time</th><td>最後の行動時刻。クールタイム計算に使う</td></tr><tr><th scope="row">title_id</th><td>レジェンドプレイス攻略称号のID</td></tr><tr><th scope="row">tactic_id</th><td>現在選択中の戦術No.</td></tr></tbody></table></div>
+<h2>装備データ</h2>
+<div class="table-wrap"><table><thead><tr><th>キー</th><th>意味</th></tr></thead><tbody><tr><th scope="row">weapon.atk</th><td>武器攻撃力。職業基礎ダメージへ加算</td></tr><tr><th scope="row">weapon.hit_rate</th><td>攻撃側の命中補正</td></tr><tr><th scope="row">armor.defense</th><td>被ダメージから減算する防御力</td></tr><tr><th scope="row">armor.evasion_rate</th><td>防具による回避補正</td></tr><tr><th scope="row">accessory.bonus.*</th><td>力・知能・信仰心・生命力・器用さ・速さ・魅力・カルマへの装備補正</td></tr><tr><th scope="row">accessory.hit_rate</th><td>命中補正</td></tr><tr><th scope="row">accessory.evasion_rate</th><td>回避補正</td></tr><tr><th scope="row">accessory.special_rate</th><td>必殺技発動率補正</td></tr><tr><th scope="row">accessory.effect_id</th><td>acstech_&lt;ID&gt; の固有効果</td></tr></tbody></table></div>
+<h2>戦闘結果値</h2>
+<div class="table-wrap"><table><thead><tr><th>値</th><th>意味</th></tr></thead><tbody><tr><th scope="row">1</th><td>勝利。基本報酬・通常経験値・勝利数を反映</td></tr><tr><th scope="row">2</th><td>引き分け。基礎報酬なし、盗み等の差分のみ反映する戦闘がある</td></tr><tr><th scope="row">0</th><td>敗北。各コマンドの敗北時ペナルティを反映</td></tr></tbody></table></div>
+<h2>能力値の対応順</h2>
+<div class="table-wrap"><table><thead><tr><th>順番</th><th>表示名</th><th>キー</th></tr></thead><tbody><tr><td>1</td><td>力</td><td><code>str</code></td></tr><tr><td>2</td><td>知能</td><td><code>int</code></td></tr><tr><td>3</td><td>信仰心</td><td><code>mnd</code></td></tr><tr><td>4</td><td>生命力</td><td><code>vit</code></td></tr><tr><td>5</td><td>器用さ</td><td><code>dex</code></td></tr><tr><td>6</td><td>速さ</td><td><code>agi</code></td></tr><tr><td>7</td><td>魅力</td><td><code>cha</code></td></tr><tr><td>8</td><td>カルマ</td><td><code>karma</code></td></tr></tbody></table></div>
+
+</main>
+</body>
+</html>

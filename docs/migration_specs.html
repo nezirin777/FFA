@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>セーブデータ移行・保存形式仕様書</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #1f2937; background: #f3f6f8; line-height: 1.55; }
+main { width: min(1540px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 60px; }
+h1 { margin: 0 0 8px; color: #123b4a; line-height: 1.25; }
+h2 { margin: 34px 0 12px; color: #155e75; line-height: 1.3; }
+h3 { margin: 24px 0 8px; color: #0f3d4a; }
+.lead { margin: 0 0 18px; color: #52616b; }
+.doc-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+.doc-nav a { padding: 7px 10px; color: #075985; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; text-decoration: none; }
+.doc-nav a:hover { background: #bae6fd; }
+.note { padding: 12px 14px; color: #475569; background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; }
+.source { color: #64748b; font-size: .9rem; }
+.card { margin: 14px 0; padding: 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.card h3 { margin-top: 0; }
+.table-wrap { margin: 12px 0 24px; overflow-x: auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+th, td { padding: 8px 10px; border-top: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+thead th { color: #334155; background: #f8fafc; border-top: 0; white-space: nowrap; font-size: .9rem; }
+tbody th { color: #0f3d4a; font-weight: 600; white-space: nowrap; }
+code { padding: 1px 4px; color: #0f3d4a; background: #e6f4f1; border-radius: 4px; }
+.tag { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 6px; color: #155e75; background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 4px; font-size: .86rem; }
+.muted { color: #64748b; }
+.small { font-size: .9rem; }
+.formula { margin: 8px 0; padding: 10px 12px; color: #334155; background: #f8fafc; border-left: 4px solid #38bdf8; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+@media (max-width: 760px) { main { width: min(100% - 16px, 1540px); padding-top: 18px; } table { min-width: 680px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>セーブデータ移行・保存形式仕様書</h1>
+  <p class="lead">Ver1からVer2、Ver2から現行Ver3への変換経路、キー対応、検証、運用上の注意を確認する管理資料</p>
+  <nav class="doc-nav" aria-label="管理者向け資料"><a href="index.html">資料一覧</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
+  
+<div class="note">移行スクリプトはゲーム本体の通常処理ではありません。変換元を直接変更せず、別の出力先で検証してから現行 <code>save_data</code> へ配置してください。旧版の配列は列番号自体が仕様なので、キー名を推測して並べ替えないことが重要です。</div>
+<h2>変換経路</h2>
+<div class="table-wrap"><table><thead><tr><th>段階</th><th>スクリプト</th><th>入力</th><th>出力</th></tr></thead><tbody><tr><th scope="row">Ver1 → Ver2</th><td>旧版_ver1/セーブデータ移行用ファイル/convert_to_ver2.py</td><td>旧版_ver1のcharalog、charalog2、banklog、datalog、savelog</td><td>Ver2形式のcharalog、item、syoku、souko、datalog、保管用savelog</td></tr><tr><th scope="row">Ver2 → Ver3</th><td>旧版_ver2/change_data/convert_all.py</td><td>旧版_ver2のcharalog、item、syoku、souko、各ログ、datalog</td><td>ユーザー別user_all.json、message_sent.json、champion.json、all_message.json</td></tr></tbody></table></div>
+<h2>Ver1 → Ver2 の対応</h2>
+<div class="table-wrap"><table><thead><tr><th>旧版データ</th><th>Ver2での扱い</th><th>注意点</th></tr></thead><tbody><tr><th scope="row">charalog/&lt;ID&gt;.cgi</th><td>charalog/&lt;ID&gt;.cgi、item/&lt;ID&gt;.cgi、syoku/&lt;ID&gt;.cgiへ分割出力</td><td>キャラクター列は67項目。能力値は旧版の実列順をそのまま維持する。</td></tr><tr><th scope="row">charalog2/&lt;ID&gt;.cgi</th><td>souko/item、souko/def、souko/acsへ変換</td><td>各行の先頭は枠数で、2項目目以降の装備IDを倉庫レコードへ変換する。</td></tr><tr><th scope="row">banklog/&lt;ID&gt;.cgi</th><td>Ver2キャラデータの銀行残高欄へ埋め込み</td><td>独立banklogはVer2では使わない。</td></tr><tr><th scope="row">datalog/winner.cgi</th><td>54項目のVer2チャンプ形式へ変換</td><td>recode.cgiの最高連勝情報も該当欄へ反映する。</td></tr><tr><th scope="row">datalog/recode.cgi</th><td>変換後datalog/recode.cgiへ保存</td><td>チャンプ変換時にも参照する。</td></tr><tr><th scope="row">savelog/&lt;ID&gt;.cgi</th><td>出力先savelogへ保管</td><td>Ver2の通常ゲーム処理では読み込まない復元用スナップショット。</td></tr></tbody></table></div>
+<h2>Ver2 → Ver3 の対応</h2>
+<div class="table-wrap"><table><thead><tr><th>旧版Ver2</th><th>現行Ver3</th><th>内容</th></tr></thead><tbody><tr><th scope="row">charalog/&lt;ID&gt;.cgi</th><td>save_data/&lt;ID&gt;/user_all.json の chara</td><td>旧版列番号から現行キーへ明示的に変換。str,int,mnd,vit,dex,agi,cha,karmaを正しい順で保持する。</td></tr><tr><th scope="row">item/&lt;ID&gt;.cgi</th><td>user_all.json の equipment</td><td>武器、防具、アクセサリーを現行マスターから再構成する。</td></tr><tr><th scope="row">syoku/&lt;ID&gt;.cgi</th><td>user_all.json の syoku</td><td>職業IDごとの熟練度を辞書化する。</td></tr><tr><th scope="row">souko/item・def・acs/&lt;ID&gt;.cgi</th><td>souko_weapon・souko_armor・souko_accessory</td><td>現行マスターの項目名・性能・アクセサリー説明を使って正規化する。</td></tr><tr><th scope="row">loginlog・message・sousin</th><td>login_log・message・message_sent.json</td><td>送信済みメッセージだけはユーザー別の別ファイルへ出力する。</td></tr><tr><th scope="row">datalog/winner.cgi</th><td>save_data/champion.json</td><td>人間チャンプの共有データとして変換する。出力先は--champion-outputで指定可能。</td></tr><tr><th scope="row">datalog/message.cgi</th><td>save_data/all_message.json</td><td>全体ニュースとして変換する。</td></tr><tr><th scope="row">チョコボ関連</th><td>choco={}、choco_g1={}</td><td>Ver2変換では現役チョコボを自動生成せず、未所持で初期化する。</td></tr></tbody></table></div>
+<h2>現行ユーザーデータの構造</h2>
+<div class="table-wrap"><table><thead><tr><th>キー</th><th>役割</th></tr></thead><tbody><tr><th scope="row">chara</th><td>キャラクター本体。現行の正規キー順に並べ替える。</td></tr><tr><th scope="row">equipment</th><td>現在装備中の武器・防具・アクセサリー。</td></tr><tr><th scope="row">syoku</th><td>職業IDをキーにした熟練度辞書。</td></tr><tr><th scope="row">login_log / message</th><td>ログイン履歴 / 受信メッセージ。</td></tr><tr><th scope="row">message_sent.json</th><td>送信済みメッセージ。現行ではuser_all.jsonの外に保存する。</td></tr><tr><th scope="row">souko_weapon / souko_armor / souko_accessory</th><td>倉庫内の装備一覧。</td></tr><tr><th scope="row">choco / choco_g1</th><td>飼育中チョコボ / 個人重賞履歴。未所持時は空辞書。</td></tr></tbody></table></div>
+<h2>現行形式への正規化</h2>
+<div class="table-wrap"><table><thead><tr><th>処理</th><th>内容</th></tr></thead><tbody><tr><th scope="row">キー順整理</th><td>sub_def/data_schema.pyのorder_user_data()が値を変更せず、chara・equipment・bonusなどを定義順に並べる。</td></tr><tr><th scope="row">旧キー除去</th><td>title→title_id、unused30→tactic_idを移行し、旧site/url、旧アクセサリーキーlck/lp/attrib/spare*を出力しない。</td></tr><tr><th scope="row">HTMLエンティティ</th><td>読み込み時にHTMLエンティティを復元する。名前などを二重エスケープしない。</td></tr><tr><th scope="row">アクセサリー</th><td>8能力値をstr,int,mnd,vit,dex,agi,cha,karma、率をhit_rate,evasion_rate,special_rateへ統一する。</td></tr><tr><th scope="row">検証</th><td>変換後に必須キー、装備形式、職業ID、倉庫件数、旧キー残存を検証し、問題があればエラーまたは警告にする。</td></tr></tbody></table></div>
+<h2>実行例と安全な手順</h2>
+<p class="formula">python 旧版_ver1/セーブデータ移行用ファイル/convert_to_ver2.py --dry-run
+python 旧版_ver2/change_data/convert_all.py --dry-run
+python 旧版_ver2/change_data/convert_all.py --output &lt;検証用出力&gt; --shared-output &lt;共有データ出力&gt;</p>
+<div class="table-wrap"><table><thead><tr><th>手順</th><th>実施内容</th></tr></thead><tbody><tr><th scope="row">1</th><td>旧版ディレクトリを読み取り専用の原本として残す。</td></tr><tr><th scope="row">2</th><td>まず--dry-runで件数、警告、マスター不一致、文字化け候補を確認する。</td></tr><tr><th scope="row">3</th><td>本出力ではなく検証用ディレクトリへ書き出し、JSON構文と現行キーを確認する。</td></tr><tr><th scope="row">4</th><td>必要なら--champion-outputでchampion.jsonだけ現行save_dataへ出力する。</td></tr><tr><th scope="row">5</th><td>既存データを上書きする場合は、別途ファイルコピーを取得してから実行する。変換スクリプト自体はバックアップを作成しない。</td></tr></tbody></table></div>
+<h2>関連ファイル</h2>
+<p class="source"><code>旧版_ver1/セーブデータ移行用ファイル/README_ver1_to_ver2.md</code> / <code>旧版_ver1/セーブデータ移行用ファイル/convert_to_ver2.py</code> / <code>旧版_ver2/change_data/convert_all.py</code> / <code>sub_def/data_schema.py</code> / <code>sub_def/file_ops.py</code></p>
+
+</main>
+</body>
+</html>

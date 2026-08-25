@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FFA 戦闘仕様書</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #1f2937; background: #f3f6f8; line-height: 1.55; }
+main { width: min(1540px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 60px; }
+h1 { margin: 0 0 8px; color: #123b4a; line-height: 1.25; }
+h2 { margin: 34px 0 12px; color: #155e75; line-height: 1.3; }
+h3 { margin: 24px 0 8px; color: #0f3d4a; }
+.lead { margin: 0 0 18px; color: #52616b; }
+.doc-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+.doc-nav a { padding: 7px 10px; color: #075985; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; text-decoration: none; }
+.doc-nav a:hover { background: #bae6fd; }
+.note { padding: 12px 14px; color: #475569; background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; }
+.source { color: #64748b; font-size: .9rem; }
+.card { margin: 14px 0; padding: 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.card h3 { margin-top: 0; }
+.table-wrap { margin: 12px 0 24px; overflow-x: auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+th, td { padding: 8px 10px; border-top: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+thead th { color: #334155; background: #f8fafc; border-top: 0; white-space: nowrap; font-size: .9rem; }
+tbody th { color: #0f3d4a; font-weight: 600; white-space: nowrap; }
+code { padding: 1px 4px; color: #0f3d4a; background: #e6f4f1; border-radius: 4px; }
+.tag { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 6px; color: #155e75; background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 4px; font-size: .86rem; }
+.muted { color: #64748b; }
+.small { font-size: .9rem; }
+.formula { margin: 8px 0; padding: 10px 12px; color: #334155; background: #f8fafc; border-left: 4px solid #38bdf8; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+@media (max-width: 760px) { main { width: min(100% - 16px, 1540px); padding-top: 18px; } table { min-width: 680px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>FFA 戦闘仕様書</h1>
+  <p class="lead">各戦闘の入口条件、ターン処理、勝利・引き分け・敗北時の報酬と保存状態を確認する管理資料</p>
+  <nav class="doc-nav" aria-label="管理者向け資料"><a href="index.html">資料一覧</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
+  
+<div class="note">このページは現行の <code>sub_def/battle_logic.py</code>、<code>sub_def/skills.py</code>、<code>cgi_py/*.py</code> とConfig値を基準にした処理仕様です。挙動を変更した場合はこの生成スクリプトも更新してください。</div>
+<h2>行動制限・共通値</h2>
+<div class="table-wrap"><table><thead><tr><th>項目</th><th>現行値</th><th>意味</th></tr></thead><tbody><tr><td>対人・レース系クールタイム</td><td>20秒</td><td>battle / tenka / チョコボレース等の再実行待ち</td></tr><tr><td>修行・レジェンド系クールタイム</td><td>20秒</td><td>monster / genei / isekiai / legend / チョコボ訓練等の再実行待ち</td></tr><tr><td>training_battle_limit</td><td>9,999</td><td>通常戦闘・レジェンドの残り回数初期値。チャンプ戦・天下一後に補充</td></tr><tr><td>最大ターン</td><td>150</td><td>1戦闘のターン上限</td></tr><tr><td>対人経験値係数</td><td>30</td><td>勝利・引き分け時の相手レベルへの乗算値</td></tr></tbody></table></div>
+<h2>戦闘入口と結果処理</h2>
+<div class="table-wrap"><table><thead><tr><th>コンテンツ</th><th>mode</th><th>出現・参加条件</th><th>勝利・引き分け・敗北</th><th>保存・進行</th></tr></thead><tbody><tr><td>通常戦闘</td><td>monster</td><td>monster0〜3を選択。battle_limit>0、20秒待機</td><td>勝利: gold_reward + 1〜gold_reward、経験値全量 / 引き分け: 経験値半分・盗み差分 / 敗北: 所持金1%・経験値0</td><td>battle_count+1、勝利時win_count+1、battle_limit-1</td></tr><tr><td>幻影の城</td><td>genei</td><td>battle_count>0、last_timeが5の倍数、レベル帯でモンスター層選択</td><td>通常戦闘と同じ。勝利時1/3で財宝を追加抽選</td><td>通常戦闘と同じ</td></tr><tr><td>異世界</td><td>isekiai</td><td>レベル300以上、20秒待機</td><td>通常戦闘と同じ</td><td>通常戦闘と同じ</td></tr><tr><td>レジェンドプレイス</td><td>boss</td><td>battle_count>0、title_id>=boss_file、battle_limit>0、20秒待機</td><td>勝利: ボス報酬・経験値、boss_flag-1 / 引き分け: 経験値半分・盗み差分 / 敗北: 所持金1%・経験値1</td><td>毎戦battle_count+1、win_countは勝利時、battle_limit-1。勝利継続時のみboss_flagを保持</td></tr><tr><td>チャンプ戦</td><td>battle</td><td>現チャンプと対戦、20秒待機</td><td>勝利・引き分け: 新チャンプ、相手賞金・盗み差分 / 敗北: 所持金半分、王者防衛</td><td>battle_count+1、勝利時win_count+1、boss_flagを10へ戻し、battle_limitを9999へ補充</td></tr><tr><td>天下一武道会</td><td>tenka</td><td>登録メンバー3人、ラウンド順を検証、20秒待機</td><td>勝利: 次ラウンドへ / 引き分け: 所持金半減なし・盗み差分 / 敗北: 所持金半分</td><td>全結果でbattle_count+1・経験値・熟練度保存、battle_limitを9999へ補充</td></tr><tr><td>練習戦</td><td>select_battle</td><td>対戦相手を指定</td><td>戦闘ログのみ。ステータス、所持金、経験値を保存しない</td><td>保存処理なし</td></tr></tbody></table></div>
+<h2>勝敗値の共通定義</h2>
+<div class="table-wrap"><table><thead><tr><th>値</th><th>名称</th><th>処理</th></tr></thead><tbody><tr><th scope="row">1</th><td>勝利</td><td>通常報酬・経験値・勝利数を反映。通常戦闘とレジェンドではbattle_limitを1減算。</td></tr><tr><th scope="row">2</th><td>引き分け</td><td>時間切れまたは相打ち。基礎金額は支給せず、盗みなどの戦闘中差分のみ反映する。</td></tr><tr><th scope="row">0</th><td>敗北</td><td>敗北ペナルティを反映。モンスター戦は所持金1%、レジェンドは所持金1%、対人・天下一は所持金半分。</td></tr></tbody></table></div>
+<h2>1ターンの処理順</h2>
+<div class="table-wrap"><table><thead><tr><th>順番</th><th>処理</th><th>内容</th></tr></thead><tbody><tr><th scope="row">1</th><td>ターン初期化</td><td>職業と武器から攻撃値を作成。モンスターはbase_damage + 乱数。</td></tr><tr><th scope="row">2</th><td>プレイヤー必殺技</td><td>選択中のtactic_idをtech_&lt;ID&gt;としてhissatu実行。</td></tr><tr><th scope="row">3</th><td>敵必殺技</td><td>対人は相手のwtech、モンスターはmons_<special_skill_id>を実行。</td></tr><tr><th scope="row">4</th><td>後発効果</td><td>戦術のatowaza、アクセサリー固有効果、敵側の同等処理。</td></tr><tr><th scope="row">5</th><td>対人初手判定</td><td>レベル差または武器・防具条件で逆転必殺を判定。</td></tr><tr><th scope="row">6</th><td>クリティカル</td><td>実ダメージがある攻撃だけHP割合によるクリティカル判定。回復技には付かない。</td></tr><tr><th scope="row">7</th><td>防御・回避</td><td>防具DEFを減算し、上級職の防御補正、命中・回避判定を適用。0ダメージ理由もログ出力。</td></tr><tr><th scope="row">8</th><td>HP・回復</td><td>ダメージ、回復、自傷、ドレインを反映してHPを更新。</td></tr><tr><th scope="row">9</th><td>勝敗判定</td><td>敵HP<=0で勝利、プレイヤーHP<=0で敗北、対人双方0で引き分け。最大150ターン。</td></tr></tbody></table></div>
+<h2>職業別の基礎ダメージ参照</h2>
+<p class="small">乱数は各能力値について0以上、能力値未満から抽選し、武器ATKを加算します。正確な職業IDごとの式は <code>sub_def/battle_logic.py:get_job_dmg()</code> が正本です。</p>
+<div class="table-wrap"><table><thead><tr><th>職業ID</th><th>参照する能力値</th></tr></thead><tbody><tr><th scope="row">0</th><td>str</td></tr><tr><th scope="row">1, 4, 5</th><td>int</td></tr><tr><th scope="row">2</th><td>mnd</td></tr><tr><th scope="row">3</th><td>dex</td></tr><tr><th scope="row">6</th><td>mnd + cha</td></tr><tr><th scope="row">7, 9, 10, 11, 12, 13, 14, 15, 16</th><td>複数の基本能力値</td></tr><tr><th scope="row">8</th><td>str + vit</td></tr><tr><th scope="row">17</th><td>int + mnd + cha</td></tr><tr><th scope="row">18〜21, 28〜30</th><td>8能力値すべて</td></tr><tr><th scope="row">22, 26, 27</th><td>8能力値すべて ×2</td></tr><tr><th scope="row">23</th><td>str</td></tr><tr><th scope="row">24</th><td>vit + dex + agi + cha + karma ×2</td></tr><tr><th scope="row">25</th><td>str + int + mnd + vit + dex×5 + agi + cha + karma を2倍</td></tr></tbody></table></div>
+<h2>必殺技・固有効果の呼び出し規則</h2>
+<div class="table-wrap"><table><thead><tr><th>種類</th><th>呼び出し先</th><th>発動率・補足</th></tr></thead><tbody><tr><td>戦術</td><td>tactic_id → tech_&lt;ID&gt;</td><td>プレイヤー側。戦術マスターの説明に設定された乱数幅を使う</td></tr><tr><td>対人相手の戦術</td><td>相手 tactic_id → wtech_&lt;ID&gt;</td><td>相手側の必殺・後発効果として実行</td></tr><tr><td>モンスター特殊技</td><td>special_skill_id → mons_&lt;ID&gt;</td><td>データのspecial_rateを0〜99乱数と比較</td></tr><tr><td>装飾品固有効果</td><td>effect_id → acstech_&lt;ID&gt;</td><td>通常攻撃後に実行。相手側はwacstech_&lt;ID&gt;</td></tr></tbody></table></div>
+<h2>関連ソース</h2>
+<p class="source"><code>cgi_py/monster.py</code> / <code>cgi_py/legend.py</code> / <code>cgi_py/battle.py</code> / <code>cgi_py/tenka.py</code> / <code>cgi_py/select_battle.py</code> / <code>sub_def/battle_logic.py</code> / <code>sub_def/skills.py</code></p>
+
+</main>
+</body>
+</html>
