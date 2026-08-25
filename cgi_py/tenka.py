@@ -255,10 +255,17 @@ def main():
             int(simulator.state.gold_reward_bonus)
             - int(simulator.state.gold_reward_penalty)
         )
+
+        # 旧版 wbattle.pl の戦績更新に合わせる。
+        chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
+        if win == 1:
+            chara["win_count"] = int(chara.get("win_count", 0)) + 1
+
+        opponent_level = max(1, int(winner.get("level", 1)))
         
         if win == 1:
             # 勝利
-            exp_gained = max(10, int(winner.get("level", 1) * 2))
+            exp_gained = opponent_level * config.Config["pvp_base_exp"]
             total_reward = max(
                 0,
                 gold_reward + theft_adjustment,
@@ -271,12 +278,6 @@ def main():
                 chara["gold"] = 0
                 
             chara["boss_flag"] = boss_flag - 1 # 1段階勝ち抜け
-            chara["battle_limit"] = config.Config['training_battle_limit']
-            
-            # レベルアップ処理
-            syoku = common.syoku_load(user_id) or {}
-            lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
-            comment += lv_comment
             
             # 武道会制覇の判定
             next_winner = chara["boss_flag"] + config.Config['tenka_count'] - config.Config['legend_progress_reset_value']
@@ -321,7 +322,7 @@ def main():
                 comment += f"<br>戦闘勝利！次の対戦に進めるクポ。"
         elif win == 2:
             # 引き分けは敗北扱いにせず、盗み分だけを一度反映する。
-            exp_gained = max(5, int(winner.get("level", 1) * 0.5))
+            exp_gained = opponent_level * config.Config["pvp_base_exp"]
             gold_gained = theft_adjustment
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
@@ -336,15 +337,18 @@ def main():
                 comment += f"<br><span class='red'>お金を {abs(gold_gained)} G 失いました。</span>"
         else:
             # 敗北時のみ所持金を半分にする。
-            exp_gained = max(5, int(winner.get("level", 1) * 0.5))
+            exp_gained = opponent_level
             chara["gold"] = int(chara["gold"] / 2) # お金半分
             
-            # レベルアップ処理
-            syoku = common.syoku_load(user_id) or {}
-            lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
-            comment += lv_comment
-            
             comment += f"<br><span class='red'>敗北しましたクポ・・・お金が半分になってしまいました。</span>"
+
+        # 旧版 tenka.cgi は結果に関係なく修行回数を補充していた。
+        chara["battle_limit"] = config.Config["training_battle_limit"]
+
+        # 経験値と職業熟練度は勝敗・引き分けを問わず反映する。
+        syoku = common.syoku_load(user_id) or {}
+        lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
+        comment += lv_comment
 
         # 最終行動時間更新
         chara["last_time"] = now
@@ -354,8 +358,7 @@ def main():
         common.get_lock(user_id)
         try:
             common.chara_regist(user_id, chara)
-            if win == 1:
-                common.syoku_regist(user_id, syoku)
+            common.syoku_regist(user_id, syoku)
         finally:
             common.release_lock(user_id)
             

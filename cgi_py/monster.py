@@ -263,6 +263,8 @@ def main():
             comment += f'<span class="red u-text-large">戦闘に敗北しました・・・</span><br>'
         else:
             # 引き分けは基礎報酬を支給せず、戦闘中に発生した盗み分だけ反映する。
+            # 経験値は旧版 mbattle.pl と同じく通常報酬の半分。
+            exp_gained = int(enemy_data["exp_reward"] / 2)
             gold_gained = theft_adjustment
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:

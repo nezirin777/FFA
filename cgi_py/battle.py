@@ -222,7 +222,14 @@ def main():
 
             gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
-            exp_gained = config.Config['pvp_base_exp'] # 対人戦の基本経験値
+
+            # 旧版 wbattle.pl の経験値計算。
+            # 勝利・引き分けは相手レベル×基本値、敗北時は相手レベルそのもの。
+            opponent_level = max(1, int(winner.get("level", 1)))
+            if win in (1, 2):
+                exp_gained = opponent_level * config.Config["pvp_base_exp"]
+            else:
+                exp_gained = opponent_level
 
             # 旧版の対人戦績は結果分岐より先に挑戦者へ反映する。
             chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
@@ -234,6 +241,9 @@ def main():
             # これがないと、途中階層で街へ戻った後にチャンプへ挑戦しても
             # boss_flag が残り、レジェンドプレイスへ再入場できなくなる。
             chara["boss_flag"] = config.Config["legend_progress_reset_value"]
+
+            # 旧版 battle.cgi と同じく、対人戦終了後は修行回数を補充する。
+            chara["battle_limit"] = config.Config["training_battle_limit"]
 
             if win == 1 or win == 2:
                 # 挑戦者の勝利または引き分け ➔ 挑戦者が新しい王者になる！

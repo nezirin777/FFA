@@ -311,19 +311,14 @@ def main():
         # 3. syoku データ構築
         new_syoku = {str(i): 0 for i in range(31)}
         
-        # 4. パスワード変更用単語の保存 (別ファイルとしてディレクトリに隔離)
-        user_dir = os.path.join(Config['save_dir'], user_id)
-        os.makedirs(user_dir, exist_ok=True)
-        
+        # 4. パスワード変更用単語の保存内容を準備する。
+        # 実際の保存はID・名前・ホストの再確認と同じ排他区間で行う。
         pass_change_data = {
             "pass": hashed_pass,
             "passchange": passchange,
             "created_at": now,
             "host": remote_addr
         }
-        with open(os.path.join(user_dir, "pass_change.json"), "w", encoding="utf-8") as f:
-            import json
-            json.dump(pass_change_data, f, ensure_ascii=False, indent=2)
             
         # user_all.json 統合データ辞書の一本化構造の組み立てとアトミック保存
         user_data = {
@@ -337,7 +332,26 @@ def main():
             "choco": {},
             "choco_g1": {}
         }
-        save_user_all(user_id, user_data)
+        # 確認画面を複数タブで送信された場合でも、チェック直後の登録まで
+        # 直列化して同一ID・同一名・同一ホストの競合登録を防ぐ。
+        registration_error = None
+        common.get_lock("character_creation")
+        try:
+            registration_error = validate_input(params)
+            if registration_error is None:
+                user_dir = os.path.join(Config['save_dir'], user_id)
+                os.makedirs(user_dir, exist_ok=True)
+
+                with open(os.path.join(user_dir, "pass_change.json"), "w", encoding="utf-8") as f:
+                    import json
+                    json.dump(pass_change_data, f, ensure_ascii=False, indent=2)
+
+                save_user_all(user_id, user_data)
+        finally:
+            common.release_lock("character_creation")
+
+        if registration_error:
+            common.show_error(registration_error)
         
         # 5. 全体システムニュースへの登録。
         # キャラ作成が同時に行われても、既存ニュースを取りこぼさないよう共有ロックを使う。
