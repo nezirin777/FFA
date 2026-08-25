@@ -2627,6 +2627,39 @@ img {
   min-width: 150px;
 }
 
+/* --- Profile Setting Result --- */
+.sts-result-container {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.sts-result-card {
+  margin-bottom: var(--space-m);
+}
+
+.sts-result-card .card__body {
+  text-align: center;
+}
+
+.sts-result-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-m);
+  margin-top: var(--space-m);
+}
+
+.sts-result-actions form {
+  margin: 0;
+}
+
+.sts-result-btn {
+  min-width: 150px;
+}
+
 /* ====================================================== */
 /* 17. Job Change (転職)                                    */
 /* ====================================================== */

@@ -195,16 +195,24 @@ def main():
         syou_name = config.Config['titles'].get(syou_idx, config.Config['titles'][0])
 
         # 極めたジョブのリスト
-        syoku = common.syoku_load(user_id)
+        syoku = common.syoku_load(user_id) or {}
+        current_job = int(chara.get("job", 0))
+        current_job_level = int(chara.get("job_level", 0))
+
+        def get_job_level(job_idx):
+            """現在職はキャラ本体、それ以外は保存済み熟練度から表示する。"""
+            if job_idx == current_job:
+                return current_job_level
+            raw_level = syoku.get(str(job_idx), syoku.get(job_idx, 0))
+            try:
+                return int(raw_level)
+            except (TypeError, ValueError):
+                return 0
+
         mastered_jobs = []
-        if syoku:
-            for job_idx_str, level in syoku.items():
-                try:
-                    job_idx = int(job_idx_str)
-                    if level >= 60 and job_idx in config.Config['chara_jobs']:
-                        mastered_jobs.append(config.Config['chara_jobs'][job_idx])
-                except ValueError:
-                    pass
+        for job_idx, job_name in config.Config['chara_jobs'].items():
+            if get_job_level(job_idx) >= 60:
+                mastered_jobs.append(job_name)
 
         # ステータスバーの幅計算（最大パラメータ幅を100pxとする）
         divpm = int(config.Config['max_param'] / 100) if config.Config['max_param'] > 0 else 100
@@ -233,7 +241,7 @@ def main():
             # 管理ジョブは除外またはスキップ
             if job_name == "管理者" and chara.get("job") != i:
                 continue
-            level = syoku.get(str(i), 0) if syoku else 0
+            level = get_job_level(i)
             # レベルによる表示マーク
             if level >= 60:
                 mark = "★Master"
