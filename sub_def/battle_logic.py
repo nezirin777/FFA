@@ -622,6 +622,8 @@ def process_levelup(chara, exp_gained, syoku_master=None):
     chara["exp"] += exp_gained
     lvup_count = 0
     comment = ""
+    levelup_changes = {attr: 0 for attr in ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")}
+    hp_increase = 0
     
     # 職業データのロード
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -660,10 +662,12 @@ def process_levelup(chara, exp_gained, syoku_master=None):
         # HP上昇量: vitをベースとしたランダム値 (rand(vit) * 3 + vit)
         vit_val = chara.get("vit", 1)
         hpup = random.randint(0, max(0, vit_val - 1)) * 3 + vit_val
-        
+
+        old_max_hp = chara["max_hp"]
         chara["max_hp"] += hpup
         if chara["max_hp"] > config.Config['max_hp']:
             chara["max_hp"] = config.Config['max_hp']
+        hp_increase += chara["max_hp"] - old_max_hp
             
         # ステータス上昇判定 (50%の確率で上昇)
         attrs = ["str", "int", "mnd", "vit", "dex", "agi", "cha"]
@@ -671,20 +675,48 @@ def process_levelup(chara, exp_gained, syoku_master=None):
             limit_val = sy_limits[idx]
             if limit_val > 0 and random.randrange(2) == 0:
                 up_val = random.randint(0, limit_val - 1) + 1
+                old_value = chara[attr]
                 chara[attr] += up_val
                 if chara[attr] > config.Config['max_param']:
                     chara[attr] = config.Config['max_param']
+                levelup_changes[attr] += chara[attr] - old_value
                     
         # カルマ上昇判定
         limit_karma = sy_limits[7]
         if limit_karma > 0 and random.randrange(2) == 0:
             up_karma = random.randint(0, limit_karma - 1) + 1
+            old_karma = chara["karma"]
             chara["karma"] += up_karma
             if chara["karma"] > config.Config['max_param']:
                 chara["karma"] = config.Config['max_param']
+            levelup_changes["karma"] += chara["karma"] - old_karma
 
     if lvup_count > 0:
         comment += f'<font class=red size=5>レベルが {lvup_count} 上がりました！</font><br>'
+
+        stat_labels = {
+            "str": "力",
+            "int": "知能",
+            "mnd": "信仰心",
+            "vit": "生命力",
+            "dex": "器用さ",
+            "agi": "速さ",
+            "cha": "魅力",
+            "karma": "カルマ",
+        }
+        change_text = [
+            f'{stat_labels[attr]}+{amount}'
+            for attr, amount in levelup_changes.items()
+            if amount > 0
+        ]
+        if hp_increase > 0:
+            change_text.insert(0, f'最大HP+{hp_increase}')
+        if change_text:
+            comment += (
+                '<span class="green">上昇した能力値: '
+                + "、".join(change_text)
+                + '</span><br>'
+            )
         
         # 職業熟練度(job_level)の上昇
         old_job_level = chara.get("job_level", 0)
