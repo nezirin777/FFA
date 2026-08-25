@@ -178,18 +178,21 @@ def calculate_stats(chara, item):
     if divpm <= 0:
         divpm = 100
         
-    bw_str = int(chara.get("str", 10) / divpm)
-    bw_int = int(chara.get("int", 10) / divpm)
-    bw_mnd = int(chara.get("mnd", 10) / divpm)
-    bw_vit = int(chara.get("vit", 10) / divpm)
-    bw_dex = int(chara.get("dex", 10) / divpm)
-    bw_agi = int(chara.get("agi", 10) / divpm)
-    bw_cha = int(chara.get("cha", 10) / divpm)
-    bw_karma = int(chara.get("karma", 0) / divpm)
+    def get_visible_bar_width(value):
+        return min(100, max(1, int(value)))
+
+    bw_str = get_visible_bar_width(0.5 * (chara.get("str", 10) / divpm))
+    bw_int = get_visible_bar_width(0.5 * (chara.get("int", 10) / divpm))
+    bw_mnd = get_visible_bar_width(0.5 * (chara.get("mnd", 10) / divpm))
+    bw_vit = get_visible_bar_width(0.5 * (chara.get("vit", 10) / divpm))
+    bw_dex = get_visible_bar_width(0.5 * (chara.get("dex", 10) / divpm))
+    bw_agi = get_visible_bar_width(0.5 * (chara.get("agi", 10) / divpm))
+    bw_cha = get_visible_bar_width(0.5 * (chara.get("cha", 10) / divpm))
+    bw_karma = get_visible_bar_width(0.5 * (chara.get("karma", 0) / divpm))
     
-    bw_hit = int((hit_ritu + ci_plus) * 0.5)
-    bw_kaihi = int((kaihi_ritu + cd_plus) * 0.5)
-    bw_waza = int((waza_ritu + waza_plus) * 1)
+    bw_hit = get_visible_bar_width((hit_ritu + ci_plus) * 0.5)
+    bw_kaihi = get_visible_bar_width((kaihi_ritu + cd_plus) * 0.5)
+    bw_waza = get_visible_bar_width(waza_ritu + waza_plus)
 
     return {
         "hit_ritu": hit_ritu, "kaihi_ritu": kaihi_ritu, "waza_ritu": waza_ritu,

@@ -244,7 +244,8 @@ def get_job_dmg(job, chara, weapon_dmg):
     def all_stats():
         return (
             r("str") + r("int") + r("mnd") + r("vit") +
-            r("dex") + r("agi") + r("cha") + int(chara.get("karma", 0))
+            r("dex") + r("agi") + r("cha") +
+            r("karma")
         )
 
     if job in (18, 19, 20, 21, 28, 29, 30):
@@ -254,11 +255,11 @@ def get_job_dmg(job, chara, weapon_dmg):
     elif job == 23:
         return r("str") + weapon_dmg
     elif job == 24:
-        return (r("vit") + r("dex") + r("agi") + r("cha") + int(chara.get("karma", 0))) * 2 + weapon_dmg
+        return (r("vit") + r("dex") + r("agi") + r("cha") + r("karma")) * 2 + weapon_dmg
     elif job == 25:
         return (
             r("str") + r("int") + r("mnd") + r("vit") +
-            r("dex") * 5 + r("agi") + r("cha") + int(chara.get("karma", 0))
+            r("dex") * 5 + r("agi") + r("cha") + r("karma")
         ) * 2 + weapon_dmg
     else:
         return all_stats() + weapon_dmg

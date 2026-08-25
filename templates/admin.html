@@ -57,9 +57,82 @@
                 <button type="submit" class="btn">ニュースを投稿</button>
             </form>
         </div>
+        <div class="admin-menu-card">
+            <h3>マスターデータ管理</h3>
+            <p class="admin-menu-card__desc">職業、戦術、武器、防具、装飾品の現行JSONマスターを編集します。</p>
+            <div class="admin-master-links">
+                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=syoku" class="btn btn--sm">職業</a>
+                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=tac" class="btn btn--sm">戦術</a>
+                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=weapon" class="btn btn--sm">武器</a>
+                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=armor" class="btn btn--sm">防具</a>
+                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=accessory" class="btn btn--sm">装飾品</a>
+            </div>
+        </div>
     </div>
 
-    <!-- 2. 全キャラクター表示 -->
+    <!-- 2. マスターデータ一覧 -->
+    {% elif mode == 'master_list' %}
+    <h2>{{ master_label }}マスター</h2>
+    <div class="layout-cluster layout-cluster--between admin-return-nav">
+        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
+        <a href="admin.py?pass={{ pass }}&mode=master_edit&master_type={{ master_type }}&new=1" class="btn">新規追加</a>
+    </div>
+    <div class="admin-table-wrapper">
+        <table class="admin-list-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>データ</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in master_rows %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td class="white"><strong>{{ row.name }}</strong></td>
+                    <td><code class="admin-master-preview">{{ row.record | tojson }}</code></td>
+                    <td>
+                        <a href="admin.py?pass={{ pass }}&mode=master_edit&master_type={{ master_type }}&master_id={{ row.id }}" class="btn btn--sm">編集</a>
+                        {% if can_delete %}
+                        <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('このマスターデータを削除します。よろしいですか？');">
+                            <input type="hidden" name="s" value="{{ csrf_token }}">
+                            <input type="hidden" name="pass" value="{{ pass }}">
+                            <input type="hidden" name="mode" value="master_delete">
+                            <input type="hidden" name="master_type" value="{{ master_type }}">
+                            <input type="hidden" name="master_id" value="{{ row.id }}">
+                            <button type="submit" class="btn btn--danger btn--sm">削除</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="admin-empty-cell">データがありません。</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. マスターデータ編集 -->
+    {% elif mode == 'master_edit' %}
+    <h2>{{ master_label }}マスター{% if is_new %} 新規追加{% else %} No.{{ master_id }} 編集{% endif %}</h2>
+    <p class="admin-menu-card__desc">現行JSONの1レコードを編集します。数値・配列・職業IDは保存時に検証されます。</p>
+    <form action="admin.py" method="POST">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
+        <input type="hidden" name="pass" value="{{ pass }}">
+        <input type="hidden" name="mode" value="master_save">
+        <input type="hidden" name="master_type" value="{{ master_type }}">
+        <input type="hidden" name="master_id" value="{{ master_id }}">
+        <input type="hidden" name="is_new" value="{{ 1 if is_new else 0 }}">
+        <textarea name="record_json" class="admin-master-editor" rows="28" required>{{ record_json }}</textarea>
+        <div class="admin-form-submit-cell">
+            <button type="submit" class="btn admin-form-btn">保存する</button>
+            <a href="admin.py?pass={{ pass }}&mode=master_list&master_type={{ master_type }}" class="btn admin-form-btn--cancel">一覧へ戻る</a>
+        </div>
+    </form>
+
+    <!-- 4. 全キャラクター表示 -->
     {% elif mode == 'kanri_all' %}
     <h2>登録冒険者一覧 (全 {{ players | length }}人)</h2>
     <div class="layout-cluster layout-cluster--end admin-return-nav">
@@ -91,6 +164,7 @@
                     <td>{{ player.host }}</td>
                     <td>
                         <a href="admin.py?pass={{ pass }}&mode=data&target_id={{ player.id }}" class="btn btn--sm">編集</a>
+                        <a href="admin.py?pass={{ pass }}&mode=player_item&target_id={{ player.id }}" class="btn btn--sm">倉庫追加</a>
                         <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('キャラクター「{{ player.name }}」を完全に削除します。よろしいですか？');">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="pass" value="{{ pass }}">
@@ -109,7 +183,39 @@
         </table>
     </div>
 
-    <!-- 3. キャラクター個別編集 -->
+    <!-- 5. プレイヤー倉庫への装備追加 -->
+    {% elif mode == 'player_item' %}
+    <h2>倉庫へ装備を追加: {{ target_name }} (ID: {{ target_id }})</h2>
+    {% if message %}
+    <div class="admin-info-msg">{{ message }}</div>
+    {% endif %}
+    <div class="admin-table-wrapper">
+        <table class="admin-form-table">
+            <tr>
+                <td>現在の倉庫数</td>
+                <td>武器 {{ warehouse_counts.weapon }} / {{ config.max_weapons }}、防具 {{ warehouse_counts.armor }} / {{ config.max_armors }}、装飾品 {{ warehouse_counts.accessory }} / {{ config.max_accessories }}</td>
+            </tr>
+        </table>
+    </div>
+    <form action="admin.py" method="POST" class="admin-news-form">
+        <input type="hidden" name="s" value="{{ csrf_token }}">
+        <input type="hidden" name="pass" value="{{ pass }}">
+        <input type="hidden" name="mode" value="player_item_add">
+        <input type="hidden" name="target_id" value="{{ target_id }}">
+        <label for="admin-item-ref">追加するマスター装備</label>
+        <select id="admin-item-ref" name="item_ref" class="admin-form-input" required>
+            <option value="">選択してください</option>
+            {% for option in item_options %}
+            <option value="{{ option.value }}">{{ option.type }}: {{ option.label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn">倉庫へ追加</button>
+    </form>
+    <div class="layout-cluster admin-return-nav">
+        <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn admin-form-btn--cancel">登録者一覧へ戻る</a>
+    </div>
+
+    <!-- 6. キャラクター個別編集 -->
     {% elif mode == 'data' %}
     <h2>冒険者データ編集: {{ chara.name }} (ID: {{ chara.id }})</h2>
     

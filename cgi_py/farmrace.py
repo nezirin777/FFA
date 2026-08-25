@@ -144,8 +144,6 @@ def main():
             "id": "admin",
             "pass": "",
             "breader": "管理者",
-            "site": "",
-            "url": "",
             "name": "ゴールドボコ",
             "no": 1,
             "type": 0,
@@ -155,12 +153,15 @@ def main():
             "c0": 200, "c1": 200, "c2": 200, "c3": 200, "c4": 200, "c5": 200, "c6": 200,
             "ren": 0,
             "lname": "なし",
-            "lsite": "",
-            "lurl": "",
             "lbreader": "なし",
             "father": "不明",
             "mother": "不明"
         }
+    else:
+        # 旧チャンプJSONに残る外部サイト情報は現行画面で使用しない。
+        # 防衛時にそのまま再保存されないよう、読み込み時点で破棄する。
+        for legacy_key in ("site", "url", "lsite", "lurl"):
+            winner.pop(legacy_key, None)
 
     # すでに王者かどうかのチェック
     if winner.get("id") == user_id and winner.get("name") == cname:
@@ -415,8 +416,6 @@ def main():
             "id": user_id,
             "pass": chara["pass"],
             "breader": chara["name"],
-            "site": chara.get("site", ""),
-            "url": chara.get("url", ""),
             "name": cname,
             "no": choco.get("no", 0),
             "type": choco.get("type", 0),
@@ -427,8 +426,6 @@ def main():
             "c0": choco_c0, "c1": choco_c1, "c2": choco_c2, "c3": choco_c3, "c4": choco_c4, "c5": choco_c5, "c6": choco_c6,
             "ren": 1,
             "lname": wcname,
-            "lsite": winner.get("site", ""),
-            "lurl": winner.get("url", ""),
             "lbreader": wcbreader,
             "father": choco.get("father", "不明"),
             "mother": choco.get("mother", "不明")
@@ -482,8 +479,6 @@ def main():
         # 王者データを防衛分更新して上書き
         winner["ren"] = wcren
         winner["lname"] = cname
-        winner["lsite"] = chara.get("site", "")
-        winner["lurl"] = chara.get("url", "")
         winner["lbreader"] = chara["name"]
         new_winner = winner
         

@@ -49,6 +49,316 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 
+MASTER_DEFINITIONS = {
+    "syoku": {
+        "label": "職業",
+        "config_key": "syoku_file",
+        "id_mode": "index",
+        "can_delete": False,
+    },
+    "tac": {
+        "label": "必殺技・戦術",
+        "config_key": "tac_file",
+        "id_mode": "no",
+        "can_delete": True,
+    },
+    "weapon": {
+        "label": "武器",
+        "config_key": "weapon_file",
+        "id_mode": "no",
+        "can_delete": True,
+    },
+    "armor": {
+        "label": "防具",
+        "config_key": "armor_file",
+        "id_mode": "no",
+        "can_delete": True,
+    },
+    "accessory": {
+        "label": "装飾品",
+        "config_key": "accessory_file",
+        "id_mode": "no",
+        "can_delete": True,
+    },
+}
+
+STAT_KEYS = ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")
+
+
+def get_master_definition(master_type):
+    definition = MASTER_DEFINITIONS.get(master_type)
+    if not definition:
+        common.show_error("指定されたマスターデータが見つかりません。")
+    return definition
+
+
+def get_master_path(master_type):
+    definition = get_master_definition(master_type)
+    configured_path = config.Config[definition["config_key"]]
+    if os.path.isabs(configured_path):
+        return configured_path
+    return os.path.join(config.BASE_DIR, configured_path)
+
+
+def load_master_records(master_type):
+    from sub_def.file_ops import load_data_with_lock
+
+    records = load_data_with_lock(
+        get_master_path(master_type), f"admin_master_{master_type}"
+    )
+    if not isinstance(records, list):
+        common.show_error("マスターデータの形式が不正です。")
+    return records
+
+
+def master_record_id(master_type, record, index):
+    definition = get_master_definition(master_type)
+    return index if definition["id_mode"] == "index" else record.get("no", "")
+
+
+def _require_int(record, key, minimum=0):
+    value = record.get(key)
+    if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+        raise ValueError(f"{key} は {minimum} 以上の整数で指定してください。")
+
+
+def validate_master_record(master_type, record, existing_ids, selected_id=None):
+    """管理画面から入力された1レコードを、現行JSONの契約に照らして検証する。"""
+    if not isinstance(record, dict):
+        raise ValueError("レコードはJSONオブジェクトで指定してください。")
+    if not str(record.get("name", "")).strip():
+        raise ValueError("name は必須です。")
+
+    if master_type == "syoku":
+        for key in (
+            *(f"req_{stat}" for stat in STAT_KEYS),
+            *(f"limit_{stat}" for stat in STAT_KEYS),
+        ):
+            _require_int(record, key)
+        job_reqs = record.get("job_reqs")
+        if (
+            not isinstance(job_reqs, list)
+            or len(job_reqs) != len(config.Config["chara_jobs"])
+            or any(isinstance(value, bool) or not isinstance(value, int) or value < 0 for value in job_reqs)
+        ):
+            raise ValueError("job_reqs は職業数分の整数配列で指定してください。")
+        return
+
+    _require_int(record, "no")
+    if record["no"] in existing_ids and record["no"] != selected_id:
+        raise ValueError(f"no={record['no']} は既に使用されています。")
+
+    job_ids = record.get("job_ids")
+    valid_job_ids = set(config.Config["chara_jobs"])
+    if (
+        not isinstance(job_ids, list)
+        or len(job_ids) != len(set(job_ids))
+        or any(isinstance(job_id, bool) or job_id not in valid_job_ids for job_id in job_ids)
+    ):
+        raise ValueError("job_ids は重複のない有効な職業ID配列で指定してください。")
+
+    if master_type == "tac":
+        _require_int(record, "ms")
+        if "activation_denominator" in record:
+            _require_int(record, "activation_denominator", 1)
+        return
+
+    _require_int(record, "gold")
+    if master_type == "weapon":
+        _require_int(record, "atk")
+        _require_int(record, "hit_rate", -999999999999)
+    elif master_type == "armor":
+        _require_int(record, "defense")
+        _require_int(record, "evasion_rate", -999999999999)
+    elif master_type == "accessory":
+        _require_int(record, "effect_id")
+        bonus = record.get("bonus")
+        if not isinstance(bonus, dict) or set(bonus) != set(STAT_KEYS):
+            raise ValueError("bonus は8能力値キーを持つオブジェクトで指定してください。")
+        for key in STAT_KEYS:
+            _require_int(bonus, key)
+        for key in ("hit_rate", "evasion_rate", "special_rate"):
+            _require_int(record, key, -999999999999)
+
+
+def save_master_records(master_type, records):
+    from sub_def.file_ops import save_data_atomically
+
+    save_data_atomically(
+        records,
+        get_master_path(master_type),
+        f"admin_master_{master_type}",
+    )
+    if master_type == "accessory":
+        # 同一プロセス内で共通モジュールが持つ説明文キャッシュも更新する。
+        common._acs_master_cache = None
+
+
+def master_list_context(master_type, message=None):
+    definition = get_master_definition(master_type)
+    records = load_master_records(master_type)
+    rows = [
+        {
+            "id": master_record_id(master_type, record, index),
+            "name": record.get("name", "(名称なし)"),
+            "record": record,
+        }
+        for index, record in enumerate(records)
+    ]
+    return {
+        "pass": common.decode_params().get("pass", "").strip(),
+        "mode": "master_list",
+        "master_type": master_type,
+        "master_label": definition["label"],
+        "master_rows": rows,
+        "can_delete": definition["can_delete"],
+        "message": message,
+    }
+
+
+def master_edit_context(master_type, master_id=None, is_new=False):
+    definition = get_master_definition(master_type)
+    records = load_master_records(master_type)
+    if is_new:
+        if master_type == "syoku":
+            record = {
+                "name": "新規職業",
+                **{f"req_{stat}": 0 for stat in STAT_KEYS},
+                **{f"limit_{stat}": 0 for stat in STAT_KEYS},
+                "job_reqs": [0] * len(config.Config["chara_jobs"]),
+            }
+        elif master_type == "tac":
+            record = {
+                "no": max((item.get("no", -1) for item in records), default=-1) + 1,
+                "name": "新規戦術",
+                "desc": "",
+                "activation_denominator": 100,
+                "ms": 0,
+                "job_ids": [],
+            }
+        elif master_type == "weapon":
+            record = {
+                "no": max((item.get("no", 999) for item in records), default=999) + 1,
+                "name": "新規武器",
+                "atk": 0,
+                "gold": 0,
+                "hit_rate": 0,
+                "job_ids": [],
+            }
+        elif master_type == "armor":
+            record = {
+                "no": max((item.get("no", 1999) for item in records), default=1999) + 1,
+                "name": "新規防具",
+                "defense": 0,
+                "gold": 0,
+                "evasion_rate": 0,
+                "job_ids": [],
+            }
+        else:
+            record = {
+                "no": max((item.get("no", 0) for item in records), default=0) + 1,
+                "name": "新規装飾品",
+                "gold": 0,
+                "effect_id": 0,
+                "bonus": {stat: 0 for stat in STAT_KEYS},
+                "description": "",
+                "hit_rate": 0,
+                "evasion_rate": 0,
+                "special_rate": 0,
+                "job_ids": [],
+            }
+        selected_id = ""
+    else:
+        try:
+            selected_id = int(master_id)
+        except (TypeError, ValueError):
+            common.show_error("マスターデータのIDが不正です。")
+        record = next(
+            (
+                item
+                for index, item in enumerate(records)
+                if master_record_id(master_type, item, index) == selected_id
+            ),
+            None,
+        )
+        if record is None:
+            common.show_error("指定されたマスターデータが見つかりません。")
+        record = json.loads(json.dumps(record, ensure_ascii=False))
+
+    return {
+        "pass": common.decode_params().get("pass", "").strip(),
+        "mode": "master_edit",
+        "master_type": master_type,
+        "master_label": definition["label"],
+        "master_id": selected_id,
+        "is_new": is_new,
+        "record_json": json.dumps(record, ensure_ascii=False, indent=2),
+    }
+
+
+def player_item_context(target_id, message=None):
+    chara = common.chara_load(target_id)
+    if not chara:
+        common.show_error("指定されたキャラクターが見つかりません。")
+
+    options = []
+    item_type_labels = {"weapon": "武器", "armor": "防具", "accessory": "装飾品"}
+    for item_type in ("weapon", "armor", "accessory"):
+        for record in load_master_records(item_type):
+            options.append(
+                {
+                    "value": f"{item_type}:{record.get('no')}",
+                    "label": f"{record.get('no')} - {record.get('name', '(名称なし)')}",
+                    "type": item_type_labels[item_type],
+                }
+            )
+
+    return {
+        "pass": common.decode_params().get("pass", "").strip(),
+        "mode": "player_item",
+        "target_id": target_id,
+        "target_name": chara.get("name", target_id),
+        "item_options": options,
+        "warehouse_counts": {
+            "weapon": len(common.souko_load(target_id, "weapon")),
+            "armor": len(common.souko_load(target_id, "armor")),
+            "accessory": len(common.souko_load(target_id, "accessory")),
+        },
+        "message": message,
+    }
+
+
+def warehouse_entry_from_master(item_type, record):
+    """マスターを現行倉庫の保存形式へ変換する。"""
+    if item_type == "weapon":
+        return {
+            "id": record["no"],
+            "name": record["name"],
+            "atk": record["atk"],
+            "gold": record.get("gold", 0),
+            "hit_rate": record.get("hit_rate", 0),
+        }
+    if item_type == "armor":
+        return {
+            "id": record["no"],
+            "name": record["name"],
+            "defense": record["defense"],
+            "gold": record.get("gold", 0),
+            "evasion_rate": record.get("evasion_rate", 0),
+        }
+    return {
+        "id": record["no"],
+        "name": record["name"],
+        "gold": record.get("gold", 0),
+        "effect_id": record.get("effect_id", 0),
+        "bonus": record.get("bonus", {stat: 0 for stat in STAT_KEYS}),
+        "hit_rate": record.get("hit_rate", 0),
+        "evasion_rate": record.get("evasion_rate", 0),
+        "special_rate": record.get("special_rate", 0),
+        "description": record.get("description", ""),
+    }
+
+
 
 def get_all_players():
     """全プレイヤーのデータを取得します"""
@@ -133,6 +443,9 @@ def main():
         "del_noplay",
         "restore_protected",
         "post_all_message",
+        "master_save",
+        "master_delete",
+        "player_item_add",
     ):
         from sub_def.crypto import get_session, token_check
         token_check(params, get_session())
@@ -180,6 +493,171 @@ def main():
             "mode": "kanri_top",
             "message": "全体ニュースを投稿しました。",
         }
+        common.render_template("admin.html", context)
+        return
+
+    # 1.2 マスターデータ一覧
+    elif mode == "master_list":
+        master_type = params.get("master_type", "")
+        context = master_list_context(master_type)
+        context["pass"] = admin_pass
+        common.render_template("admin.html", context)
+        return
+
+    # 1.3 マスターデータ編集画面
+    elif mode == "master_edit":
+        master_type = params.get("master_type", "")
+        context = master_edit_context(
+            master_type,
+            params.get("master_id"),
+            params.get("new") == "1",
+        )
+        context["pass"] = admin_pass
+        common.render_template("admin.html", context)
+        return
+
+    # 1.4 マスターデータ保存
+    elif mode == "master_save":
+        master_type = params.get("master_type", "")
+        definition = get_master_definition(master_type)
+        records = load_master_records(master_type)
+        is_new = params.get("is_new") == "1"
+        selected_id = None
+        if not is_new:
+            try:
+                selected_id = int(params.get("master_id", ""))
+            except (TypeError, ValueError):
+                common.show_error("マスターデータのIDが不正です。")
+
+        try:
+            record = json.loads(params.get("record_json", ""))
+            existing_ids = {
+                master_record_id(master_type, item, index)
+                for index, item in enumerate(records)
+            }
+            validate_master_record(
+                master_type,
+                record,
+                existing_ids,
+                selected_id,
+            )
+            if is_new:
+                records.append(record)
+            else:
+                target_index = next(
+                    (
+                        index
+                        for index, item in enumerate(records)
+                        if master_record_id(master_type, item, index) == selected_id
+                    ),
+                    None,
+                )
+                if target_index is None:
+                    raise ValueError("編集対象のマスターデータが見つかりません。")
+                records[target_index] = record
+            save_master_records(master_type, records)
+        except (ValueError, TypeError, json.JSONDecodeError) as error:
+            context = master_edit_context(master_type, selected_id, is_new)
+            context["pass"] = admin_pass
+            context["record_json"] = params.get("record_json", "")
+            context["message"] = f"保存できません: {error}"
+            common.render_template("admin.html", context)
+            return
+
+        context = master_list_context(
+            master_type,
+            f"{definition['label']}マスターを保存しました。",
+        )
+        context["pass"] = admin_pass
+        common.render_template("admin.html", context)
+        return
+
+    # 1.5 マスターデータ削除
+    elif mode == "master_delete":
+        master_type = params.get("master_type", "")
+        definition = get_master_definition(master_type)
+        if not definition["can_delete"]:
+            common.show_error("このマスターはID順を維持するため削除できません。")
+        try:
+            selected_id = int(params.get("master_id", ""))
+        except (TypeError, ValueError):
+            common.show_error("マスターデータのIDが不正です。")
+
+        records = load_master_records(master_type)
+        target_index = next(
+            (
+                index
+                for index, item in enumerate(records)
+                if master_record_id(master_type, item, index) == selected_id
+            ),
+            None,
+        )
+        if target_index is None:
+            common.show_error("削除対象のマスターデータが見つかりません。")
+        records.pop(target_index)
+        save_master_records(master_type, records)
+        context = master_list_context(
+            master_type,
+            f"{definition['label']} No.{selected_id} を削除しました。",
+        )
+        context["pass"] = admin_pass
+        common.render_template("admin.html", context)
+        return
+
+    # 1.6 プレイヤー倉庫への装備追加
+    elif mode == "player_item":
+        target_id = params.get("target_id", "").strip()
+        context = player_item_context(target_id)
+        context["pass"] = admin_pass
+        common.render_template("admin.html", context)
+        return
+
+    elif mode == "player_item_add":
+        target_id = params.get("target_id", "").strip()
+        item_ref = params.get("item_ref", "")
+        item_type, separator, item_no_text = item_ref.partition(":")
+        if not separator or item_type not in ("weapon", "armor", "accessory"):
+            common.show_error("追加する装備が指定されていません。")
+        try:
+            item_no = int(item_no_text)
+        except (TypeError, ValueError):
+            common.show_error("追加する装備IDが不正です。")
+
+        records = load_master_records(item_type)
+        record = next((item for item in records if item.get("no") == item_no), None)
+        if record is None:
+            common.show_error("指定された装備がマスターに存在しません。")
+
+        limit_key = {
+            "weapon": "max_weapons",
+            "armor": "max_armors",
+            "accessory": "max_accessories",
+        }[item_type]
+        common.get_lock(target_id)
+        try:
+            data = common.load_user_all(target_id)
+            if not data or not data.get("chara"):
+                common.show_error("指定されたキャラクターが見つかりません。")
+            warehouse_key = f"souko_{item_type}"
+            warehouse = data.get(warehouse_key, [])
+            if len(warehouse) >= config.Config[limit_key]:
+                raise ValueError(f"{item_type}倉庫がいっぱいです。")
+            warehouse.append(warehouse_entry_from_master(item_type, record))
+            data[warehouse_key] = warehouse
+            common.save_user_unified(target_id, data)
+        except ValueError as error:
+            context = player_item_context(target_id, f"追加できません: {error}")
+            context["pass"] = admin_pass
+            common.render_template("admin.html", context)
+            return
+        finally:
+            common.release_lock(target_id)
+
+        context = player_item_context(
+            target_id,
+            f"{record['name']}を{item_type}倉庫へ追加しました。",
+        )
+        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 

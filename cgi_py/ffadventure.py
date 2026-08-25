@@ -219,6 +219,28 @@ def main():
     ci_plus = item.get("weapon", {}).get("hit_rate", 0) + accessory.get("hit_rate", 0)
     cd_plus = item.get("armor", {}).get("evasion_rate", 0) + accessory.get("evasion_rate", 0)
     waza_plus = accessory.get("special_rate", 0)
+
+    # 街の能力値欄にも、ステータス詳細と同じ表示用バーを渡す。
+    divpm = int(config.Config["max_param"] / 100) if config.Config["max_param"] > 0 else 100
+    if divpm <= 0:
+        divpm = 100
+
+    def get_visible_bar_width(value):
+        return min(100, max(1, int(value)))
+
+    bar_widths = {
+        "str": get_visible_bar_width(0.5 * (chara.get("str", 10) / divpm)),
+        "int": get_visible_bar_width(0.5 * (chara.get("int", 10) / divpm)),
+        "mnd": get_visible_bar_width(0.5 * (chara.get("mnd", 10) / divpm)),
+        "vit": get_visible_bar_width(0.5 * (chara.get("vit", 10) / divpm)),
+        "dex": get_visible_bar_width(0.5 * (chara.get("dex", 10) / divpm)),
+        "agi": get_visible_bar_width(0.5 * (chara.get("agi", 10) / divpm)),
+        "cha": get_visible_bar_width(0.5 * (chara.get("cha", 10) / divpm)),
+        "karma": get_visible_bar_width(0.5 * (chara.get("karma", 0) / divpm)),
+        "hit": get_visible_bar_width((hit_ritu + ci_plus) * 0.5),
+        "kaihi": get_visible_bar_width((kaihi_ritu + cd_plus) * 0.5),
+        "waza": get_visible_bar_width(waza_ritu + waza_plus),
+    }
     
     # 9. 画面描画
     context = {
@@ -244,6 +266,7 @@ def main():
         "ci_plus": ci_plus,
         "cd_plus": cd_plus,
         "waza_plus": waza_plus,
+        "bar_widths": bar_widths,
     }
     
     common.render_template("ffadventure.html", context)

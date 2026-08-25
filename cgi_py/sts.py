@@ -211,23 +211,21 @@ def main():
         if divpm <= 0:
             divpm = 100
             
-        bw_str = int(chara.get("str", 10) / divpm)
-        bw_int = int(chara.get("int", 10) / divpm)
-        bw_mnd = int(chara.get("mnd", 10) / divpm) # 信仰心
-        bw_vit = int(chara.get("vit", 10) / divpm) # 生命力
-        bw_dex = int(chara.get("dex", 10) / divpm) # 器用さ
-        bw_agi = int(chara.get("agi", 10) / divpm) # 速さ
-        bw_cha = int(chara.get("cha", 10) / divpm) # 魅力
-        bw_karma = int(chara.get("karma", 0) / divpm)
+        def get_visible_bar_width(value):
+            return min(100, max(1, int(value)))
+
+        bw_str = get_visible_bar_width(0.5 * (chara.get("str", 10) / divpm))
+        bw_int = get_visible_bar_width(0.5 * (chara.get("int", 10) / divpm))
+        bw_mnd = get_visible_bar_width(0.5 * (chara.get("mnd", 10) / divpm)) # 信仰心
+        bw_vit = get_visible_bar_width(0.5 * (chara.get("vit", 10) / divpm)) # 生命力
+        bw_dex = get_visible_bar_width(0.5 * (chara.get("dex", 10) / divpm)) # 器用さ
+        bw_agi = get_visible_bar_width(0.5 * (chara.get("agi", 10) / divpm)) # 速さ
+        bw_cha = get_visible_bar_width(0.5 * (chara.get("cha", 10) / divpm)) # 魅力
+        bw_karma = get_visible_bar_width(0.5 * (chara.get("karma", 0) / divpm))
         
-        bw_hit = int((hit_ritu + ci_plus) * 0.5)
-        bw_kaihi = int((kaihi_ritu + cd_plus) * 0.5)
-        bw_waza = int((waza_ritu + waza_plus) * 1)
-        
-        # 最大幅制限
-        bw_hit = min(100, bw_hit)
-        bw_kaihi = min(100, bw_kaihi)
-        bw_waza = min(100, bw_waza)
+        bw_hit = get_visible_bar_width((hit_ritu + ci_plus) * 0.5)
+        bw_kaihi = get_visible_bar_width((kaihi_ritu + cd_plus) * 0.5)
+        bw_waza = get_visible_bar_width(waza_ritu + waza_plus)
 
         # ジョブ熟練度の全表示用（これまでのジョブ経験）
         all_jobs_status = []

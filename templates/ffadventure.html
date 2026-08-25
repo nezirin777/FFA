@@ -188,37 +188,37 @@
                     <table class="ff-chara-table">
                         <tr>
                             <th>力 (Str)</th>
-                            <td><b>{{ chara.str }} + {{ equipment.accessory.bonus.str }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.str }}%;"></div></div><b>{{ chara.str }} + {{ equipment.accessory.bonus.str }}</b></td>
                             <th>知能 (Int)</th>
-                            <td><b>{{ chara.int }} + {{ equipment.accessory.bonus.int }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.int }}%;"></div></div><b>{{ chara.int }} + {{ equipment.accessory.bonus.int }}</b></td>
                         </tr>
                         <tr>
                             <th>信仰心 (Mnd)</th>
-                            <td><b>{{ chara.mnd }} + {{ equipment.accessory.bonus.mnd }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.mnd }}%;"></div></div><b>{{ chara.mnd }} + {{ equipment.accessory.bonus.mnd }}</b></td>
                             <th>生命力 (Vit)</th>
-                            <td><b>{{ chara.vit }} + {{ equipment.accessory.bonus.vit }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.vit }}%;"></div></div><b>{{ chara.vit }} + {{ equipment.accessory.bonus.vit }}</b></td>
                         </tr>
                         <tr>
                             <th>器用さ (Dex)</th>
-                            <td><b>{{ chara.dex }} + {{ equipment.accessory.bonus.dex }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.dex }}%;"></div></div><b>{{ chara.dex }} + {{ equipment.accessory.bonus.dex }}</b></td>
                             <th>速さ (Agi)</th>
-                            <td><b>{{ chara.agi }} + {{ equipment.accessory.bonus.agi }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.agi }}%;"></div></div><b>{{ chara.agi }} + {{ equipment.accessory.bonus.agi }}</b></td>
                         </tr>
                         <tr>
                             <th>魅力 (Cha)</th>
-                            <td><b>{{ chara.cha }} + {{ equipment.accessory.bonus.cha }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.cha }}%;"></div></div><b>{{ chara.cha }} + {{ equipment.accessory.bonus.cha }}</b></td>
                             <th>カルマ (Karma)</th>
-                            <td><b>{{ chara.karma }} + {{ equipment.accessory.bonus.karma }}</b></td>
+                            <td><div class="bar-container"><div class="bar-fill" style="width: {{ bar_widths.karma }}%;"></div></div><b>{{ chara.karma }} + {{ equipment.accessory.bonus.karma }}</b></td>
                         </tr>
                         <tr>
                             <th>命中率</th>
-                            <td><b>{{ hit_ritu }}% + {{ ci_plus }}%</b></td>
+                            <td><div class="bar-container"><div class="bar-fill red-fill" style="width: {{ bar_widths.hit }}%;"></div></div><b>{{ hit_ritu }}% + {{ ci_plus }}%</b></td>
                             <th>回避率</th>
-                            <td><b>{{ kaihi_ritu }}% + {{ cd_plus }}%</b></td>
+                            <td><div class="bar-container"><div class="bar-fill green-fill" style="width: {{ bar_widths.kaihi }}%;"></div></div><b>{{ kaihi_ritu }}% + {{ cd_plus }}%</b></td>
                         </tr>
                         <tr>
                             <th>必殺率</th>
-                            <td><b>{{ waza_ritu }}% + {{ waza_plus }}%</b></td>
+                            <td><div class="bar-container"><div class="bar-fill yellow-fill" style="width: {{ bar_widths.waza }}%;"></div></div><b>{{ waza_ritu }}% + {{ waza_plus }}%</b></td>
                             <td colspan="2">
                                 <form action="{{ config.tactics_script }}" method="POST">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
