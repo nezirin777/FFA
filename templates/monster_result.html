@@ -2,6 +2,34 @@
 
 {% block title %}戦闘結果 - {{ enemy_name }}戦 - {{ config.main_title }}{% endblock %}
 
+{% block head %}
+{% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}
+<script type="text/javascript">
+    var legendWaitSeconds = {{ legend_wait_seconds | default(0) }};
+
+    function updateLegendNextButton() {
+        var waitText = document.getElementById("legend-next-wait");
+        var waitSeconds = document.getElementById("legend-next-wait-seconds");
+        var nextButton = document.getElementById("legend-next-button");
+
+        if (legendWaitSeconds > 0) {
+            waitSeconds.textContent = legendWaitSeconds;
+            legendWaitSeconds--;
+            window.setTimeout(updateLegendNextButton, 1000);
+            return;
+        }
+
+        waitText.textContent = "次の階層へ挑戦できます。";
+        nextButton.disabled = false;
+        nextButton.classList.remove("disabled");
+        nextButton.value = "さらに奥へ進む";
+    }
+
+    window.addEventListener("load", updateLegendNextButton);
+</script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="battle-container battle-container--result">
     <div class="battle-header">
@@ -70,14 +98,21 @@
         {% endfor %}
     </div>
 
+    {% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}
+    <div id="legend-next-wait" class="legend-next-wait">
+        次の階層へ進めるまであと
+        <span id="legend-next-wait-seconds">{{ legend_wait_seconds }}</span>秒お待ちください。
+    </div>
+    {% endif %}
+
     <div class="battle-back-actions">
         {% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}
-        <form action="{{ config.legend_script }}" method="POST">
+        <form action="{{ config.legend_script }}" method="POST" class="legend-next-form">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="mode" value="boss">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="boss_file" value="{{ boss_file }}">
-            <input type="submit" class="btn" value="さらに奥へ進む">
+            <input type="submit" id="legend-next-button" class="btn disabled" value="待機中..." disabled>
         </form>
         {% endif %}
         {% if mode == 'boss' and win == 1 and chara.boss_flag > 0 %}

@@ -281,6 +281,56 @@ img {
   width: 100%;
 }
 
+/* --- Error and Wait Result --- */
+.err-container {
+  width: 95%;
+  max-width: 650px;
+  margin-inline: auto;
+  margin-top: var(--space-m);
+  text-align: left;
+}
+
+.err-card {
+  margin-bottom: var(--space-m);
+}
+
+.err-card__body {
+  text-align: center;
+  line-height: 1.7;
+}
+
+.err-card__body p {
+  margin: 0 0 var(--space-m);
+}
+
+.err-card__body .layout-stack {
+  align-items: center;
+}
+
+.err-clock-display {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin: var(--space-m) 0;
+}
+
+.err-clock-input {
+  width: 5rem;
+  padding: 6px 8px;
+  border: 1px solid var(--dark);
+  border-radius: var(--radius-s);
+  background-color: rgba(0, 0, 0, 0.35);
+  color: var(--yellow);
+  font-weight: bold;
+  text-align: center;
+}
+
+.err-btn-action {
+  min-width: 220px;
+}
+
 /* ====================================================== */
 /* 5. Form Core                                           */
 /* ====================================================== */
@@ -3048,12 +3098,31 @@ img {
 
 .battle-back-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  gap: var(--space-m);
   margin-top: var(--space-s);
 }
 .battle-back-actions a {
   min-width: 180px;
   text-align: center;
+}
+
+.legend-next-wait {
+  width: 100%;
+  color: var(--yellow);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.legend-next-form {
+  display: flex;
+  justify-content: center;
+}
+
+.legend-next-form .btn {
+  min-width: 180px;
 }
 
 .battle-container--result .battle-header h1 {

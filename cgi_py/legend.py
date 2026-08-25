@@ -319,6 +319,14 @@ def main():
         media = config.Config["legend_battle_media"]["normal"]
     backgif = media["background"]
 
+    legend_wait_seconds = 0
+    if win == 1 and chara["boss_flag"] > 0:
+        legend_wait_seconds = max(
+            0,
+            config.Config["training_cooldown_seconds"]
+            - (int(time.time()) - int(chara.get("last_time", 0))),
+        )
+
     # レンダリング
     context = {
         "page_background": backgif,
@@ -332,6 +340,7 @@ def main():
         "mode": "boss",
         "boss_file": boss_file_idx,
         "backgif": backgif,
+        "legend_wait_seconds": legend_wait_seconds,
     }
     common.render_template("monster_result.html", context)
 
