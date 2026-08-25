@@ -419,22 +419,27 @@ class BattleSimulator:
                     s.com2 += "<font color=\"red\" size=5>逆転必殺技発動！！</font><br>"
                 
             # === 5. クリティカル判定 (mons_clt / clt) ===
-            kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
-            if kclt_ritu > random.randrange(100):
-                s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
-                if s.is_player_enemy:
-                    # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
-                    s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["atk"]
-                else:
-                    s.dmg1 = s.dmg1 * 3
-                
+            # 回復・補助技は dmg1/dmg2 を 0 にするため、実ダメージがある攻撃だけ判定する。
+            # これを無条件で行うと、ケアルガ等にもクリティカル表示が付き、
+            # 0 ダメージへ補正値が加算されて攻撃扱いになる。
+            if s.dmg1 > 0:
+                kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
+                if kclt_ritu > random.randrange(100):
+                    s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
+                    if s.is_player_enemy:
+                        # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
+                        s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["atk"]
+                    else:
+                        s.dmg1 = s.dmg1 * 3
+
             if s.is_player_enemy:
-                mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
-                if mclt_ritu > random.randrange(100):
-                    s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
-                    # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
-                    s.dmg2 = s.dmg2 * 2 + s.item["armor"]["defense"]
-            else:
+                if s.dmg2 > 0:
+                    mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
+                    if mclt_ritu > random.randrange(100):
+                        s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
+                        # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
+                        s.dmg2 = s.dmg2 * 2 + s.item["armor"]["defense"]
+            elif s.dmg2 > 0:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0
                 if mclt_ritu > random.randrange(200):
                     s.com2 += f"<br><span class=\"red\"><b>クリティカルヒット！！</b></span>"
@@ -510,13 +515,13 @@ class BattleSimulator:
 
             # プレイヤー回避判定
             evade_roll_max = 100 if s.is_player_enemy else 300
-            if sake1 > random.randrange(evade_roll_max):
+            if s.dmg2 > 0 and sake1 > random.randrange(evade_roll_max):
                 s.dmg2 = 0
                 player_evaded = True
                 s.com2 += f"<br><span class=\"red u-text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
             # 敵回避判定
-            if sake2 > random.randrange(100):
+            if s.dmg1 > 0 and sake2 > random.randrange(100):
                 s.dmg1 = 0
                 enemy_evaded = True
                 s.com1 += f"<br><span class=\"red u-text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
