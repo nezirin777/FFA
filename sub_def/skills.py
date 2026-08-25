@@ -2144,7 +2144,7 @@ class mons_0:
 
 class mons_1:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.dmg1 = int(s.dmg1 * 0.1)
             s.com2 += "<font class='yellow'>防御魔法マイティガード！！！</font><br>"
 
@@ -2153,7 +2153,7 @@ class mons_1:
 
 class mons_2:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.hpplus2 = random.randrange(int(s.mhp)) * 2
             s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
             s.dmg2 = 0
@@ -2164,8 +2164,8 @@ class mons_2:
 
 class mons_3:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
-            s.dmg2 += random.randrange(int(s.mrand))
+        if (s.monster_special_rate > random.randrange(int(100))):
+            s.dmg2 += random.randrange(int(s.monster_random_range))
             s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='red' size='5'>黒魔法ファイガ！！！</font><br>"
@@ -2175,8 +2175,8 @@ class mons_3:
 
 class mons_4:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
-            s.dmg2 += random.randrange(int(s.mrand))
+        if (s.monster_special_rate > random.randrange(int(100))):
+            s.dmg2 += random.randrange(int(s.monster_random_range))
             s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='blue' size='5'>黒魔法ブリザガ！！！</font><br>"
@@ -2186,8 +2186,8 @@ class mons_4:
 
 class mons_5:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
-            s.dmg2 += random.randrange(int(s.mrand))
+        if (s.monster_special_rate > random.randrange(int(100))):
+            s.dmg2 += random.randrange(int(s.monster_random_range))
             s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='yellow' size='5'>黒魔法サンダガ！！！</font><br>"
@@ -2197,10 +2197,10 @@ class mons_5:
 
 class mons_6:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.dmhit = random.randrange(int(7))+1
             s.sake1 -= 999999
-            s.dmg2 = random.randrange(int(s.mrand)) * s.dmhit
+            s.dmg2 = random.randrange(int(s.monster_random_range)) * s.dmhit
             s.dmg2 += s.item['armor']['defense']
             s.com2 += f"<font class='red' size='5'>古代魔法メテオ！！！</font><font color=red>{s.dmhit}ヒット！！</font><br>"
 
@@ -2209,7 +2209,7 @@ class mons_6:
 
 class mons_7:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
             s.dmg2 += int(s.khp / 5)
             s.com2 += "<font class='red' size='5'>重力魔法グラビガを発動！！！</font><br>"
@@ -2219,9 +2219,9 @@ class mons_7:
 
 class mons_8:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
-            s.dmg2 += random.randrange(int(s.mrand)) * 2
+            s.dmg2 += random.randrange(int(s.monster_random_range)) * 2
             s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='red' size='5'>黒魔法クエイクを発動！！！</font><br>"
 
@@ -2230,9 +2230,9 @@ class mons_8:
 
 class mons_9:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
-            s.dmg2 += random.randrange(int(s.mrand)) * 3
+            s.dmg2 += random.randrange(int(s.monster_random_range)) * 3
             s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='white' size='5'>禁断の魔法アルテマを発動！！！</font><br>"
 
@@ -2241,9 +2241,9 @@ class mons_9:
 
 class mons_10:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
-            s.dmg2 += random.randrange(int(s.mrand)) * 5
+            s.dmg2 += random.randrange(int(s.monster_random_range)) * 5
             s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='blue' size='5'>青魔法ショック・ウェーブ・パルサーを発動！！！</font><br>"
 
@@ -2252,7 +2252,7 @@ class mons_10:
 
 class mons_11:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(3))==0):
                 s.sake1 -= 999999
                 s.dmg2 = s.khp
@@ -2266,9 +2266,9 @@ class mons_11:
 
 class mons_12:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
-            s.dmg2 += random.randrange(int(s.mrand))
+            s.dmg2 += random.randrange(int(s.monster_random_range))
             s.dmg2 += s.item['armor']['defense']
             s.com2 += "<font class='red' size='5'>ファイア・ブレス！！！</font><br>"
 
@@ -2277,14 +2277,14 @@ class mons_12:
 
 class mons_13:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(1))==0):
-                s.hpplus2 = random.randrange(int(s.mrand)) * 2
+                s.hpplus2 = random.randrange(int(s.monster_random_range)) * 2
                 s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
                 s.com2 = "<font class='yellow' size='5'>白魔法ケアルガ！！！</font><br>"
             else:
                 s.sake1 -= 999999
-                s.dmg2 += random.randrange(int(s.mrand)) * 3
+                s.dmg2 += random.randrange(int(s.monster_random_range)) * 3
                 s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='white' size='5'>禁断の魔法アルテマを発動！！！</font><br>"
 
@@ -2293,7 +2293,7 @@ class mons_13:
 
 class mons_14:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             # 旧版はプレイヤー所持金/7を上限に盗んでいた。
             s.tgold = random.randrange(max(1, s.available_gold() // 7))
             s.tgold = s.penalize_reward(s.tgold)
@@ -2304,8 +2304,8 @@ class mons_14:
 
 class mons_15:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
-            s.dmg2 += random.randrange(int(s.mrand))
+        if (s.monster_special_rate > random.randrange(int(100))):
+            s.dmg2 += random.randrange(int(s.monster_random_range))
             s.dmg2 += s.item['armor']['defense']
             s.hpplus2 = s.dmg2
             s.sake1 -= 999999
@@ -2317,8 +2317,8 @@ class mons_15:
 
 class mons_16:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
-            s.dmg2 += random.randrange(int(s.mrand)) * 7
+        if (s.monster_special_rate > random.randrange(int(100))):
+            s.dmg2 += random.randrange(int(s.monster_random_range)) * 7
             s.dmg2 += s.item['armor']['defense']
             s.sake1 -= 999999
             s.com2 += "<font class='white' size='5'>最強魔法アポガリプス！！！</font><br>"
@@ -2328,14 +2328,14 @@ class mons_16:
 
 class mons_17:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(1199)) == 0):
                 s.sake1 -=999999
                 s.dmg1 = 0
-                s.dmg2 += random.randrange(int(s.mrand)) ** 8
+                s.dmg2 += random.randrange(int(s.monster_random_range)) ** 8
                 s.com2 = "<font class='red' size =6>えりりんの甘いささやき！</font><br>"
             else:
-                s.hpplus1 = random.randrange(int(s.msp)) * 8
+                s.hpplus1 = random.randrange(int(s.monster_hp_base)) * 8
                 s.kaihuku2 += f"{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪"
                 s.dmg1 = 0
                 s.dmg2 = 0
@@ -2346,9 +2346,9 @@ class mons_17:
 
 class mons_18:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
-            s.dmg2 += random.randrange(int(s.mrand))*3
+            s.dmg2 += random.randrange(int(s.monster_random_range))*3
             s.dmg2 += s.item['armor']['defense']*3
             s.com2 += "<font class='red' size='5'>メガ・フレア！！！</font><br>"
 
@@ -2357,13 +2357,13 @@ class mons_18:
 
 class mons_19:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(5))==0):
-                s.hpplus2 = random.randrange(int(s.mrand)) * 4
+                s.hpplus2 = random.randrange(int(s.monster_random_range)) * 4
                 s.kaihuku2 += f"{s.mname} のＨＰが {s.hpplus2} 回復した！♪"
                 s.com2 = "<font class='yellow' size='5'>ハァハァ。。。</font><br>"
             else:
-                s.dmg2 += random.randrange(int(s.mrand)) * 5
+                s.dmg2 += random.randrange(int(s.monster_random_range)) * 5
                 s.dmg2 += s.item['armor']['defense']
                 s.sake1 -= 999999
                 s.com2 += "<font class='white' size='5'>ハァハァ。。。</font><br>"
@@ -2373,13 +2373,13 @@ class mons_19:
 
 class mons_20:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(2))==0):
                 s.sake1 -= 999999
                 s.dmg2 = s.khp + s.chara['max_hp']
                 s.com2 += "<font class='red' size='5'>斬・鉄・剣！！！</font><font color =#cc6633 size = 5><br>「私に斬れぬものなどない」</font><br>"
             else:
-                s.dmg2 += random.randrange(int(s.mrand)) * 10
+                s.dmg2 += random.randrange(int(s.monster_random_range)) * 10
                 s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='red' size='5'>斬・鉄・剣！！！</font><br>"
 
@@ -2388,7 +2388,7 @@ class mons_20:
 
 class mons_21:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             s.sake1 -= 999999
             s.ksex = random.randrange(int(2))
             if (s.ksex == 1):
@@ -2402,7 +2402,7 @@ class mons_21:
 
 class mons_22:
     def mons_waza(s):
-        if (s.mons_ritu > random.randrange(int(100))):
+        if (s.monster_special_rate > random.randrange(int(100))):
             if (random.randrange(int(2))==0):
                 s.charadown[7] = random.randrange(int(3))
                 s.charadown[8] = random.randrange(int(3))
@@ -2421,7 +2421,7 @@ class mons_22:
                 s.chara['cha'] -= s.charadown[13]
                 s.chara['karma'] -= s.charadown[20]
                 s.sake1 -= 999999
-                s.dmg2 += random.randrange(int(s.mrand)) * 2
+                s.dmg2 += random.randrange(int(s.monster_random_range)) * 2
                 s.com2 += f"""<font class='red' size='5'>臭い息！！！</font><br>
 <font class ="white" size = 2>
 力が<font class ="yellow">{s.charadown[7]}</font>下がった。<br>
@@ -2434,7 +2434,7 @@ class mons_22:
 カルマが<font class ="yellow">{s.charadown[20]}</font>下がった。
 </font><br>"""
             else:
-                s.dmg2 += random.randrange(int(s.mrand)) * 10
+                s.dmg2 += random.randrange(int(s.monster_random_range)) * 10
                 s.dmg2 += s.item['armor']['defense']
                 s.com2 += "<font class='red' size='5'>臭い息！！！</font><br>"
 

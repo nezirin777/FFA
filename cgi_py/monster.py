@@ -207,8 +207,8 @@ def main():
         # 5. 戦闘実行 (BattleSimulator)
         simulator = battle_logic.BattleSimulator(mode, chara, item, enemy_data, is_player_enemy=False)
         if is_genei:
-            # 旧版どおり、乱数分に基礎SPの2倍を加える。
-            monster_hp = random.randrange(max(1, enemy_data["rand"])) + enemy_data["sp"] * 2
+            # 旧版どおり、乱数分に hp_base の2倍を加える。
+            monster_hp = random.randrange(max(1, enemy_data["random_range"])) + enemy_data["hp_base"] * 2
             simulator.state.mhp = simulator.state.mhp_flg = monster_hp
         
         # 戦闘シミュレート開始
@@ -234,16 +234,16 @@ def main():
         )
         if win == 1:
             # 旧版 sentoukeka 相当: 基本報酬 + 1〜基本報酬の範囲。
-            base_gold = max(0, int(enemy_data["gold"]))
+            base_gold = max(0, int(enemy_data["gold_reward"]))
             base_reward = base_gold + random.randrange(max(1, base_gold)) + 1
             # 盗み分は勝利報酬へ一度だけ合算する。
             gold_gained = max(0, base_reward + theft_adjustment)
-            exp_gained = enemy_data["ex"]
+            exp_gained = enemy_data["exp_reward"]
             
             # 幻影の城のお宝追加判定
             if is_genei:
                 if random.randrange(3) == 0:
-                    otakara = (random.randrange(1000) + 1) * enemy_data["gold"]
+                    otakara = (random.randrange(1000) + 1) * enemy_data["gold_reward"]
                     gold_gained += otakara
                     comment += f'<br><b><span class="red u-text-large">財宝({otakara}Ｇ)を発見した！！！！</span></b><br>'
                 else:

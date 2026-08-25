@@ -128,27 +128,29 @@ class BattleState:
             self.mname = enemy_data["name"]
             self.mhp = enemy_data["hp"]
             self.mhp_flg = enemy_data["max_hp"]
-            self.mgold = 0
-            self.mex = 0
-            self.mdmg = 0
-            self.mkahi = 0
-            self.monstac = "0"
-            self.mons_ritu = 0
+            self.monster_gold_reward = 0
+            self.monster_exp_reward = 0
+            self.monster_random_range = 0
+            self.monster_hp_base = 0
+            self.monster_base_damage = 0
+            self.monster_evasion_rate = 0
+            self.monster_special_skill_id = "0"
+            self.monster_special_rate = 0
         # 対戦相手がモンスターの場合
         else:
             self.winner = {"id": "sys", "name": "モンスター"}
             self.mname = enemy_data["name"]
-            self.mex = enemy_data["ex"]
-            self.mrand = enemy_data["rand"]
-            self.msp = enemy_data["sp"]
-            self.mdmg = enemy_data["dmg"]
-            self.mkahi = enemy_data["kahi"]
-            self.monstac = enemy_data["stac"]
-            self.mons_ritu = enemy_data["ritu"]
-            self.mgold = enemy_data["gold"]
+            self.monster_exp_reward = enemy_data["exp_reward"]
+            self.monster_random_range = enemy_data["random_range"]
+            self.monster_hp_base = enemy_data["hp_base"]
+            self.monster_base_damage = enemy_data["base_damage"]
+            self.monster_evasion_rate = enemy_data["evasion_rate"]
+            self.monster_special_skill_id = enemy_data["special_skill_id"]
+            self.monster_special_rate = enemy_data["special_rate"]
+            self.monster_gold_reward = enemy_data["gold_reward"]
             
             # モンスターのHP決定
-            self.mhp = random.randrange(max(1, self.mrand)) + self.msp
+            self.mhp = random.randrange(max(1, self.monster_random_range)) + self.monster_hp_base
             self.mhp_flg = self.mhp
             
         # プレイヤー状態
@@ -156,7 +158,7 @@ class BattleState:
 
         # 戦闘中の金銭変動。旧版の盗み技は戦闘後の報酬を増減させる。
         self.player_gold = max(0, int(chara.get("gold", 0)))
-        self.gold_base = max(0, int(self.mgold))
+        self.gold_base = max(0, int(self.monster_gold_reward))
         self.gold_reward_bonus = 0
         self.gold_reward_penalty = 0
         
@@ -318,7 +320,7 @@ class BattleSimulator:
                 s.dmg2 = get_job_dmg(s.winner["job"], s.winner, s.winner_item["weapon"]["atk"])
                 s.com2 = f"{s.mname}の攻撃！"
             else:
-                s.dmg2 = s.mdmg + random.randrange(max(1, s.mrand))
+                s.dmg2 = s.monster_base_damage + random.randrange(max(1, s.monster_random_range))
                 # 旧版 genei は各ターン開始時に、防具の防御力を敵攻撃へ加算していた。
                 if s.mode == "genei":
                     s.dmg2 += s.item["armor"]["defense"]
@@ -347,7 +349,7 @@ class BattleSimulator:
             if s.waza_ritu > 95: s.waza_ritu = 95
 
             # 対人戦の相手(王者)側の必殺率。プレイヤー側と同じ式で算出する。
-            # モンスター戦では winner に karma/job_level が無いため 0 起点となり、実際には mons_ritu が使われる。
+            # モンスター戦では winner に karma/job_level が無いため 0 起点となり、実際には monster_special_rate が使われる。
             s.wwaza_ritu = int(s.winner.get("karma", 0) / 15) + 10 + s.winner.get("job_level", 0)
             if s.wwaza_ritu > 75: s.wwaza_ritu = 75
             if s.is_player_enemy:
@@ -384,7 +386,7 @@ class BattleSimulator:
                 skills.run_skill("wtech", get_tactic_id(s.winner), "hissatu", s)
             else:
                 # 敵モンスターのスキル (mons_X.mons_waza)
-                skills.run_skill("mons", s.monstac, "mons_waza", s)
+                skills.run_skill("mons", s.monster_special_skill_id, "mons_waza", s)
                 
             # === 4. 職業の後発効果とアクセサリー効果 (acs_waza / wacs_waza) ===
             # 旧版では必殺技(hissatu)とは別に、通常攻撃後の atowaza と
@@ -395,7 +397,7 @@ class BattleSimulator:
                 skills.run_skill("wtech", get_tactic_id(s.winner), "watowaza", s)
                 skills.run_skill("wacstech", s.winner_item["accessory"]["effect_id"], "wacskouka", s)
             else:
-                skills.run_skill("mons", s.monstac, "mons_atowaza", s)
+                skills.run_skill("mons", s.monster_special_skill_id, "mons_atowaza", s)
 
             # 旧版 wbattle.pl battle_clt の初手逆転必殺判定。
             if s.is_player_enemy and s.i == 1:
@@ -479,7 +481,7 @@ class BattleSimulator:
             else:
                 # モンスター戦は旧版 mbattle.pl の計算を使う。
                 sake1 = int(s.chara["agi"] / 20) + cd_plus + s.sake1
-                sake2 = s.mkahi - hit_ritu + s.sake2
+                sake2 = s.monster_evasion_rate - hit_ritu + s.sake2
 
             # 被ダメージの防御力減算。対人戦は相手防具にも同じ処理を行う。
             raw_dmg2 = s.dmg2

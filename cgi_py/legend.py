@@ -214,7 +214,7 @@ def main():
         # 4. 戦闘結果の集計と更新 (legend_sentoukeka相当)
         comment = ""
         gold_gained = 0
-        exp_gained = enemy_data["ex"]
+        exp_gained = enemy_data["exp_reward"]
         theft_adjustment = (
             int(simulator.state.gold_reward_bonus)
             - int(simulator.state.gold_reward_penalty)
@@ -222,7 +222,7 @@ def main():
 
         if win == 1:
             chara["win_count"] += 1
-            base_reward = enemy_data["gold"] + random.randrange(max(1, int(enemy_data["gold"]))) + 1
+            base_reward = enemy_data["gold_reward"] + random.randrange(max(1, int(enemy_data["gold_reward"]))) + 1
             # 盗み分は勝利報酬へ一度だけ合算する。
             gold_gained = max(0, base_reward + theft_adjustment)
             chara["gold"] += gold_gained
