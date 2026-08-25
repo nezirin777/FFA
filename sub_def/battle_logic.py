@@ -161,6 +161,18 @@ class BattleState:
         self.gold_base = max(0, int(self.monster_gold_reward))
         self.gold_reward_bonus = 0
         self.gold_reward_penalty = 0
+        self.steal_success_count = 0
+        self.steal_limit_reported = False
+        self.steal_reward_cap = max(
+            0,
+            int(
+                self.gold_base
+                * config.Config.get("monster_steal_reward_cap_multiplier", 1)
+            ),
+        )
+        self.steal_max_successes = max(
+            0, int(config.Config.get("monster_steal_max_successes", 3))
+        )
         
         # ターンごとの計算用
         self.dmg1 = 0 # プレイヤーから敵へのダメージ

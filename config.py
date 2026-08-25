@@ -101,6 +101,11 @@ Config["training_battle_limit"] = 9999  # モンスター修行・伝説戦の�
 Config["max_turns"] = 150  # 1戦闘の最大ターン数
 Config["tenka_count"] = 3  # 天下一武道会の最大対戦数
 
+# モンスター戦の盗み報酬上限。引き分け時も盗み分を支給するため、
+# 1戦で何度も成功しても報酬が無制限に増えないようにする。
+Config["monster_steal_max_successes"] = 3  # 1戦あたりの盗み成功回数上限
+Config["monster_steal_reward_cap_multiplier"] = 2  # 通常勝利報酬の最大値（基準報酬×2）
+
 # 旧版 wbattle.pl から引き継いだ戦闘判定値。
 # 計算式と保存データの互換性に関わるため、意味を確認せず変更しないこと。
 Config["counterattack_level_gap"] = 15  # 初手逆転必殺判定に必要なレベル差

@@ -202,6 +202,44 @@ class tech_9:
 class tech_10:
     def hissatu(s):
         if skill_check(s, 120):
+            # モンスター戦は150ターンあるため、盗みを無制限に積み上げない。
+            # 対人戦は従来どおりの処理を維持する。
+            if not s.is_player_enemy:
+                remaining = max(0, s.steal_reward_cap - s.gold_reward_bonus)
+                if (
+                    s.steal_success_count >= s.steal_max_successes
+                    or remaining <= 0
+                ):
+                    if not s.steal_limit_reported:
+                        s.com1 += (
+                            "<font class='gray'>"
+                            "これ以上盗めるものはない！</font><br>"
+                        )
+                        s.steal_limit_reported = True
+                    return
+
+                amount = min(
+                    random.randrange(max(1, int(s.gold_base))) + 1,
+                    remaining,
+                )
+                if amount <= 0:
+                    return
+                s.steal_success_count += 1
+                s.gold_reward_bonus += amount
+                s.com1 += (
+                    f"<font class='yellow'>お金を盗んだ♪合計{amount}Ｇゲット♪</font><br>"
+                )
+                if (
+                    s.steal_success_count >= s.steal_max_successes
+                    or s.gold_reward_bonus >= s.steal_reward_cap
+                ) and not s.steal_limit_reported:
+                    s.com1 += (
+                        "<font class='gray'>"
+                        "これ以上盗めるものはない！</font><br>"
+                    )
+                    s.steal_limit_reported = True
+                return
+
             # 旧版は戦闘報酬を基準に int(rand($gold)) + 1 を加算していた。
             s.temp_gold = random.randrange(max(1, int(s.gold_base))) + 1
             s.gold_reward_bonus += s.temp_gold
