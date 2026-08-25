@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FFA Python版 設置・運用手順書</title>
+<style>
+:root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #1f2937; background: #f3f6f8; line-height: 1.55; }
+main { width: min(1540px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 60px; }
+h1 { margin: 0 0 8px; color: #123b4a; line-height: 1.25; }
+h2 { margin: 34px 0 12px; color: #155e75; line-height: 1.3; }
+h3 { margin: 24px 0 8px; color: #0f3d4a; }
+.lead { margin: 0 0 18px; color: #52616b; }
+.doc-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 28px; }
+.doc-nav a { padding: 7px 10px; color: #075985; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 6px; text-decoration: none; }
+.doc-nav a:hover { background: #bae6fd; }
+.note { padding: 12px 14px; color: #475569; background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; }
+.warning { padding: 12px 14px; color: #7f1d1d; background: #fef2f2; border: 1px solid #fecaca; border-radius: 7px; }
+.source { color: #64748b; font-size: .9rem; }
+.card { margin: 14px 0; padding: 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+.card h3 { margin-top: 0; }
+.table-wrap { margin: 12px 0 24px; overflow-x: auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; }
+th, td { padding: 8px 10px; border-top: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+thead th { color: #334155; background: #f8fafc; border-top: 0; white-space: nowrap; font-size: .9rem; }
+tbody th { color: #0f3d4a; font-weight: 600; white-space: nowrap; }
+code { padding: 1px 4px; color: #0f3d4a; background: #e6f4f1; border-radius: 4px; }
+.tag { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 6px; color: #155e75; background: #ecfeff; border: 1px solid #a5f3fc; border-radius: 4px; font-size: .86rem; }
+.muted { color: #64748b; }
+.small { font-size: .9rem; }
+.formula { margin: 8px 0; padding: 10px 12px; color: #334155; background: #f8fafc; border-left: 4px solid #38bdf8; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-x: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+@media (max-width: 760px) { main { width: min(100% - 16px, 1540px); padding-top: 18px; } table { min-width: 680px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>FFA Python版 設置・運用手順書</h1>
+  <p class="lead">現行Ver3をWindows + Apache CGI環境へ設置し、初回動作確認・更新・保存データ保護を行うための手順</p>
+  <nav class="doc-nav" aria-label="管理者向け資料"><a href="document_index.html">資料一覧</a><a href="installation_python.html">設置・運用手順</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
+
+  <div class="note">この資料はリポジトリ直下を実行ルートとする現行Ver3向けです。<code>旧版_ver1</code>・<code>旧版_ver2</code>は移行・参照用であり、通常運用時に公開する必要はありません。設置先のURLやPythonの実行パスは環境に合わせて読み替えてください。</div>
+
+  <h2>1. 動作要件</h2>
+  <div class="table-wrap"><table><thead><tr><th>項目</th><th>要件・確認内容</th></tr></thead><tbody>
+    <tr><th scope="row">Python</th><td>Python 3.x。CGI入口である<code>login.py</code>、<code>chara_make.py</code>、<code>admin.py</code>、<code>others.py</code>の先頭にあるshebangの実行パスが、設置先のPython実行ファイルと一致していること。</td></tr>
+    <tr><th scope="row">Webサーバー</th><td>Apache 2.4など、PythonをCGIとして起動できるWebサーバー。常駐WSGIアプリケーションは現行の前提ではない。</td></tr>
+    <tr><th scope="row">外部ライブラリ</th><td>Jinja2。<code>sub_def/common.py</code>と<code>sub_def/utils.py</code>がテンプレート描画に使用する。</td></tr>
+    <tr><th scope="row">文字コード</th><td>ソース、テンプレート、JSON、HTMLをUTF-8で扱う。日本語ファイル名を含む画像・データがあるため、OS・Apache・Pythonの文字コード設定を確認する。</td></tr>
+    <tr><th scope="row">書き込み権限</th><td>Apacheの実行アカウントが<code>save_data</code>、<code>lock</code>、<code>backups</code>へ読み書きできること。</td></tr>
+  </tbody></table></div>
+  <p class="formula">python -m pip install Jinja2
+python -c "import jinja2; print(jinja2.__version__)"</p>
+  <p class="small muted">依存ライブラリは、Apacheが実際に使用するPython環境へインストールしてください。別のPythonへインストールしてもCGIから見えない場合があります。</p>
+
+  <h2>2. 現行ディレクトリ構成</h2>
+  <div class="table-wrap"><table><thead><tr><th>場所</th><th>役割</th><th>公開・権限の扱い</th></tr></thead><tbody>
+    <tr><th scope="row"><code>index.html</code><br><code>frame1.html</code></th><td>公開トップと旧来フレーム入口。ログイン前ページは<code>others.py</code>から表示される。</td><td>公開可。ただしフレーム構成を変更する場合は入口URLを確認する。</td></tr>
+    <tr><th scope="row"><code>login.py</code></th><td>ログイン、セッション確認、<code>mode</code>による各コマンドへのルーティング、メイン画面表示。</td><td>CGIとして実行する。</td></tr>
+    <tr><th scope="row"><code>chara_make.py</code><br><code>admin.py</code><br><code>others.py</code></th><td>キャラクター作成、管理画面、ログイン前トップの入口。</td><td>CGIとして実行する。管理画面は強いパスワードとアクセス制限を併用する。</td></tr>
+    <tr><th scope="row"><code>cgi_py/</code></th><td>街、戦闘、ショップ、銀行、掲示板、チョコボなどのコマンド処理。</td><td>通常はURLから直接呼ぶ必要はないが、アプリケーションからimportされるため読み取り可能にする。</td></tr>
+    <tr><th scope="row"><code>sub_def/</code></th><td>JSON読み書き、排他ロック、認証、テンプレート描画、戦闘共通処理。</td><td>読み取り可能。直接URL公開は不要。</td></tr>
+    <tr><th scope="row"><code>templates/</code></th><td>Jinja2テンプレート。</td><td>Webから直接ダウンロードできないようにする。Pythonから読み取り可能にする。</td></tr>
+    <tr><th scope="row"><code>html/</code></th><td>CSS、JavaScript、静的マニュアルなどの公開アセット。</td><td>必要な静的ファイルだけ公開する。</td></tr>
+    <tr><th scope="row"><code>images/</code></th><td>キャラクター、チョコボ、背景などの画像素材。</td><td>画面から参照する画像のみ公開する。Gitでは画像が除外されているため、別途配置する。</td></tr>
+    <tr><th scope="row"><code>data/</code></th><td>職業、戦術、装備、モンスター、チョコボなどのマスターデータ。</td><td>Pythonから読み取り可能にする。JSONを一覧公開する必要はない。</td></tr>
+    <tr><th scope="row"><code>save_data/</code></th><td>ユーザー保存、チャンプ、掲示板、全体ニュース、チョコボ関連などの運用データ。</td><td>Apacheから書き込み可能にするが、HTTPで直接取得できないようにする。</td></tr>
+    <tr><th scope="row"><code>lock/</code></th><td>コマンド・保存処理の排他ロック。</td><td>Apacheから書き込み可能。HTTP公開しない。</td></tr>
+    <tr><th scope="row"><code>backups/</code></th><td>ログインを契機に作成する日次バックアップ。最大40日分。</td><td>Apacheから書き込み可能。HTTP公開せず、Gitにも登録しない。</td></tr>
+    <tr><th scope="row"><code>tools/</code><br><code>旧版_ver1/</code><br><code>旧版_ver2/</code></th><td>資料生成、旧版セーブデータ変換、旧版データ参照。</td><td>本番の公開ルートから外すか、Apacheのアクセスを拒否する。</td></tr>
+  </tbody></table></div>
+  <p class="source">現在のユーザー保存形式は、原則として<code>save_data/&lt;ユーザーID&gt;/user_all.json</code>です。旧版の<code>chara.json</code>・<code>equipment.json</code>・<code>syoku.json</code>を直接作成する構成ではありません。</p>
+
+  <h2>3. Apache CGIの設定</h2>
+  <p>ApacheのDocumentRootまたはAliasから、FFAのリポジトリ直下をWebルートとして参照します。既存のApache構成に合わせてパスを変更してください。</p>
+  <div class="formula">&lt;Directory "D:/Apache24/htdocs/Antigravity/FFA"&gt;
+    Options +ExecCGI
+    AllowOverride None
+    Require all granted
+    AddHandler cgi-script .py
+    DirectoryIndex index.html
+&lt;/Directory&gt;
+
+# Windows版Apacheでshebangを使う場合の例
+ScriptInterpreterSource Script</div>
+  <div class="note">WindowsのApacheでのPython実行方法は、Apacheのビルド・サービスアカウント・Pythonのインストール方法で変わります。次の4ファイルをテキストエディタで開き、先頭行のshebangにある<code>D:\Python\Python314\python.exe</code>を、設置先で実際に使用するPythonのフルパスへ揃えてください。<br><code>login.py</code> ／ <code>chara_make.py</code> ／ <code>admin.py</code> ／ <code>others.py</code><br>パスを変更した後は、4ファイルすべてを対象にCGI実行確認を行います。</div>
+  <h3>公開範囲の注意</h3>
+  <p>Webルート直下に置く構成でも、次の場所はHTTPから読めないようにしてください。Apacheの設定、Aliasの分離、アクセス拒否のいずれかを使います。</p>
+  <p><span class="tag">save_data</span><span class="tag">lock</span><span class="tag">backups</span><span class="tag">templates</span><span class="tag">旧版_ver1</span><span class="tag">旧版_ver2</span><span class="tag">tools</span><span class="tag">.git</span></p>
+  <p class="small muted">特に<code>save_data</code>にはパスワードハッシュ、セッション関連情報、個人データが含まれます。静的JSONの直接公開を許可しないでください。</p>
+
+  <h2>4. config.pyと環境設定</h2>
+  <p><code>config.py</code>はファイル自身の場所を基準に主要パスを組み立てます。設置場所を変更しても、通常は相対パスを手作業で大量に書き換える必要はありません。</p>
+  <div class="table-wrap"><table><thead><tr><th>設定</th><th>現行の役割</th><th>本番での確認</th></tr></thead><tbody>
+    <tr><th scope="row"><code>save_dir</code></th><td>ユーザー保存と共有保存のルート。</td><td>Apacheに書き込み権限を付与し、HTTP公開を禁止する。</td></tr>
+    <tr><th scope="row"><code>lock_dir</code></th><td>排他ロックの保存先。</td><td>Apacheに書き込み権限を付与する。古いロックが残った場合は原因確認後に整理する。</td></tr>
+    <tr><th scope="row"><code>template_dir</code></th><td>Jinja2テンプレートの読み込み先。</td><td>実行ルートからの位置関係を変えた場合は、テンプレートエラーを確認する。</td></tr>
+    <tr><th scope="row"><code>backup_dir</code></th><td>日次バックアップの保存先。</td><td><code>save_data</code>の外に置く。Apacheから書き込み可能だがHTTP公開しない。</td></tr>
+    <tr><th scope="row"><code>FFA_SECRET_KEY</code></th><td>ログインセッションとCSRFトークンの署名に使う秘密鍵。</td><td>本番では十分に長くランダムな環境変数を設定する。変更すると既存セッションが無効になる。</td></tr>
+    <tr><th scope="row"><code>FFA_ADMIN_PASSWORD</code></th><td>管理画面の認証に使うパスワード。</td><td>既定値のまま運用しない。環境変数または安全な設定方法で変更する。</td></tr>
+    <tr><th scope="row"><code>maintenance_mode</code></th><td>ログイン後のゲーム処理を停止するメンテナンスフラグ。</td><td>大規模更新、バックアップ復元、保存形式変更の前後に利用する。</td></tr>
+  </tbody></table></div>
+  <div class="warning"><strong>秘密情報の注意:</strong> <code>FFA_SECRET_KEY</code>と<code>FFA_ADMIN_PASSWORD</code>はソース、公開設定、Git履歴、バックアップ資料へ書き込まないでください。既定値は設置確認用に過ぎず、本番用の値ではありません。</div>
+
+  <h2>5. 初回設置手順</h2>
+  <div class="table-wrap"><table><thead><tr><th>順番</th><th>作業</th><th>確認ポイント</th></tr></thead><tbody>
+    <tr><th scope="row">1</th><td>リポジトリを設置先へ配置する。</td><td><code>config.py</code>と各CGI入口が同じルートにあること。</td></tr>
+    <tr><th scope="row">2</th><td>PythonとJinja2を、CGIが使用するPython環境へ導入する。</td><td><code>python -c "import jinja2"</code>が成功すること。</td></tr>
+    <tr><th scope="row">3</th><td><code>login.py</code>、<code>chara_make.py</code>、<code>admin.py</code>、<code>others.py</code>の先頭行を確認し、shebangのPython実行パスを設置先のフルパスへ変更する。続けてApacheのCGI設定を合わせる。</td><td>4ファイルすべてがCGIとして実行されること。ブラウザで開いたとき、PythonソースのダウンロードではなくHTMLが返ること。</td></tr>
+    <tr><th scope="row">4</th><td><code>save_data</code>、<code>lock</code>、<code>backups</code>を作成し、Apache実行アカウントへ権限を付与する。</td><td>ログイン、キャラクター作成、保存、ロック作成が成功すること。</td></tr>
+    <tr><th scope="row">5</th><td>秘密鍵・管理者パスワードを環境変数へ設定する。</td><td>設定後にログインセッションと管理画面認証が成功すること。</td></tr>
+    <tr><th scope="row">6</th><td><code>index.html</code>または<code>others.py</code>へアクセスする。</td><td>トップ、ログイン、キャラクター作成、街、CSS、画像が表示されること。</td></tr>
+    <tr><th scope="row">7</th><td>保護されたテストユーザーで一通り操作する。</td><td>宿屋、装備、銀行、掲示板、モンスター戦、チョコボ牧場、ログアウトを確認する。</td></tr>
+    <tr><th scope="row">8</th><td>Apacheのアクセスログ・エラーログを確認し、テストデータと本番データを分ける。</td><td>500エラー、権限エラー、テンプレートエラー、JSON破損がないこと。</td></tr>
+  </tbody></table></div>
+  <p class="small muted">同梱の<code>dev_server.py</code>はローカルでCGI経路を確認するための簡易サーバーです。本番のApache設定や権限を再現するものではありません。</p>
+  <p class="formula">python dev_server.py
+# 表示されたURL例: http://localhost:8000/login.py</p>
+
+  <h2>6. 更新・マイグレーション手順</h2>
+  <ol>
+    <li>利用者へメンテナンス時間を告知し、<code>maintenance_mode</code>を有効にする。</li>
+    <li>現行の<code>save_data</code>と<code>backups</code>を別媒体へ退避する。</li>
+    <li>コード、テンプレート、静的ファイル、マスターデータを更新する。</li>
+    <li>旧版データを取り込む場合は、コピーした作業用データに対して変換スクリプトを実行する。原本を直接変換しない。</li>
+    <li>変換結果の<code>user_all.json</code>、装備ID、職業ID、能力値キー、倉庫、チャンプ、共有データを検証する。</li>
+    <li>テストユーザーでログインから各施設まで確認し、Apacheログに異常がないことを確認する。</li>
+    <li>問題がなければ<code>maintenance_mode</code>を無効にして公開する。問題があれば現行データを上書きせず、バックアップから復元する。</li>
+  </ol>
+  <div class="table-wrap"><table><thead><tr><th>変換元</th><th>用途</th><th>注意</th></tr></thead><tbody>
+    <tr><th scope="row"><code>旧版_ver1/セーブデータ移行用ファイル/convert_to_ver2.py</code></th><td>旧版Ver1の個別ログをVer2形式へ変換する。</td><td>Ver1原本を複製して作業する。変換元のファイルが不足している場合は空データとして進めず、結果を確認する。</td></tr>
+    <tr><th scope="row"><code>旧版_ver2/change_data/convert_all.py</code></th><td>Ver2データを現行Ver3の保存形式へまとめて変換する。</td><td>旧キーをそのまま出力せず、現行のキー順・キー名・装備・倉庫形式に一致することを確認する。</td></tr>
+  </tbody></table></div>
+  <p class="note">変換スクリプトは通常のゲーム実行に必要なモジュールではありません。運用中の公開URLから直接実行できない場所に置き、作業前後のバックアップと検証結果を残してください。</p>
+
+  <h2>7. 日次バックアップと復元</h2>
+  <p>現行版はcronや常駐プロセスではなく、ログイン処理を契機にその日の最初のバックアップを作成します。<code>backups/YYYY-MM-DD</code>へ保存し、最大40日分を保持します。</p>
+  <div class="grid">
+    <article class="card"><h3>通常運用</h3><p>ログインが成功したときに日次バックアップを確認します。同日中は二重作成せず、古い日付のバックアップを保持日数に応じて整理します。</p></article>
+    <article class="card"><h3>管理画面からの復元</h3><p>復元前にメンテナンスモードを有効にします。現行データは復元前退避へ移されるため、復元後の確認が終わるまで削除しません。</p></article>
+    <article class="card"><h3>保護ユーザー</h3><p><code>protected_user_ids</code>のユーザーは放置削除・管理画面削除から除外されます。保護ユーザー用の復元元は自動作成ではなく、別途用意したファイルを使います。</p></article>
+  </div>
+  <p class="warning"><strong>バックアップの扱い:</strong> バックアップはパスワードハッシュやプレイヤーデータを含む運用データです。Web公開、Git登録、無制限の共有をしないでください。ディスク障害対策として、必要に応じてWebサーバー外・別媒体へ複製します。</p>
+
+  <h2>8. 代表的なトラブルと確認箇所</h2>
+  <div class="table-wrap"><table><thead><tr><th>症状</th><th>主な確認箇所</th></tr></thead><tbody>
+    <tr><th scope="row">Pythonソースが表示・ダウンロードされる</th><td>Apacheの<code>ExecCGI</code>、<code>AddHandler cgi-script .py</code>、shebang、ScriptInterpreterSource、対象Directoryの設定。</td></tr>
+    <tr><th scope="row">500 Internal Server Error</th><td>Apacheエラーログ、Python実行パス、Jinja2のインストール先、標準出力前の例外。CGIは最初に正しいHTTPヘッダーを出力する必要がある。</td></tr>
+    <tr><th scope="row">TemplateNotFound</th><td><code>config.py</code>の<code>template_dir</code>、Apache実行時のパス、テンプレートファイル名。</td></tr>
+    <tr><th scope="row">保存できない・ロックエラーになる</th><td><code>save_data</code>と<code>lock</code>のACL、Apacheサービスの実行アカウント、残存ロック、JSONの読み取り可否。</td></tr>
+    <tr><th scope="row">CSSや画像が表示されない</th><td>ブラウザの開発者ツール、静的URL、<code>html/</code>・<code>images/</code>の配置、大文字小文字・日本語ファイル名、Git除外ファイルの配置。</td></tr>
+    <tr><th scope="row">CSRF・セッションエラー</th><td><code>FFA_SECRET_KEY</code>がリクエストごとに変わっていないか、Cookie名・有効期限、時刻、HTTPS・プロキシ設定、古いCookie。</td></tr>
+    <tr><th scope="row">バックアップが作成されない</th><td><code>backup_enabled</code>、<code>backup_dir</code>の権限、ログイン処理のエラーログ、同日フォルダの有無。</td></tr>
+  </tbody></table></div>
+
+  <h2>9. 公開前チェックリスト</h2>
+  <div class="grid">
+    <article class="card"><h3>アプリケーション</h3><p>トップ、ログイン、キャラ作成、街、各ショップ、銀行、掲示板、戦闘、チョコボ、管理画面を確認した。</p></article>
+    <article class="card"><h3>データ保護</h3><p><code>save_data</code>・<code>backups</code>・<code>lock</code>・<code>templates</code>・旧版フォルダをHTTPで取得できない。</p></article>
+    <article class="card"><h3>秘密情報</h3><p>秘密鍵・管理者パスワードを既定値から変更し、ソースやGitへ記録していない。</p></article>
+    <article class="card"><h3>復旧</h3><p>日次バックアップが作成され、管理画面の復元手順と復元後の検証方法を実際に確認した。</p></article>
+    <article class="card"><h3>ログ</h3><p>ApacheログにPython traceback、権限エラー、予期しないリダイレクト、秘密情報の出力がない。</p></article>
+    <article class="card"><h3>更新管理</h3><p>変更前のバックアップ、メンテナンスモード、テストユーザーでの確認、ロールバック手順を準備した。</p></article>
+  </div>
+
+  <h2>関連資料・ソース</h2>
+  <p class="source"><code>config.py</code>、<code>login.py</code>、<code>chara_make.py</code>、<code>admin.py</code>、<code>sub_def/common.py</code>、<code>sub_def/file_ops.py</code>、<code>sub_def/backup.py</code>、<code>docs/migration_specs.html</code>、<code>docs/operations_specs.html</code>、<code>docs/security_specs.html</code></p>
+</main>
+</body>
+</html>

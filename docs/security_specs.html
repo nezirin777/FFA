@@ -38,7 +38,7 @@ code { padding: 1px 4px; color: #0f3d4a; background: #e6f4f1; border-radius: 4px
 <main>
   <h1>認証・CSRF・排他ロック・権限チェック セキュリティ仕様書</h1>
   <p class="lead">現行システムの認証、セッション、CSRF、本人確認、入力検証、排他保存と運用上の注意を確認する資料</p>
-  <nav class="doc-nav" aria-label="管理者向け資料"><a href="index.html">資料一覧</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
+  <nav class="doc-nav" aria-label="管理者向け資料"><a href="document_index.html">資料一覧</a><a href="equipment_catalog.html">装備カタログ</a><a href="job_catalog.html">職業カタログ</a><a href="monster_catalog.html">モンスターカタログ</a><a href="status_reference.html">キー・能力値辞典</a><a href="battle_specs.html">戦闘仕様書</a><a href="chocobo_specs.html">チョコボ仕様書</a><a href="migration_specs.html">移行・保存形式仕様書</a><a href="operations_specs.html">管理・運用手順書</a><a href="security_specs.html">セキュリティ仕様書</a><a href="command_flowcharts.html">コマンドフローチャート</a></nav>
   
 <div class="note">この資料は現行実装の防御境界を整理したものです。フォームのhidden値、URLパラメータ、Cookieはクライアント側で変更できるため、重要な状態変更はサーバー側で本人確認・CSRF検証・入力検証・排他制御を行う必要があります。</div>
 <h2>認証とセッション</h2>
