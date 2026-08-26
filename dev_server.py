@@ -44,9 +44,7 @@ FFA_py/ 配下の .py CGIスクリプトの実行をサポートします。
 """
 
 import os
-import sys
 import http.server
-import socketserver
 
 # 自身のディレクトリ (FFA) をカレントディレクトリにする
 base_dir = os.path.dirname(os.path.abspath(__file__))

@@ -49,15 +49,7 @@ FFA Python/CGI 殿堂入り登録・一覧 (dendo.py)
 重賞を3勝以上したチョコボを殿堂入り登録し、殿堂入りチョコボの一覧を表示・対戦スロットに登録します。
 """
 
-import os
-import sys
 
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-# if hasattr(sys.stdout, 'reconfigure'):
-#     sys.stdout.reconfigure(encoding='utf-8')
-# if hasattr(sys.stdin, 'reconfigure'):
-#     sys.stdin.reconfigure(encoding='utf-8')
-import json
 
 # 共通モジュールのインポート
 try:

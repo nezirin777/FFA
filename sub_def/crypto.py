@@ -7,7 +7,6 @@ import hmac
 import json
 import time
 import os
-import sys
 from http import cookies
 from typing import Any
 

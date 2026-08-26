@@ -39,17 +39,8 @@
 """
 FFA Python/CGI - 戦闘シミュレーターモジュール (battle_logic.py)
 """
-
-import sys
-
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-# if hasattr(sys.stdout, 'reconfigure'):
-#     sys.stdout.reconfigure(encoding='utf-8')
-# if hasattr(sys.stdin, 'reconfigure'):
-#     sys.stdin.reconfigure(encoding='utf-8')
 import os
 import random
-import time
 import json
 import html
 import copy

@@ -48,15 +48,6 @@
 FFA Python/CGI チョコボ王者戦 (farmrace.py)
 現在の王者チョコボと1対1で対戦し、勝てば新王者として登録されます。
 """
-
-import os
-import sys
-
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-# if hasattr(sys.stdout, 'reconfigure'):
-#     sys.stdout.reconfigure(encoding='utf-8')
-# if hasattr(sys.stdin, 'reconfigure'):
-#     sys.stdin.reconfigure(encoding='utf-8')
 import random
 import time
 import json

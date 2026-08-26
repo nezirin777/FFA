@@ -31,16 +31,10 @@
 """
 FFA Python/CGI - ログイン前トップ・その他メニュー表示スクリプト (others.py)
 """
-import sys
 import os
 import time
 import json
 
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
-if hasattr(sys.stdin, 'reconfigure'):
-    sys.stdin.reconfigure(encoding='utf-8')
 
 # 共通モジュールと設定モジュールのインポート
 import config
@@ -120,7 +114,7 @@ def main():
     # === 暗号化クッキーセッション管理の導入 (改ざん・不正アクセス防御) ===
     from sub_def.crypto import get_session, token_generate, save_session
     from sub_def.file_ops import load_user_all
-    from sub_def.utils import redirect, render_template
+    from sub_def.utils import render_template
     from http import cookies
     
     # ユーザーID保存用クッキー (Remember Me) の読み込み

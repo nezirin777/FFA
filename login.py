@@ -35,20 +35,14 @@ import sys
 import os
 import importlib
 
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
-if hasattr(sys.stdin, 'reconfigure'):
-    sys.stdin.reconfigure(encoding='utf-8')
 
 # モジュール検索パスにルートを追加し、cgi_py/ の中からインポート可能にする
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 if ROOT_DIR not in sys.path:
     sys.path.append(ROOT_DIR)
 
-import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
-from sub_def.crypto import get_session, save_session, destroy_session, token_check, token_generate, hash_password
+from sub_def.crypto import get_session, save_session, destroy_session, token_check, hash_password
 from sub_def.file_ops import load_user_all
 from sub_def.utils import redirect, show_error
 

@@ -48,15 +48,6 @@
 FFA Python/CGI チョコボトレーニング (ctrain.py)
 自身のチョコボをトレーニングし、能力値を上昇させます。
 """
-
-import os
-import sys
-
-# エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
-# if hasattr(sys.stdout, 'reconfigure'):
-#     sys.stdout.reconfigure(encoding='utf-8')
-# if hasattr(sys.stdin, 'reconfigure'):
-#     sys.stdin.reconfigure(encoding='utf-8')
 import random
 import time
 import json

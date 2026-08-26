@@ -1,7 +1,6 @@
 """
 FFA Python/CGI 共通ユーティリティ（レンダラー・NoReturnハンドラなど） (sub_def/utils.py)
 """
-import os
 import sys
 import time
 from typing import NoReturn, Any

@@ -2,7 +2,6 @@
 FFA Python/CGI 防衛的入力値バリデーション（ファイル名保護・予約語・文字コード検証） (sub_def/validation.py)
 """
 import re
-from typing import Any
 
 # Windows/Linux 予約語セット (ファイル名使用不可)
 _RESERVED_FILENAMES: frozenset[str] = frozenset({

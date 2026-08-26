@@ -50,7 +50,6 @@ import urllib.parse
 import html
 from typing import NoReturn
 from http import cookies
-from jinja2 import Environment, FileSystemLoader
 
 # 自モジュールから設定を読み込む（sub_def配下に移動したため親ディレクトリを参照）
 try:
