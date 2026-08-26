@@ -201,13 +201,13 @@ def main():
             gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
 
-            # 旧版 wbattle.pl の経験値計算。
-            # 勝利・引き分けは相手レベル×基本値、敗北時は相手レベルそのもの。
+            # 勝利・引き分けは相手レベル×基本値。敗北時は高レベル王者への
+            # 連続挑戦だけで経験値を稼げないよう、自分のレベル×10を上限にする。
             opponent_level = max(1, int(winner.get("level", 1)))
             if win in (1, 2):
                 exp_gained = opponent_level * config.Config["pvp_base_exp"]
             else:
-                exp_gained = opponent_level
+                exp_gained = min(opponent_level, max(1, int(chara.get("level", 1))) * 10)
 
             # 旧版の対人戦績は結果分岐より先に挑戦者へ反映する。
             chara["battle_count"] = int(chara.get("battle_count", 0)) + 1
@@ -370,7 +370,8 @@ def main():
         "comment": comment,
         "gold_gained": gold_gained if win in [1, 2] else 0,
         "exp_gained": exp_gained,
-        "mode": "battle"
+        # 結果テンプレートでは練習対人戦と区別して、チャンピオン戦として表示する。
+        "mode": "champion"
     }
     common.render_template("monster_result.html", context)
 
