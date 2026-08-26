@@ -154,20 +154,20 @@ def get_rank_cache():
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
                 cache_data = common.decode_html_entities(json.load(f))
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"チョコボランキングキャッシュを読み込めません: {error}\n")
             
     # 24時間キャッシュ (86400秒)
     if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
-        common.get_lock("chocorank_cache")
+        common.get_lock("chocorank_cache_build")
         try:
             # 多重更新防止の再チェック
             if os.path.exists(cache_path):
                 try:
                     with open(cache_path, "r", encoding="utf-8") as f:
                         cache_data = common.decode_html_entities(json.load(f))
-                except:
-                    pass
+                except (OSError, json.JSONDecodeError) as error:
+                    sys.stderr.write(f"チョコボランキングキャッシュを再読込できません: {error}\n")
             if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
                 chocobos = get_all_chocobos()
                 rankings = build_rankings(chocobos)
@@ -176,10 +176,10 @@ def get_rank_cache():
                     "total_chocobos": len(chocobos),
                     "rankings": rankings
                 }
-                with open(cache_path, "w", encoding="utf-8") as f:
-                    json.dump(cache_data, f, ensure_ascii=False, indent=2)
+                from sub_def.file_ops import save_data_atomically
+                save_data_atomically(cache_data, cache_path, "chocorank_cache")
         finally:
-            common.release_lock("chocorank_cache")
+            common.release_lock("chocorank_cache_build")
             
     return cache_data
 
@@ -243,8 +243,8 @@ def main():
             try:
                 with open(rireki_path, "r", encoding="utf-8") as f:
                     rireki_data = common.decode_html_entities(json.load(f))
-            except:
-                pass
+            except (OSError, json.JSONDecodeError) as error:
+                sys.stderr.write(f"重賞制覇履歴を読み込めません: {error}\n")
                 
         # 履歴データを表示用に整形
         formatted_rireki = []

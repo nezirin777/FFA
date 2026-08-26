@@ -42,7 +42,12 @@ def add_flash_message(
     })
 
 
-def render_template(template_name: str, context: dict[str, Any] | None = None, extra_headers: list[str] | None = None) -> None:
+def render_template(
+    template_name: str,
+    context: dict[str, Any] | None = None,
+    extra_headers: list[str] | None = None,
+    session_data: dict[str, Any] | None = None,
+) -> None:
     """Jinja2テンプレートをレンダリングし、CGIヘッダー付きで出力します。"""
     if context is None:
         context = {}
@@ -52,7 +57,7 @@ def render_template(template_name: str, context: dict[str, Any] | None = None, e
     # 画面描画時は既存トークンを維持する。POST結果画面で毎回再生成すると、
     # 戻る操作や別タブに残ったフォームが即座に失効しやすいため。
     from sub_def.crypto import get_session, token_generate, save_session, SESSION_COOKIE_NAME
-    session = get_session()
+    session = session_data if session_data is not None else get_session()
     csrf_token = token_generate(session)
     flash_messages = session.pop(_FLASH_KEY, [])
     cookie_header = save_session(session)
@@ -98,8 +103,11 @@ def render_template(template_name: str, context: dict[str, Any] | None = None, e
         template = env.get_template(template_name)
         html = template.render(merged_context)
         sys.stdout.write(html)
-    except Exception as e:
-        sys.stdout.write(f"<html><body><h1>Jinja2 Rendering Error</h1><pre>{e}</pre></body></html>")
+    except Exception:
+        # テンプレートエラーの詳細はHTTP応答に混ぜず、Webサーバーログだけで確認する。
+        import traceback
+        sys.stderr.write("FFA template rendering error:\n" + traceback.format_exc())
+        sys.stdout.write("<html><body><h1>画面を表示できませんでした</h1><p>時間をおいて再度お試しください。</p></body></html>")
 
 def show_error(msg: str, context: dict[str, Any] | None = None) -> NoReturn:
     """エラー画面をレンダリングしてプロセスを終了します (NoReturn 保証)"""

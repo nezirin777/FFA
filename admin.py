@@ -39,6 +39,7 @@ import os
 import time
 import shutil
 import json
+import hmac
 
 # 共通モジュールと設定モジュールのインポート
 try:
@@ -206,7 +207,6 @@ def master_list_context(master_type, message=None):
         for index, record in enumerate(records)
     ]
     return {
-        "pass": common.decode_params().get("pass", "").strip(),
         "mode": "master_list",
         "master_type": master_type,
         "master_label": definition["label"],
@@ -286,7 +286,6 @@ def master_edit_context(master_type, master_id=None, is_new=False):
         record = json.loads(json.dumps(record, ensure_ascii=False))
 
     return {
-        "pass": common.decode_params().get("pass", "").strip(),
         "mode": "master_edit",
         "master_type": master_type,
         "master_label": definition["label"],
@@ -314,7 +313,6 @@ def player_item_context(target_id, message=None):
             )
 
     return {
-        "pass": common.decode_params().get("pass", "").strip(),
         "mode": "player_item",
         "target_id": target_id,
         "target_name": chara.get("name", target_id),
@@ -429,14 +427,27 @@ def main():
     # パラメータの取得
     params = common.decode_params()
     mode = params.get("mode", "kanri_top")
-    admin_pass = params.get("pass", "").strip()
+    method = os.environ.get("REQUEST_METHOD", "GET").upper()
+    from sub_def.crypto import get_session, save_session, token_check
+    from sub_def.utils import redirect
 
-    # パスワード認証
-    if admin_pass != config.Config['admin_password']:
-        common.show_error("管理者パスワードが一致しません。")
+    session = get_session()
+    if mode == "admin_log_out":
+        session.pop("is_admin", None)
+        redirect("others.py", extra_headers=[save_session(session)])
+
+    # 管理画面のパスワードは認証時のPOSTでのみ受け取り、以後は暗号化セッションで判定する。
+    if not session.get("is_admin"):
+        if method != "POST":
+            common.show_error("管理者認証が必要です。トップページからログインしてください。")
+        token_check(params, session)
+        admin_pass = params.get("pass", "")
+        if not hmac.compare_digest(admin_pass, config.Config["admin_password"]):
+            common.show_error("管理者パスワードが一致しません。")
+        session["is_admin"] = True
+        redirect("admin.py?mode=kanri_top", extra_headers=[save_session(session)])
 
     # データ改変・削除を伴う操作はCSRFトークン検証を必須とする
-    method = os.environ.get("REQUEST_METHOD", "GET").upper()
     if method == "POST" and mode in (
         "save",
         "del_chara",
@@ -448,14 +459,12 @@ def main():
         "master_delete",
         "player_item_add",
     ):
-        from sub_def.crypto import get_session, token_check
-        token_check(params, get_session())
+        token_check(params, session)
 
     # 1. 管理画面トップ
     if mode == "kanri_top":
         from sub_def.backup import list_daily_backups
         context = {
-            "pass": admin_pass,
             "mode": mode,
             "backup_entries": list_daily_backups(),
         }
@@ -492,7 +501,6 @@ def main():
             common.release_lock("all_message_post")
 
         context = {
-            "pass": admin_pass,
             "mode": "kanri_top",
             "message": "全体ニュースを投稿しました。",
         }
@@ -503,7 +511,6 @@ def main():
     elif mode == "master_list":
         master_type = params.get("master_type", "")
         context = master_list_context(master_type)
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -515,7 +522,6 @@ def main():
             params.get("master_id"),
             params.get("new") == "1",
         )
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -561,7 +567,6 @@ def main():
             save_master_records(master_type, records)
         except (ValueError, TypeError, json.JSONDecodeError) as error:
             context = master_edit_context(master_type, selected_id, is_new)
-            context["pass"] = admin_pass
             context["record_json"] = params.get("record_json", "")
             context["message"] = f"保存できません: {error}"
             common.render_template("admin.html", context)
@@ -571,7 +576,6 @@ def main():
             master_type,
             f"{definition['label']}マスターを保存しました。",
         )
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -603,7 +607,6 @@ def main():
             master_type,
             f"{definition['label']} No.{selected_id} を削除しました。",
         )
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -611,7 +614,6 @@ def main():
     elif mode == "player_item":
         target_id = params.get("target_id", "").strip()
         context = player_item_context(target_id)
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -650,7 +652,6 @@ def main():
             common.save_user_unified(target_id, data)
         except ValueError as error:
             context = player_item_context(target_id, f"追加できません: {error}")
-            context["pass"] = admin_pass
             common.render_template("admin.html", context)
             return
         finally:
@@ -660,7 +661,6 @@ def main():
             target_id,
             f"{record['name']}を{item_type}倉庫へ追加しました。",
         )
-        context["pass"] = admin_pass
         common.render_template("admin.html", context)
         return
 
@@ -675,7 +675,6 @@ def main():
             common.show_error(f"バックアップを復元できません: {error}")
 
         context = {
-            "pass": admin_pass,
             "mode": "kanri_top",
             "backup_entries": list_daily_backups(),
             "message": (
@@ -702,7 +701,6 @@ def main():
             message_parts.append("復元が必要な保護ユーザーはいませんでした。")
 
         context = {
-            "pass": admin_pass,
             "players": players,
             "mode": "kanri_all",
             "message": " / ".join(message_parts),
@@ -721,7 +719,6 @@ def main():
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
             
         context = {
-            "pass": admin_pass,
             "players": players,
             "mode": mode
         }
@@ -739,7 +736,6 @@ def main():
             common.show_error("指定されたキャラクターデータが見つかりません。")
             
         context = {
-            "pass": admin_pass,
             "chara": chara,
             "mode": mode,
             "chara_syoku": [
@@ -789,7 +785,6 @@ def main():
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
         context = {
-            "pass": admin_pass,
             "players": players,
             "mode": "kanri_all",
             "message": f"キャラクター「{chara['name']}」のデータを更新しました。"
@@ -808,7 +803,6 @@ def main():
             for p in players:
                 p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
             context = {
-                "pass": admin_pass,
                 "players": players,
                 "mode": "kanri_all",
                 "message": f"保護ユーザー「{target_id}」は削除できません。",
@@ -824,7 +818,6 @@ def main():
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
         context = {
-            "pass": admin_pass,
             "players": players,
             "mode": "kanri_all",
             "message": f"キャラクターID「{target_id}」を削除しました。"
@@ -866,7 +859,6 @@ def main():
         if protected_count:
             msg += f" 保護ユーザー {protected_count}人は対象外にしました。"
         context = {
-            "pass": admin_pass,
             "players": players,
             "mode": "kanri_all",
             "message": msg

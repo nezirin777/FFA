@@ -64,30 +64,12 @@ import json
 # 共通モジュールのインポート
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+    from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     import config
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+    from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     from . import config
-
-
-def _legacy_rand(limit):
-    """旧版 Perl の int(rand(x)) と同じく、上限を含めず整数を返す。"""
-    # Perl は x が小数でも、先に rand(x) を計算してから int() する。
-    # 先に int(x) へ丸めると、1.5 のような上限で値1が欠落する。
-    limit = float(limit)
-    return int(random.random() * limit) if limit > 0 else 0
-
-
-def _legacy_rand_float(limit):
-    """旧版 Perl の rand(x)（整数化しない実数値）に合わせる。"""
-    limit = float(limit)
-    return random.random() * limit if limit > 0 else 0.0
-
-
-def _legacy_rand_plus(limit):
-    """旧版 Perl の int(rand(x) + x) に合わせる。"""
-    limit = float(limit)
-    return int(random.random() * limit + limit) if limit > 0 else 0
 
 
 # Windows等で標準出力をUTF-8にするための設定
@@ -184,6 +166,9 @@ def main():
     wcmax = winner.get("max", 10)
     wcname = winner.get("name", "ゴールドボコ")
     wcbreader = winner.get("breader", "管理者")
+    cname_html = common.escape_html_text(cname)
+    wcname_html = common.escape_html_text(wcname)
+    player_name_html = common.escape_html_text(chara.get("name", "冒険者"))
     
     # 基礎比率算出
     heri = (c2 + wc2) / 4000
@@ -225,14 +210,14 @@ def main():
             if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3 * 2 / 3):
                 start_move[0] = _legacy_rand_plus(c0 / (tyousei * 4))
                 kdmg = start_move[0]
-                step_comment += f'<span class="red">{cname}はスタートで出遅れましたクポ！</span> '
+                step_comment += f'<span class="red">{cname_html}はスタートで出遅れましたクポ！</span> '
                 ksyoumou = heri * kdmg * 3 * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5 * 2 / 3):
                 # 旧版 farmrace.cgi: rand(c0*0.75/tyousei) + c0*0.75/tyousei
                 base = c0 * 0.75 / tyousei
                 start_move[0] = int(random.random() * max(0.0, base) + base)
                 kdmg = start_move[0]
-                step_comment += f'<span class="green">{cname}は好スタート！</span> '
+                step_comment += f'<span class="green">{cname_html}は好スタート！</span> '
                 ksyoumou = heri * (kdmg / 2) * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             else:
                 start_move[0] = _legacy_rand_plus(c0 / (tyousei * 2))
@@ -243,13 +228,13 @@ def main():
             if _legacy_rand_float(kisyou) <= _legacy_rand_float(wc3 * 2 / 3):
                 start_move[1] = _legacy_rand_plus(wc0 / (tyousei * 4))
                 wdmg = start_move[1]
-                step_comment += f'<span class="red-light">王者{wcname}はスタートで出遅れたクポ！</span> '
+                step_comment += f'<span class="red-light">王者{wcname_html}はスタートで出遅れたクポ！</span> '
                 wsyoumou = heri * wdmg * 3 * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(wc5 * 2 / 3):
                 base = wc0 * 0.75 / tyousei
                 start_move[1] = int(random.random() * max(0.0, base) + base)
                 wdmg = start_move[1]
-                step_comment += f'<span class="yellow">王者{wcname}は好スタートを切ったクポ！</span> '
+                step_comment += f'<span class="yellow">王者{wcname_html}は好スタートを切ったクポ！</span> '
                 wsyoumou = heri * (wdmg / 2) * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             else:
                 start_move[1] = _legacy_rand_plus(wc0 / (tyousei * 2))
@@ -265,9 +250,9 @@ def main():
             whp_flg -= wsyoumou
             
             if knokori < wnokori:
-                step_comment += f"<br>スタート！先頭は {cname} クポ！"
+                step_comment += f"<br>スタート！先頭は {cname_html} クポ！"
             else:
-                step_comment += f"<br>スタート！王者 {wcname} がハナを奪うクポ！"
+                step_comment += f"<br>スタート！王者 {wcname_html} がハナを奪うクポ！"
 
         elif step == 2:
             # === 中盤区間 ===
@@ -279,7 +264,7 @@ def main():
             if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3 / 4):
                 ksyoumou = heri * (1400 + k_middle - start_move[0]) * 3 * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
                 knokori = int(knokori * 0.9)
-                step_comment += f'<span class="yellow">{cname}は積極的に前へ進みましたクポ！</span> '
+                step_comment += f'<span class="yellow">{cname_html}は積極的に前へ進みましたクポ！</span> '
             elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5 / 3):
                 ksyoumou = heri * (1400 + k_middle - start_move[0]) * (kisyou / max(1, c3)) * (c2 / max(1, nebari)) / 2
             else:
@@ -298,9 +283,9 @@ def main():
             khp_flg -= ksyoumou
             whp_flg -= wsyoumou
             if knokori < wnokori:
-                step_comment += f"<br>中盤を通過、先頭は {cname} クポ！"
+                step_comment += f"<br>中盤を通過、先頭は {cname_html} クポ！"
             else:
-                step_comment += f"<br>中盤を通過、王者 {wcname} が先頭クポ！"
+                step_comment += f"<br>中盤を通過、王者 {wcname_html} が先頭クポ！"
 
         # 3. 終盤の移動
         else:
@@ -315,12 +300,12 @@ def main():
                 else:
                     kdmg = kdmg / 3
                     if step % 4 == 0:
-                        step_comment += f'<span class="red">{cname}はバテています...</span> '
+                        step_comment += f'<span class="red">{cname_html}はバテています...</span> '
             elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4)) or (khp_flg / max(1, c1) >= 0.4):
                 ksyoumou = ksyoumou * 2
                 kdmg = kdmg * 2.5
                 if step % 4 == 0:
-                    step_comment += f'<span class="green">{cname}のラストスパート！</span> '
+                    step_comment += f'<span class="green">{cname_html}のラストスパート！</span> '
                     
             kdmg = int(kdmg)
             
@@ -335,12 +320,12 @@ def main():
                 else:
                     wdmg = wdmg / 3
                     if step % 4 == 0:
-                        step_comment += f'<span class="red-light">王者{wcname}がバテてきたクポ！</span> '
+                        step_comment += f'<span class="red-light">王者{wcname_html}がバテてきたクポ！</span> '
             elif (_legacy_rand_float(seriai) < _legacy_rand_float(wc4)) or (whp_flg / max(1, wc1) > 0.5):
                 wsyoumou = wsyoumou * 2
                 wdmg = wdmg * 2.5
                 if step % 4 == 0:
-                    step_comment += f'<span class="yellow">王者{wcname}のラストスパート！</span> '
+                    step_comment += f'<span class="yellow">王者{wcname_html}のラストスパート！</span> '
                     
             wdmg = int(wdmg)
             
@@ -351,16 +336,16 @@ def main():
             
             lead = wnokori - knokori
             if lead > 200:
-                step_comment += f"{cname}が大きくリードしているクポ！"
+                step_comment += f"{cname_html}が大きくリードしているクポ！"
             elif lead < -200:
-                step_comment += f"王者{wcname}がぐんぐんと突き放すクポ！"
+                step_comment += f"王者{wcname_html}がぐんぐんと突き放すクポ！"
             else:
                 if abs(lead) < 15:
                     step_comment += "二頭が完全に並んだデッドヒートクポ！"
                 elif lead > 0:
-                    step_comment += f"{cname}がわずかにリードクポ！"
+                    step_comment += f"{cname_html}がわずかにリードクポ！"
                 else:
-                    step_comment += f"王者{wcname}がわずかに先頭クポ！"
+                    step_comment += f"王者{wcname_html}がわずかに先頭クポ！"
 
         # ターン記録
         turns_data.append({
@@ -452,7 +437,7 @@ def main():
         # 奪取賞金：王者の最大値 * 王者連勝数 * 10,000 G
         gold = max(0, wcmax) * max(0, wcren) * 10000
         
-        comment = f"<strong>🏆 見事に勝利し、新王者になりましたクポ！</strong><br>{cname}は見事王座を勝ち取りました！"
+        comment = f"<strong>🏆 見事に勝利し、新王者になりましたクポ！</strong><br>{cname_html}は見事王座を勝ち取りました！"
         agari = f"新王者ボーナス：能力値が大きく上昇しました！<br>（瞬発力+{c0_up}, 持久力+{c1_up}, 粘り強さ+{c2_up}, 落ち着き+{c3_up}, 闘争心+{c4_up}, 知力+{c5_up}, 切れ味+{c6_up}）"
         
         # 全体メッセージに流す
@@ -495,7 +480,7 @@ def main():
         # 参加賞：王者の最大値 * 王者連勝数 / 1,000 G
         gold = int(max(0, wcmax) * max(0, wcren) / 1000)
             
-        comment = f"<strong>👑 王者{wcname}が防衛しました。</strong><br>あと一歩及びませんでしたクポ……防衛されて悔しいクポ！"
+        comment = f"<strong>👑 王者{wcname_html}が防衛しました。</strong><br>あと一歩及びませんでしたクポ……防衛されて悔しいクポ！"
         agari = "参加賞：能力値が全体的に +1 上昇しましたクポ。"
 
     # 寿命の減少 (200消費)
@@ -504,7 +489,7 @@ def main():
     # 老衰チェック
     if ctrain + crun > 1000:
         choco_maxmax = int(choco_maxmax * 0.99)
-        rousui = f"あぁ、もう{cname}の体は限界のようですクポ。<br>よくこれまで育ててくれたと思いますクポ。<br>そろそろお見合い（引退）の時期ではないでしょうかクポ。"
+        rousui = f"あぁ、もう{cname_html}の体は限界のようですクポ。<br>よくこれまで育ててくれたと思いますクポ。<br>そろそろお見合い（引退）の時期ではないでしょうかクポ。"
 
     # 能力上限クランプ
     cmax0 = choco.get("max0", 10)
@@ -550,7 +535,7 @@ def main():
     if choco_max > choco_maxmax:
         choco_max = choco_maxmax
         if c_sum > choco_max:
-            senzai = f"{cname}の能力は総合的な限界に達したクポ。<br>"
+            senzai = f"{cname_html}の能力は総合的な限界に達したクポ。<br>"
             wariai = choco_max / c_sum
             choco_c0 = int(choco_c0 * wariai) + 1
             choco_c1 = int(choco_c1 * wariai) + 1
@@ -587,18 +572,10 @@ def main():
     choco["max"] = choco_max
     choco["maxmax"] = choco_maxmax
 
-    # データの保存
-    # プレイヤー
+    # 同一ユーザーの更新を1回の保存で確定する。
     common.get_lock(user_id)
     try:
-        common.chara_regist(user_id, chara)
-    finally:
-        common.release_lock(user_id)
-        
-    # チョコボ
-    common.get_lock(user_id)
-    try:
-        common.choco_regist(user_id, choco)
+        common.save_user_sections(user_id, chara=chara, choco=choco)
     finally:
         common.release_lock(user_id)
 
@@ -616,8 +593,9 @@ def main():
         "chara_log": chara_log,
         "choco": choco,
         "winner": winner,
+        "turns": turns_data,
         "turns_json": json.dumps(turns_data),
-        "comment": comment + f"<br>{chara['name']}は <b>{gold}</b> ギルを獲得しました！",
+        "comment": comment + f"<br>{player_name_html}は <b>{gold}</b> ギルを獲得しました！",
         "agari": agari,
         "senzai": senzai,
         "genkai": genkai,

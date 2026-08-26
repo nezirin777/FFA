@@ -153,8 +153,7 @@ def main():
             souko.append(new_weapon)
             
             # 保存
-            common.chara_regist(user_id, chara)
-            common.souko_regist(user_id, "weapon", souko)
+            common.save_user_sections(user_id, chara=chara, souko_weapon=souko)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、武器屋へ戻す
@@ -189,8 +188,7 @@ def main():
             item["weapon"] = {"name": "素手", "atk": 0, "hit_rate": 0}
             
             # 保存
-            common.chara_regist(user_id, chara)
-            common.equipment_regist(user_id, item)
+            common.save_user_sections(user_id, chara=chara, equipment=item)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、武器屋へ戻す

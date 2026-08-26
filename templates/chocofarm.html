@@ -297,7 +297,7 @@
                 <!-- 殿堂登録 (重賞3勝以上) -->
                 <div class="farm-action-row">
                     <span class="farm-action-label">🏛️ 殿堂に登録する</span>
-                    <form action="{{ config.dendo_script }}" method="POST" class="farm-action-form" onsubmit="return confirm('{{ choco_name }} を殿堂に登録します。よろしいですか？');">
+                    <form action="{{ config.dendo_script }}" method="POST" class="farm-action-form" data-confirm="{{ choco_name }} を殿堂に登録します。よろしいですか？">
                         <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
                         <input type="hidden" name="mydata" value="{{ chara_log }}">
@@ -323,7 +323,7 @@
                 <!-- 野に放す -->
                 <div class="farm-action-row">
                     <span class="farm-action-label">🍃 自然に帰す（引退）</span>
-                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form" onsubmit="return confirm('本当に別れてよろしいですか？この操作は取り消せません。');">
+                    <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form" data-confirm="本当に別れてよろしいですか？この操作は取り消せません。">
                         <input type="hidden" name="s" value="{{ csrf_token }}">
                         <input type="hidden" name="id" value="{{ chara.id }}">
                         <input type="hidden" name="mydata" value="{{ chara_log }}">

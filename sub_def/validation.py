@@ -54,3 +54,16 @@ def check_sjis_compatibility(text: str) -> bool:
         return True
     except UnicodeEncodeError:
         return False
+
+
+def validate_chocobo_name(name: str) -> str | None:
+    """チョコボの表示名を検証する。保存・画面表示の両方で扱う値である。"""
+    if not name:
+        return "チョコボの名前を入力してください。"
+    if len(name) > 20:
+        return "チョコボの名前は20文字以内で入力してください。"
+    if re.search(r"[\x00-\x1f\x7f-\x9f]", name):
+        return "チョコボの名前に制御文字は使用できません。"
+    if not check_sjis_compatibility(name):
+        return "チョコボの名前にはShift-JIS (cp932) に変換できる文字を使用してください。"
+    return None

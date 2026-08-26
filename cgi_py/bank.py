@@ -53,20 +53,7 @@ import os
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def parse_cookie_user(cookie_str):
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+parse_cookie_user = common.parse_cookie_user
 
 def main():
     # メンテナンスチェック

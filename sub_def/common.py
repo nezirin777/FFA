@@ -229,10 +229,50 @@ def chara_load(user_id):
     data = load_user_all(user_id)
     return data.get("chara") if data else None
 
+
+def get_all_players():
+    """保存済みの全キャラクターを読み込む共通の一覧取得処理。"""
+    players = []
+    save_dir = Config["save_dir"]
+    if not os.path.exists(save_dir):
+        return players
+    for user_id in os.listdir(save_dir):
+        if not os.path.isdir(os.path.join(save_dir, user_id)):
+            continue
+        chara = chara_load(user_id)
+        if chara:
+            players.append(chara)
+    return players
+
 def equipment_load(user_id):
     """所持アイテムデータをロードします (統合JSONデータから読み出し)"""
     data = load_user_all(user_id)
     return data.get("equipment") if data else None
+
+
+def default_equipment():
+    """装備データが未作成のキャラクターに使う初期装備を返します。"""
+    return {
+        "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+        "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
+        "accessory": {
+            "name": "なし", "effect_id": 0,
+            "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
+            "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
+        }
+    }
+
+
+def load_json_list(file_path):
+    """データディレクトリ配下の JSON 配列を読み込み、読込失敗時は空配列を返します。"""
+    full_path = file_path if os.path.isabs(file_path) else os.path.join(BASE_DIR, file_path)
+    try:
+        with open(full_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (OSError, json.JSONDecodeError) as error:
+        sys.stderr.write(f"JSON配列の読込に失敗しました: {full_path}: {error}\n")
+        return []
+    return decode_html_entities(data) if isinstance(data, list) else []
 
 def syoku_load(user_id):
     """職業熟練度データをロードします (統合JSONデータから読み出し)"""
@@ -304,6 +344,17 @@ def save_user_all(user_id, chara, item, syoku):
         data["syoku"] = syoku
     save_user_unified(user_id, data)
 
+
+def save_user_sections(user_id, **sections):
+    """同一ユーザーの複数セクションを1回のread-modify-writeで保存する。
+
+    呼び出し側はユーザー単位のcommon.get_lock()を保持して、別リクエストとの
+    競合を防ぐ。chara/equipment/syoku/chocoを個別保存して途中状態を作らない。
+    """
+    data = load_user_all(user_id) or {}
+    data.update(sections)
+    save_user_unified(user_id, data)
+
 def souko_load(user_id, item_type):
     """倉庫データ(item_type: 'weapon', 'armor', 'accessory')をロードします"""
     data = load_user_all(user_id)
@@ -317,6 +368,11 @@ def souko_regist(user_id, item_type, data):
 
 
 # === 5. アクティブキャラクター更新・表示 ===
+def escape_html_text(value) -> str:
+    """HTML文字列を組み立てる必要がある互換表示向けの最小エスケープ。"""
+    return html.escape(str(value), quote=True)
+
+
 def update_and_get_active_characters(user_id, chara_name):
     """
     現在アクセス中の他キャラクターを更新し、一覧HTMLを返します。
@@ -324,33 +380,33 @@ def update_and_get_active_characters(user_id, chara_name):
     ここでいう「アクティブ」はテスト用ゲストアカウントの意味ではなく、
     一定時間以内に街や牧場へアクセスしたキャラクターを指します。
     """
-    from sub_def.file_ops import load_data_with_lock, save_data_atomically
+    from sub_def.file_ops import update_data_atomically
     active_character_path = Config["active_characters_file"]
     now = int(time.time())
 
-    characters = load_data_with_lock(active_character_path, "active_characters") or []
+    def update(characters):
+        active_characters = [
+            character for character in (characters or [])
+            if isinstance(character, dict)
+            and character.get("time", 0) + Config["active_character_timeout_seconds"] > now
+            and character.get("id") != user_id
+        ]
+        if user_id:
+            active_characters.append({"time": now, "name": chara_name, "id": user_id})
+        return active_characters
 
-    # 指定秒以内のアクティブキャラクターを抽出（自分自身を除く）。
-    active_characters = [
-        character
-        for character in characters
-        if character["time"] + Config["active_character_timeout_seconds"] > now
-        and character["id"] != user_id
-    ]
-
-    if user_id:
-        active_characters.append({"time": now, "name": chara_name, "id": user_id})
-
-    save_data_atomically(
-        active_characters, active_character_path, "active_characters"
+    active_characters = update_data_atomically(
+        active_character_path, "active_characters", update, default=[]
     )
 
     # HTMLリンク構築
     links = []
     for character in active_characters:
+        safe_id = urllib.parse.quote(str(character.get("id", "")), safe="")
+        safe_name = escape_html_text(character.get("name", "名無し"))
         links.append(
-            f'<a href="{Config["system_script"]}?mode=chara_sts&id={character["id"]}">'
-            f'{character["name"]}</a><font size="1" color="#ffff00">★</font>'
+            f'<a href="{Config["system_script"]}?mode=chara_sts&id={safe_id}">'
+            f'{safe_name}</a><font size="1" color="#ffff00">★</font>'
         )
 
     num = len(active_characters)
@@ -363,12 +419,12 @@ def update_and_get_active_characters(user_id, chara_name):
     return html
 
 # === 6. Jinja2 テンプレート制御とレスポンス出力 ===
-def render_template(template_name, context=None, extra_headers=None):
+def render_template(template_name, context=None, extra_headers=None, session_data=None):
     """
     Jinja2テンプレートをレンダリングし、CGIヘッダー付きで出力します。
     """
     from sub_def.utils import render_template as utils_render
-    utils_render(template_name, context, extra_headers)
+    utils_render(template_name, context, extra_headers, session_data)
 
 def show_error(msg: str, context: dict | None = None) -> NoReturn:
     """エラー画面を表示します。"""

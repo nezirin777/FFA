@@ -295,8 +295,7 @@ def main():
         # 排他ロックをかけて登録
         common.get_lock(user_id)
         try:
-            common.choco_regist(user_id, choco_data)
-            common.choco_g1_regist(user_id, {})
+            common.save_user_sections(user_id, choco=choco_data, choco_g1={})
         finally:
             common.release_lock(user_id)
             
@@ -620,8 +619,7 @@ def main():
         
         common.get_lock(user_id)
         try:
-            common.choco_regist(user_id, new_choco)
-            common.choco_g1_regist(user_id, {})
+            common.save_user_sections(user_id, choco=new_choco, choco_g1={})
         finally:
             common.release_lock(user_id)
             
@@ -746,8 +744,10 @@ def main():
     elif mode == "choco_name":
         # === チョコボ命名処理 ===
         st_name = in_params.get("st_name", "").strip()
-        if not st_name:
-            common.show_error("名前を入力してください。")
+        from sub_def.validation import validate_chocobo_name
+        name_error = validate_chocobo_name(st_name)
+        if name_error:
+            common.show_error(name_error)
             
         # 禁止ワードチェック
         for word in config.Config['ban_words']:
@@ -757,14 +757,14 @@ def main():
         # 履歴との重複チェック (もし履歴ファイルがあれば)
         rireki_path = os.path.join(config.Config['save_dir'], "rireki.json")
         if os.path.exists(rireki_path):
-            with open(rireki_path, "r", encoding="utf-8") as f:
-                try:
+            try:
+                with open(rireki_path, "r", encoding="utf-8") as f:
                     rireki = common.decode_html_entities(json.load(f))
-                    for r in rireki:
-                        if r.get("name") == st_name:
-                            common.show_error("その名前は殿堂入りチョコボで既に使われています。別の名前にしてください。")
-                except:
-                    pass
+                for r in rireki:
+                    if r.get("name") == st_name:
+                        common.show_error("その名前は殿堂入りチョコボで既に使われています。別の名前にしてください。")
+            except (OSError, json.JSONDecodeError):
+                pass
                     
         if not has_choco:
             common.show_error("チョコボデータが見つかりません。")
@@ -838,7 +838,6 @@ def main():
                 common.show_error("ゴールドが足りません。（5,000ゴールド必要です）")
 
             chara["gold"] -= 5000
-            common.chara_regist(user_id, chara)
             context["chara"] = chara
                 
             # 寿命のランダム回復
@@ -851,7 +850,7 @@ def main():
             choco["train"] = choco.get("train", 0) + 1
             choco["max"] = choco.get("max", 10) + 10
             
-            common.choco_regist(user_id, choco)
+            common.save_user_sections(user_id, chara=chara, choco=choco)
         finally:
             common.release_lock(user_id)
             

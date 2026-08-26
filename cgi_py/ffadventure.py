@@ -55,24 +55,7 @@ import json
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def parse_cookie_user(cookie_str):
-    """
-    クッキー文字列 "id<>user_id,pass<>password" からIDとパスワードを抽出します。
-    """
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    # カンマで分割
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+parse_cookie_user = common.parse_cookie_user
 
 def get_winner():
     """
@@ -151,15 +134,7 @@ def main():
     item = common.equipment_load(user_id)
     if not item:
         # 初期装備の設定（ロード失敗時の安全策）
-        item = {
-            "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
-            "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
-            "accessory": {
-                "name": "なし", "effect_id": 0,
-                "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
-                "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
-            }
-        }
+        item = common.default_equipment()
         
     # 5. 王者データの取得
     winner = get_winner()

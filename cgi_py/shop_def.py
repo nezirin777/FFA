@@ -151,8 +151,7 @@ def main():
             souko.append(new_armor)
             
             # 保存
-            common.chara_regist(user_id, chara)
-            common.souko_regist(user_id, "armor", souko)
+            common.save_user_sections(user_id, chara=chara, souko_armor=souko)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、防具屋へ戻す
@@ -186,8 +185,7 @@ def main():
             item["armor"] = {"name": "衣服", "defense": 0, "evasion_rate": 0}
             
             # 保存
-            common.chara_regist(user_id, chara)
-            common.equipment_regist(user_id, item)
+            common.save_user_sections(user_id, chara=chara, equipment=item)
             common.release_lock(user_id)
             
             # 取引結果はトーストで通知し、防具屋へ戻す

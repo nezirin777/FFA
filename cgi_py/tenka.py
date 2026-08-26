@@ -62,29 +62,13 @@ except ImportError:
     from . import config
     from sub_def import battle_logic
 
-# Windows等で標準出力をUTF-8にする設定
-def get_all_players():
-    """全プレイヤーデータを取得します"""
-    players = []
-    save_dir = config.Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-        
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
-
 def update_tenka_members():
     """天下一武道会メンバーリスト(all_tenka)を更新します"""
     tenka_path = os.path.join(config.Config['save_dir'], "all_tenka.json")
     now = int(time.time())
     
     # 全プレイヤーをロードしてレベル順にソート
-    players = get_all_players()
+    players = common.get_all_players()
     sorted_players = sorted(players, key=lambda x: x.get("level", 1), reverse=True)
     
     # 上位 tenka_su 名を抽出
@@ -96,8 +80,8 @@ def update_tenka_members():
         "members": members
     }
     
-    with open(tenka_path, "w", encoding="utf-8") as f:
-        json.dump(tenka_data, f, ensure_ascii=False, indent=2)
+    from sub_def.file_ops import save_data_atomically
+    save_data_atomically(tenka_data, tenka_path, "tenka_members")
         
     return tenka_data
 
@@ -113,12 +97,12 @@ def get_tenka_data():
                 tenka_data = common.decode_html_entities(json.load(f))
             if tenka_data and isinstance(tenka_data.get("members"), list):
                 tenka_data["members"] = list(tenka_data["members"])
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"天下一メンバーキャッシュを読み込めません: {error}\n")
             
     # 24時間キャッシュ
     if not tenka_data or now - tenka_data.get("last_updated", 0) > 86400:
-        common.get_lock("tenka_members")
+        common.get_lock("tenka_members_build")
         try:
             # 重複防止再確認
             if os.path.exists(tenka_path):
@@ -127,12 +111,12 @@ def get_tenka_data():
                         tenka_data = common.decode_html_entities(json.load(f))
                     if tenka_data and isinstance(tenka_data.get("members"), list):
                         tenka_data["members"] = list(tenka_data["members"])
-                except:
-                    pass
+                except (OSError, json.JSONDecodeError) as error:
+                    sys.stderr.write(f"天下一メンバーキャッシュを再読込できません: {error}\n")
             if not tenka_data or now - tenka_data.get("last_updated", 0) > 86400:
                 tenka_data = update_tenka_members()
         finally:
-            common.release_lock("tenka_members")
+            common.release_lock("tenka_members_build")
             
     return tenka_data
 
@@ -140,15 +124,7 @@ def load_aite_equipped_item(aite_id):
     """対戦相手の装備データをロードします。無ければ初期装備を返します。"""
     item = common.equipment_load(aite_id)
     if not item:
-        item = {
-            "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
-            "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
-            "accessory": {
-                "name": "なし", "effect_id": 0,
-                "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
-                "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
-            }
-        }
+        item = common.default_equipment()
     return item
 
 def load_tenka_logs():
@@ -158,15 +134,15 @@ def load_tenka_logs():
         try:
             with open(log_path, "r", encoding="utf-8") as f:
                 return common.decode_html_entities(json.load(f))
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"天下一履歴を読み込めません: {error}\n")
     return []
 
 def save_tenka_logs(logs):
     """制覇者履歴を保存します"""
     log_path = os.path.join(config.Config['save_dir'], "tenka_log.json")
-    with open(log_path, "w", encoding="utf-8") as f:
-        json.dump(logs, f, ensure_ascii=False, indent=2)
+    from sub_def.file_ops import save_data_atomically
+    save_data_atomically(logs, log_path, "tenka_logs")
 
 def main():
     if config.Config['maintenance_mode']:
@@ -286,7 +262,7 @@ def main():
                 comment += f"<br><span class='yellow'>🏆 見事に天下一武道会で優勝したクポ！おめでとうクポ！</span>"
                 
                 # 履歴保存
-                common.get_lock("tenka_logs")
+                common.get_lock("tenka_logs_update")
                 try:
                     logs = load_tenka_logs()
                     logs.insert(0, {
@@ -300,7 +276,7 @@ def main():
                         logs = logs[:config.Config['tenka_log_limit']]
                     save_tenka_logs(logs)
                 finally:
-                    common.release_lock("tenka_logs")
+                    common.release_lock("tenka_logs_update")
                     
                 # 全体メッセージに制覇通知を流す
                 common.get_lock("all_message_post")
@@ -357,8 +333,7 @@ def main():
         # セーブ
         common.get_lock(user_id)
         try:
-            common.chara_regist(user_id, chara)
-            common.syoku_regist(user_id, syoku)
+            common.save_user_sections(user_id, chara=chara, syoku=syoku)
         finally:
             common.release_lock(user_id)
             
@@ -408,7 +383,7 @@ def main():
         update_time_str = common.get_time_str(tenka_data["last_updated"])
         
         # opponents, chara_rank, limit_count, winner_info の算出
-        players = get_all_players()
+        players = common.get_all_players()
         sorted_players = sorted(players, key=lambda x: x.get("level", 1), reverse=True)
         chara_rank = 999
         for idx, p in enumerate(sorted_players):

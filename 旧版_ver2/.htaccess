@@ -1,0 +1,8 @@
+# 旧版の実行ファイル・保存形式は公開しない。
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

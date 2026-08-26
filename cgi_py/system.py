@@ -59,28 +59,12 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
 
-# Windows等で標準出力をUTF-8にする設定
-def get_all_players():
-    """全プレイヤーのデータをロードします"""
-    players = []
-    save_dir = config.Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-        
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
-
 def build_rankings_cache():
     """全プレイヤーをレベル順にソートし、必要な項目をキャッシュします"""
     cache_path = os.path.join(config.Config['save_dir'], "system_rank_cache.json")
     now = int(time.time())
     
-    players = get_all_players()
+    players = common.get_all_players()
     # レベル降順でソート
     sorted_players = sorted(players, key=lambda x: x.get("level", 1), reverse=True)
     
@@ -90,8 +74,8 @@ def build_rankings_cache():
         "players": sorted_players
     }
     
-    with open(cache_path, "w", encoding="utf-8") as f:
-        json.dump(cache_data, f, ensure_ascii=False, indent=2)
+    from sub_def.file_ops import save_data_atomically
+    save_data_atomically(cache_data, cache_path, "system_rank_cache")
         
     return cache_data
 
@@ -105,8 +89,8 @@ def get_rankings_cache():
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
                 cache_data = common.decode_html_entities(json.load(f))
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"登録者一覧キャッシュを読み込めません: {error}\n")
             
     # 24時間キャッシュ
     cache_is_current = bool(
@@ -118,15 +102,15 @@ def get_rankings_cache():
         )
     )
     if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
-        common.get_lock("system_rank_cache")
+        common.get_lock("system_rank_cache_build")
         try:
             # 二重更新チェック
             if os.path.exists(cache_path):
                 try:
                     with open(cache_path, "r", encoding="utf-8") as f:
                         cache_data = common.decode_html_entities(json.load(f))
-                except:
-                    pass
+                except (OSError, json.JSONDecodeError) as error:
+                    sys.stderr.write(f"登録者一覧キャッシュを再読込できません: {error}\n")
             cache_is_current = bool(
                 cache_data and cache_data.get("players") and
                 all(
@@ -138,7 +122,7 @@ def get_rankings_cache():
             if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
                 cache_data = build_rankings_cache()
         finally:
-            common.release_lock("system_rank_cache")
+            common.release_lock("system_rank_cache_build")
             
     return cache_data
 
@@ -220,15 +204,7 @@ def main():
 
         target_item = common.equipment_load(target_id)
         if not target_item:
-            target_item = {
-                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
-                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
-                "accessory": {
-                    "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
-                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
-                }
-            }
+            target_item = common.default_equipment()
 
         # ステータス詳細計算
         stats = calculate_stats(target_chara, target_item)
@@ -297,15 +273,7 @@ def main():
         formatted_players = []
         for idx, p in enumerate(page_players):
             p_id = p["id"]
-            p_item = common.equipment_load(p_id) or {
-                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
-                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
-                "accessory": {
-                    "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
-                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
-                }
-            }
+            p_item = common.equipment_load(p_id) or common.default_equipment()
             stats = calculate_stats(p, p_item)
             formatted_players.append({
                 "chara": p,

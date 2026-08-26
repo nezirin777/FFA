@@ -342,9 +342,12 @@ def main():
                 user_dir = os.path.join(Config['save_dir'], user_id)
                 os.makedirs(user_dir, exist_ok=True)
 
-                with open(os.path.join(user_dir, "pass_change.json"), "w", encoding="utf-8") as f:
-                    import json
-                    json.dump(pass_change_data, f, ensure_ascii=False, indent=2)
+                from sub_def.file_ops import save_data_atomically
+                save_data_atomically(
+                    pass_change_data,
+                    os.path.join(user_dir, "pass_change.json"),
+                    f"pass_change_{user_id}",
+                )
 
                 save_user_all(user_id, user_data)
         finally:

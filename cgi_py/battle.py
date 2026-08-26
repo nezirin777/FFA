@@ -62,21 +62,7 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def import battle_logic
 
-def parse_cookie_user(cookie_str):
-    """クッキー文字列からIDとパスワードを抽出します"""
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+parse_cookie_user = common.parse_cookie_user
 
 DEFAULT_WINNER = {
     "id": "sys",
@@ -360,8 +346,8 @@ def main():
                 comment += f'経験値 {exp_gained} を獲得しました。<br>'
 
             # 王者データの保存
-            with open(winner_path, "w", encoding="utf-8") as f:
-                json.dump(winner, f, ensure_ascii=False, indent=2)
+            from sub_def.file_ops import save_data_atomically
+            save_data_atomically(winner, winner_path, "champion")
 
         finally:
             common.release_lock("winner")
@@ -378,8 +364,7 @@ def main():
         chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
 
         # セーブ
-        common.chara_regist(user_id, chara)
-        common.syoku_regist(user_id, syoku)
+        common.save_user_sections(user_id, chara=chara, syoku=syoku)
 
     finally:
         common.release_lock(user_id)

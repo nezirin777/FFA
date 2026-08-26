@@ -23,34 +23,16 @@
 FFA Python/CGI - 転職システムスクリプト (tensyoku.py)
 """
 
-import sys
-
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 # if hasattr(sys.stdout, 'reconfigure'):
 #     sys.stdout.reconfigure(encoding='utf-8')
 # if hasattr(sys.stdin, 'reconfigure'):
 #     sys.stdin.reconfigure(encoding='utf-8')
-import os
-import json
-
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def parse_cookie_user(cookie_str):
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+parse_cookie_user = common.parse_cookie_user
 
 def get_syoku_master_list(user_id):
     """
@@ -65,25 +47,11 @@ def get_syoku_master_list(user_id):
         lst.append(int(syoku_data.get(str(i), 0)))
     return lst
 
-def save_syoku_master_list(user_id, master_list):
-    """
-    ユーザーの職業熟練度リストを保存します。
-    """
-    syoku_data = {str(i): master_list[i] for i in range(31)}
-    common.syoku_regist(user_id, syoku_data)
-
 def load_syoku_ini():
     """
     職業マスタデータ(syoku.json)をロードします。
     """
-    path = os.path.join(common.BASE_DIR, config.Config['syoku_file'])
-    if not os.path.exists(path):
-        return []
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return []
+    return common.load_json_list(config.Config["syoku_file"])
 
 def get_job_requirements(target_data):
     """
@@ -161,7 +129,6 @@ def main():
             # chara["job_level"] (インデックス33) には現在の職業の熟練度が入っています
             current_job = chara["job"]
             syoku_master[current_job] = chara["job_level"]
-            save_syoku_master_list(user_id, syoku_master)
             
             # 転職先職業の必要条件チェック
             target_data = syoku_ini[target_syoku]
@@ -215,8 +182,9 @@ def main():
                 
                 msg_penalty = "※転職先の熟練度が低いため、能力値が10%減少しました。"
                 
-            # キャラクター情報保存
-            common.chara_regist(user_id, chara)
+            # 職業熟練度とキャラクター情報を同じ更新で保存する。
+            syoku_data = {str(index): syoku_master[index] for index in range(31)}
+            common.save_user_sections(user_id, chara=chara, syoku=syoku_data)
             
             context = {
                 "chara": chara,

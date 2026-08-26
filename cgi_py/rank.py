@@ -54,19 +54,6 @@ import time
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def get_all_players():
-    players = []
-    save_dir = config.Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
-
 def build_rankings(players):
     """全プレイヤーから各部門のTop 10を作成します"""
     
@@ -162,8 +149,8 @@ def get_rank_cache():
             import json
             with open(cache_path, "r", encoding="utf-8") as f:
                 cache_data = common.decode_html_entities(json.load(f))
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"ランキングキャッシュを読み込めません: {error}\n")
             
     # キャッシュが無効（24時間経過）または存在しない場合は再構築
     # 24時間 = 86400秒
@@ -173,7 +160,7 @@ def get_rank_cache():
         all("img" in row for rows in cache_data.get("rankings", {}).values() for row in rows)
     )
     if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
-        common.get_lock("rank_cache")
+        common.get_lock("rank_cache_build")
         try:
             # ロック取得後に再チェック（他プロセスが更新した可能性があるため）
             if os.path.exists(cache_path):
@@ -181,15 +168,15 @@ def get_rank_cache():
                     import json
                     with open(cache_path, "r", encoding="utf-8") as f:
                         cache_data = common.decode_html_entities(json.load(f))
-                except:
-                    pass
+                except (OSError, json.JSONDecodeError) as error:
+                    sys.stderr.write(f"ランキングキャッシュを再読込できません: {error}\n")
             
             cache_is_current = bool(
                 cache_data and required.issubset(cache_data.get("rankings", {})) and
                 all("img" in row for rows in cache_data.get("rankings", {}).values() for row in rows)
             )
             if not cache_is_current or now - cache_data.get("last_updated", 0) > 86400:
-                players = get_all_players()
+                players = common.get_all_players()
                 rankings = build_rankings(players)
                 cache_data = {
                     "last_updated": now,
@@ -197,10 +184,10 @@ def get_rank_cache():
                     "rankings": rankings
                 }
                 import json
-                with open(cache_path, "w", encoding="utf-8") as f:
-                    json.dump(cache_data, f, ensure_ascii=False, indent=2)
+                from sub_def.file_ops import save_data_atomically
+                save_data_atomically(cache_data, cache_path, "rank_cache")
         finally:
-            common.release_lock("rank_cache")
+            common.release_lock("rank_cache_build")
             
     return cache_data
 

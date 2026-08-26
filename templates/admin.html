@@ -24,14 +24,13 @@
         <div class="admin-menu-card">
             <h3>登録キャラクター一覧</h3>
             <p class="admin-menu-card__desc">登録されているすべての冒険者データの閲覧、編集、削除を行います。</p>
-            <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn">一覧を開く</a>
+            <a href="admin.py?mode=kanri_all" class="btn">一覧を開く</a>
         </div>
         <div class="admin-menu-card">
             <h3>長期間放置キャラの削除</h3>
             <p class="admin-menu-card__desc">前回戦闘・主要行動から一定期間（{{ config.character_delete_after_days }}日）以上経過したキャラクターを一括削除します。</p>
-            <form action="admin.py" method="POST" onsubmit="return confirm('本当に削除してよろしいですか？');">
+            <form action="admin.py" method="POST" data-confirm="本当に削除してよろしいですか？">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
-                <input type="hidden" name="pass" value="{{ pass }}">
                 <input type="hidden" name="mode" value="del_noplay">
                 <button type="submit" class="btn btn--danger">一括削除を実行</button>
             </form>
@@ -39,9 +38,8 @@
         <div class="admin-menu-card">
             <h3>テストユーザーの復元</h3>
             <p class="admin-menu-card__desc">削除・破損した保護ユーザーを、固定バックアップから復元します。</p>
-            <form action="admin.py" method="POST" onsubmit="return confirm('保護ユーザーをバックアップから復元しますか？');">
+            <form action="admin.py" method="POST" data-confirm="保護ユーザーをバックアップから復元しますか？">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
-                <input type="hidden" name="pass" value="{{ pass }}">
                 <input type="hidden" name="mode" value="restore_protected">
                 <button type="submit" class="btn">保護ユーザーを復元</button>
             </form>
@@ -50,9 +48,8 @@
             <h3>日次セーブバックアップ</h3>
             <p class="admin-menu-card__desc">ログイン時に1日1回作成し、最大{{ config.backup_retention_days }}日分を保持します。復元前にメンテナンスモードを有効にしてください。</p>
             {% if backup_entries %}
-            <form action="admin.py" method="POST" class="admin-news-form" onsubmit="return confirm('選択したバックアップへセーブデータを復元します。現在の状態も退避されますが、実行してよろしいですか？');">
+            <form action="admin.py" method="POST" class="admin-news-form" data-confirm="選択したバックアップへセーブデータを復元します。現在の状態も退避されますが、実行してよろしいですか？">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
-                <input type="hidden" name="pass" value="{{ pass }}">
                 <input type="hidden" name="mode" value="backup_restore">
                 <label for="backup-name">復元する日付</label>
                 <select id="backup-name" name="backup_name" class="admin-form-input" required>
@@ -71,7 +68,6 @@
             <p class="admin-menu-card__desc">街の全体ニュースへ管理人名義でお知らせを投稿します。</p>
             <form action="admin.py" method="POST" class="admin-news-form">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
-                <input type="hidden" name="pass" value="{{ pass }}">
                 <input type="hidden" name="mode" value="post_all_message">
                 <textarea name="message" class="admin-form-input admin-news-textarea" maxlength="{{ config.all_message_input_limit }}" rows="4" placeholder="全体ニュース本文を入力してください" required></textarea>
                 <button type="submit" class="btn">ニュースを投稿</button>
@@ -81,11 +77,11 @@
             <h3>マスターデータ管理</h3>
             <p class="admin-menu-card__desc">職業、戦術、武器、防具、装飾品の現行JSONマスターを編集します。</p>
             <div class="admin-master-links">
-                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=syoku" class="btn btn--sm">職業</a>
-                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=tac" class="btn btn--sm">戦術</a>
-                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=weapon" class="btn btn--sm">武器</a>
-                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=armor" class="btn btn--sm">防具</a>
-                <a href="admin.py?pass={{ pass }}&mode=master_list&master_type=accessory" class="btn btn--sm">装飾品</a>
+                <a href="admin.py?mode=master_list&master_type=syoku" class="btn btn--sm">職業</a>
+                <a href="admin.py?mode=master_list&master_type=tac" class="btn btn--sm">戦術</a>
+                <a href="admin.py?mode=master_list&master_type=weapon" class="btn btn--sm">武器</a>
+                <a href="admin.py?mode=master_list&master_type=armor" class="btn btn--sm">防具</a>
+                <a href="admin.py?mode=master_list&master_type=accessory" class="btn btn--sm">装飾品</a>
             </div>
         </div>
     </div>
@@ -94,8 +90,8 @@
     {% elif mode == 'master_list' %}
     <h2>{{ master_label }}マスター</h2>
     <div class="layout-cluster layout-cluster--between admin-return-nav">
-        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
-        <a href="admin.py?pass={{ pass }}&mode=master_edit&master_type={{ master_type }}&new=1" class="btn">新規追加</a>
+        <a href="admin.py?mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
+        <a href="admin.py?mode=master_edit&master_type={{ master_type }}&new=1" class="btn">新規追加</a>
     </div>
     <div class="admin-table-wrapper">
         <table class="admin-list-table">
@@ -114,11 +110,10 @@
                     <td class="white"><strong>{{ row.name }}</strong></td>
                     <td><code class="admin-master-preview">{{ row.record | tojson }}</code></td>
                     <td>
-                        <a href="admin.py?pass={{ pass }}&mode=master_edit&master_type={{ master_type }}&master_id={{ row.id }}" class="btn btn--sm">編集</a>
+                        <a href="admin.py?mode=master_edit&master_type={{ master_type }}&master_id={{ row.id }}" class="btn btn--sm">編集</a>
                         {% if can_delete %}
-                        <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('このマスターデータを削除します。よろしいですか？');">
+                        <form action="admin.py" method="POST" class="admin-inline-form" data-confirm="このマスターデータを削除します。よろしいですか？">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
-                            <input type="hidden" name="pass" value="{{ pass }}">
                             <input type="hidden" name="mode" value="master_delete">
                             <input type="hidden" name="master_type" value="{{ master_type }}">
                             <input type="hidden" name="master_id" value="{{ row.id }}">
@@ -140,7 +135,6 @@
     <p class="admin-menu-card__desc">現行JSONの1レコードを編集します。数値・配列・職業IDは保存時に検証されます。</p>
     <form action="admin.py" method="POST">
         <input type="hidden" name="s" value="{{ csrf_token }}">
-        <input type="hidden" name="pass" value="{{ pass }}">
         <input type="hidden" name="mode" value="master_save">
         <input type="hidden" name="master_type" value="{{ master_type }}">
         <input type="hidden" name="master_id" value="{{ master_id }}">
@@ -148,7 +142,7 @@
         <textarea name="record_json" class="admin-master-editor" rows="28" required>{{ record_json }}</textarea>
         <div class="admin-form-submit-cell">
             <button type="submit" class="btn admin-form-btn">保存する</button>
-            <a href="admin.py?pass={{ pass }}&mode=master_list&master_type={{ master_type }}" class="btn admin-form-btn--cancel">一覧へ戻る</a>
+            <a href="admin.py?mode=master_list&master_type={{ master_type }}" class="btn admin-form-btn--cancel">一覧へ戻る</a>
         </div>
     </form>
 
@@ -156,7 +150,7 @@
     {% elif mode == 'kanri_all' %}
     <h2>登録冒険者一覧 (全 {{ players | length }}人)</h2>
     <div class="layout-cluster layout-cluster--end admin-return-nav">
-        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
+        <a href="admin.py?mode=kanri_top" class="btn admin-form-btn--cancel">管理トップに戻る</a>
     </div>
     <div class="admin-table-wrapper">
         <table class="admin-list-table">
@@ -183,11 +177,10 @@
                     <td>{{ player.last_time_str }}</td>
                     <td>{{ player.host }}</td>
                     <td>
-                        <a href="admin.py?pass={{ pass }}&mode=data&target_id={{ player.id }}" class="btn btn--sm">編集</a>
-                        <a href="admin.py?pass={{ pass }}&mode=player_item&target_id={{ player.id }}" class="btn btn--sm">倉庫追加</a>
-                        <form action="admin.py" method="POST" class="admin-inline-form" onsubmit="return confirm('キャラクター「{{ player.name }}」を完全に削除します。よろしいですか？');">
+                        <a href="admin.py?mode=data&target_id={{ player.id }}" class="btn btn--sm">編集</a>
+                        <a href="admin.py?mode=player_item&target_id={{ player.id }}" class="btn btn--sm">倉庫追加</a>
+                        <form action="admin.py" method="POST" class="admin-inline-form" data-confirm="キャラクター「{{ player.name }}」を完全に削除します。よろしいですか？">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
-                            <input type="hidden" name="pass" value="{{ pass }}">
                             <input type="hidden" name="mode" value="del_chara">
                             <input type="hidden" name="target_id" value="{{ player.id }}">
                             <button type="submit" class="btn btn--danger btn--sm">削除</button>
@@ -219,7 +212,6 @@
     </div>
     <form action="admin.py" method="POST" class="admin-news-form">
         <input type="hidden" name="s" value="{{ csrf_token }}">
-        <input type="hidden" name="pass" value="{{ pass }}">
         <input type="hidden" name="mode" value="player_item_add">
         <input type="hidden" name="target_id" value="{{ target_id }}">
         <label for="admin-item-ref">追加するマスター装備</label>
@@ -232,7 +224,7 @@
         <button type="submit" class="btn">倉庫へ追加</button>
     </form>
     <div class="layout-cluster admin-return-nav">
-        <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn admin-form-btn--cancel">登録者一覧へ戻る</a>
+        <a href="admin.py?mode=kanri_all" class="btn admin-form-btn--cancel">登録者一覧へ戻る</a>
     </div>
 
     <!-- 6. キャラクター個別編集 -->
@@ -241,7 +233,6 @@
     
     <form action="admin.py" method="POST">
         <input type="hidden" name="s" value="{{ csrf_token }}">
-        <input type="hidden" name="pass" value="{{ pass }}">
         <input type="hidden" name="mode" value="save">
         <input type="hidden" name="target_id" value="{{ chara.id }}">
 
@@ -319,7 +310,7 @@
             <tr>
                 <td colspan="2" class="admin-form-submit-cell">
                     <button type="submit" class="btn admin-form-btn">変更を保存する</button>
-                    <a href="admin.py?pass={{ pass }}&mode=kanri_all" class="btn admin-form-btn--cancel">キャンセル</a>
+                    <a href="admin.py?mode=kanri_all" class="btn admin-form-btn--cancel">キャンセル</a>
                 </td>
             </tr>
         </table>
@@ -327,7 +318,8 @@
     {% endif %}
 
     <div class="admin-footer-nav">
-        <a href="admin.py?pass={{ pass }}&mode=kanri_top" class="btn admin-footer-btn">管理メインへ</a>
+        <a href="admin.py?mode=kanri_top" class="btn admin-footer-btn">管理メインへ</a>
+        <a href="admin.py?mode=admin_log_out" class="btn btn--danger admin-footer-btn">管理者ログアウト</a>
     </div>
 </div>
 {% endblock %}

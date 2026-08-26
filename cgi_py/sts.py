@@ -140,15 +140,7 @@ def main():
         # === ステータス表示画面 (chara_st) ===
         item = common.equipment_load(user_id)
         if not item:
-            item = {
-                "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
-                "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
-                "accessory": {
-                    "name": "なし", "effect_id": 0,
-                    "bonus": {"str": 0, "int": 0, "mnd": 0, "vit": 0, "dex": 0, "agi": 0, "cha": 0, "karma": 0},
-                    "hit_rate": 0, "evasion_rate": 0, "special_rate": 0, "description": ""
-                }
-            }
+            item = common.default_equipment()
 
         # 命中率、回避率、必殺率の計算
         # 能力値は mnd=信仰心, dex=器用さ, agi=速さとして扱う。

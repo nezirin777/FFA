@@ -49,26 +49,15 @@ import sys
 #     sys.stdin.reconfigure(encoding='utf-8')
 import os
 import time
+import json
+import sys
 
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 from sub_def.crypto import hash_password, verify_password
 
-def parse_cookie_user(cookie_str):
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
+parse_cookie_user = common.parse_cookie_user
 
 def get_pass_change_path(user_id):
     return os.path.join(config.Config['save_dir'], user_id, "pass_change.json")
@@ -78,21 +67,20 @@ def load_pass_change(user_id):
     if not os.path.exists(path):
         return None
     try:
-        import json
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
+    except (OSError, json.JSONDecodeError) as error:
+        sys.stderr.write(f"パスワード変更用データを読み込めません ({user_id}): {error}\n")
         return None
 
 def save_pass_change(user_id, data):
     path = get_pass_change_path(user_id)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
     try:
-        import json
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except:
-        pass
+        from sub_def.file_ops import save_data_atomically
+        save_data_atomically(data, path, f"pass_change_{user_id}")
+    except (OSError, TimeoutError) as error:
+        sys.stderr.write(f"パスワード変更用データを保存できません ({user_id}): {error}\n")
+        common.show_error("パスワード変更用データを保存できませんでした。")
 
 def main():
     if config.Config['maintenance_mode']:

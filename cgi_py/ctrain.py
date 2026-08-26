@@ -451,13 +451,7 @@ def main():
     # キャラクターとチョコボの排他保存
     common.get_lock(user_id)
     try:
-        common.chara_regist(user_id, chara)
-    finally:
-        common.release_lock(user_id)
-
-    common.get_lock(user_id)
-    try:
-        common.choco_regist(user_id, choco)
+        common.save_user_sections(user_id, chara=chara, choco=choco)
     finally:
         common.release_lock(user_id)
 

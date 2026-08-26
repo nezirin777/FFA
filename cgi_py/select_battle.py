@@ -61,35 +61,7 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def import battle_logic
 
-def parse_cookie_user(cookie_str):
-    """クッキー文字列からIDとパスワードを抽出します"""
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
-
-def get_all_players():
-    """全プレイヤーのキャラクターデータをロードして返します"""
-    players = []
-    save_dir = config.Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
+parse_cookie_user = common.parse_cookie_user
 
 def main():
     # 1. メンテナンスチェック
@@ -130,7 +102,7 @@ def main():
 
     elif mode == "sentaku":
         # 対戦相手一覧
-        players = get_all_players()
+        players = common.get_all_players()
         # 自分自身を除外
         players = [p for p in players if p["id"] != chara["id"]]
         context = {
@@ -156,7 +128,7 @@ def main():
 
         # 名前で検索する場合
         if not aite_id and aite_name:
-            players = get_all_players()
+            players = common.get_all_players()
             matched = [p for p in players if p["name"].strip() == aite_name.strip() and p["id"] != chara["id"]]
             if not matched:
                 common.show_error(f"対戦相手 「{aite_name}」 が見つかりません。")

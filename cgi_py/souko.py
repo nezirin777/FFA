@@ -340,11 +340,14 @@ def main():
                 
         # 4. データ保存
         if modified:
-            common.chara_regist(user_id, chara)
-            common.equipment_regist(user_id, item)
-            common.souko_regist(user_id, "weapon", souko_weapon)
-            common.souko_regist(user_id, "armor", souko_armor)
-            common.souko_regist(user_id, "accessory", souko_accessory)
+            common.save_user_sections(
+                user_id,
+                chara=chara,
+                equipment=item,
+                souko_weapon=souko_weapon,
+                souko_armor=souko_armor,
+                souko_accessory=souko_accessory,
+            )
             
         common.release_lock(user_id)
         

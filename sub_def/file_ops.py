@@ -19,6 +19,44 @@ except ImportError:
     from .. import config
 Config = config.Config
 
+
+def _normalize_loaded_data(data: Any) -> Any:
+    """旧データに残るHTMLエンティティを読み込み時に正規化する。"""
+    def normalize(value: Any) -> Any:
+        if isinstance(value, str):
+            return html.unescape(value)
+        if isinstance(value, list):
+            return [normalize(item) for item in value]
+        if isinstance(value, dict):
+            return {key: normalize(item) for key, item in value.items()}
+        return value
+
+    data = normalize(data)
+    if isinstance(data, dict) and isinstance(data.get("chara"), dict):
+        data["chara"].pop("site", None)
+        data["chara"].pop("url", None)
+    return data
+
+
+def _write_json_atomically(data: Any, file_path: str) -> None:
+    """呼び出し元がロックを保持している前提でJSONを置換保存する。"""
+    dir_path = os.path.dirname(file_path)
+    os.makedirs(dir_path, exist_ok=True)
+    temp_file_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", dir=dir_path, prefix=".tmp_", suffix=".json", delete=False, encoding="utf-8"
+        ) as temp_file:
+            json.dump(data, temp_file, ensure_ascii=False, indent=2)
+            temp_file.flush()
+            os.fsync(temp_file.fileno())
+            temp_file_path = temp_file.name
+        os.replace(temp_file_path, file_path)
+    except Exception:
+        if temp_file_path and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+        raise
+
 def save_data_atomically(data: Any, file_path: str, lock_name: str) -> None:
     """データをアトミックに保存し、日次バックアップのコピーと直列化する。"""
     lock_dir = Config.get("lock_dir", "./lock")
@@ -37,28 +75,8 @@ def save_data_atomically(data: Any, file_path: str, lock_name: str) -> None:
         if not lock.lock():
             raise TimeoutError(f"排他ロックの取得に失敗しました: {lock_name}")
 
-        dir_path = os.path.dirname(file_path)
-        os.makedirs(dir_path, exist_ok=True)
-
-        temp_file_path = None
         try:
-            # 同一ディレクトリ内に安全な一時ファイルを作成 (Windows/Linux対応)
-            # delete=False にすることで、クローズ後もファイルを維持し rename に備える
-            with tempfile.NamedTemporaryFile(
-                mode="w", dir=dir_path, prefix=".tmp_", suffix=".json", delete=False, encoding="utf-8"
-            ) as temp_file:
-                json.dump(data, temp_file, ensure_ascii=False, indent=2)
-                temp_file.flush()
-                # OS キャッシュをストレージに強制フラッシュし破損を防ぐ
-                os.fsync(temp_file.fileno())
-                temp_file_path = temp_file.name
-
-            # アトミックな置換 (os.replace はアトミック性が保証される)
-            os.replace(temp_file_path, file_path)
-        except Exception as e:
-            if temp_file_path and os.path.exists(temp_file_path):
-                os.remove(temp_file_path)
-            raise e
+            _write_json_atomically(data, file_path)
         finally:
             lock.unlock()
     finally:
@@ -79,23 +97,35 @@ def load_data_with_lock(file_path: str, lock_name: str) -> Any:
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        def normalize(value: Any) -> Any:
-            if isinstance(value, str):
-                return html.unescape(value)
-            if isinstance(value, list):
-                return [normalize(item) for item in value]
-            if isinstance(value, dict):
-                return {key: normalize(item) for key, item in value.items()}
-            return value
-
-        data = normalize(data)
-        if isinstance(data, dict) and isinstance(data.get("chara"), dict):
-            # 旧版のサイト名/URLは現行のキャラクター仕様では使用しない。
-            data["chara"].pop("site", None)
-            data["chara"].pop("url", None)
-        return data
+        return _normalize_loaded_data(data)
     finally:
         lock.unlock()
+
+
+def update_data_atomically(file_path: str, lock_name: str, updater, default: Any = None) -> Any:
+    """JSONのread-modify-writeを同じロック区間で完了し、更新後の値を返す。"""
+    lock_dir = Config.get("lock_dir", "./lock")
+    os.makedirs(lock_dir, exist_ok=True)
+    snapshot_lock = exLock.exLock(os.path.join(lock_dir, "backup_snapshot.lock"))
+    if not snapshot_lock.lock():
+        raise TimeoutError("排他ロックの取得に失敗しました: backup_snapshot")
+    try:
+        lock = exLock.exLock(os.path.join(lock_dir, f"{lock_name}.lock"))
+        if not lock.lock():
+            raise TimeoutError(f"排他ロックの取得に失敗しました: {lock_name}")
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, "r", encoding="utf-8") as file:
+                    current = _normalize_loaded_data(json.load(file))
+            else:
+                current = default
+            updated = updater(current)
+            _write_json_atomically(updated, file_path)
+            return updated
+        finally:
+            lock.unlock()
+    finally:
+        snapshot_lock.unlock()
 
 # === ユーザー個別の一元化データのロード・セーブ ===
 def _user_path(user_id: str) -> str:

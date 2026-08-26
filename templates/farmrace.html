@@ -9,14 +9,20 @@
 
     <!-- レース概要 -->
     <div class="battle-summary">
-        {{ race_summary | safe }}
+        {{ comment | safe }}
+        <div class="post-form-note u-mt-s">
+            {% if agari %}{{ agari | safe }}<br>{% endif %}
+            {% if senzai %}{{ senzai | safe }}{% endif %}
+            {% if genkai %}{{ genkai | safe }}{% endif %}
+            {% if rousui %}<span class="red">{{ rousui | safe }}</span>{% endif %}
+        </div>
     </div>
 
     <!-- レース実況ログ -->
     <div class="battle-log">
-        {% for log in logs %}
+        {% for turn in turns %}
         <div class="battle-log-line">
-            {{ log | safe }}
+            {{ turn.comment | safe }}
         </div>
         {% endfor %}
     </div>

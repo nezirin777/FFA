@@ -64,33 +64,15 @@ import json
 # 共通モジュールのインポート
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+    from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     import config
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+    from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     from . import config
 
 # 重賞レースのモード (O(1) メンバーシップテスト用定数、線形探索を回避して高速化)
 _HEAVY_RACES: frozenset[str] = frozenset({"race7", "race8"})
-
-
-def _legacy_rand(limit):
-    """旧版 Perl の int(rand(x)) と同じく、上限を含めず整数を返す。"""
-    # Perl は x が小数でも、先に rand(x) を計算してから int() する。
-    # 先に int(x) へ丸めると、1.5 のような上限で値1が欠落する。
-    limit = float(limit)
-    return int(random.random() * limit) if limit > 0 else 0
-
-
-def _legacy_rand_float(limit):
-    """旧版 Perl の rand(x)（整数化しない実数値）に合わせる。"""
-    limit = float(limit)
-    return random.random() * limit if limit > 0 else 0.0
-
-
-def _legacy_rand_plus(limit):
-    """旧版 Perl の int(rand(x) + x) に合わせる。"""
-    limit = float(limit)
-    return int(random.random() * limit + limit) if limit > 0 else 0
 
 
 def _scheduled_major_race(total_turns, mode, sex):
@@ -117,19 +99,24 @@ def load_rivals(ribal_path, count=4):
         return rivals
         
     if ribal_path.endswith('.json'):
-        with open(ribal_path, "r", encoding="utf-8") as f:
-            try:
+        try:
+            with open(ribal_path, "r", encoding="utf-8") as f:
                 rivals = common.decode_html_entities(json.load(f))
-            except:
-                pass
+        except (OSError, json.JSONDecodeError):
+            return rivals
     else:
         # CSV (.ini) ロード
         try:
             with open(ribal_path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-        except:
-            with open(ribal_path, "r", encoding="shift-jis", errors='ignore') as f:
-                lines = f.readlines()
+        except UnicodeDecodeError:
+            try:
+                with open(ribal_path, "r", encoding="shift-jis", errors="ignore") as f:
+                    lines = f.readlines()
+            except OSError:
+                return rivals
+        except OSError:
+            return rivals
                 
         for line in lines:
             if not line.strip():
@@ -329,6 +316,10 @@ def main():
         c5.append(r["c5"])
         c6.append(r["c6"])
 
+    # 実況・結果コメントはテンプレートで装飾HTMLとして出力する。
+    # 保存値をそのまま差し込まず、表示用の値だけを必ずエスケープする。
+    display_names = [common.escape_html_text(name) for name in names]
+
     # 基礎変数計算
     c2_sum = sum(c2)
     c3_sum = sum(c3)
@@ -386,14 +377,14 @@ def main():
                     start_move[n] = _legacy_rand_plus(c0[n] / (tyousei * 4))
                     dmg[n] = start_move[n]
                     if n == 0:
-                        step_comment += f'<span class="red">{names[n]}はスタートで出遅れましたクポ！</span> '
+                        step_comment += f'<span class="red">{display_names[n]}はスタートで出遅れましたクポ！</span> '
                     syoumou[n] = heri * dmg[n] * 3 * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 好スタート判定
                 elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5[n] * 2 / 3):
                     start_move[n] = _legacy_rand(c0[n] * 1.5 / tyousei)
                     dmg[n] = start_move[n]
                     if n == 0:
-                        step_comment += f'<span class="green">{names[n]}は素晴らしいスタートを切りましたクポ！</span> '
+                        step_comment += f'<span class="green">{display_names[n]}は素晴らしいスタートを切りましたクポ！</span> '
                     syoumou[n] = heri * (dmg[n] / 2) * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
                 # 普通スタート
                 else:
@@ -407,7 +398,7 @@ def main():
                 
             # スタート後の順位
             sorted_runners = sorted(range(5), key=lambda x: positions[x])
-            step_comment += f"<br>スタート！先頭は {names[sorted_runners[0]]} クポ！"
+            step_comment += f"<br>スタート！先頭は {display_names[sorted_runners[0]]} クポ！"
         elif step == 2:
             # === 中盤区間 ===
             # 旧版ではスタート後に1000m区間へ切り替え、脚力とスタート差を
@@ -431,7 +422,7 @@ def main():
                     )
                     middle_remaining[n] = int(middle_remaining[n] * 0.9)
                     if n == 0:
-                        step_comment += f'<span class="yellow">{names[n]}は積極的に前へ進みましたクポ！</span> '
+                        step_comment += f'<span class="yellow">{display_names[n]}は積極的に前へ進みましたクポ！</span> '
                 elif _legacy_rand_float(tiryoku) <= _legacy_rand_float(c5[n] / 3):
                     syoumou[n] = (
                         heri * (1400 + middle_move - start_move[n])
@@ -439,7 +430,7 @@ def main():
                         * (c2[n] / max(1, nebari)) / 2
                     )
                     if n == 0:
-                        step_comment += f'<span class="yellow">{names[n]}は軽いコース取りで進みましたクポ！</span> '
+                        step_comment += f'<span class="yellow">{display_names[n]}は軽いコース取りで進みましたクポ！</span> '
                 else:
                     syoumou[n] = (
                         heri * (1400 + middle_move - start_move[n])
@@ -452,7 +443,7 @@ def main():
                 hp_flg[n] -= syoumou[n]
 
             sorted_runners = sorted(range(5), key=lambda x: positions[x])
-            step_comment += f"<br>中盤を通過、先頭は {names[sorted_runners[0]]} クポ！"
+            step_comment += f"<br>中盤を通過、先頭は {display_names[sorted_runners[0]]} クポ！"
         else:
             # === 中盤・終盤の移動 ===
             for n in range(5):
@@ -469,13 +460,13 @@ def main():
                     else:
                         base_dmg = base_dmg / 3
                         if n == 0 and step % 4 == 0:
-                            step_comment += f'<span class="red">{names[n]}は完全にバテていますクポ...</span> '
+                            step_comment += f'<span class="red">{display_names[n]}は完全にバテていますクポ...</span> '
                 # ラストスパート（終盤かつ闘争心/スタミナで加速）
                 elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4[n])) or (hp_flg[n] / max(1, c1[n]) >= 0.4):
                     syoumou_base = syoumou_base * 2
                     base_dmg = base_dmg * 2.5
                     if n == 0 and step % 4 == 0:
-                        step_comment += f'<span class="yellow">{names[n]}のラストスパートクポ！</span> '
+                        step_comment += f'<span class="yellow">{display_names[n]}のラストスパートクポ！</span> '
                         
                 dmg[n] = int(base_dmg)
                 positions[n] = max(0, positions[n] - dmg[n])
@@ -487,14 +478,14 @@ def main():
             # 実況メッセージの作成
             lead_dist = positions[sorted_runners[1]] - positions[sorted_runners[0]]
             if lead_dist > 300:
-                step_comment += f"{names[sorted_runners[0]]}が完全に独走状態クポ！引き離しにかかっているクポ！"
+                step_comment += f"{display_names[sorted_runners[0]]}が完全に独走状態クポ！引き離しにかかっているクポ！"
             elif lead_dist > 100:
-                step_comment += f"{names[sorted_runners[0]]}が一頭抜け出しているクポ！"
+                step_comment += f"{display_names[sorted_runners[0]]}が一頭抜け出しているクポ！"
             else:
                 if positions[sorted_runners[1]] - positions[sorted_runners[0]] < 15:
-                    step_comment += f"{names[sorted_runners[0]]}と{names[sorted_runners[1]]}が激しく並んで競り合っているクポ！"
+                    step_comment += f"{display_names[sorted_runners[0]]}と{display_names[sorted_runners[1]]}が激しく並んで競り合っているクポ！"
                 else:
-                    step_comment += f"先頭は{names[sorted_runners[0]]}！すぐ後ろに{names[sorted_runners[1]]}がピタリと追うクポ！"
+                    step_comment += f"先頭は{display_names[sorted_runners[0]]}！すぐ後ろに{display_names[sorted_runners[1]]}がピタリと追うクポ！"
                     
         # 現在のステップログを格納
         turns_data.append({
@@ -566,7 +557,7 @@ def main():
         # 旧版の式をそのまま維持する（指数13は旧版ソースのリテラル）。
         gold = int((int(rival_reward_max / 1000) + 1) ** 13)
         
-        comment = f"<strong>🏆 見事に1着でゴールインクポ！</strong><br>{names[0]}は見事な走りでしたクポ！さすがクポ！"
+        comment = f"<strong>🏆 見事に1着でゴールインクポ！</strong><br>{display_names[0]}は見事な走りでしたクポ！さすがクポ！"
         agari = f"勝利ボーナス：能力値が全体的に上昇しましたクポ！<br>（瞬発力+{c0_up}, 持久力+{c1_up}, 粘り強さ+{c2_up}, 落ち着き+{c3_up}, 闘争心+{c4_up}, 知力+{c5_up}, 切れ味+{c6_up}）"
         
         # 重賞レース(G1/G2)勝利の記録 (O(1) frozenset ルックアップで判定)
@@ -599,8 +590,8 @@ def main():
                     try:
                         with open(rireki_path, "r", encoding="utf-8") as f:
                             rireki_data = common.decode_html_entities(json.load(f))
-                    except:
-                        pass
+                    except (OSError, json.JSONDecodeError) as error:
+                        sys.stderr.write(f"重賞制覇履歴を読み込めません: {error}\n")
                 
                 # 該当チョコボが履歴に既に存在するかチェック (チョコボ名で判定)
                 found = False
@@ -637,8 +628,8 @@ def main():
                         target_item = rireki_data.pop(target_idx)
                         rireki_data.insert(0, target_item)
                 
-                with open(rireki_path, "w", encoding="utf-8") as f:
-                    json.dump(rireki_data, f, ensure_ascii=False, indent=2)
+                from sub_def.file_ops import save_data_atomically
+                save_data_atomically(rireki_data, rireki_path, "rireki_json")
             finally:
                 common.release_lock("rireki")
                 
@@ -678,8 +669,8 @@ def main():
         # 旧版はライバルの限界値 / 1000 の整数値を参加賞とする。
         gold = int(rival_reward_max / 1000)
             
-        winner_name = names[winner_idx]
-        comment = f"<strong>🏁 {winner_name}が1着でゴールイン。</strong><br>{names[0]}は敗れてしまいましたクポ……次こそは頑張るクポ！"
+        winner_name = display_names[winner_idx]
+        comment = f"<strong>🏁 {winner_name}が1着でゴールイン。</strong><br>{display_names[0]}は敗れてしまいましたクポ……次こそは頑張るクポ！"
         agari = "参加賞：能力値が全体的に +1 上昇しましたクポ。"
 
     # 寿命の減少（200消費）
@@ -688,7 +679,7 @@ def main():
     # 老衰チェック
     if ctrain + crun > 1000:
         choco_maxmax = int(choco_maxmax * 0.99)
-        rousui = f"あぁ、もう{cname}の体は限界のようですクポ。<br>よくこれまで育ててくれたと思いますクポ。<br>そろそろお見合い（引退）の時期ではないでしょうかクポ。"
+        rousui = f"あぁ、もう{display_names[0]}の体は限界のようですクポ。<br>よくこれまで育ててくれたと思いますクポ。<br>そろそろお見合い（引退）の時期ではないでしょうかクポ。"
 
     # 個別パラメータ上限クランプ
     cmax0 = choco.get("max0", 10)
@@ -734,7 +725,7 @@ def main():
     if choco_max > choco_maxmax:
         choco_max = choco_maxmax
         if c_sum > choco_max:
-            senzai = f"{cname}の能力は限界に達したクポ。<br>"
+            senzai = f"{display_names[0]}の能力は限界に達したクポ。<br>"
             wariai = choco_max / c_sum
             choco_c0 = int(choco_c0 * wariai) + 1
             choco_c1 = int(choco_c1 * wariai) + 1
@@ -772,16 +763,10 @@ def main():
     choco["max"] = choco_max
     choco["maxmax"] = choco_maxmax
     
-    # 保存
+    # 同一ユーザーの更新を1回の保存で確定する。
     common.get_lock(user_id)
     try:
-        common.chara_regist(user_id, chara)
-    finally:
-        common.release_lock(user_id)
-        
-    common.get_lock(user_id)
-    try:
-        common.choco_regist(user_id, choco)
+        common.save_user_sections(user_id, chara=chara, choco=choco)
     finally:
         common.release_lock(user_id)
 

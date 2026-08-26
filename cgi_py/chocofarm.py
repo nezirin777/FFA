@@ -154,7 +154,7 @@ def main():
                 hints = json.load(f)
             if hints:
                 mog_advice = random.choice(hints)
-        except:
+        except (OSError, json.JSONDecodeError):
             pass
 
     # === チョコボ情報と一般・重賞レースの算出 ===

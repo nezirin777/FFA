@@ -9,12 +9,14 @@ images/
 移植計画書/
 
 save_data/*
+!save_data/.htaccess
 !save_data/champion.json
 !save_data/protected_users/
 !save_data/protected_users/**
 
 # 実データを含む日次バックアップはGitで管理しない
-backups/
+backups/*
+!backups/.htaccess
 **/banklog/*.*
 **/charalog/*.*
 **/charalog2/*.*

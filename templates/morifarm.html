@@ -131,7 +131,7 @@
                 <td class="farm-val-cell">{{ cy.breader }}</td>
             </tr>
         </table>
-        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s" onsubmit="return confirm('{{ cy.name }} と配合します。今のチョコボは引退しますがよろしいですか？');">
+        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s" data-confirm="{{ cy.name }} と配合します。今のチョコボは引退しますがよろしいですか？">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">

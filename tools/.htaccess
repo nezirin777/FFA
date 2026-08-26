@@ -1,0 +1,8 @@
+# 開発・資料生成ツールはHTTP公開しない。
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

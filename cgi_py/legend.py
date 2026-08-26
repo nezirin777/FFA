@@ -62,32 +62,8 @@ except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def import battle_logic
 
-def parse_cookie_user(cookie_str):
-    """クッキー文字列からIDとパスワードを抽出します"""
-    if not cookie_str:
-        return None, None
-    id_val = None
-    pass_val = None
-    pairs = cookie_str.split(",")
-    for pair in pairs:
-        if "<>" in pair:
-            k, v = pair.split("<>", 1)
-            if k == "id":
-                id_val = v
-            elif k == "pass":
-                pass_val = v
-    return id_val, pass_val
-
-def load_monsters(file_path):
-    """モンスターファイルからモンスター一覧を読み込みます(JSON)"""
-    full_path = os.path.join(common.BASE_DIR, file_path)
-    if not os.path.exists(full_path):
-        return []
-    try:
-        with open(full_path, "r", encoding="utf-8") as f:
-            return common.decode_html_entities(json.load(f))
-    except Exception:
-        return []
+parse_cookie_user = common.parse_cookie_user
+load_monsters = common.load_json_list
 
 def get_legend_players():
     """レジェンドプレイスを1階層以上攻略したキャラクターを取得する。"""
@@ -303,8 +279,7 @@ def main():
         chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
 
         # セーブ
-        common.chara_regist(user_id, chara)
-        common.syoku_regist(user_id, syoku)
+        common.save_user_sections(user_id, chara=chara, syoku=syoku)
 
     finally:
         common.release_lock(user_id)

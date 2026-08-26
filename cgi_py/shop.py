@@ -67,13 +67,14 @@ def update_winner_hp(user_id, max_hp):
         try:
             with open(winner_path, "r", encoding="utf-8") as f:
                 winner = json.load(f)
-        except Exception:
+        except (OSError, json.JSONDecodeError) as error:
+            sys.stderr.write(f"王者データを読み込めません: {error}\n")
             return
             
         if winner.get("id") == user_id:
             winner["hp"] = max_hp
-            with open(winner_path, "w", encoding="utf-8") as f:
-                json.dump(winner, f, ensure_ascii=False, indent=2)
+            from sub_def.file_ops import save_data_atomically
+            save_data_atomically(winner, winner_path, "champion")
     finally:
         common.release_lock("winner")
 

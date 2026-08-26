@@ -45,12 +45,12 @@
 
     <!-- 共通フッター -->
     {% block footer %}
-    <hr size="1" color="{{ config.dark }}">
+    <hr size="1" color="{{ config.dark | default('#333333') }}">
     <div align="center">
         <a href="{{ config.others_script }}">【{{ config.main_title }} TOP】</a>
     </div>
     <hr size="0" width="100%">
-    <div align="right" style="font-size: 10px; color: {{ config.vlink }};">
+    <div align="right" style="font-size: 10px; color: {{ config.vlink | default('#777777') }};">
         FFA改 Vips Ver 3.00 (Original ver2.00 edit by <a href="http://www.eriicu.com" target="_blank">いく</a>)<br>
         FFA Emilia Ver1.01 remodeled by Classic<br>
     </div>
