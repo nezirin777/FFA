@@ -37,12 +37,10 @@
 #    http://icus.s13.xrea.com/cgi-bin/cbbs/cbbs.cgi　		#
 #---------------------------------------------------------------#
 """
-FFA Python/CGI - 武器屋スクリプト (shop_item.py)
+FFA Python/CGI - 武器屋スクリプト (shop_weapon.py)
 """
 
 import os
-import sys
-import json
 
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
@@ -54,37 +52,9 @@ import json
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def get_item_master(item_id):
-    """武器マスタ(weapon.json)から特定の武器情報を取得します。"""
-    path = os.path.join(common.BASE_DIR, config.Config['weapon_file'])
-    if not os.path.exists(path):
-        return None
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-        for item in items:
-            if item.get("no") == int(item_id):
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "atk": item["atk"],
-                    "gold": item["gold"]
-                }
-    except Exception:
-        pass
-    return None
-
-def load_shop_items(job_idx):
+def load_available_weapons(job_idx):
     """共通武器マスターから、現在の職業が購入可能な商品を抽出します。"""
-    path = os.path.join(common.BASE_DIR, config.Config["weapon_file"])
-    if not os.path.exists(path):
-        return []
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-        return [item for item in items if job_idx in item.get("job_ids", [])]
-    except Exception:
-        return []
+    return common.master_records_for_job(config.Config["weapon_file"], job_idx)
 
 def main():
     if config.Config['maintenance_mode']:
@@ -111,44 +81,44 @@ def main():
         # 共通情報
         job_idx = chara["job"]
         job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
-        shop_url = f"{config.Config['shop_item_script']}&id={user_id}"
+        weapon_shop_url = f"{config.Config['shop_weapon_script']}&id={user_id}"
         
         # 1. 購入処理
         if mode == "buy":
             item_no = params.get("item_no", "").strip()
             if not item_no:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "購入する商品が選択されていません。", "error")
+                common.redirect_with_flash(weapon_shop_url, "購入する商品が選択されていません。", "error")
                 
-            shop_items = load_shop_items(job_idx)
-            selected_item = next((i for i in shop_items if str(i["no"]) == item_no), None)
+            weapons = load_available_weapons(job_idx)
+            selected_weapon = next((weapon for weapon in weapons if str(weapon["no"]) == item_no), None)
             
-            if not selected_item:
+            if not selected_weapon:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "指定された商品は販売されていません。", "error")
+                common.redirect_with_flash(weapon_shop_url, "指定された商品は販売されていません。", "error")
                 
             # 所持金チェック
-            if chara["gold"] < selected_item["gold"]:
+            if chara["gold"] < selected_weapon["gold"]:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
+                common.redirect_with_flash(weapon_shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
             souko = common.souko_load(user_id, "weapon")
             if len(souko) >= config.Config['max_weapons']:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, f"武器倉庫がいっぱいです！(最大 {config.Config['max_weapons']} 個)", "error")
+                common.redirect_with_flash(weapon_shop_url, f"武器倉庫がいっぱいです！(最大 {config.Config['max_weapons']} 個)", "error")
                 
             # 購入処理実行
-            chara["gold"] -= selected_item["gold"]
+            chara["gold"] -= selected_weapon["gold"]
             chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             
             # 倉庫に追加
             new_weapon = {
-                "id": selected_item["no"],
-                "name": selected_item["name"],
-                "atk": selected_item["atk"],
-                "gold": selected_item["gold"],
-                "hit_rate": selected_item["hit_rate"]
+                "id": selected_weapon["no"],
+                "name": selected_weapon["name"],
+                "atk": selected_weapon["atk"],
+                "gold": selected_weapon["gold"],
+                "hit_rate": selected_weapon["hit_rate"]
             }
             souko.append(new_weapon)
             
@@ -158,8 +128,8 @@ def main():
             
             # 取引結果はトーストで通知し、武器屋へ戻す
             common.redirect_with_flash(
-                shop_url,
-                f"武器 {selected_item['name']} を {selected_item['gold']} G で購入しました。購入した武器は倉庫に送られました。",
+                weapon_shop_url,
+                f"武器 {selected_weapon['name']} を {selected_weapon['gold']} G で購入しました。購入した武器は倉庫に送られました。",
                 "success",
             )
             return
@@ -169,10 +139,10 @@ def main():
             equipped_id = chara.get("weapon_id", 0)
             if not equipped_id or equipped_id == 0:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "売却できる武器を装備していません。", "error")
+                common.redirect_with_flash(weapon_shop_url, "売却できる武器を装備していません。", "error")
                 
             # マスタから武器の情報を取得して価格を決定
-            master_item = get_item_master(equipped_id)
+            master_item = common.find_master_record(config.Config["weapon_file"], equipped_id)
             if not master_item:
                 # マスタに見つからない場合はデフォルト価格で下取り
                 master_item = {"name": item["weapon"]["name"], "gold": 0}
@@ -193,7 +163,7 @@ def main():
             
             # 取引結果はトーストで通知し、武器屋へ戻す
             common.redirect_with_flash(
-                shop_url,
+                weapon_shop_url,
                 f"装備していた武器 {master_item['name']} を下取りに出しました。売却額 {sell_gold} G を手に入れました！",
                 "success",
             )
@@ -205,7 +175,7 @@ def main():
             
             # 現在装備中の武器情報
             equipped_id = chara.get("weapon_id", 0)
-            master_item = get_item_master(equipped_id) if equipped_id != 0 else None
+            master_item = common.find_master_record(config.Config["weapon_file"], equipped_id)
             
             if master_item:
                 equipped_item = {
@@ -223,14 +193,14 @@ def main():
                 }
                 
             # 販売リストの取得
-            shop_items = [
+            catalog_items = [
                 {
-                    "no": shop_item["no"],
-                    "name": shop_item["name"],
-                    "performance": shop_item["atk"],
-                    "gold": shop_item["gold"],
+                    "no": weapon["no"],
+                    "name": weapon["name"],
+                    "performance": weapon["atk"],
+                    "gold": weapon["gold"],
                 }
-                for shop_item in load_shop_items(job_idx)
+                for weapon in load_available_weapons(job_idx)
             ]
             
             # メッセージの構築
@@ -246,8 +216,8 @@ def main():
                 "shop_title": "武器屋",
                 "shop_msg": shop_msg,
                 "equipped_item": equipped_item,
-                "shop_items": shop_items,
-                "post_url": config.Config['shop_item_script']
+                "catalog_items": catalog_items,
+                "post_url": config.Config['shop_weapon_script']
             }
             common.render_template("shop_trade.html", context)
             

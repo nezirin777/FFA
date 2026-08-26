@@ -358,21 +358,6 @@ def warehouse_entry_from_master(item_type, record):
 
 
 
-def get_all_players():
-    """全プレイヤーのデータを取得します"""
-    players = []
-    save_dir = config.Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
-
-
 def get_protected_user_ids():
     """自動削除・通常の個別削除から保護するユーザーIDを返します。"""
     return set(config.Config.get("protected_user_ids", []))
@@ -688,7 +673,7 @@ def main():
     # 1.6 保護ユーザー復元
     elif mode == "restore_protected":
         restored, unavailable = restore_protected_users()
-        players = get_all_players()
+        players = common.get_all_players()
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
 
@@ -710,7 +695,7 @@ def main():
 
     # 2. 全キャラクター表示
     elif mode == "kanri_all":
-        players = get_all_players()
+        players = common.get_all_players()
         # 最終行動時間順にソート (新しい順)
         players.sort(key=lambda x: x.get("last_time", 0), reverse=True)
         
@@ -781,7 +766,7 @@ def main():
         finally:
             common.release_lock(target_id)
             
-        players = get_all_players()
+        players = common.get_all_players()
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
         context = {
@@ -799,7 +784,7 @@ def main():
             common.show_error("対象IDが不足しています。")
 
         if target_id in get_protected_user_ids():
-            players = get_all_players()
+            players = common.get_all_players()
             for p in players:
                 p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
             context = {
@@ -814,7 +799,7 @@ def main():
         if os.path.exists(user_dir) and os.path.isdir(user_dir):
             shutil.rmtree(user_dir)
             
-        players = get_all_players()
+        players = common.get_all_players()
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
         context = {
@@ -827,7 +812,7 @@ def main():
 
     # 6. 長期間未ログインキャラクター一括削除
     elif mode == "del_noplay":
-        players = get_all_players()
+        players = common.get_all_players()
         now = int(time.time())
         limit_seconds = config.Config['character_delete_after_days'] * 24 * 60 * 60
         
@@ -848,7 +833,7 @@ def main():
                     deleted_count += 1
                     deleted_names.append(p["name"])
                     
-        players = get_all_players()
+        players = common.get_all_players()
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
             

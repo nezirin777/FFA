@@ -40,17 +40,11 @@
 FFA Python/CGI - 作戦（戦術）変更画面 (tac_change.py)
 """
 
-import sys
-
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 # if hasattr(sys.stdout, 'reconfigure'):
 #     sys.stdout.reconfigure(encoding='utf-8')
 # if hasattr(sys.stdin, 'reconfigure'):
 #     sys.stdin.reconfigure(encoding='utf-8')
-import os
-import time
-import json
-
 # 共通モジュールのインポート
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
@@ -63,26 +57,15 @@ except ImportError:
 def load_job_tactics(job_id, job_level):
     """共通戦術マスターから、特定のジョブで使用可能な戦術を読み込みます。"""
     tactics = []
-    tac_path = os.path.join(common.BASE_DIR, config.Config['tac_file'])
-    
-    if os.path.exists(tac_path):
-        try:
-            with open(tac_path, "r", encoding="utf-8") as f:
-                items = json.load(f)
-            for item in items:
-                # 職業別ファイルを廃止し、共通マスターの job_ids で絞り込みます。
-                if job_id not in item.get("job_ids", []):
-                    continue
-                # マスター戦術(ms == 1)の場合はジョブレベルが60以上である必要がある
-                if item.get("ms", 0) == 0 or (item.get("ms", 0) == 1 and job_level >= 60):
-                    tactics.append({
-                        "no": item["no"],
-                        "name": item["name"],
-                        "desc": item.get("desc", ""),
-                        "ms": item.get("ms", 0)
-                    })
-        except Exception:
-            pass
+    for item in common.master_records_for_job(config.Config["tac_file"], job_id):
+        # マスター戦術(ms == 1)はジョブレベル60以上でのみ利用可能。
+        if item.get("ms", 0) == 0 or (item.get("ms", 0) == 1 and job_level >= 60):
+            tactics.append({
+                "no": item["no"],
+                "name": item["name"],
+                "desc": item.get("desc", ""),
+                "ms": item.get("ms", 0),
+            })
             
     return tactics
 

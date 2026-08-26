@@ -40,11 +40,6 @@
 FFA Python/CGI - 倉庫管理スクリプト (souko.py)
 """
 
-import os
-import sys
-import json
-
-
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
 # if hasattr(sys.stdout, 'reconfigure'):
 #     sys.stdout.reconfigure(encoding='utf-8')
@@ -55,78 +50,16 @@ import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
 def get_item_master(item_id, item_type):
-    """マスタファイルから特定の装備品情報を取得します。"""
-    if item_type == "weapon":
-        path = os.path.join(common.BASE_DIR, config.Config['weapon_file'])
-    elif item_type == "armor":
-        path = os.path.join(common.BASE_DIR, config.Config['armor_file'])
-    else: # accessory
-        path = os.path.join(common.BASE_DIR, config.Config['accessory_file'])
-        
-    if not os.path.exists(path):
-        return None
+    """種別に対応する装備マスターを共通読込処理で検索します。"""
+    master_file = {
+        "weapon": config.Config["weapon_file"],
+        "armor": config.Config["armor_file"],
+        "accessory": config.Config["accessory_file"],
+    }.get(item_type)
+    return common.find_master_record(master_file, item_id) if master_file else None
 
-    # マスタは JSON 配列 (shop_item.py / shop_acs.py と同一フォーマット)
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-    except Exception:
-        return None
 
-    for item in items:
-        if item.get("no") == int(item_id):
-            if item_type == "accessory":
-                bonus = item.get("bonus", {})
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "gold": item.get("gold", 0),
-                    "effect_id": item.get("effect_id", 0),
-                    "bonus": {
-                        "str": bonus.get("str", 0),
-                        "int": bonus.get("int", 0),
-                        "mnd": bonus.get("mnd", 0),
-                        "vit": bonus.get("vit", 0),
-                        "dex": bonus.get("dex", 0),
-                        "agi": bonus.get("agi", 0),
-                        "cha": bonus.get("cha", 0),
-                        "karma": bonus.get("karma", 0)
-                    },
-                    "hit_rate": item.get("hit_rate", 0),
-                    "evasion_rate": item.get("evasion_rate", 0),
-                    "special_rate": item.get("special_rate", 0),
-                    "description": item.get("description", "")
-                }
-            else:
-                if item_type == "weapon":
-                    return {
-                        "id": item["no"],
-                        "name": item["name"],
-                        "atk": item["atk"],
-                        "gold": item.get("gold", 0),
-                        "hit_rate": item["hit_rate"]
-                    }
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "defense": item["defense"],
-                    "gold": item.get("gold", 0),
-                    "evasion_rate": item["evasion_rate"]
-                }
-    return None
-
-def format_bonus(bonus_dict):
-    """アクセサリーの能力値上昇を表示用の文字列に変換します。"""
-    parts = []
-    # 旧版の列順: 力, 知能, 信仰心, 生命力, 器用さ, 速さ, 魅力, カルマ
-    keys = [("str", "力"), ("int", "知"), ("mnd", "信"), ("vit", "生"),
-            ("dex", "器"), ("agi", "速"), ("cha", "魅"), ("karma", "カ")]
-    for k, name in keys:
-        val = bonus_dict.get(k, 0)
-        if val != 0:
-            sign = "+" if val > 0 else ""
-            parts.append(f"{name}{sign}{val}")
-    return " ".join(parts) if parts else "効果なし"
+format_bonus = common.format_accessory_bonus
 
 def main():
     if config.Config['maintenance_mode']:

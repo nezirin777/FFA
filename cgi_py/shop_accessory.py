@@ -37,12 +37,10 @@
 #    http://icus.s13.xrea.com/cgi-bin/cbbs/cbbs.cgi　		#
 #---------------------------------------------------------------#
 """
-FFA Python/CGI - 装飾品店スクリプト (shop_acs.py)
+FFA Python/CGI - 装飾品店スクリプト (shop_accessory.py)
 """
 
 import os
-import sys
-import json
 
 
 # エントリポイントで標準入出力を UTF-8 に構成 (ガイドライン3.2に準拠)
@@ -54,67 +52,12 @@ import json
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 
-def get_acs_master(acs_id):
-    """装飾品マスタ(accessory.json)から特定の装飾品情報を取得します。"""
-    path = os.path.join(common.BASE_DIR, config.Config['accessory_file'])
-    if not os.path.exists(path):
-        return None
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-        for item in items:
-            if item.get("no") == int(acs_id):
-                return {
-                    "id": item["no"],
-                    "name": item["name"],
-                    "gold": item["gold"],
-                    "effect_id": item.get("effect_id", 0),
-                    "bonus": {
-                        "str": item.get("bonus", {}).get("str", 0),
-                        "int": item.get("bonus", {}).get("int", 0),
-                        "mnd": item.get("bonus", {}).get("mnd", 0),
-                        "vit": item.get("bonus", {}).get("vit", 0),
-                        "dex": item.get("bonus", {}).get("dex", 0),
-                        "agi": item.get("bonus", {}).get("agi", 0),
-                        "cha": item.get("bonus", {}).get("cha", 0),
-                        "karma": item.get("bonus", {}).get("karma", 0)
-                    },
-                    "hit_rate": item.get("hit_rate", 0),
-                    "evasion_rate": item.get("evasion_rate", 0),
-                    "special_rate": item.get("special_rate", 0),
-                    "description": item.get("description", "")
-                }
-    except Exception:
-        pass
-    return None
-
-def load_shop_items(job_idx):
+def load_available_accessories(job_idx):
     """共通装飾品マスターから、現在の職業が購入可能な商品を抽出します。"""
-    path = os.path.join(common.BASE_DIR, config.Config["accessory_file"])
-    if not os.path.exists(path):
-        return []
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            items = json.load(f)
-        items = [item for item in items if job_idx in item.get("job_ids", [])]
-        for item in items:
-            item["description"] = item.get("description", "")
-        return items
-    except Exception:
-        return []
+    return common.master_records_for_job(config.Config["accessory_file"], job_idx)
 
-def format_bonus(bonus_dict):
-    """ステータス上昇ボーナスを表示用に文字列化します。"""
-    parts = []
-    # 旧版の列順: 力, 知能, 信仰心, 生命力, 器用さ, 速さ, 魅力, カルマ
-    keys = [("str", "力"), ("int", "知"), ("mnd", "信"), ("vit", "生"),
-            ("dex", "器"), ("agi", "速"), ("cha", "魅"), ("karma", "カ")]
-    for k, name in keys:
-        val = bonus_dict.get(k, 0)
-        if val != 0:
-            sign = "+" if val > 0 else ""
-            parts.append(f"{name}{sign}{val}")
-    return " ".join(parts) if parts else "効果なし"
+
+format_bonus = common.format_accessory_bonus
 
 def main():
     if config.Config['maintenance_mode']:
@@ -139,50 +82,53 @@ def main():
             
         job_idx = chara["job"]
         job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
-        shop_url = f"{config.Config['shop_acs_script']}&id={user_id}"
+        accessory_shop_url = f"{config.Config['shop_accessory_script']}&id={user_id}"
         
         # 1. 購入処理
         if mode == "buy":
             item_no = params.get("item_no", "").strip()
             if not item_no:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "購入する商品が選択されていません。", "error")
+                common.redirect_with_flash(accessory_shop_url, "購入する商品が選択されていません。", "error")
                 
-            shop_items = load_shop_items(job_idx)
-            selected_item = next((i for i in shop_items if str(i["no"]) == item_no), None)
+            accessories = load_available_accessories(job_idx)
+            selected_accessory = next(
+                (accessory for accessory in accessories if str(accessory["no"]) == item_no),
+                None,
+            )
             
-            if not selected_item:
+            if not selected_accessory:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "指定された商品は販売されていません。", "error")
+                common.redirect_with_flash(accessory_shop_url, "指定された商品は販売されていません。", "error")
                 
             # 所持金チェック
-            if chara["gold"] < selected_item["gold"]:
+            if chara["gold"] < selected_accessory["gold"]:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "所持金が足りません。", "error")
+                common.redirect_with_flash(accessory_shop_url, "所持金が足りません。", "error")
                 
             # 倉庫の空きチェック
             souko = common.souko_load(user_id, "accessory")
             if len(souko) >= config.Config['max_accessories']:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, f"装飾品倉庫がいっぱいです！(最大 {config.Config['max_accessories']} 個)", "error")
+                common.redirect_with_flash(accessory_shop_url, f"装飾品倉庫がいっぱいです！(最大 {config.Config['max_accessories']} 個)", "error")
                 
             # 購入処理実行
-            chara["gold"] -= selected_item["gold"]
+            chara["gold"] -= selected_accessory["gold"]
             chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             
             # 倉庫に追加
-            new_acs = {
-                "id": selected_item["no"],
-                "name": selected_item["name"],
-                "gold": selected_item["gold"],
-                "effect_id": selected_item["effect_id"],
-                "bonus": selected_item["bonus"],
-                "hit_rate": selected_item["hit_rate"],
-                "evasion_rate": selected_item["evasion_rate"],
-                "special_rate": selected_item["special_rate"],
-                "description": selected_item.get("description", "")
+            new_accessory = {
+                "id": selected_accessory["no"],
+                "name": selected_accessory["name"],
+                "gold": selected_accessory["gold"],
+                "effect_id": selected_accessory["effect_id"],
+                "bonus": selected_accessory["bonus"],
+                "hit_rate": selected_accessory["hit_rate"],
+                "evasion_rate": selected_accessory["evasion_rate"],
+                "special_rate": selected_accessory["special_rate"],
+                "description": selected_accessory.get("description", "")
             }
-            souko.append(new_acs)
+            souko.append(new_accessory)
             
             # 保存
             common.save_user_sections(user_id, chara=chara, souko_accessory=souko)
@@ -190,8 +136,8 @@ def main():
             
             # 取引結果はトーストで通知し、装飾品店へ戻す
             common.redirect_with_flash(
-                shop_url,
-                f"装飾品 {selected_item['name']} を {selected_item['gold']} G で購入しました。購入した装飾品は倉庫に送られました。",
+                accessory_shop_url,
+                f"装飾品 {selected_accessory['name']} を {selected_accessory['gold']} G で購入しました。購入した装飾品は倉庫に送られました。",
                 "success",
             )
             return
@@ -201,10 +147,10 @@ def main():
             equipped_id = chara.get("accessory_id", 0)
             if not equipped_id or equipped_id == 0:
                 common.release_lock(user_id)
-                common.redirect_with_flash(shop_url, "売却できる装飾品を装備していません。", "error")
+                common.redirect_with_flash(accessory_shop_url, "売却できる装飾品を装備していません。", "error")
                 
             # マスタから装飾品の情報を取得して価格を決定
-            master_item = get_acs_master(equipped_id)
+            master_item = common.find_master_record(config.Config["accessory_file"], equipped_id)
             if not master_item:
                 master_item = {"name": item["accessory"]["name"], "gold": 0}
                 
@@ -232,7 +178,7 @@ def main():
             
             # 取引結果はトーストで通知し、装飾品店へ戻す
             common.redirect_with_flash(
-                shop_url,
+                accessory_shop_url,
                 f"装備していた装飾品 {master_item['name']} を下取りに出しました。売却額 {sell_gold} G を手に入れました！",
                 "success",
             )
@@ -244,7 +190,7 @@ def main():
             
             # 現在装備中の装飾品情報
             equipped_id = chara.get("accessory_id", 0)
-            master_item = get_acs_master(equipped_id) if equipped_id != 0 else None
+            master_item = common.find_master_record(config.Config["accessory_file"], equipped_id)
             
             if master_item:
                 equipped_item = {
@@ -262,14 +208,14 @@ def main():
                 }
                 
             # 販売リストの取得
-            raw_shop_items = load_shop_items(job_idx)
-            shop_items = []
-            for r_item in raw_shop_items:
-                shop_items.append({
-                    "no": r_item["no"],
-                    "name": r_item["name"],
-                    "performance": r_item.get("description") or format_bonus(r_item["bonus"]),
-                    "gold": r_item["gold"]
+            accessories = load_available_accessories(job_idx)
+            catalog_items = []
+            for accessory in accessories:
+                catalog_items.append({
+                    "no": accessory["no"],
+                    "name": accessory["name"],
+                    "performance": accessory.get("description") or format_bonus(accessory["bonus"]),
+                    "gold": accessory["gold"]
                 })
             
             # メッセージの構築
@@ -284,9 +230,9 @@ def main():
                 "shop_title": "装飾品店",
                 "shop_msg": shop_msg,
                 "equipped_item": equipped_item,
-                "shop_items": shop_items,
+                "catalog_items": catalog_items,
                 "performance_label": "説明",
-                "post_url": config.Config['shop_acs_script']
+                "post_url": config.Config['shop_accessory_script']
             }
             common.render_template("shop_trade.html", context)
             

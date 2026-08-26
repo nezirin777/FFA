@@ -171,9 +171,9 @@ Config["ranking_script"] = "login.py?mode=rank"
 Config["character_image_list_script"] = "login.py?mode=img_list"
 
 # ショップ・施設。
-Config["shop_item_script"] = "login.py?mode=shop_item"
-Config["shop_def_script"] = "login.py?mode=shop_def"
-Config["shop_acs_script"] = "login.py?mode=shop_acs"
+Config["shop_weapon_script"] = "login.py?mode=shop_weapon"
+Config["shop_armor_script"] = "login.py?mode=shop_armor"
+Config["shop_accessory_script"] = "login.py?mode=shop_accessory"
 Config["bank_script"] = "login.py?mode=bank"
 Config["souko_script"] = "login.py?mode=souko"
 

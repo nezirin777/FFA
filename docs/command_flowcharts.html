@@ -92,7 +92,7 @@
 const K={entry:{label:"ENTRY",color:"var(--entry)",bg:"#38bdf817"},check:{label:"CHECK",color:"var(--check)",bg:"#f8717117"},data:{label:"DATA",color:"var(--data)",bg:"#4ade8017"},logic:{label:"LOGIC",color:"var(--logic)",bg:"#c084fc17"},util:{label:"UTIL",color:"var(--util)",bg:"#fbbf2417"},out:{label:"OUTPUT",color:"var(--out)",bg:"#34d39917"}};
 const ROUTES=[
   ["main","cgi_py.ffadventure"],["sts","cgi_py.sts"],["tac_change","cgi_py.tac_change"],["passchange","cgi_py.passchange"],["tensyoku","cgi_py.tensyoku"],
-  ["shop","cgi_py.shop"],["yado","cgi_py.shop"],["shop_item","cgi_py.shop_item"],["shop_def","cgi_py.shop_def"],["shop_acs","cgi_py.shop_acs"],
+  ["shop","cgi_py.shop"],["yado","cgi_py.shop"],["shop_weapon","cgi_py.shop_weapon"],["shop_armor","cgi_py.shop_armor"],["shop_accessory","cgi_py.shop_accessory"],
   ["bank","cgi_py.bank"],["souko","cgi_py.souko"],["battle","cgi_py.battle"],["select_battle","cgi_py.select_battle"],["sentaku","cgi_py.select_battle"],
   ["monster","cgi_py.monster"],["genei","cgi_py.monster"],["isekiai","cgi_py.monster"],["legend","cgi_py.legend"],["boss","cgi_py.legend"],
   ["bbs","cgi_py.bbs"],["chocofarm","cgi_py.chocofarm"],["morifarm","cgi_py.morifarm"],["choco","cgi_py.morifarm"],
@@ -164,7 +164,7 @@ FLOW("auth","ログイン・ログアウト","認証",[],[
   ])
 ]),
 
-FLOW("router","ログイン後ルータ","認証",["main","sts","tac_change","passchange","tensyoku","shop","yado","shop_item","shop_def","shop_acs","bank","souko","battle","select_battle","sentaku","monster","genei","isekiai","legend","boss","bbs","chocofarm","morifarm","choco","crace","ctrain","dendo","farmrace","system","chara_sts","img_list","ranking","tenka","rank","chocorank"],[
+FLOW("router","ログイン後ルータ","認証",["main","sts","tac_change","passchange","tensyoku","shop","yado","shop_weapon","shop_armor","shop_accessory","bank","souko","battle","select_battle","sentaku","monster","genei","isekiai","legend","boss","bbs","chocofarm","morifarm","choco","crace","ctrain","dendo","farmrace","system","chara_sts","img_list","ranking","tenka","rank","chocorank"],[
   SEC("login.py → FUNCTION_MAP",[
     S("login.py","get_session() / load_user_all()","entry","暗号化セッションとキャラのパスワードハッシュを確認"),
     S("login.py","public_modes 判定","check","rank / system / chara_sts / img_list / ranking のみゲスト可","未ログインの非公開モード → redirect('others.py')"),
@@ -216,14 +216,14 @@ FLOW("status","ステータス・戦術・転職","キャラクター",["sts","t
   ])
 ]),
 
-FLOW("shops","店・銀行・倉庫","装備・経済",["shop","yado","shop_item","shop_def","shop_acs","bank","souko"],[
+FLOW("shops","店・銀行・倉庫","装備・経済",["shop","yado","shop_weapon","shop_armor","shop_accessory","bank","souko"],[
   SEC("店頭表示と購入・売却",[
     S("cgi_py/shop.py","main() / mode=yado","entry","宿屋料金確認・回復処理を含む"),
-    S("cgi_py/shop_item.py","main()","entry","武器店の表示・購入・売却"),
-    S("cgi_py/shop_def.py","main()","entry","防具店の表示・購入・売却"),
-    S("cgi_py/shop_acs.py","main()","entry","装飾品店の表示・購入・売却"),
+    S("cgi_py/shop_weapon.py","main()","entry","武器店の表示・購入・売却"),
+    S("cgi_py/shop_armor.py","main()","entry","防具店の表示・購入・売却"),
+    S("cgi_py/shop_accessory.py","main()","entry","装飾品店の表示・購入・売却"),
     S("sub_def.common.py","require_owner() / chara_load() / equipment_load()","check","本人・所持金・装備を確認"),
-    S("shop_item.py / shop_def.py / shop_acs.py","mode=buy / mode=sell","check","商品番号、価格、倉庫上限、売却可能装備を検証","NG → redirect_with_flash()"),
+    S("shop_weapon.py / shop_armor.py / shop_accessory.py","mode=buy / mode=sell","check","商品番号、価格、倉庫上限、売却可能装備を検証","NG → redirect_with_flash()"),
     S("sub_def.common.py","chara_regist() / equipment_regist() / souko_regist()","data","所持金・装備・倉庫を更新"),
     S("sub_def.utils.py","redirect_with_flash() / render_template('shop_trade.html')","out","元の店へ戻り結果表示")
   ]),

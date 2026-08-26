@@ -639,18 +639,8 @@ def process_levelup(chara, exp_gained, syoku_master=None):
     levelup_changes = {attr: 0 for attr in ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")}
     hp_increase = 0
     
-    # 職業データのロード
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    syoku_file_path = os.path.join(base_dir, config.Config['syoku_file'])
-    if not os.path.exists(syoku_file_path):
-        syoku_file_path = os.path.join(os.path.dirname(base_dir), config.Config['syoku_file'])
-        
-    jobs = []
-    try:
-        with open(syoku_file_path, "r", encoding="utf-8") as f:
-            jobs = json.load(f)
-    except Exception:
-        pass
+    # 職業マスターが読めない場合も、レベルアップ自体は継続する。
+    jobs = common.load_json_list(config.Config["syoku_file"])
         
     job_idx = chara.get("job", 0)
     sy_limits = [0] * 8 # str, int, mnd, vit, dex, agi, cha, karma

@@ -251,7 +251,7 @@
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 武器屋 -->
-                        <form action="{{ config.shop_item_script }}" method="POST">
+                        <form action="{{ config.shop_weapon_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="⚔️ 武器屋"
@@ -259,7 +259,7 @@
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 防具屋 -->
-                        <form action="{{ config.shop_def_script }}" method="POST">
+                        <form action="{{ config.shop_armor_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🛡️ 防具屋"
@@ -267,7 +267,7 @@
                                    onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
                         </form>
                         <!-- 装飾品店 -->
-                        <form action="{{ config.shop_acs_script }}" method="POST">
+                        <form action="{{ config.shop_accessory_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="💍 装飾品店"

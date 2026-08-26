@@ -96,6 +96,8 @@ def _is_isekai_mode(mode):
 # ==========================================
 # === FOLDER: TECH ===
 # ==========================================
+# 数字付きクラス名は旧版のスキルIDと1対1で対応する。run_skill() の動的解決を
+# 維持するため、表示名へ置換せずIDをそのまま使う。
 
 class tech_0:
     def hissatu(s):
@@ -2838,4 +2840,5 @@ def run_skill(folder, skill_id, method, state):
         try:
             func(state)
         except Exception as e:
+            # 個別スキルの不具合で、進行中の戦闘全体を中断させない。
             state.com1 += f"<small class=red>[効果発動エラー: {class_name}.{method}: {e}]</small><br>"

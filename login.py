@@ -62,9 +62,13 @@ FUNCTION_MAP = {
     "tensyoku": "cgi_py.tensyoku",
     "shop": "cgi_py.shop",
     "yado": "cgi_py.shop",             # (宿屋サブモード)
-    "shop_item": "cgi_py.shop_item",
-    "shop_def": "cgi_py.shop_def",
-    "shop_acs": "cgi_py.shop_acs",
+    "shop_weapon": "cgi_py.shop_weapon",
+    "shop_armor": "cgi_py.shop_armor",
+    "shop_accessory": "cgi_py.shop_accessory",
+    # 旧URLのブックマーク・フォームは新しい店モジュールへ誘導する。
+    "shop_item": "cgi_py.shop_weapon",
+    "shop_def": "cgi_py.shop_armor",
+    "shop_acs": "cgi_py.shop_accessory",
     "bank": "cgi_py.bank",
     "souko": "cgi_py.souko",
     "battle": "cgi_py.battle",

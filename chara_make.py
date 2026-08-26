@@ -61,20 +61,6 @@ def random_asset_id(assets):
     """ID付きアセットから既存の番号をランダムに選びます。"""
     return random.choice(tuple(assets))
 
-def get_all_players():
-    """全プレイヤーデータをロードしてリストで返します"""
-    players = []
-    save_dir = Config['save_dir']
-    if not os.path.exists(save_dir):
-        return players
-    for user_id in os.listdir(save_dir):
-        user_path = os.path.join(save_dir, user_id)
-        if os.path.isdir(user_path):
-            chara = common.chara_load(user_id)
-            if chara:
-                players.append(chara)
-    return players
-
 def validate_input(params):
     """入力値のバリデーションを行います。エラーがある場合はエラーメッセージを返します。"""
     user_id = params.get("id", "").strip()
@@ -130,7 +116,7 @@ def validate_input(params):
         return "そのIDはすでに使用されています。"
         
     # 名前の重複チェック
-    all_players = get_all_players()
+    all_players = common.get_all_players()
     for player in all_players:
         if player.get("name") == c_name:
             return "同一名のキャラクターが既に存在します。"

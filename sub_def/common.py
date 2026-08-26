@@ -274,6 +274,42 @@ def load_json_list(file_path):
         return []
     return decode_html_entities(data) if isinstance(data, list) else []
 
+
+def find_master_record(file_path, record_id):
+    """番号付きJSONマスターから1件を取り出し、倉庫用の ``id`` も付けて返す。"""
+    try:
+        record_id = int(record_id)
+    except (TypeError, ValueError):
+        return None
+    for record in load_json_list(file_path):
+        if isinstance(record, dict) and record.get("no") == record_id:
+            result = dict(record)
+            result["id"] = record_id
+            return result
+    return None
+
+
+def master_records_for_job(file_path, job_id):
+    """指定職業が装備できる番号付きマスターのレコードを返す。"""
+    return [
+        record for record in load_json_list(file_path)
+        if isinstance(record, dict) and job_id in record.get("job_ids", [])
+    ]
+
+
+def format_accessory_bonus(bonus):
+    """装飾品の能力ボーナスを旧版と同じ短い表記に整える。"""
+    labels = (
+        ("str", "力"), ("int", "知"), ("mnd", "信"), ("vit", "生"),
+        ("dex", "器"), ("agi", "速"), ("cha", "魅"), ("karma", "カ"),
+    )
+    parts = []
+    for key, label in labels:
+        value = bonus.get(key, 0)
+        if value:
+            parts.append(f"{label}{'+' if value > 0 else ''}{value}")
+    return " ".join(parts) if parts else "効果なし"
+
 def syoku_load(user_id):
     """職業熟練度データをロードします (統合JSONデータから読み出し)"""
     data = load_user_all(user_id)
@@ -292,29 +328,21 @@ def all_message_load():
 
 def chara_regist(user_id, chara_data):
     """キャラクターの基本ステータスを保存します"""
-    data = load_user_all(user_id) or {}
     if "gold" in chara_data and chara_data["gold"] > Config['max_gold']:
         chara_data["gold"] = Config['max_gold']
-    data["chara"] = chara_data
-    save_user_unified(user_id, data)
+    save_user_sections(user_id, chara=chara_data)
 
 def equipment_regist(user_id, item_data):
     """所持アイテムデータを保存します"""
-    data = load_user_all(user_id) or {}
-    data["equipment"] = item_data
-    save_user_unified(user_id, data)
+    save_user_sections(user_id, equipment=item_data)
 
 def syoku_regist(user_id, syoku_data):
     """職業熟練度データを保存します"""
-    data = load_user_all(user_id) or {}
-    data["syoku"] = syoku_data
-    save_user_unified(user_id, data)
+    save_user_sections(user_id, syoku=syoku_data)
 
 def login_log_regist(user_id, log_data):
     """ログイン履歴を保存します"""
-    data = load_user_all(user_id) or {}
-    data["login_log"] = log_data
-    save_user_unified(user_id, data)
+    save_user_sections(user_id, login_log=log_data)
 
 def all_message_regist(msg_data):
     """全体メッセージを保存します (共有ファイルアトミック保存)"""
@@ -336,13 +364,12 @@ def bbs_regist(posts):
 
 def save_user_all(user_id, chara, item, syoku):
     """ユーザー全データを一括保存します"""
-    data = load_user_all(user_id) or {}
-    data["chara"] = chara
+    sections = {"chara": chara}
     if item is not None:
-        data["equipment"] = item
+        sections["equipment"] = item
     if syoku is not None:
-        data["syoku"] = syoku
-    save_user_unified(user_id, data)
+        sections["syoku"] = syoku
+    save_user_sections(user_id, **sections)
 
 
 def save_user_sections(user_id, **sections):
@@ -362,9 +389,7 @@ def souko_load(user_id, item_type):
 
 def souko_regist(user_id, item_type, data):
     """倉庫データ(item_type: 'weapon', 'armor', 'accessory')を保存します"""
-    u_data = load_user_all(user_id) or {}
-    u_data[f"souko_{item_type}"] = data
-    save_user_unified(user_id, u_data)
+    save_user_sections(user_id, **{f"souko_{item_type}": data})
 
 
 # === 5. アクティブキャラクター更新・表示 ===
@@ -462,12 +487,7 @@ def acs_master_get(acs_id):
         return None
 
     if _acs_master_cache is None:
-        path = os.path.join(BASE_DIR, Config["accessory_file"])
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                _acs_master_cache = json.load(f)
-        except Exception:
-            _acs_master_cache = []
+        _acs_master_cache = load_json_list(Config["accessory_file"])
 
     for item in _acs_master_cache:
         if item.get("no") == acs_id:
