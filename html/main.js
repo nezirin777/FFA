@@ -1,7 +1,8 @@
-// FFA common UI helpers: toast, transition lock, safe navigation.
+// FFA共通UI: 通知、二重送信防止、画面遷移、表示設定をまとめて管理する。
 (() => {
   "use strict";
 
+  // 通知キューと画面ロックの状態。ページ内で一度に一つだけ通知を表示する。
   const toastQueue = [];
   const disabledState = new WeakMap();
   let showingToast = false;
@@ -9,6 +10,7 @@
   let uiLockTimeout = null;
   let confirmOpen = false;
 
+  // localStorageへ保存するUI設定と、許可する値の一覧。
   const DEFAULT_TIMEOUT_SECONDS = 25;
   const TOAST_POSITION_KEY = "toast-position";
   const DEFAULT_TOAST_POSITION = "toast-top-center";
@@ -24,6 +26,7 @@
   const NUMBER_FORMATS = ["comma", "plain"];
   const originalNumberText = new WeakMap();
 
+  // 各画面に対象要素がある機能だけを初期化するため、ページ固有のJSは不要。
   document.addEventListener("DOMContentLoaded", () => {
     loadToastPosition();
     initToastPositionSelector();
@@ -48,12 +51,16 @@
     });
   });
 
+  // --- トースト表示位置 -------------------------------------------------
+
+  // 保存値やdata属性の想定外値を既定値へ戻す。
   function normalizeToastPosition(position) {
     return TOAST_POSITIONS.includes(position)
       ? position
       : DEFAULT_TOAST_POSITION;
   }
 
+  // コンテナの位置クラス、設定ボタン、保存値をまとめて更新する。
   function setToastPosition(position, persist = true) {
     const nextPosition = normalizeToastPosition(position);
     const container = document.getElementById("toast-container");
@@ -80,6 +87,7 @@
     return nextPosition;
   }
 
+  // 保存済みの位置を読み込み、保存処理を行わずに画面へ反映する。
   function loadToastPosition() {
     let savedPosition = DEFAULT_TOAST_POSITION;
     try {
@@ -90,6 +98,7 @@
     setToastPosition(savedPosition, false);
   }
 
+  // 位置選択ボタンはイベント委譲で扱い、ボタン数の増減に追従する。
   function initToastPositionSelector() {
     document.querySelectorAll(".toast-position-selector").forEach((selector) => {
       selector.addEventListener("click", (event) => {
@@ -106,10 +115,14 @@
     });
   }
 
+  // --- 数値表示形式 -----------------------------------------------------
+
+  // 表示形式も許可リスト以外は既定の「区切りなし」に戻す。
   function normalizeNumberFormat(format) {
     return NUMBER_FORMATS.includes(format) ? format : DEFAULT_NUMBER_FORMAT;
   }
 
+  // ボタンの選択状態と本文中の数値を同期し、必要なら設定を保存する。
   function setNumberFormat(format, persist = true) {
     const nextFormat = normalizeNumberFormat(format);
 
@@ -131,6 +144,7 @@
     return nextFormat;
   }
 
+  // 画面を移動しても同じ数値表示形式を使えるよう保存値を復元する。
   function loadNumberFormat() {
     let savedFormat = DEFAULT_NUMBER_FORMAT;
     try {
@@ -141,6 +155,7 @@
     setNumberFormat(savedFormat, false);
   }
 
+  // 数値表示の切替操作。トーストで変更結果も知らせる。
   function initNumberFormatSelector() {
     document.querySelectorAll(".number-format-selector").forEach((selector) => {
       selector.addEventListener("click", (event) => {
@@ -157,6 +172,7 @@
     });
   }
 
+  // テキストノードだけを走査し、入力欄・ボタン・スクリプトの値は変更しない。
   function applyNumberFormat(format) {
     if (!document.body) return;
 
@@ -169,6 +185,7 @@
       );
 
       if (!skip) {
+        // 元の文字列を一度だけ保存し、区切りなしへ正確に戻せるようにする。
         if (!originalNumberText.has(node)) {
           originalNumberText.set(node, node.nodeValue || "");
         }
@@ -190,6 +207,9 @@
     );
   }
 
+  // --- data属性で動く画面部品 ------------------------------------------
+
+  // 待機時間を1秒ごとに更新し、終了時に指定された操作フォームを表示する。
   function initCountdowns() {
     document.querySelectorAll("[data-countdown-seconds]").forEach((element) => {
       let remaining = Number.parseInt(element.dataset.countdownSeconds, 10);
@@ -265,12 +285,16 @@
     });
   }
 
+  // data-history-back付きの戻るボタンに、HTMLから分離した履歴操作を付与する。
   function initHistoryButtons() {
     document.querySelectorAll("[data-history-back]").forEach((button) => {
       button.addEventListener("click", () => window.history.back());
     });
   }
 
+  // --- フォーム送信・画面遷移の二重実行防止 ----------------------------
+
+  // 送信中は全操作をロックする。data-confirm付きフォームは確認後に送信する。
   document.addEventListener("submit", async (event) => {
     if (event.defaultPrevented) return;
 
@@ -303,6 +327,7 @@
     setUILock(true, getLoadingMessage(form), getTimeoutSeconds(form));
   });
 
+  // 同一タブ内リンクの遷移中にもロックを掛ける。新規タブやダウンロードは対象外。
   document.addEventListener("click", (event) => {
     if (event.defaultPrevented) return;
     if (event.button !== 0) return;
@@ -347,6 +372,7 @@
     );
   });
 
+  // data属性で画面ごとのロック文言・タイムアウトを必要な場合だけ上書きできる。
   function getLoadingMessage(element) {
     return element.dataset.loading || "処理中...";
   }
@@ -356,6 +382,7 @@
     return Number.isFinite(raw) && raw > 0 ? raw : DEFAULT_TIMEOUT_SECONDS;
   }
 
+  // オーバーレイ表示、操作部品の無効化、タイムアウト解除を一箇所で管理する。
   function setUILock(locked, message = "処理中...", timeoutSeconds = DEFAULT_TIMEOUT_SECONDS) {
     const overlay = document.getElementById("overlay");
     const buttons = document.querySelectorAll(
@@ -402,6 +429,7 @@
     }
   }
 
+  // 戻る操作・通信失敗・例外ではロックを残さず、再操作できる状態へ戻す。
   window.addEventListener("pageshow", () => {
     setUILock(false);
   });
@@ -425,6 +453,7 @@
     }, { once: true });
   });
 
+  // 確認ダイアログを開いていないときだけ、Escで待機ロックを手動解除できる。
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || confirmOpen) return;
     if (!uiLocked) return;
@@ -432,6 +461,7 @@
     showToast("処理ロックを解除しました。", "info");
   });
 
+  // 共通モーダルを使う確認ダイアログ。テンプレートに無い画面では標準確認へフォールバックする。
   function showConfirm(message) {
     return new Promise((resolve) => {
       if (confirmOpen) {
@@ -481,6 +511,9 @@
     });
   }
 
+  // --- トースト通知 -----------------------------------------------------
+
+  // 通知をキューへ積み、表示中の通知が終わってから順に描画する。
   function showToast(message, type = "info", duration = 3500) {
     const cleanType = ["success", "error", "warning", "info"].includes(type)
       ? type
@@ -493,6 +526,7 @@
     processToastQueue();
   }
 
+  // 一つの通知を表示・フェードアウトし、次の通知へ進む。
   async function processToastQueue() {
     if (showingToast || toastQueue.length === 0) return;
 
@@ -522,6 +556,7 @@
     });
   }
 
+  // 動的に追加したトーストにも現在の数値表示形式を適用するための取得処理。
   function getStoredNumberFormat() {
     try {
       return normalizeNumberFormat(localStorage.getItem(NUMBER_FORMAT_KEY));
@@ -530,6 +565,7 @@
     }
   }
 
+  // JavaScriptからPOST遷移が必要な場合だけ使う。CSRFトークンは呼び出し側で渡す。
   function postNavigate(url, params = {}) {
     setUILock(true, "移動中...");
     const form = document.createElement("form");
@@ -553,6 +589,7 @@
     }
   }
 
+  // fetch中も同じロックとエラー通知を使い、呼び出し側には失敗を再送出する。
   async function safeFetch(url, options = {}) {
     try {
       setUILock(true, "読み込み中...");
@@ -568,6 +605,7 @@
     }
   }
 
+  // テンプレート内の小さなスクリプトから利用する公開API。
   window.showToast = showToast;
   window.setUILock = setUILock;
   window.setToastPosition = setToastPosition;
