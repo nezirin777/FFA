@@ -7,7 +7,7 @@
     <div class="card err-card">
         <div class="card__header err-card__header">⚠️ ERROR</div>
         <div class="card__body err-card__body">
-            <p class="u-text-large">
+            <p class="text-large">
                 {{ error_message | safe }}
             </p>
             <br>
@@ -21,7 +21,7 @@
                 <input type="submit" class="btn" value="{{ back_label or '戻る' }}">
             </form>
             {% else %}
-            <input type="button" class="btn btn--danger btn--sm" value="戻る" onclick="history.back()">
+            <button type="button" class="btn btn--danger btn--sm" data-history-back>戻る</button>
             {% endif %}
         </div>
     </div>

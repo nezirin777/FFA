@@ -440,7 +440,7 @@ class BattleSimulator:
             if s.dmg1 > 0:
                 kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
                 if kclt_ritu > random.randrange(100):
-                    s.com1 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
+                    s.com1 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
                     if s.is_player_enemy:
                         # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
                         s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["atk"]
@@ -451,7 +451,7 @@ class BattleSimulator:
                 if s.dmg2 > 0:
                     mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
                     if mclt_ritu > random.randrange(100):
-                        s.com2 += f"<br><span class=\"red u-text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
+                        s.com2 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
                         # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
                         s.dmg2 = s.dmg2 * 2 + s.item["armor"]["defense"]
             elif s.dmg2 > 0:
@@ -533,17 +533,17 @@ class BattleSimulator:
             if s.dmg2 > 0 and sake1 > random.randrange(evade_roll_max):
                 s.dmg2 = 0
                 player_evaded = True
-                s.com2 += f"<br><span class=\"red u-text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
+                s.com2 += f"<br><span class=\"red text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
             # 敵回避判定
             if s.dmg1 > 0 and sake2 > random.randrange(100):
                 s.dmg1 = 0
                 enemy_evaded = True
-                s.com1 += f"<br><span class=\"red u-text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
+                s.com1 += f"<br><span class=\"red text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
 
             if defense_blocked1 and not enemy_evaded:
                 s.com1 += (
-                    f"<br><span class=\"yellow u-text-small\"><b>"
+                    f"<br><span class=\"yellow text-small\"><b>"
                     f"{s.chara['name']}は {s.mname} にダメージを与えることができなかった！"
                     f"</b></span>"
                 )
@@ -558,13 +558,13 @@ class BattleSimulator:
             if enemy_will_be_defeated and not enemy_evaded:
                 s.dmg2 = 0
                 s.com2 = (
-                    f"<span class=\"yellow u-text-small\"><b>"
+                    f"<span class=\"yellow text-small\"><b>"
                     f"{s.mname}はすでに倒れていた！"
                     f"</b></span>"
                 )
             elif defense_blocked2 and not player_evaded:
                 s.com2 += (
-                    f"<br><span class=\"yellow u-text-small\"><b>"
+                    f"<br><span class=\"yellow text-small\"><b>"
                     f"{s.mname}は {s.chara['name']} にダメージを与えることができなかった！"
                     f"</b></span>"
                 )

@@ -24,8 +24,8 @@
             actionIds.forEach(function(id) {
                 var textEl = document.getElementById("cooldown-text-" + id);
                 var formEl = document.getElementById("action-form-" + id);
-                if (textEl) textEl.style.display = "none";
-                if (formEl) formEl.style.display = "";
+                if (textEl) textEl.hidden = true;
+                if (formEl) formEl.hidden = false;
             });
         } else {
             setTimeout(CountDown, 1000);
@@ -44,9 +44,9 @@
         <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> /
         <a href="{{ config.ranking_script }}">能力別ランキング</a> /
         <a href="{{ config.legend_script }}&view=ranking">レジェンドプレイス攻略者一覧</a> /
-        <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> /
-        <a href="{{ config.character_image_list_script }}" target="_blank">{{ config.character_image_list_label }}</a> /
-        <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a>
+        <a href="{{ config.jobs_html_path }}" target="_blank" rel="noopener noreferrer">職業説明</a> /
+        <a href="{{ config.character_image_list_script }}" target="_blank" rel="noopener noreferrer">{{ config.character_image_list_label }}</a> /
+        <a href="{{ config.manual_path }}" target="_blank" rel="noopener noreferrer">{{ config.manual_link_label }}</a>
     </div>
 
     <!-- 王者・チョコボチャンプ・冒険中リスト -->
@@ -162,7 +162,7 @@
                                 {% if winner.id == chara.id %}
                                     <span class="green">現在あなたが王者ですクポ！</span>
                                 {% else %}
-                                    <div id="action-form-battle" style="{% if ztime > 0 %}display: none;{% endif %}">
+                                    <div id="action-form-battle"{% if ztime > 0 %} hidden{% endif %}>
                                         <form action="{{ config.battle_script }}" method="POST">
                                             <input type="hidden" name="s" value="{{ csrf_token }}">
                                             <input type="hidden" name="id" value="{{ chara.id }}">
@@ -236,7 +236,7 @@
                 <div class="card__header">街の施設</div>
                 <div class="card__body">
                     <!-- ホバー説明文エリア -->
-                    <div id="facility-desc" class="facility-desc-box">
+                    <div id="facility-desc" class="facility-desc-box" data-facility-description-target data-default-description="施設を選択してくださいクポ">
                         施設を選択してくださいクポ
                     </div>
 
@@ -247,84 +247,72 @@
                             <input type="hidden" name="mode" value="yado">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🏨 宿屋 ({{ yado_daix }}G)"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'HP/MPを全回復します。宿代：{{ yado_daix }}ゴールドクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="HP/MPを全回復します。宿代：{{ yado_daix }}ゴールドクポ。">
                         </form>
                         <!-- 武器屋 -->
                         <form action="{{ config.shop_weapon_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="⚔️ 武器屋"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '武器の購入と手持ち装備の売却ができますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="武器の購入と手持ち装備の売却ができますクポ。">
                         </form>
                         <!-- 防具屋 -->
                         <form action="{{ config.shop_armor_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🛡️ 防具屋"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '防具の購入と手持ち装備の売却ができますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="防具の購入と手持ち装備の売却ができますクポ。">
                         </form>
                         <!-- 装飾品店 -->
                         <form action="{{ config.shop_accessory_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="💍 装飾品店"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'アクセサリの購入と手持ち装備の売却ができますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="アクセサリの購入と手持ち装備の売却ができますクポ。">
                         </form>
                         <!-- ステータスUP -->
                         <form action="{{ config.status_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="📈 成長・設定"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'キャラアイコン画像やコメントなどの設定を変更しますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="キャラアイコン画像やコメントなどの設定を変更しますクポ。">
                         </form>
                         <!-- 銀行 -->
                         <form action="{{ config.bank_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🏦 銀行"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'ゴールドの預入、引出、送金ができますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="ゴールドの預入、引出、送金ができますクポ。">
                         </form>
                         <!-- アイテム倉庫 -->
                         <form action="{{ config.souko_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="📦 倉庫"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '武器・防具・装飾品を預けたり引き出したりできますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="武器・防具・装飾品を預けたり引き出したりできますクポ。">
                         </form>
                         <!-- 掲示板 -->
-                        <a href="#ff-bbs" class="btn facility-btn"
-                           onmouseover="document.getElementById('facility-desc').innerText = '冒険者みんなが書き込める掲示板クポ。'"
-                           onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">📝 掲示板</a>
+                        <a href="#ff-bbs" class="btn facility-btn" data-facility-description="冒険者みんなが書き込める掲示板クポ。">📝 掲示板</a>
                         <!-- 転職の神殿 -->
                         <form action="{{ config.tensyoku_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="⛪ 転職神殿"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '一定の条件を満たしたときに、別の職業へ転職できますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="一定の条件を満たしたときに、別の職業へ転職できますクポ。">
                         </form>
                         <!-- チョコボ牧場 -->
                         <form action="{{ config.chocofarm_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🐤 チョコボ牧場"
-                                   onmouseover="document.getElementById('facility-desc').innerText = 'チョコボの育成、訓練、レース等が行えますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="チョコボの育成、訓練、レース等が行えますクポ。">
                         </form>
                         <!-- 天下一武道会 -->
                         <form action="{{ config.tenka_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🏆 武道会"
-                                   onmouseover="document.getElementById('facility-desc').innerText = '他の冒険者と対戦し、ランキングを競いますクポ。'"
-                                   onmouseout="document.getElementById('facility-desc').innerText = '施設を選択してくださいクポ'">
+                                   data-facility-description="他の冒険者と対戦し、ランキングを競いますクポ。">
                         </form>
                     </div>
                 </div>
@@ -338,7 +326,7 @@
                         <!-- モンスターと戦う -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">⚔️ モンスターと闘う</span>
-                            <div id="action-form-monster" style="{% if ztime > 0 %}display: none;{% endif %}">
+                            <div id="action-form-monster"{% if ztime > 0 %} hidden{% endif %}>
                                 <form action="{{ config.monster_script }}" method="POST" class="ff-monster-form">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="mode" value="monster">
@@ -363,7 +351,7 @@
                         {% if chara.last_time % 5 == 0 %}
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🏰 突然の出現</span>
-                            <div id="action-form-genei" style="{% if ztime > 0 %}display: none;{% endif %}">
+                            <div id="action-form-genei"{% if ztime > 0 %} hidden{% endif %}>
                                 <form action="{{ config.monster_script }}" method="POST">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="mode" value="genei">
@@ -386,7 +374,7 @@
                             {% if not chara.battle_count %}
                                 <small class="red">※一度チャンプに挑戦してください</small>
                             {% else %}
-                                <div id="action-form-boss" style="{% if ztime > 0 %}display: none;{% endif %}">
+                                <div id="action-form-boss"{% if ztime > 0 %} hidden{% endif %}>
                                     <form action="{{ config.legend_script }}" method="POST" class="ff-boss-form">
                                         <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="boss">
@@ -420,7 +408,7 @@
                             {% if chara.level < config.isekai_level %}
                                 <small class="red">※レベル {{ config.isekai_level }} 以上で開放されます</small>
                             {% else %}
-                                <div id="action-form-isekiai" style="{% if ztime > 0 %}display: none;{% endif %}">
+                                <div id="action-form-isekiai"{% if ztime > 0 %} hidden{% endif %}>
                                     <form action="{{ config.monster_script }}" method="POST">
                                         <input type="hidden" name="s" value="{{ csrf_token }}">
                                         <input type="hidden" name="mode" value="isekiai">
@@ -474,7 +462,7 @@
             </div>
           </div>
           {% else %}
-          <div class="card u-text-center">
+          <div class="card text-center">
             <div class="card__body">現在、全体ニュースはありません。</div>
           </div>
           {% endfor %}
@@ -524,7 +512,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="card u-text-center">
+            <div class="card text-center">
                 <div class="card__body">まだ書き込みがありませんクポ。</div>
             </div>
             {% endfor %}

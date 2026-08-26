@@ -34,7 +34,7 @@
     <!-- 戦闘結果コメント -->
     <div class="battle-summary">
         {{ comment | safe }}
-        <div class="post-form-note u-mt-s">
+        <div class="post-form-note space-top-small">
             （獲得経験値: <b class="green">+{{ exp_gained }} exp</b>
             {% if gold_gained != 0 %} / 所持金変動: <b class="{% if gold_gained > 0 %}yellow{% else %}red{% endif %}">{{ '%+d'|format(gold_gained) }} G</b>{% endif %}）
         </div>

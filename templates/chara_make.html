@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="layout-stack content-sm">
-    <div class="u-text-center">
+    <div class="text-center">
         <br>
         <h1 class="chara-make-title">🛡️ キャラクター新規登録</h1>
         <p>FFAの世界へ旅立つためのキャラクターを作成します。</p>
@@ -74,7 +74,7 @@
                     <label><b>キャラクター外見 (番号):</b></label>
                     <div class="layout-cluster layout-cluster--start">
                         <input class="form-control chara-make-input-short" type="text" name="chara">
-                        <a class="btn btn--sm" href="{{ character_image_list_url }}" target="_blank">{{ character_image_list_label }}を開く</a>
+                        <a class="btn btn--sm" href="{{ character_image_list_url }}" target="_blank" rel="noopener noreferrer">{{ character_image_list_label }}を開く</a>
                     </div>
                     <div class="note-text">※希望の画像番号を入力してください。空欄、または無効な番号の場合はランダムに決定します。</div>
                 </div>
@@ -97,7 +97,7 @@
         </div>
     </form>
     
-    <div class="chara-make-footer u-text-center">
+    <div class="chara-make-footer text-center">
         <a class="btn" href="{{ config.others_script }}">トップページへ戻る</a>
     </div>
 </div>

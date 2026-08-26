@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="u-text-center">
+<div class="text-center">
     <br>
     <h1 class="others-title">
         ⚔️ {{ config.main_title }} ⚔️
@@ -16,14 +16,14 @@
 
     <!-- 共有メニュー-->
     <div class="others-footer-menu">
-      <div class="u-text-center">
+      <div class="text-center">
         <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> |
         <a href="{{ config.ranking_script }}">能力別ランキング</a> |
         <a href="{{ config.legend_script }}&view=ranking">レジェンドプレイス攻略者一覧</a> |
-        <a href="{{ config.jobs_html_path }}" target="_blank">職業説明</a> |
-        <a href="{{ config.character_image_list_script }}" target="_blank">{{ config.character_image_list_label }}</a> |
-        <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a> |
-        <a href="https://oktaviacgi-games.com/" target="_blank">おくたげーむす</a>
+        <a href="{{ config.jobs_html_path }}" target="_blank" rel="noopener noreferrer">職業説明</a> |
+        <a href="{{ config.character_image_list_script }}" target="_blank" rel="noopener noreferrer">{{ config.character_image_list_label }}</a> |
+        <a href="{{ config.manual_path }}" target="_blank" rel="noopener noreferrer">{{ config.manual_link_label }}</a> |
+        <a href="https://oktaviacgi-games.com/" target="_blank" rel="noopener noreferrer">おくたげーむす</a>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
             <div class="card__header">✨ 新規登録</div>
             <div class="card__body">
                 <p>新しいキャラクターを作成して冒険を始めましょう！一人につき1キャラのみ登録可能です。</p>
-                <form class="u-mt-m" action="{{ config.chara_make_script }}" method="POST">
+                <form class="space-top-medium" action="{{ config.chara_make_script }}" method="POST">
                     <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="mode" value="chara_make">
                     <input type="submit" class="btn btn--block" value="新規キャラクター作成">
@@ -64,7 +64,7 @@
                 <form action="{{ config.login_script }}" method="POST">
                     <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="mode" value="log_in">
-                    <div class="layout-stack layout-stack--sm u-text-left">
+                    <div class="layout-stack layout-stack--sm text-left">
                         <div>
                             <label class="form-label">ID:</label>
                             <input class="form-control" type="text" name="id" value="{{ c_id }}">
@@ -86,7 +86,7 @@
             <div class="card__body">
                 <p>どなたでもログインなしで挙動をテストできます。（※10分の排他時間制御あり）</p>
                 {% if test_playable %}
-                <form class="u-mt-m" action="{{ config.login_script }}" method="POST">
+                <form class="space-top-medium" action="{{ config.login_script }}" method="POST">
                     <input type="hidden" name="s" value="{{ csrf_token }}">
                     <input type="hidden" name="mode" value="log_in">
                     <input type="hidden" name="id" value="test">
@@ -121,7 +121,7 @@
         <!-- 左カラム: チャンプデータ -->
         <div>
             <h2 class="others-section-title">👑 現在のチャンプ（{{ winner.win_count }}連勝中）</h2>
-            <p class="u-text-left u-mb-m">
+            <p class="text-left space-bottom-medium">
                 現在の最高連勝記録は、<b>{{ winner.max_win_name }}</b> さんの <b>{{ winner.max_win_count }}</b> 連勝です。
             </p>
 
@@ -253,14 +253,14 @@
     <hr class="section-divider">
 
     <div class="others-footer-menu">
-        <div class="u-text-center">
+        <div class="text-center">
             <a href="{{ config.system_script }}?mode=ranking">登録者一覧</a> |
             <a href="{{ config.ranking_script }}">能力別ランキング</a> |
-            <a href="{{ config.manual_path }}" target="_blank">{{ config.manual_link_label }}</a> |
-            <a href="https://oktaviacgi-games.com/" target="_blank">おくたげーむす</a>
+            <a href="{{ config.manual_path }}" target="_blank" rel="noopener noreferrer">{{ config.manual_link_label }}</a> |
+            <a href="https://oktaviacgi-games.com/" target="_blank" rel="noopener noreferrer">おくたげーむす</a>
         </div>
 
-        <div class="u-text-center">
+        <div class="text-center">
             <form action="{{ config.admin_script }}" method="POST">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
                 <span>管理者パスワード:</span>

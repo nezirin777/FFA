@@ -53,7 +53,7 @@
     <div class="farm-card">
         <div class="farm-card__title">🌲 森のアクション</div>
         {% if has_choco %}
-        <div class="farm-msg-content u-mt-s">
+        <div class="farm-msg-content space-top-small">
             既にチョコボを飼育しているため、新しいチョコボは捕まえられないクポ。<br>
             新しい子を迎えるには、今の子と別れる（牧場の「野に放す」）必要があるクポ。
         </div>
@@ -90,7 +90,7 @@
                 <td class="farm-val-cell">{{ cy.father }} / {{ cy.mother }}</td>
             </tr>
         </table>
-        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s">
+        <form action="{{ config.mori_farm_script }}" method="POST" class="space-top-small">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">
@@ -131,7 +131,7 @@
                 <td class="farm-val-cell">{{ cy.breader }}</td>
             </tr>
         </table>
-        <form action="{{ config.mori_farm_script }}" method="POST" class="u-mt-s" data-confirm="{{ cy.name }} と配合します。今のチョコボは引退しますがよろしいですか？">
+        <form action="{{ config.mori_farm_script }}" method="POST" class="space-top-small" data-confirm="{{ cy.name }} と配合します。今のチョコボは引退しますがよろしいですか？">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="hidden" name="mydata" value="{{ chara_log }}">
@@ -165,7 +165,7 @@
             </tr>
         </table>
 
-        <div class="farm-action-row u-mt-m">
+        <div class="farm-action-row space-top-medium">
             <span class="farm-action-label">✏️ 名前をつける</span>
             <form action="{{ config.mori_farm_script }}" method="POST" class="farm-action-form">
                 <input type="hidden" name="s" value="{{ csrf_token }}">

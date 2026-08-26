@@ -208,7 +208,7 @@ def main():
             chara["boss_flag"] -= 1
             if chara["boss_flag"] <= 0:
                 # 階層クリア！
-                comment += f'<b><span class="yellow u-text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
+                comment += f'<b><span class="yellow text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
                 
                 # 全体メッセージに投稿。管理投稿や他イベントとの上書きを防ぐ。
                 common.get_lock("all_message_post")

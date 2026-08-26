@@ -650,7 +650,7 @@ def main():
             finally:
                 common.release_lock("all_message_post")
                 
-            comment += f'<br><span class="gold u-text-large">🎉 【重賞制覇】「{racename}」のタイトルを獲得しました！</span>'
+            comment += f'<br><span class="gold text-large">🎉 【重賞制覇】「{racename}」のタイトルを獲得しました！</span>'
             
     # 敗北時の処理
     else:

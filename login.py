@@ -96,6 +96,12 @@ FUNCTION_MAP = {
     "chocorank": "cgi_py.chocorank"
 }
 
+# URLのルーティングだけで状態を更新するアクション。これらはフォームを経由しない
+# GET直打ちを許可しない。legend は攻略者一覧だけが公開の閲覧画面であるため別扱いにする。
+POST_ONLY_ROUTE_MODES = {
+    "battle", "monster", "genei", "isekiai", "boss", "dendo", "farmrace",
+}
+
 def main():
     FORM = common.decode_params()
     
@@ -210,9 +216,17 @@ def main():
                 if chara.get("pass") == session.get("password_hash"):
                     is_logged_in = True
                     
-        # 未ログインかつ公開モードでもない場合は、トップページへ強制リダイレクト
-        if not is_logged_in and mode not in public_modes:
+        # レジェンド攻略者一覧だけは公開閲覧を許可し、攻略実行はログイン必須にする。
+        is_public_view = mode in public_modes or (mode == "legend" and FORM.get("view") == "ranking")
+        # 未ログインかつ公開画面でもない場合は、トップページへ強制リダイレクト
+        if not is_logged_in and not is_public_view:
             redirect("others.py")
+
+        # フォームの method を書き換えたりURLを直接開いたりしても、戦闘・レース・
+        # 殿堂登録などの状態変更は実行させない。CSRF検証と組み合わせて二重に守る。
+        is_legend_ranking = mode == "legend" and FORM.get("view") == "ranking"
+        if method != "POST" and (mode in POST_ONLY_ROUTE_MODES or (mode == "legend" and not is_legend_ranking)):
+            show_error("この操作は画面のフォームから実行してください。")
             
         # POST メソッド時のみ CSRF トークン検証を行い、不正アクセスを排除
         if method == "POST":

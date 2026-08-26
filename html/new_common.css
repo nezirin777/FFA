@@ -256,9 +256,9 @@ body.ui-locked {
 .gray { color: var(--gray); font-size: 100%; font-weight: bold; }
 
 /* テキストサイズのユーティリティ (戦闘・レース等の結果強調表示用) */
-.u-text-large { font-size: 1.25em; }
-.u-text-medium { font-size: 1.15em; }
-.u-text-small { font-size: 1.05em; }
+.text-large { font-size: 1.25em; }
+.text-medium { font-size: 1.15em; }
+.text-small { font-size: 1.05em; }
 
 /* 共通レイアウト */
 .wrapper {
@@ -279,6 +279,26 @@ body.ui-locked {
   margin-top: auto;
   padding: var(--space-l) var(--space-m);
   text-align: right;
+}
+
+.site-footer__rule {
+  border: 0;
+  border-top: 1px solid var(--dark);
+}
+
+.site-footer__navigation {
+  text-align: center;
+}
+
+.site-footer__separator {
+  width: 100%;
+  border: 0;
+  margin: var(--space-xs) 0;
+}
+
+.site-footer__version {
+  color: var(--vlink-color);
+  font-size: 10px;
 }
 
 .footer-credits {

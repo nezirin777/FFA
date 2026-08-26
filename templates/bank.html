@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="bank-main-stack">
-    <div class="u-text-center">
+    <div class="text-center">
         <h1>🏦 ゴールド銀行</h1>
         <p class="sts-text-muted">ゴールドの安全な預け入れと引き出しを行うことができます。</p>
         <hr class="section-divider">
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="banner banner--warning u-text-center">
+    <div class="banner banner--warning text-center">
         ⚠️ <b>ご注意：最大貯金額 {{ bank_max }} Gold</b> を超えて預け入れされた分は、国に寄付されます。
     </div>
 
@@ -34,7 +34,7 @@
         <div class="card">
             <div class="card__header">💰 ゴールドを預ける</div>
             <div class="card__body layout-stack layout-stack--sm">
-                <p class="sts-text-muted u-text-center">（入力値 × 1,000 Gold を預け入れます）</p>
+                <p class="sts-text-muted text-center">（入力値 × 1,000 Gold を預け入れます）</p>
                 
                 <div class="bank-action-row">
                     <form action="{{ config.bank_script }}" method="post" class="layout-cluster">
@@ -61,7 +61,7 @@
         <div class="card">
             <div class="card__header">🪙 ゴールドを引き出す</div>
             <div class="card__body layout-stack layout-stack--sm">
-                <p class="sts-text-muted u-text-center">（入力値 × 1,000 Gold を引き出します）</p>
+                <p class="sts-text-muted text-center">（入力値 × 1,000 Gold を引き出します）</p>
                 
                 <div class="bank-action-row">
                     <form action="{{ config.bank_script }}" method="post" class="layout-cluster">
@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div class="u-text-center">
+    <div class="text-center">
         <form action="{{ config.main_script }}" method="POST" class="bank-back-form">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">

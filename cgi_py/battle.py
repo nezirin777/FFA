@@ -311,7 +311,7 @@ def main():
                     "gold": new_winner_gold
                 }
                 
-                comment += f'<span class="green u-text-large">見事に勝利し、新王者になりました！</span><br>'
+                comment += f'<span class="green text-large">見事に勝利し、新王者になりました！</span><br>'
                 comment += f'経験値 {exp_gained} と賞金 {gold_gained} ゴールドを獲得しました。<br>'
             else:
                 # 挑戦者の敗北 ➔ 王者の防衛成功
@@ -342,7 +342,7 @@ def main():
                     "name": chara["name"]
                 }
                 
-                comment += f'<span class="red u-text-large">王者の防衛に阻まれ、敗北しました・・・</span><br>'
+                comment += f'<span class="red text-large">王者の防衛に阻まれ、敗北しました・・・</span><br>'
                 comment += f'経験値 {exp_gained} を獲得しました。<br>'
 
             # 王者データの保存

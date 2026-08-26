@@ -221,9 +221,9 @@ def main():
                 if random.randrange(3) == 0:
                     otakara = (random.randrange(1000) + 1) * enemy_data["gold_reward"]
                     gold_gained += otakara
-                    comment += f'<br><b><span class="red u-text-large">財宝({otakara}Ｇ)を発見した！！！！</span></b><br>'
+                    comment += f'<br><b><span class="red text-large">財宝({otakara}Ｇ)を発見した！！！！</span></b><br>'
                 else:
-                    comment += '<br><b><span class="gray u-text-large">辺りに財宝は見つからなかった・・・。</span></b><br>'
+                    comment += '<br><b><span class="gray text-large">辺りに財宝は見つからなかった・・・。</span></b><br>'
 
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
@@ -231,12 +231,12 @@ def main():
             if chara["gold"] < 0:
                 chara["gold"] = 0
             
-            comment += f'<span class="green u-text-large">戦闘に勝利しました！</span><br>'
+            comment += f'<span class="green text-large">戦闘に勝利しました！</span><br>'
             comment += f'経験値 {exp_gained} と {gold_gained} ゴールドを獲得しました。<br>'
         elif win == 0:
             # 旧版の敗北時処理は所持金を1%にする。
             chara["gold"] = int(chara["gold"] / 100)
-            comment += f'<span class="red u-text-large">戦闘に敗北しました・・・</span><br>'
+            comment += f'<span class="red text-large">戦闘に敗北しました・・・</span><br>'
         else:
             # 引き分けは基礎報酬を支給せず、戦闘中に発生した盗み分だけ反映する。
             # 経験値は旧版 mbattle.pl と同じく通常報酬の半分。
@@ -248,11 +248,11 @@ def main():
             if chara["gold"] < 0:
                 chara["gold"] = 0
 
-            comment += f'<span class="yellow u-text-large">時間切れ引き分けです。</span><br>'
+            comment += f'<span class="yellow text-large">時間切れ引き分けです。</span><br>'
             if gold_gained > 0:
-                comment += f'<span class="green u-text-large">盗んだお金 {gold_gained} G を獲得しました。</span><br>'
+                comment += f'<span class="green text-large">盗んだお金 {gold_gained} G を獲得しました。</span><br>'
             elif gold_gained < 0:
-                comment += f'<span class="red u-text-large">お金を {abs(gold_gained)} G 失いました。</span><br>'
+                comment += f'<span class="red text-large">お金を {abs(gold_gained)} G 失いました。</span><br>'
 
         # 旧版 mbattle.pl の sentoukeka と同じく、通常修行・幻影の城・異世界を
         # 挟んだ場合はレジェンドプレイスの連続攻略を終了する。

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="shop-trade-stack">
-    <h1 class="u-text-center">{{ shop_title }}</h1>
+    <h1 class="text-center">{{ shop_title }}</h1>
     <hr class="section-divider">
 
     <!-- 店主のメッセージ -->
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="u-text-center u-text-large u-mb-s">
+    <div class="text-center text-large space-bottom-small">
         現在の所持金：<b><span class="yellow">{{ chara.gold }}</span></b> G
     </div>
 
@@ -38,7 +38,7 @@
                         <tr>
                             <td>
                                 {% if equipped_item.id and equipped_item.id != 0 %}
-                                <form action="{{ post_url }}" method="POST" class="u-m-0">
+                                <form action="{{ post_url }}" method="POST" class="form-reset">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="id" value="{{ chara.id }}">
                                     <input type="hidden" name="mode" value="sell">
@@ -60,7 +60,7 @@
     </div>
 
     <!-- 購入可能な商品リスト -->
-    <form action="{{ post_url }}" method="POST" class="u-m-0">
+    <form action="{{ post_url }}" method="POST" class="form-reset">
         <input type="hidden" name="s" value="{{ csrf_token }}">
         <input type="hidden" name="id" value="{{ chara.id }}">
         <input type="hidden" name="mode" value="buy">
@@ -84,13 +84,13 @@
                             <tr>
                                 <td>
                                     {% if chara.gold >= item.gold %}
-                                    <input type="radio" name="item_no" value="{{ item.no }}">
+                                    <input type="radio" name="item_no" value="{{ item.no }}" required>
                                     {% else %}
                                     <span class="red"><span class="small-text">不可</span></span>
                                     {% endif %}
                                 </td>
                                 <td>{{ item.no }}</td>
-                                <td class="u-text-left">{{ item.name }}</td>
+                                <td class="text-left">{{ item.name }}</td>
                                 <td>{{ item.performance }}</td>
                                 <td><span class="yellow">{{ item.gold }}</span> G</td>
                             </tr>
@@ -109,13 +109,13 @@
         </div>
     </form>
 
-    <div class="shop-trade-nav u-text-center">
-        <form action="{{ config.souko_script }}" method="POST" class="u-m-0">
+    <div class="shop-trade-nav text-center">
+        <form action="{{ config.souko_script }}" method="POST" class="form-reset">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn shop-trade-btn shop-trade-btn--sm" value="📦 倉庫へ">
         </form>
-        <form action="{{ config.main_script }}" method="POST" class="u-m-0">
+        <form action="{{ config.main_script }}" method="POST" class="form-reset">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
             <input type="submit" class="btn shop-trade-btn shop-trade-btn--sm" value="街に戻る">

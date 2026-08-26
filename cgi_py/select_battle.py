@@ -159,11 +159,11 @@ def main():
 
         comment = ""
         if win == 1:
-            comment = f'<span class="green u-text-large">{aite_chara["name"]} に勝利しました！</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="green text-large">{aite_chara["name"]} に勝利しました！</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         elif win == 0:
-            comment = f'<span class="red u-text-large">{aite_chara["name"]} に敗北しました・・・</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="red text-large">{aite_chara["name"]} に敗北しました・・・</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         else:
-            comment = f'<span class="yellow u-text-large">引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+            comment = f'<span class="yellow text-large">引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
 
         # 5. 戦闘結果画面の描画 (monster_result.html を再利用)
         context = {

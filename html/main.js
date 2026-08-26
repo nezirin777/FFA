@@ -30,6 +30,9 @@
     loadNumberFormat();
     initNumberFormatSelector();
     initCountdowns();
+    initFacilityDescriptions();
+    initSelectableRows();
+    initHistoryButtons();
 
     const flashes = Array.isArray(window.FFA_FLASH_MESSAGES)
       ? window.FFA_FLASH_MESSAGES
@@ -216,6 +219,55 @@
 
         element.textContent = "利用できます";
       }, 1000);
+    });
+  }
+
+  // 施設ボタンの説明は、マウスとキーボード操作の両方で同じ内容を表示する。
+  function initFacilityDescriptions() {
+    const description = document.querySelector("[data-facility-description-target]");
+    if (!description) return;
+
+    const defaultText = description.dataset.defaultDescription || description.textContent.trim();
+    const setDescription = (text) => {
+      description.textContent = text || defaultText;
+    };
+
+    document.querySelectorAll("[data-facility-description]").forEach((control) => {
+      const text = control.dataset.facilityDescription;
+      control.addEventListener("pointerenter", () => setDescription(text));
+      control.addEventListener("focus", () => setDescription(text));
+      control.addEventListener("pointerleave", () => setDescription(defaultText));
+      control.addEventListener("blur", () => setDescription(defaultText));
+    });
+  }
+
+  // 表の行を押してラジオボタンを選ぶ画面では、直接選択やキーボード操作にも表示を同期する。
+  function initSelectableRows() {
+    document.querySelectorAll("[data-selectable-row]").forEach((row) => {
+      const radio = row.querySelector("input[type='radio']");
+      const table = row.closest("table");
+      if (!radio || !table) return;
+
+      const updateSelection = () => {
+        table.querySelectorAll("[data-selectable-row]").forEach((candidate) => {
+          const candidateRadio = candidate.querySelector("input[type='radio']");
+          candidate.classList.toggle("is-selected", Boolean(candidateRadio?.checked));
+        });
+      };
+
+      row.addEventListener("click", (event) => {
+        if (event.target.closest("input, label, button, a")) return;
+        radio.checked = true;
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      radio.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+  }
+
+  function initHistoryButtons() {
+    document.querySelectorAll("[data-history-back]").forEach((button) => {
+      button.addEventListener("click", () => window.history.back());
     });
   }
 

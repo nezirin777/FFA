@@ -567,13 +567,16 @@ img {
   margin: var(--space-l) 0;
 }
 
-.u-m-0 { margin: 0 !important; }
-.u-mt-s { margin-top: var(--space-s) !important; }
-.u-mt-m { margin-top: var(--space-m) !important; }
-.u-display-inline { display: inline !important; }
-.u-display-inline-block { display: inline-block !important; }
-.u-text-center { text-align: center !important; }
-.u-text-left { text-align: left !important; }
+.form-reset { margin: 0; }
+.space-top-small { margin-top: var(--space-s); }
+.space-top-medium { margin-top: var(--space-m); }
+.space-top-large { margin-top: var(--space-xl); }
+.space-bottom-small { margin-bottom: var(--space-s); }
+.space-bottom-medium { margin-bottom: var(--space-m); }
+.display-inline { display: inline; }
+.display-inline-block { display: inline-block; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
 
 /* ====================================================== */
 /* 9. Top / Welcome Page                                  */
@@ -2653,7 +2656,7 @@ img {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.tac-table tr.active {
+.tac-table tr.is-selected {
   background-color: rgba(100, 181, 246, 0.15);
 }
 
