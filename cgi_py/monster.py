@@ -240,6 +240,7 @@ def main():
                 chara["gold"] = 0
 
             comment += f'<span class="yellow text-large">時間切れ引き分けです。</span><br>'
+            comment += f'経験値 {exp_gained} を獲得しました。<br>'
             if gold_gained > 0:
                 comment += f'<span class="green text-large">盗んだお金 {gold_gained} G を獲得しました。</span><br>'
             elif gold_gained < 0:

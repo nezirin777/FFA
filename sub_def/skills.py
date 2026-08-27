@@ -254,9 +254,9 @@ class tech_11:
     def hissatu(s):
         if skill_check(s, 120):
             s.dmg1+= ((s.chara['dex']+s.chara['job_level']) * random.randrange(int(50)))
-            s.sake2 -= 999999
             s.com1 += "<font class='yellow' size='5'>必殺技ライフ・デジョン！！！</font><br>"
-            s.damage_heal_ratio1 = 1.0
+            # Ver2と同じく回避判定は通常どおり行い、回復量は与ダメージの1/5。
+            s.damage_heal_ratio1 = 0.2
 
     def atowaza(s):
         pass
@@ -1275,9 +1275,9 @@ class wtech_11:
     def whissatu(s):
         if skill_check(s, 120, "winner"):
             s.dmg2 = s.dmg2 + ((s.winner['dex'] + s.winner['job_level']) * random.randrange(int(50)))
-            s.sake1 -= 999999
             s.com2 += "<font class='yellow' size='5'>必殺技ライフ・デジョン！！！</FONT><br>"
-            s.damage_heal_ratio2 = 1.0
+            # プレイヤー側と同じく、必中ではなく与ダメージの1/5を回復する。
+            s.damage_heal_ratio2 = 0.2
 
     def watowaza(s):
         pass

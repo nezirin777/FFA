@@ -246,6 +246,10 @@ def main():
             chara["gold"] = int(chara["gold"] / 100) # ゴールド激減
             comment += f'<b><font size=5>{chara["name"]} は、戦闘に負けた・・・。</font></b><br>'
 
+        # レジェンドは勝敗にかかわらず経験値を得るが、従来は結果画面に
+        # 表示していなかった。保存値と結果表示を一致させる。
+        comment += f'経験値 {exp_gained} を獲得しました。<br>'
+
         # 戦闘後の残りHP復元
         restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
         if restored_hp > chara["max_hp"]:

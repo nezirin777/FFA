@@ -574,10 +574,12 @@ class BattleSimulator:
                     s.kaihuku2 += f"{s.winner['name']} のＨＰが {damage_heal2} 回復した！♪"
                 
             # === 7. HPの減算処理 (hp_sum) ===
+            # 現行・Ver2互換の同時精算。先攻・後攻を導入する場合は、
+            # モンスター側を含む行動順の仕様を別途定義してから行う。
             s.khp = s.khp - s.dmg2 - s.dmgme1 + s.hpplus1
             if s.khp > s.chara["max_hp"]:
                 s.khp = s.chara["max_hp"]
-                
+
             s.mhp = s.mhp - s.dmg1 + s.hpplus2
             if s.mhp > s.mhp_flg:
                 s.mhp = s.mhp_flg
