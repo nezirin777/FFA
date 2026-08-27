@@ -624,6 +624,10 @@ def process_levelup(chara, exp_gained, syoku_master=None):
       comment (str): レベルアップ時のログ（HTML）
       lvup_count (int): レベルアップした回数
     """
+    # Ver2と同じく職業熟練度はMasterとなるLv60を上限にする。
+    # 過去に60を超えて保存されたデータも、次の戦闘処理で正規化する。
+    chara["job_level"] = min(60, max(0, int(chara.get("job_level", 0))))
+
     chara["exp"] += exp_gained
     lvup_count = 0
     comment = ""
@@ -714,8 +718,8 @@ def process_levelup(chara, exp_gained, syoku_master=None):
             )
         
         # 職業熟練度(job_level)の上昇
-        old_job_level = chara.get("job_level", 0)
-        chara["job_level"] += lvup_count
+        old_job_level = chara["job_level"]
+        chara["job_level"] = min(60, old_job_level + lvup_count)
         
         # 熟練度が60に達し、マスター登録される場合
         job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
