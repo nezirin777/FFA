@@ -7,6 +7,7 @@ docs/*.html は確認用の生成物である。ゲーム本体からは読み�
 from __future__ import annotations
 
 import argparse
+import ast
 import html
 import json
 import sys
@@ -39,6 +40,7 @@ DOC_LINKS = (
     ("monster_catalog.html", "モンスターカタログ"),
     ("status_reference.html", "キー・能力値辞典"),
     ("battle_specs.html", "戦闘仕様書"),
+    ("skill_specs.html", "必殺技仕様書"),
     ("chocobo_specs.html", "チョコボ仕様書"),
     ("migration_specs.html", "移行・保存形式仕様書"),
     ("operations_specs.html", "管理・運用手順書"),
@@ -132,6 +134,42 @@ def table(headers: list[str], rows: list[list[str]], row_headers: bool = False) 
 
 def tag(text: str) -> str:
     return f'<span class="tag">{esc(text)}</span>'
+
+
+def skill_methods() -> dict[str, dict[int, set[str]]]:
+    """skills.py に定義されたID別の効果メソッドを静的に取得する。"""
+    result: dict[str, dict[int, set[str]]] = {
+        prefix: {} for prefix in ("tech", "wtech", "mons", "acstech", "wacstech")
+    }
+    source_path = ROOT / "sub_def" / "skills.py"
+    try:
+        tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+    except (OSError, SyntaxError):
+        return result
+
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef):
+            continue
+        prefix, separator, raw_id = node.name.rpartition("_")
+        if not separator or prefix not in result:
+            continue
+        try:
+            skill_id = int(raw_id)
+        except ValueError:
+            continue
+        result[prefix][skill_id] = {
+            method.name for method in node.body if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+    return result
+
+
+def implementation_status(methods: set[str], expected: str) -> str:
+    """呼び出し側が期待するメソッドの実装有無を資料用に表示する。"""
+    if expected in methods:
+        return tag("実装あり")
+    if methods:
+        return f'{tag("呼出し不一致")} <code>{esc(" / ".join(sorted(methods)))}</code>'
+    return tag("未実装")
 
 
 def job_catalog() -> str:
@@ -350,6 +388,7 @@ def battle_specs() -> str:
 <p class="small">乱数は各能力値について0以上、能力値未満から抽選し、武器ATKを加算します。正確な職業IDごとの式は <code>sub_def/battle_logic.py:get_job_dmg()</code> が正本です。</p>
 {table(["職業ID", "参照する能力値"], job_damage_rows, row_headers=True)}
 <h2>必殺技・固有効果の呼び出し規則</h2>
+<p class="small">戦術の利用条件、発動率の計算、実装メソッドとマスターの対応は <a href="skill_specs.html">必殺技仕様書</a> にまとめています。</p>
 {table(["種類", "呼び出し先", "発動率・補足"], [
     ["戦術", "tactic_id → tech_&lt;ID&gt;", "プレイヤー側。戦術マスターの説明に設定された乱数幅を使う"],
     ["対人相手の戦術", "相手 tactic_id → wtech_&lt;ID&gt;", "相手側の必殺・後発効果として実行"],
@@ -360,6 +399,143 @@ def battle_specs() -> str:
 <p class="source"><code>cgi_py/monster.py</code> / <code>cgi_py/legend.py</code> / <code>cgi_py/battle.py</code> / <code>cgi_py/tenka.py</code> / <code>cgi_py/select_battle.py</code> / <code>sub_def/battle_logic.py</code> / <code>sub_def/skills.py</code></p>
 """
     return page("FFA 戦闘仕様書", "各戦闘の入口条件、ターン処理、勝利・引き分け・敗北時の報酬と保存状態を確認する管理資料", body)
+
+
+def skill_specs() -> str:
+    """戦術・モンスター技・装飾品効果の運用資料を生成する。"""
+    c = config.Config
+    tactics = load_json(c["tac_file"])
+    accessories = load_json(c["accessory_file"])
+    methods = skill_methods()
+    jobs = c["chara_jobs"]
+
+    tactic_rows = []
+    for tactic in tactics:
+        tactic_id = int(tactic["no"])
+        job_names = [f"{job_id}: {jobs.get(job_id, '職業' + str(job_id))}" for job_id in tactic.get("job_ids", [])]
+        mastery = "現職Lv60以上が必要" if tactic.get("ms", 0) == 1 else "現職で使用可"
+        denominator = tactic.get("activation_denominator")
+        activation = (
+            f"乱数幅 {num(denominator)}"
+            if denominator is not None
+            else "未指定（効果側の既定判定または常時効果）"
+        )
+        own_methods = methods["tech"].get(tactic_id, set())
+        opponent_methods = methods["wtech"].get(tactic_id, set())
+        own_status = (
+            f"<code>tech_{tactic_id}.hissatu</code> {implementation_status(own_methods, 'hissatu')}<br>"
+            f"<code>tech_{tactic_id}.atowaza</code> {implementation_status(own_methods, 'atowaza')}"
+        )
+        opponent_status = (
+            f"<code>wtech_{tactic_id}.hissatu</code> {implementation_status(opponent_methods, 'hissatu')}<br>"
+            f"<code>wtech_{tactic_id}.watowaza</code> {implementation_status(opponent_methods, 'watowaza')}"
+        )
+        tactic_rows.append([
+            num(tactic_id), esc(tactic.get("name", "")),
+            " / ".join(job_names) if job_names else "共通・選択不可",
+            mastery, activation, esc(tactic.get("desc", "")), own_status, opponent_status,
+        ])
+
+    monster_by_skill: dict[int, list[dict[str, Any]]] = {}
+    monster_source_names: dict[int, set[str]] = {}
+    monster_dir = ROOT / "data" / "monsters"
+    for path in sorted(monster_dir.glob("*.json")):
+        try:
+            records = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(records, list):
+            continue
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            try:
+                skill_id = int(record.get("special_skill_id", 0))
+            except (TypeError, ValueError):
+                continue
+            if skill_id <= 0:
+                continue
+            monster_by_skill.setdefault(skill_id, []).append(record)
+            monster_source_names.setdefault(skill_id, set()).add(path.name)
+
+    monster_rows = []
+    for skill_id, records in sorted(monster_by_skill.items()):
+        rates = [int(record.get("special_rate", 0)) for record in records]
+        class_methods = methods["mons"].get(skill_id, set())
+        monster_rows.append([
+            num(skill_id), num(len(records)),
+            f"{num(min(rates))}〜{num(max(rates))}",
+            " / ".join(sorted(monster_source_names[skill_id])),
+            f"<code>mons_{skill_id}.mons_waza</code> {implementation_status(class_methods, 'mons_waza')}<br>"
+            f"<code>mons_{skill_id}.mons_atowaza</code> {implementation_status(class_methods, 'mons_atowaza')}",
+        ])
+
+    accessories_by_effect: dict[int, list[dict[str, Any]]] = {}
+    for accessory in accessories:
+        try:
+            effect_id = int(accessory.get("effect_id", 0))
+        except (TypeError, ValueError):
+            continue
+        if effect_id > 0:
+            accessories_by_effect.setdefault(effect_id, []).append(accessory)
+
+    accessory_rows = []
+    for effect_id, records in sorted(accessories_by_effect.items()):
+        own_methods = methods["acstech"].get(effect_id, set())
+        opponent_methods = methods["wacstech"].get(effect_id, set())
+        names = " / ".join(esc(record.get("name", "")) for record in records)
+        accessory_rows.append([
+            num(effect_id), names,
+            f"<code>acstech_{effect_id}.acskouka</code> {implementation_status(own_methods, 'acskouka')}",
+            f"<code>wacstech_{effect_id}.wacskouka</code> {implementation_status(opponent_methods, 'wacskouka')}",
+        ])
+
+    body = f"""
+<div class="note">必殺技は戦術マスターのIDをそのまま <code>sub_def/skills.py</code> のクラス名に使う互換仕様です。IDを振り直さず、戦術の追加・変更時は戦術マスター、プレイヤー側・対人側の実装、資料をまとめて確認してください。</div>
+<h2>設定から戦闘までの経路</h2>
+{table(["段階", "現行処理", "管理上の確認点"], [
+    ["利用可能な戦術", "<code>cgi_py/tac_change.py</code> が現在職の <code>job_ids</code> と <code>ms</code> を検証する。現在の設定では他職も熟練度Lv60以上なら候補へ加える。", "<code>reset_tactics_on_job_change</code>={num(c['reset_tactics_on_job_change'])}。戦術変更のPOSTでも候補にないIDは拒否する。"],
+    ["選択の保存", "選択IDを <code>chara.tactic_id</code> へ保存する。0は「普通に戦う」。", "戦術IDは職業IDではない。データ移行・管理編集でも両者を混同しない。"],
+    ["プレイヤー側", "各ターンで <code>tech_&lt;tactic_id&gt;.hissatu</code>、通常攻撃後に <code>tech_&lt;tactic_id&gt;.atowaza</code> を実行する。", "クラスまたはメソッドが存在しない場合、<code>run_skill()</code> は何もせず続行する。"],
+    ["対人相手側", "各ターンで <code>wtech_&lt;tactic_id&gt;.hissatu</code>、後発で <code>wtech_&lt;tactic_id&gt;.watowaza</code> を要求する。", "下の対応表で実装名を確認する。期待メソッドと名前が違う場合は呼び出されない。"],
+    ["モンスター側", "<code>special_skill_id</code> から <code>mons_&lt;ID&gt;.mons_waza</code> と <code>mons_atowaza</code> を実行する。", "特殊率は各モンスターの <code>special_rate</code> を使う。"],
+    ["装飾品", "通常攻撃後に自分側は <code>acstech_&lt;effect_id&gt;.acskouka</code>、対人相手側は <code>wacstech_&lt;effect_id&gt;.wacskouka</code> を実行する。", "<code>effect_id</code> と <code>special_rate</code> は別の役割。前者は固有効果、後者は戦術必殺率への補正。"],
+], row_headers=True)}
+<h2>戦術必殺技の発動率</h2>
+<p class="formula">基本率 = floor(カルマ / 15) + 10 + 現職熟練度Lv
+基本率は75で上限 → 装飾品 special_rate を加算 → 95で上限
+発動判定 = 率 &gt; random.randrange(乱数幅)
+通常は戦術の activation_denominator を乱数幅として使う。</p>
+{table(["条件", "補正"], [
+    ["発動率ラベルの既定値", "激高=60 / 高=80 / 中=100 / 低=120 / 超低=180 / 激低=200。<code>activation_denominator</code> がある戦術はその値を優先する。"],
+    ["幻影の城・異世界", "プレイヤー側の率を3分の1へ切り捨てる。"],
+    ["レジェンドプレイス", "プレイヤー側の率を2分の1へ切り捨てる。"],
+    ["リミットブレイク", "自HPが最大HPの10%未満かつ4分の2の抽選に通ると、率へ999を加算する。"],
+    ["対人相手", "相手のカルマ・現職熟練度・装飾品special_rateから別に計算する。"],
+], row_headers=True)}
+<p class="note small">乱数幅がDで率が0〜Dの範囲なら、おおよその発動確率は率/Dです。実際には上限・モード減衰・リミットブレイク・効果側の追加抽選があるため、説明文だけから最終ダメージや発動回数を判断しないでください。</p>
+<h2>戦術マスターと実装の対応</h2>
+<p class="source">正本: <code>{esc(c['tac_file'])}</code> / <code>cgi_py/tac_change.py</code> / <code>sub_def/battle_logic.py</code> / <code>sub_def/skills.py</code></p>
+{table(["ID", "戦術名", "利用職", "利用条件", "発動率設定", "説明", "プレイヤー側", "対人相手側"], tactic_rows)}
+<h2>モンスター特殊技の使用状況</h2>
+<p class="small">各 <code>mons_&lt;ID&gt;</code> はクラス内で <code>special_rate &gt; random.randrange(100)</code> を判定する。表の特殊率は、全モンスターマスターに登録された最小値〜最大値です。</p>
+{table(["特殊技ID", "使用モンスター数", "special_rate範囲", "参照マスター", "実装"], monster_rows)}
+<h2>装飾品の固有効果</h2>
+<p class="source">正本: <code>{esc(c['accessory_file'])}</code> / <code>sub_def/skills.py</code></p>
+{table(["effect_id", "該当装飾品", "プレイヤー側", "対人相手側"], accessory_rows)}
+<h2>現在の接続差異</h2>
+<div class="note">戦闘処理は対人相手の必殺技に <code>wtech_&lt;ID&gt;.hissatu</code> を要求しますが、現行の <code>wtech_&lt;ID&gt;</code> 実装は <code>whissatu</code> という別名です。<code>run_skill()</code> は存在しないメソッドを呼んでも例外にせず何もしないため、表で「呼出し不一致」と表示される対人必殺技は現状発動しません。これは現行挙動の記録であり、この資料生成ではゲーム処理を変更しません。</div>
+<h2>調整時の確認順</h2>
+{table(["変更対象", "確認する場所"], [
+    ["戦術名・利用職・マスター条件・説明", "<code>data/tac.json</code> の no / job_ids / ms / desc。IDは既存のskillsクラスと対応する。"],
+    ["発動率", "<code>activation_denominator</code>、<code>sub_def/battle_logic.py</code> の率計算、装飾品の <code>special_rate</code>。"],
+    ["技の効果", "<code>sub_def/skills.py</code> の tech / wtech。必殺と後発効果を分けて確認する。"],
+    ["モンスター技", "<code>data/monsters/*.json</code> の special_skill_id / special_rate と <code>mons_&lt;ID&gt;</code>。"],
+    ["装飾品固有効果", "<code>data/accessory.json</code> の effect_id と acstech / wacstech。"],
+    ["対人の初手逆転必殺", "戦術とは別系統。<code>config.py</code> の counterattack_level_gap / counterattack_damage_multiplier と <code>sub_def/battle_logic.py</code> を確認する。"],
+], row_headers=True)}
+"""
+    return page("FFA 必殺技・特殊効果仕様書", "戦術必殺技、モンスター特殊技、装飾品固有効果の設定・発動率・実装対応を確認する管理資料", body)
 
 
 def chocobo_specs() -> str:
@@ -694,6 +870,7 @@ def index() -> str:
         ("monster_catalog.html", "モンスター・ボスマスター一覧", "通常戦闘、異世界、レジェンドの全モンスターと各キーの意味"),
         ("status_reference.html", "保存キー・能力値リファレンス", "キャラクター・装備・戦闘結果に使うキーの役割"),
         ("battle_specs.html", "FFA 戦闘仕様書", "戦闘入口、出現条件、ターン順、結果分岐、報酬、進行状態"),
+        ("skill_specs.html", "FFA 必殺技・特殊効果仕様書", "戦術、モンスター特殊技、装飾品固有効果の発動率と実装対応"),
         ("chocobo_specs.html", "チョコボ牧場・レース仕様書", "チョコボの保存キー、訓練、レース、配合、引退、殿堂入り"),
         ("migration_specs.html", "セーブデータ移行・保存形式仕様書", "Ver1→Ver2→Ver3の変換、キー対応、検証、出力形式"),
         ("operations_specs.html", "管理画面・運用手順書", "管理画面、放置削除、保護ユーザー、バックアップ実装状況"),
@@ -720,6 +897,7 @@ def write(output_dir: Path) -> None:
         "monster_catalog.html": monster_catalog(),
         "status_reference.html": status_reference(),
         "battle_specs.html": battle_specs(),
+        "skill_specs.html": skill_specs(),
         "chocobo_specs.html": chocobo_specs(),
         "migration_specs.html": migration_specs(),
         "operations_specs.html": operations_specs(),
