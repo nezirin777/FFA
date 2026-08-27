@@ -181,8 +181,6 @@ class BattleState:
         self.kaihuku1 = ""
         self.kaihuku2 = ""
         self.huin = 0
-        self.instant_kill1 = False
-        self.instant_kill2 = False
         
         # バフ・制限数など
         self.syukuhuku = 0
@@ -342,8 +340,6 @@ class BattleSimulator:
             s.damage_heal_ratio1 = 0
             s.damage_heal_ratio2 = 0
             s.huin = 0
-            s.instant_kill1 = False
-            s.instant_kill2 = False
             
             # === 2. プレイヤー必殺技発動判定 (tyosenwaza / hissatu) ===
             s.waza_ritu = int(s.chara["karma"] / 15) + 10 + s.chara["job_level"]
@@ -386,7 +382,7 @@ class BattleSimulator:
                     s.wwaza_ritu += 999
                     s.com2 += "<br><font class=\"red\" size=4><b>LIMIT BREAK!!</b></font>"
                 # 敵プレイヤーの必殺技も、王者側の選択戦術を使用する。
-                skills.run_skill("wtech", get_tactic_id(s.winner), "hissatu", s)
+                skills.run_skill("wtech", get_tactic_id(s.winner), "whissatu", s)
             else:
                 # 敵モンスターのスキル (mons_X.mons_waza)
                 skills.run_skill("mons", s.monster_special_skill_id, "mons_waza", s)
@@ -538,12 +534,6 @@ class BattleSimulator:
                     f"{s.chara['name']}は {s.mname} にダメージを与えることができなかった！"
                     f"</b></span>"
                 )
-            # 一撃必殺系は回避判定を抜けた後も、最低限現在HP分を保証する。
-            if s.instant_kill1 and s.dmg1 > 0:
-                s.dmg1 = max(s.dmg1, s.mhp)
-            if s.instant_kill2 and s.dmg2 > 0:
-                s.dmg2 = max(s.dmg2, s.khp)
-
             # 先制攻撃で敵が倒れた場合は、敵の攻撃を不発として明示する。
             enemy_will_be_defeated = s.mhp - s.dmg1 + s.hpplus2 <= 0
             if enemy_will_be_defeated and not enemy_evaded:

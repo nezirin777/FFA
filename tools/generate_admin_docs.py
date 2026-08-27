@@ -427,7 +427,7 @@ def skill_specs() -> str:
             f"<code>tech_{tactic_id}.atowaza</code> {implementation_status(own_methods, 'atowaza')}"
         )
         opponent_status = (
-            f"<code>wtech_{tactic_id}.hissatu</code> {implementation_status(opponent_methods, 'hissatu')}<br>"
+            f"<code>wtech_{tactic_id}.whissatu</code> {implementation_status(opponent_methods, 'whissatu')}<br>"
             f"<code>wtech_{tactic_id}.watowaza</code> {implementation_status(opponent_methods, 'watowaza')}"
         )
         tactic_rows.append([
@@ -497,7 +497,7 @@ def skill_specs() -> str:
     ["利用可能な戦術", "<code>cgi_py/tac_change.py</code> が現在職の <code>job_ids</code> と <code>ms</code> を検証する。現在の設定では他職も熟練度Lv60以上なら候補へ加える。", "<code>reset_tactics_on_job_change</code>={num(c['reset_tactics_on_job_change'])}。戦術変更のPOSTでも候補にないIDは拒否する。"],
     ["選択の保存", "選択IDを <code>chara.tactic_id</code> へ保存する。0は「普通に戦う」。", "戦術IDは職業IDではない。データ移行・管理編集でも両者を混同しない。"],
     ["プレイヤー側", "各ターンで <code>tech_&lt;tactic_id&gt;.hissatu</code>、通常攻撃後に <code>tech_&lt;tactic_id&gt;.atowaza</code> を実行する。", "クラスまたはメソッドが存在しない場合、<code>run_skill()</code> は何もせず続行する。"],
-    ["対人相手側", "各ターンで <code>wtech_&lt;tactic_id&gt;.hissatu</code>、後発で <code>wtech_&lt;tactic_id&gt;.watowaza</code> を要求する。", "下の対応表で実装名を確認する。期待メソッドと名前が違う場合は呼び出されない。"],
+    ["対人相手側", "各ターンで <code>wtech_&lt;tactic_id&gt;.whissatu</code>、後発で <code>wtech_&lt;tactic_id&gt;.watowaza</code> を実行する。", "下の対応表で実装名を確認する。クラスまたはメソッドが存在しない場合、<code>run_skill()</code> は何もせず続行する。"],
     ["モンスター側", "<code>special_skill_id</code> から <code>mons_&lt;ID&gt;.mons_waza</code> と <code>mons_atowaza</code> を実行する。", "特殊率は各モンスターの <code>special_rate</code> を使う。"],
     ["装飾品", "通常攻撃後に自分側は <code>acstech_&lt;effect_id&gt;.acskouka</code>、対人相手側は <code>wacstech_&lt;effect_id&gt;.wacskouka</code> を実行する。", "<code>effect_id</code> と <code>special_rate</code> は別の役割。前者は固有効果、後者は戦術必殺率への補正。"],
 ], row_headers=True)}
@@ -523,8 +523,6 @@ def skill_specs() -> str:
 <h2>装飾品の固有効果</h2>
 <p class="source">正本: <code>{esc(c['accessory_file'])}</code> / <code>sub_def/skills.py</code></p>
 {table(["effect_id", "該当装飾品", "プレイヤー側", "対人相手側"], accessory_rows)}
-<h2>現在の接続差異</h2>
-<div class="note">戦闘処理は対人相手の必殺技に <code>wtech_&lt;ID&gt;.hissatu</code> を要求しますが、現行の <code>wtech_&lt;ID&gt;</code> 実装は <code>whissatu</code> という別名です。<code>run_skill()</code> は存在しないメソッドを呼んでも例外にせず何もしないため、表で「呼出し不一致」と表示される対人必殺技は現状発動しません。これは現行挙動の記録であり、この資料生成ではゲーム処理を変更しません。</div>
 <h2>調整時の確認順</h2>
 {table(["変更対象", "確認する場所"], [
     ["戦術名・利用職・マスター条件・説明", "<code>data/tac.json</code> の no / job_ids / ms / desc。IDは既存のskillsクラスと対応する。"],
