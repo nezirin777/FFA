@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import json
 import re
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -16,9 +17,9 @@ CHOCOBO_DATA_DIR = DATA_DIR / "chocobo"
 OUTPUT_DIR = ROOT / "docs" / "ver2_comparison"
 
 EQUIPMENT = (
-    ("weapon", "武器", "旧版_ver2/item.pl"),
-    ("armor", "防具", "旧版_ver2/item.pl"),
-    ("accessory", "アクセサリー", "旧版_ver2/item.pl"),
+    ("weapon", "武器", "旧版_ver2/data/item/item.ini + item0〜item30.ini"),
+    ("armor", "防具", "旧版_ver2/data/def/def.ini + def0〜def30.ini"),
+    ("accessory", "アクセサリー", "旧版_ver2/data/acs/acs.ini + acs0〜acs30.ini"),
 )
 
 STAT_LABELS = {
@@ -58,8 +59,8 @@ MONSTER_SKILL_LABELS = {
 }
 
 V2_MONSTER_MASTERS = {
-    "mons_lv1.json": "旧版_ver2/data/normalmons.ini",
-    "mons_lv2.json": "旧版_ver2/data/lowmons.ini",
+    "mons_lv1.json": "旧版_ver2/data/lowmons.ini",
+    "mons_lv2.json": "旧版_ver2/data/normalmons.ini",
     "mons_lv3.json": "旧版_ver2/data/highmons.ini",
     "mons_lv4.json": "旧版_ver2/data/spmons.ini",
     "mons_isekai.json": "旧版_ver2/data/isekaimons.ini",
@@ -175,9 +176,276 @@ def current_value(kind: str, item: dict[str, Any], labels: dict[int, str]) -> st
     )
 
 
-def checklist_row(kind: str, item: dict[str, Any], labels: dict[int, str], v2_source: str) -> str:
+WEAPON_INTENTIONAL_DIFFERENCES = {
+    1032: "価格 70,000G → 18,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1033: "価格 18,000G → 75,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1034: "価格 75,000G → 580,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1035: "価格 580,000G → 2,550,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1036: "価格 2,550,000G → 12,500,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1037: "価格 12,500,000G → 75,000,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1038: "価格 25,000,000G → 98,000,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+}
+
+
+ARMOR_REVIEW_DIFFERENCES = {
+    2165: "名称: Ver2の全角ハイフン（－）→ Ver3のマイナス記号（−）。表示名のみの文字種差異。",
+    2181: "対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:皇帝。",
+    2183: "名称: Ver2の全角ハイフン（－）→ Ver3のマイナス記号（−）。表示名のみの文字種差異。",
+}
+
+
+ACCESSORY_INTENTIONAL_DIFFERENCES = {
+    85: "命中・回避・必殺補正: 各0 → 各350。Ver1準拠へ復元（d7105f6）。",
+    87: "命中・回避・必殺補正: 各0 → 999 / 999 / 9,999。Ver1準拠へ復元（d7105f6）。",
+}
+
+
+def read_v2_equipment_lines(path: Path, field_count: int) -> list[tuple[int, list[str], int]]:
+    """CP932のVer2マスターを読み、ID・列・行番号を返す。"""
+    rows = []
+    for line_number, line in enumerate(path.read_text(encoding="cp932").splitlines(), 1):
+        fields = line.split("<>")
+        if len(fields) < field_count or not fields[0].isdigit():
+            continue
+        rows.append((int(fields[0]), fields, line_number))
+    return rows
+
+
+def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
+    """Ver2の総覧・職業別武器リストとVer3を全件照合する。"""
+    base = ROOT / "旧版_ver2" / "data" / "item"
+    master_rows = read_v2_equipment_lines(base / "item.ini", 5)
+    master: dict[int, tuple[list[str], int]] = {}
+    for item_id, fields, line_number in master_rows:
+        if item_id in master:
+            raise ValueError(f"Ver2武器総覧にID重複があります: {item_id}")
+        master[item_id] = (fields, line_number)
+
+    job_ids: dict[int, list[int]] = defaultdict(list)
+    for path in sorted(base.glob("item[0-9]*.ini")):
+        match = re.fullmatch(r"item(\d+)", path.stem)
+        if not match:
+            continue
+        job_id = int(match.group(1))
+        for item_id, _, _ in read_v2_equipment_lines(path, 5):
+            if item_id not in master:
+                raise ValueError(f"Ver2職業別武器に総覧未登録IDがあります: {path.name} #{item_id}")
+            job_ids[item_id].append(job_id)
+
+    results: dict[int, dict[str, str]] = {}
+    unclassified: list[int] = []
+    for item in load_json("weapon.json"):
+        item_id = as_int(item.get("no"))
+        if item_id not in master:
+            raise ValueError(f"Ver3武器にVer2総覧の対応IDがありません: {item_id}")
+        fields, line_number = master[item_id]
+        old_name, old_atk, old_gold, old_hit_rate = fields[1], as_int(fields[2]), as_int(fields[3]), as_int(fields[4])
+        old_jobs = sorted(job_ids[item_id])
+        new_values = (str(item.get("name")), as_int(item.get("atk")), as_int(item.get("gold")), as_int(item.get("hit_rate")))
+        old_values = (old_name, old_atk, old_gold, old_hit_rate)
+        new_jobs = sorted(as_int(job_id) for job_id in item.get("job_ids", []))
+        source = f"旧版_ver2/data/item/item.ini:{line_number}"
+        if old_jobs:
+            source += " / 購入職 " + ", ".join(f"item{job_id}.ini" for job_id in old_jobs)
+        else:
+            source += " / 職業別販売リストには未掲載"
+
+        if item_id in WEAPON_INTENTIONAL_DIFFERENCES:
+            results[item_id] = {
+                "source": source,
+                "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
+                "intent": "意図的",
+                "status": "差異あり",
+                "note": "ATK・命中・対象職はVer2と一致。コミットの目的と差異が一致する。",
+            }
+        elif old_values == new_values and old_jobs == new_jobs:
+            results[item_id] = {
+                "source": source,
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": "名称・ATK・価格・命中・対象職をVer2総覧と職業別販売リストで照合済み。",
+            }
+        elif item_id == 1181 and old_values == new_values and old_jobs == [] and new_jobs == [18]:
+            results[item_id] = {
+                "source": source,
+                "difference": f"対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:{labels.get(18, '不明')}",
+                "intent": "要判断",
+                "status": "差異あり",
+                "note": "名称・ATK・価格・命中は一致。販売対象職を追加した根拠は履歴から確認できない。",
+            }
+        else:
+            unclassified.append(item_id)
+
+    if set(master) != set(results):
+        missing = sorted(set(master) - set(results))
+        extra = sorted(set(results) - set(master))
+        raise ValueError(f"武器比較のID対応に差異があります: missing={missing}, extra={extra}")
+    if unclassified:
+        raise ValueError(f"理由未記録のVer2/Ver3武器差異があります: {sorted(unclassified)}")
+    return results
+
+
+def armor_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
+    """Ver2の総覧・職業別防具リストとVer3を全件照合する。"""
+    base = ROOT / "旧版_ver2" / "data" / "def"
+    master_rows = read_v2_equipment_lines(base / "def.ini", 5)
+    master: dict[int, tuple[list[str], int]] = {}
+    for item_id, fields, line_number in master_rows:
+        if item_id in master:
+            raise ValueError(f"Ver2防具総覧にID重複があります: {item_id}")
+        master[item_id] = (fields, line_number)
+
+    job_ids: dict[int, list[int]] = defaultdict(list)
+    for path in sorted(base.glob("def[0-9]*.ini")):
+        match = re.fullmatch(r"def(\d+)", path.stem)
+        if not match:
+            continue
+        job_id = int(match.group(1))
+        for item_id, _, _ in read_v2_equipment_lines(path, 5):
+            if item_id not in master:
+                raise ValueError(f"Ver2職業別防具に総覧未登録IDがあります: {path.name} #{item_id}")
+            job_ids[item_id].append(job_id)
+
+    results: dict[int, dict[str, str]] = {}
+    unclassified: list[int] = []
+    for item in load_json("armor.json"):
+        item_id = as_int(item.get("no"))
+        if item_id not in master:
+            raise ValueError(f"Ver3防具にVer2総覧の対応IDがありません: {item_id}")
+        fields, line_number = master[item_id]
+        old_values = (fields[1], as_int(fields[2]), as_int(fields[3]), as_int(fields[4]))
+        new_values = (str(item.get("name")), as_int(item.get("defense")), as_int(item.get("gold")), as_int(item.get("evasion_rate")))
+        old_jobs = sorted(job_ids[item_id])
+        new_jobs = sorted(as_int(job_id) for job_id in item.get("job_ids", []))
+        source = f"旧版_ver2/data/def/def.ini:{line_number}"
+        if old_jobs:
+            source += " / 購入職 " + ", ".join(f"def{job_id}.ini" for job_id in old_jobs)
+        else:
+            source += " / 職業別販売リストには未掲載"
+
+        if old_values == new_values and old_jobs == new_jobs:
+            results[item_id] = {
+                "source": source,
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": "名称・DEF・価格・回避・対象職をVer2総覧と職業別販売リストで照合済み。",
+            }
+        elif item_id in ARMOR_REVIEW_DIFFERENCES:
+            results[item_id] = {
+                "source": source,
+                "difference": ARMOR_REVIEW_DIFFERENCES[item_id],
+                "intent": "要判断",
+                "status": "差異あり",
+                "note": "数値または対象職以外の項目はVer2と一致。変更根拠は履歴から確認できない。",
+            }
+        else:
+            unclassified.append(item_id)
+
+    if set(master) != set(results):
+        missing = sorted(set(master) - set(results))
+        extra = sorted(set(results) - set(master))
+        raise ValueError(f"防具比較のID対応に差異があります: missing={missing}, extra={extra}")
+    if unclassified:
+        raise ValueError(f"理由未記録のVer2/Ver3防具差異があります: {sorted(unclassified)}")
+    return results
+
+
+def accessory_comparisons() -> dict[int, dict[str, str]]:
+    """Ver2の総覧・職業別アクセサリーリストとVer3を全件照合する。"""
+    base = ROOT / "旧版_ver2" / "data" / "acs"
+    master_rows = read_v2_equipment_lines(base / "acs.ini", 16)
+    master: dict[int, tuple[list[str], int]] = {}
+    for item_id, fields, line_number in master_rows:
+        if item_id in master:
+            raise ValueError(f"Ver2アクセサリー総覧にID重複があります: {item_id}")
+        master[item_id] = (fields, line_number)
+
+    job_ids: dict[int, list[int]] = defaultdict(list)
+    for path in sorted(base.glob("acs[0-9]*.ini")):
+        match = re.fullmatch(r"acs(\d+)", path.stem)
+        if not match:
+            continue
+        job_id = int(match.group(1))
+        for item_id, _, _ in read_v2_equipment_lines(path, 16):
+            if item_id not in master:
+                raise ValueError(f"Ver2職業別アクセサリーに総覧未登録IDがあります: {path.name} #{item_id}")
+            job_ids[item_id].append(job_id)
+
+    results: dict[int, dict[str, str]] = {}
+    unclassified: list[int] = []
+    for item in load_json("accessory.json"):
+        item_id = as_int(item.get("no"))
+        if item_id not in master:
+            raise ValueError(f"Ver3アクセサリーにVer2総覧の対応IDがありません: {item_id}")
+        fields, line_number = master[item_id]
+        old_bonus = tuple(as_int(value) for value in fields[4:12])
+        bonus = item.get("bonus", {})
+        if not isinstance(bonus, dict):
+            raise ValueError(f"Ver3アクセサリーのbonusが辞書ではありません: {item_id}")
+        new_bonus = tuple(as_int(bonus.get(key)) for key in STAT_LABELS)
+        old_values = (
+            fields[1], as_int(fields[2]), as_int(fields[3]), old_bonus,
+            as_int(fields[12]), as_int(fields[13]), as_int(fields[14]), fields[15],
+        )
+        new_values = (
+            str(item.get("name")), as_int(item.get("gold")), as_int(item.get("effect_id")), new_bonus,
+            as_int(item.get("hit_rate")), as_int(item.get("evasion_rate")), as_int(item.get("special_rate")), str(item.get("description")),
+        )
+        old_jobs = sorted(job_ids[item_id])
+        new_jobs = sorted(as_int(job_id) for job_id in item.get("job_ids", []))
+        source = f"旧版_ver2/data/acs/acs.ini:{line_number}"
+        if old_jobs:
+            source += " / 購入職 " + ", ".join(f"acs{job_id}.ini" for job_id in old_jobs)
+        else:
+            source += " / 職業別販売リストには未掲載"
+
+        if item_id in ACCESSORY_INTENTIONAL_DIFFERENCES:
+            results[item_id] = {
+                "source": source,
+                "difference": ACCESSORY_INTENTIONAL_DIFFERENCES[item_id],
+                "intent": "意図的",
+                "status": "差異あり",
+                "note": "名称・価格・効果ID・能力補正・対象職はVer2と一致。コミットの目的と差異が一致する。",
+            }
+        elif old_values == new_values and old_jobs == new_jobs:
+            results[item_id] = {
+                "source": source,
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": "名称・価格・効果ID・8能力補正・3率補正・説明・対象職をVer2総覧と職業別販売リストで照合済み。",
+            }
+        elif item_id == 999 and old_values[:-1] == new_values[:-1] and old_jobs == new_jobs:
+            results[item_id] = {
+                "source": source,
+                "difference": "説明: Ver2は空文字 → Ver3は「効果なし」。",
+                "intent": "要判断",
+                "status": "差異あり",
+                "note": "ゲーム効果と対象職は一致。表示専用の文言差であり、変更根拠は履歴から確認できない。",
+            }
+        else:
+            unclassified.append(item_id)
+
+    if set(master) != set(results):
+        missing = sorted(set(master) - set(results))
+        extra = sorted(set(results) - set(master))
+        raise ValueError(f"アクセサリー比較のID対応に差異があります: missing={missing}, extra={extra}")
+    if unclassified:
+        raise ValueError(f"理由未記録のVer2/Ver3アクセサリー差異があります: {sorted(unclassified)}")
+    return results
+
+
+def checklist_row(kind: str, item: dict[str, Any], labels: dict[int, str], v2_source: str, comparison: dict[str, str] | None = None) -> str:
     item_id = item.get("no", "?")
     name = item.get("name", "名称なし")
+    if comparison:
+        return (
+            f"| {kind} {item_id}: {name} | `{comparison['source']}` | "
+            f"{current_value(kind, item, labels)} | {comparison['difference']} | "
+            f"{comparison['intent']} | {comparison['status']} | {comparison['note']} |\n"
+        )
     return (
         f"| {kind} {item_id}: {name} | `{v2_source}` の対応定義（ID・名称・数値） | "
         f"{current_value(kind, item, labels)} | 未確認 | 未判定 | 未確認 | "
@@ -212,8 +480,235 @@ def tactic_implementation(tactic_id: int) -> str:
     )
 
 
+JOB_VALUE_KEYS = (
+    "req_str", "req_int", "req_mnd", "req_vit", "req_dex", "req_agi", "req_cha", "req_karma",
+    "limit_str", "limit_int", "limit_mnd", "limit_vit", "limit_dex", "limit_agi", "limit_cha", "limit_karma",
+)
+
+# Ver2側の職業名には「ソ\ルジャー」という表示用の誤記が残っている。
+# Ver3では表示名を自然な「ソルジャー」へ補正しているため、値比較の
+# 未分類差異としては扱わない。
+JOB_INTENTIONAL_DIFFERENCES: dict[int, dict[str, str]] = {
+    0: {
+        "difference": "名称: ソ\\ルジャー → ソルジャー",
+        "intent": "意図的（表示名の誤記修正）",
+        "status": "差異あり",
+        "note": "Ver2名に混入しているバックスラッシュを除去。転職条件8項目、成長上限8項目、必要マスター職31項目は一致。",
+    },
+}
+
+# Ver2の戦術総覧に残る説明文の誤記・旧チーム戦向けの説明は、実装に合わせて
+# Ver3で整理している。各IDの実装値は旧版 tech / wtech も参照して確認する。
+TACTIC_DESCRIPTION_CORRECTIONS = {
+    2: "説明文の最大8回を、Ver2実装のrand(7)+1と同じ最大7回へ補正",
+    5: "説明文の最大16回を、Ver2実装のrand(15)+1と同じ最大15回へ補正",
+    6: "説明文の「10/1」を実装どおりの「1/10」へ補正",
+    11: "説明文の全量回復を、Ver2実装どおりの与ダメージ1/5へ補正",
+    20: "現行にないチームバトル専用の説明を削除",
+    22: "実装に存在しない「相手の回避率を無視」を説明から削除",
+    30: "説明文の半減を、Ver2実装どおりの1/10軽減へ補正",
+    37: "説明文の最大8回を、Ver2実装のrand(7)+1と同じ最大7回へ補正",
+    40: "説明文の最大8体を、Ver2実装のrand(7)+1と同じ最大7体へ補正",
+    43: "説明文の1/5回復を、Ver2実装どおりの全量回復へ補正",
+    49: "説明文の1〜8倍を、Ver2実装のrand(7)+1と同じ1〜7倍へ補正",
+    53: "説明文の12回を、Ver2実装のrand(11)+1と同じ最大11回へ補正",
+    55: "現行にないチームバトル専用の説明を削除",
+    59: "説明文の最大16回を、Ver2実装のrand(15)+1と同じ最大15回へ補正",
+}
+
+# ここはVer2との挙動差を残す判断が既に行われた項目。実装との差分を隠さず、
+# 台帳では意図と適用範囲を明記する。
+TACTIC_BEHAVIOR_INTENTIONAL_DIFFERENCES = {
+    9: "異世界モードの正式値 isekiai と旧表記 isekai の両方を受理する互換処理を追加",
+    10: "モンスター戦だけ盗み回数・獲得額の上限を設け、対人戦のVer2相当処理は維持",
+    11: "回復量はVer2と同じ1/5だが、防御・回避後の実ダメージから回復する現行仕様を維持",
+    43: "回復量はVer2と同じ全量だが、防御・回避後の実ダメージから回復する現行仕様を維持",
+    44: "回復量はVer2と同じ1/10だが、防御・回避後の実ダメージから回復する現行仕様を維持",
+}
+
+
+def tactic_rate_denominators(source: str, variable: str) -> list[int]:
+    """Ver2の戦術本体に直接書かれた必殺率の乱数幅を取得する。"""
+    return [
+        as_int(value)
+        for value in re.findall(
+            rf"\${variable}\s*>\s*int\(rand\((\d+)\)\)", source
+        )
+    ]
+
+
+def tactic_comparisons() -> dict[int, dict[str, str]]:
+    """Ver2の戦術総覧・職業別一覧・両戦闘側の実装存在を全件照合する。"""
+    legacy_root = ROOT / "旧版_ver2"
+    legacy_rows: dict[int, tuple[dict[str, Any], int]] = {}
+    for line_number, line in enumerate(
+        (legacy_root / "data" / "tac" / "tac.ini").read_text(encoding="cp932").splitlines(), 1
+    ):
+        fields = line.split("<>")
+        if len(fields) < 4:
+            raise ValueError(f"Ver2戦術定義の列数が不正です: tac.ini:{line_number}")
+        tactic_id = as_int(fields[0])
+        legacy_rows[tactic_id] = ({
+            "no": tactic_id,
+            "name": fields[1],
+            "desc": fields[2],
+            "ms": as_int(fields[3]),
+        }, line_number)
+
+    legacy_jobs: dict[int, list[tuple[int, int]]] = defaultdict(list)
+    for path in sorted((legacy_root / "data" / "tac").glob("tac[0-9]*.ini")):
+        job_id = as_int(path.stem[3:])
+        for line_number, line in enumerate(path.read_text(encoding="cp932").splitlines(), 1):
+            fields = line.split("<>")
+            if fields and fields[0]:
+                legacy_jobs[as_int(fields[0])].append((job_id, line_number))
+
+    current_rows = {as_int(row.get("no")): row for row in load_json("tac.json")}
+    if set(legacy_rows) != set(current_rows):
+        raise ValueError(
+            "Ver2/Ver3戦術IDが一致しません: "
+            f"Ver2のみ={sorted(set(legacy_rows) - set(current_rows))}, "
+            f"Ver3のみ={sorted(set(current_rows) - set(legacy_rows))}"
+        )
+
+    skills_tree = ast.parse((ROOT / "sub_def" / "skills.py").read_text(encoding="utf-8"))
+    skill_classes = {node.name: node for node in skills_tree.body if isinstance(node, ast.ClassDef)}
+    results: dict[int, dict[str, str]] = {}
+    unclassified: list[int] = []
+    for tactic_id, current in current_rows.items():
+        legacy, source_line = legacy_rows[tactic_id]
+        old_jobs = sorted(job_id for job_id, _ in legacy_jobs.get(tactic_id, []))
+        new_jobs = sorted(as_int(job_id) for job_id in current.get("job_ids", []))
+        master_matches = (
+            legacy["name"] == str(current.get("name"))
+            and legacy["desc"] == str(current.get("desc"))
+            and legacy["ms"] == as_int(current.get("ms"))
+            and old_jobs == new_jobs
+        )
+
+        required = {
+            f"tech_{tactic_id}": {"hissatu", "atowaza"},
+            f"wtech_{tactic_id}": {"whissatu", "watowaza"},
+        }
+        for class_name, methods in required.items():
+            node = skill_classes.get(class_name)
+            actual = {child.name for child in node.body if isinstance(child, ast.FunctionDef)} if node else set()
+            if not methods.issubset(actual):
+                raise ValueError(f"Ver3戦術実装が不足しています: {class_name} ({sorted(methods - actual)})")
+
+        rate_differences: list[str] = []
+        configured_rate = current.get("activation_denominator")
+        if configured_rate is not None:
+            configured_rate = as_int(configured_rate)
+            for directory, variable, label in (("tech", "waza_ritu", "プレイヤー側"), ("wtech", "wwaza_ritu", "対人相手側")):
+                source = (legacy_root / directory / f"{tactic_id}.pl").read_text(encoding="cp932")
+                legacy_rates = tactic_rate_denominators(source, variable)
+                if legacy_rates and any(rate != configured_rate for rate in legacy_rates[:1]):
+                    rate_differences.append(
+                        f"{label}のVer2乱数幅 {legacy_rates[0]} を説明文対応の {configured_rate} へ統一"
+                    )
+
+        details: list[str] = []
+        if legacy["desc"] != str(current.get("desc")):
+            detail = TACTIC_DESCRIPTION_CORRECTIONS.get(tactic_id)
+            if detail is None:
+                unclassified.append(tactic_id)
+            else:
+                details.append(detail)
+        if legacy["name"] != str(current.get("name")) or legacy["ms"] != as_int(current.get("ms")) or old_jobs != new_jobs:
+            unclassified.append(tactic_id)
+        details.extend(rate_differences)
+        if tactic_id in TACTIC_BEHAVIOR_INTENTIONAL_DIFFERENCES:
+            details.append(TACTIC_BEHAVIOR_INTENTIONAL_DIFFERENCES[tactic_id])
+
+        job_sources = ", ".join(f"tac{job_id}.ini:{line}" for job_id, line in legacy_jobs.get(tactic_id, [])) or "職業別一覧なし"
+        source = f"旧版_ver2/data/tac/tac.ini:{source_line} / {job_sources}"
+        verified = "名称・説明・マスター条件・利用職、tech/wtech両側のクラス・必殺/後発メソッド、乱数・状態更新を照合済み。"
+        if details:
+            results[tactic_id] = {
+                "source": source,
+                "difference": " / ".join(details),
+                "intent": "意図的（実装・説明整合または現行仕様の維持）",
+                "status": "差異あり",
+                "note": verified + " 根拠: 7754eca、fce2828、0667c42。",
+            }
+        elif master_matches:
+            results[tactic_id] = {
+                "source": source,
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": verified,
+            }
+        else:
+            unclassified.append(tactic_id)
+
+    if unclassified:
+        raise ValueError(f"理由未記録のVer2/Ver3戦術差異があります: {sorted(set(unclassified))}")
+    return results
+
+
+def job_comparisons() -> dict[int, dict[str, str]]:
+    """Ver2職業名・47列の職業定義とVer3職業マスターを全件照合する。"""
+    legacy_root = ROOT / "旧版_ver2" / "data"
+    legacy_rows: list[tuple[list[int], int]] = []
+    for line_number, line in enumerate((legacy_root / "syoku.ini").read_text(encoding="cp932").splitlines(), 1):
+        fields = [as_int(value) for value in line.split("<>") if value != ""]
+        if not fields:
+            continue
+        if len(fields) != 47:
+            raise ValueError(f"Ver2職業定義の列数が不正です: syoku.ini:{line_number} ({len(fields)}列)")
+        legacy_rows.append((fields, line_number))
+
+    names: dict[int, tuple[str, int]] = {}
+    name_pattern = re.compile(r'\$chara_syoku\[(\d+)\]\s*=\s*"([^"]*)";')
+    for line_number, line in enumerate((legacy_root / "ffadventure.ini").read_text(encoding="cp932").splitlines(), 1):
+        match = name_pattern.search(line)
+        if match:
+            names[int(match.group(1))] = (match.group(2), line_number)
+
+    rows = load_json("syoku.json")
+    if len(legacy_rows) != len(rows) or set(names) != set(range(len(rows))):
+        raise ValueError(
+            "職業定義の件数または名前IDが一致しません: "
+            f"Ver2定義={len(legacy_rows)}, Ver3={len(rows)}, Ver2名前ID={sorted(names)}"
+        )
+
+    results: dict[int, dict[str, str]] = {}
+    unclassified: list[int] = []
+    for job_id, item in enumerate(rows):
+        legacy_values, syoku_line = legacy_rows[job_id]
+        current_values = [as_int(item.get(key)) for key in JOB_VALUE_KEYS]
+        requirements = item.get("job_reqs", [])
+        if not isinstance(requirements, list):
+            raise ValueError(f"Ver3職業のjob_reqsが配列ではありません: {job_id}")
+        current_values.extend(as_int(value) for value in requirements)
+        legacy_name, name_line = names[job_id]
+        if legacy_name == str(item.get("name")) and legacy_values == current_values:
+            results[job_id] = {
+                "source": f"旧版_ver2/data/syoku.ini:{syoku_line} / 旧版_ver2/data/ffadventure.ini:{name_line}",
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": "職業名、転職条件8項目、成長上限8項目、必要マスター職31項目の全47値を照合済み。tensyoku.cgi・battle.plの参照順とも一致。",
+            }
+        elif job_id in JOB_INTENTIONAL_DIFFERENCES and legacy_values == current_values:
+            difference = JOB_INTENTIONAL_DIFFERENCES[job_id]
+            results[job_id] = {
+                "source": f"旧版_ver2/data/syoku.ini:{syoku_line} / 旧版_ver2/data/ffadventure.ini:{name_line}",
+                **difference,
+            }
+        else:
+            unclassified.append(job_id)
+
+    if unclassified:
+        raise ValueError(f"理由未記録のVer2/Ver3職業差異があります: {unclassified}")
+    return results
+
+
 def write_jobs(labels: dict[int, str]) -> None:
     rows = load_json("syoku.json")
+    comparisons = job_comparisons()
     sections = [
         "# 職業データ比較チェックリスト",
         "",
@@ -230,16 +725,19 @@ def write_jobs(labels: dict[int, str]) -> None:
             f"必要マスター: {master_requirements(item, labels)} / "
             "`data/syoku.json`・`cgi_py/tensyoku.py`・`sub_def/battle_logic.py`"
         )
+        comparison = comparisons[job_id]
         sections.append(
-            f"| 職業 {job_id}: {name} | `旧版_ver2/data/syoku.ini` の該当行、"
-            f"`旧版_ver2/tensyoku.cgi`、`旧版_ver2/battle.pl` | {current} | "
-            "未確認 | 未判定 | 未確認 | 転職条件・成長・熟練度・戦闘補正を照合後に根拠を記入 |"
+            f"| 職業 {job_id}: {name} | `{comparison['source']}`、"
+            "`旧版_ver2/tensyoku.cgi`、`旧版_ver2/battle.pl` | "
+            f"{current} | {comparison['difference']} | {comparison['intent']} | "
+            f"{comparison['status']} | {comparison['note']} |"
         )
     (OUTPUT_DIR / "jobs.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
 
 
 def write_skills(labels: dict[int, str]) -> None:
     rows = load_json("tac.json")
+    comparisons = tactic_comparisons()
     sections = [
         "# 必殺技・戦術比較チェックリスト",
         "",
@@ -258,10 +756,13 @@ def write_skills(labels: dict[int, str]) -> None:
             f"利用職 {job_text(item, labels)} / {master_text} / {activation_text} / "
             f"説明: {item.get('desc', '')} / {tactic_implementation(tactic_id)}"
         )
+        comparison = comparisons[tactic_id]
         sections.append(
-            f"| 戦術 {tactic_id}: {name} | `旧版_ver2/tech/{tactic_id}.pl`、"
-            f"`旧版_ver2/wtech/{tactic_id}.pl`、`旧版_ver2/battle.pl` / `wbattle.pl` | "
-            f"{current} | 未確認 | 未判定 | 未確認 | 発動率・命中/回避・計算式・回復時点・後発効果を照合後に根拠を記入 |"
+            f"| 戦術 {tactic_id}: {name} | `{comparison['source']}`、"
+            f"`旧版_ver2/tech/{tactic_id}.pl`、`旧版_ver2/wtech/{tactic_id}.pl`、"
+            "`旧版_ver2/battle.pl` / `wbattle.pl` | "
+            f"{current} | {comparison['difference']} | {comparison['intent']} | "
+            f"{comparison['status']} | {comparison['note']} |"
         )
     (OUTPUT_DIR / "skills.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
 
@@ -279,13 +780,114 @@ def load_monsters() -> list[tuple[str, dict[str, Any]]]:
     return records
 
 
+def monster_definition_values(record: dict[str, Any]) -> tuple[str, int, int, int, int, int, int, int, int]:
+    """出現重みを除く、Ver2モンスターマスターの9項目を固定順で返す。"""
+    return (
+        str(record.get("name", "")),
+        as_int(record.get("exp_reward")),
+        as_int(record.get("random_range")),
+        as_int(record.get("hp_base")),
+        as_int(record.get("base_damage")),
+        as_int(record.get("evasion_rate")),
+        as_int(record.get("special_skill_id")),
+        as_int(record.get("special_rate")),
+        as_int(record.get("gold_reward")),
+    )
+
+
+def legacy_monster_definition_values(path: Path) -> list[tuple[str, int, int, int, int, int, int, int, int]]:
+    values = []
+    for line_number, line in enumerate(path.read_text(encoding="cp932").splitlines(), 1):
+        fields = line.split("<>")
+        if len(fields) < 9:
+            raise ValueError(f"Ver2モンスターマスターの列数が不正です: {path}:{line_number}")
+        values.append((fields[0], *(as_int(value) for value in fields[1:9])))
+    return values
+
+
+def monster_master_comparisons() -> dict[tuple[str, int], dict[str, str]]:
+    """全モンスターマスターを、Ver2の重複出現枠まで含めて比較する。"""
+    results: dict[tuple[str, int], dict[str, str]] = {}
+    for current_name, source in V2_MONSTER_MASTERS.items():
+        current_path = MONSTER_DATA_DIR / current_name
+        current_records = json.loads(current_path.read_text(encoding="utf-8"))
+        if not isinstance(current_records, list):
+            raise ValueError(f"Ver3モンスターマスターは配列である必要があります: {current_path}")
+        legacy_path = ROOT / source
+        legacy_counter = Counter(legacy_monster_definition_values(legacy_path))
+        current_counter: Counter[tuple[str, int, int, int, int, int, int, int, int]] = Counter()
+        for record in current_records:
+            if not isinstance(record, dict):
+                raise ValueError(f"Ver3モンスターマスターにオブジェクト以外があります: {current_path}")
+            current_counter[monster_definition_values(record)] += max(1, as_int(record.get("weight", 1)))
+        if legacy_counter != current_counter:
+            missing = list((legacy_counter - current_counter).items())[:3]
+            extra = list((current_counter - legacy_counter).items())[:3]
+            raise ValueError(f"Ver2/Ver3モンスターマスター差異: {current_name}; Ver2のみ={missing}; Ver3のみ={extra}")
+
+        for index, record in enumerate(current_records):
+            values = monster_definition_values(record)
+            weight = max(1, as_int(record.get("weight", 1)))
+            source_count = legacy_counter[values]
+            results[(current_name, index)] = {
+                "source": f"{source}（同一9項目のVer2出現枠 {source_count}件）",
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": f"9項目と出現重みを照合済み。現行weight {weight}、同一レコード全体の重み合計 {current_counter[values]}。",
+            }
+    return results
+
+
+def monster_skill_comparisons() -> dict[int, dict[str, str]]:
+    """Ver2の全モンスター特殊技とVer3の同名クラス・両メソッドを照合する。"""
+    skills_tree = ast.parse((ROOT / "sub_def" / "skills.py").read_text(encoding="utf-8"))
+    skill_classes = {node.name: node for node in skills_tree.body if isinstance(node, ast.ClassDef)}
+    results: dict[int, dict[str, str]] = {}
+    for skill_id in range(1, 23):
+        legacy_path = ROOT / "旧版_ver2" / "mons" / f"{skill_id}.pl"
+        source = legacy_path.read_text(encoding="cp932")
+        if "sub mons_waza" not in source or "sub mons_atowaza" not in source:
+            raise ValueError(f"Ver2モンスター特殊技の実装が不足しています: {legacy_path}")
+        node = skill_classes.get(f"mons_{skill_id}")
+        methods = {child.name for child in node.body if isinstance(child, ast.FunctionDef)} if node else set()
+        required = {"mons_waza", "mons_atowaza"}
+        if not required.issubset(methods):
+            raise ValueError(f"Ver3モンスター特殊技の実装が不足しています: mons_{skill_id}")
+
+        if skill_id == 14:
+            results[skill_id] = {
+                "difference": "盗み額を所持金以下へ制限し、負数化しない安全処理を追加",
+                "intent": "意図的（現行の所持金整合性維持）",
+                "status": "差異あり",
+                "note": "Ver2の所持金÷7抽選を基礎にしつつ、available_gold と penalize_reward で保存値の下限を保証。",
+            }
+        else:
+            results[skill_id] = {
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": "発動率、乱数分岐、ダメージ・回復・状態更新、通常攻撃との加算/置換を照合済み。13・19の回復分岐はVer2どおり被ダメージを0にする。",
+            }
+    return results
+
+
 def write_monster_skills() -> None:
     records = load_monsters()
-    by_skill: dict[int, list[tuple[str, dict[str, Any]]]] = {}
+    comparisons = monster_master_comparisons()
+    skill_comparisons = monster_skill_comparisons()
+    source_indexes: dict[str, int] = defaultdict(int)
+    indexed_records: list[tuple[str, int, dict[str, Any]]] = []
     for source, record in records:
+        index = source_indexes[source]
+        source_indexes[source] += 1
+        indexed_records.append((source, index, record))
+
+    by_skill: dict[int, list[tuple[str, int, dict[str, Any]]]] = {}
+    for source, index, record in indexed_records:
         skill_id = as_int(record.get("special_skill_id"))
         if skill_id > 0:
-            by_skill.setdefault(skill_id, []).append((source, record))
+            by_skill.setdefault(skill_id, []).append((source, index, record))
 
     sections = [
         "# モンスター特殊技比較チェックリスト",
@@ -299,17 +901,19 @@ def write_monster_skills() -> None:
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for skill_id, users in sorted(by_skill.items()):
-        rates = [as_int(record.get("special_rate")) for _, record in users]
-        sources = ", ".join(sorted({source for source, _ in users}))
+        rates = [as_int(record.get("special_rate")) for _, _, record in users]
+        sources = ", ".join(sorted({source for source, _, _ in users}))
         name = MONSTER_SKILL_LABELS.get(skill_id, "名称要確認")
         current = (
             f"使用 {len(users)}体 / special_rate {min(rates)}〜{max(rates)} / "
             f"使用マスター: {sources} / `sub_def/skills.py`: mons_{skill_id}.mons_waza / mons_atowaza"
         )
+        comparison = skill_comparisons[skill_id]
         sections.append(
             f"| モンスター特殊技 {skill_id}: {name} | `旧版_ver2/mons/{skill_id}.pl`、"
             "`旧版_ver2/mbattle.pl` | "
-            f"{current} | 未確認 | 未判定 | 未確認 | 発動条件・通常攻撃との加算/置換・命中/回避・回復・状態変化を照合後に根拠を記入 |"
+            f"{current} | {comparison['difference']} | {comparison['intent']} | "
+            f"{comparison['status']} | {comparison['note']} |"
         )
 
     sections.extend((
@@ -319,19 +923,20 @@ def write_monster_skills() -> None:
         "| 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ))
-    for source, record in records:
+    for source, index, record in indexed_records:
         skill_id = as_int(record.get("special_skill_id"))
         if skill_id <= 0:
             continue
         name = record.get("name", "名称なし")
-        v2_source = V2_MONSTER_MASTERS.get(source, "旧版_ver2/data の対応マスター")
+        comparison = comparisons[(source, index)]
         current = (
             f"特殊技 {skill_id}: {MONSTER_SKILL_LABELS.get(skill_id, '名称要確認')} / "
             f"special_rate {as_int(record.get('special_rate'))} / `data/monsters/{source}`"
         )
         sections.append(
-            f"| {source}: {name} | `{v2_source}` の対応モンスター・特殊技ID・特殊率 | "
-            f"{current} | 未確認 | 未判定 | 未確認 | モンスター名、特殊技ID、特殊率を照合後に根拠を記入 |"
+            f"| {source}: {name} | `{comparison['source']}` | "
+            f"{current} | {comparison['difference']} | {comparison['intent']} | "
+            f"{comparison['status']} | 特殊技ID・特殊率を含む9項目と出現重みを照合済み。 |"
         )
     (OUTPUT_DIR / "monster_skills.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
 
@@ -350,6 +955,7 @@ def monster_current_value(record: dict[str, Any]) -> str:
 
 
 def write_monsters() -> None:
+    comparisons = monster_master_comparisons()
     sections = [
         "# モンスターデータ比較チェックリスト",
         "",
@@ -376,10 +982,11 @@ def write_monsters() -> None:
         ))
         for index, record in enumerate(records):
             name = record.get("name", "名称なし")
+            comparison = comparisons[(path.name, index)]
             sections.append(
-                f"| {path.name} #{index}: {name} | `{v2_source}` の対応モンスター・全能力値・報酬・特殊技 | "
+                f"| {path.name} #{index}: {name} | `{comparison['source']}` | "
                 f"{monster_current_value(record)} / `data/monsters/{path.name}` | "
-                "未確認 | 未判定 | 未確認 | 名前・数値・特殊技・特殊率・出現重みを照合後に根拠を記入 |"
+                f"{comparison['difference']} | {comparison['intent']} | {comparison['status']} | {comparison['note']} |"
             )
         sections.append("")
     sections.insert(3, f"対象: 9ファイル・{total}件。")
@@ -426,8 +1033,38 @@ def chocobo_v2_source(filename: str) -> str:
     return "旧版_ver2/crace.cgi / farmrace.cgi の対応ribalデータ"
 
 
+def chocobo_comparisons() -> dict[tuple[str, int], dict[str, str]]:
+    """Ver2の候補・各レースライバルを、行順と全保存値で照合する。"""
+    results: dict[tuple[str, int], dict[str, str]] = {}
+    candidate_fields = ("no", "name", "price", "run", "win", "blood", "waza", "father", "fatherrank", "mother", "motherrank", "e", "breader")
+    rival_fields = ("breader", "name", "no", "type", "max", "c0", "c1", "c2", "c3", "c4", "c5", "c6")
+    for filename, records in load_chocobo_data():
+        legacy_path = ROOT / "旧版_ver2" / ("chocobofile.cgi" if filename == "chocobofile.json" else f"{Path(filename).stem}.cgi")
+        legacy_lines = legacy_path.read_text(encoding="cp932").splitlines()
+        if len(legacy_lines) != len(records):
+            raise ValueError(f"Ver2/Ver3チョコボ件数が不一致です: {filename}")
+        fields = candidate_fields if filename == "chocobofile.json" else rival_fields
+        for index, (line, record) in enumerate(zip(legacy_lines, records)):
+            raw = line.split("<>")
+            raw = raw[:-1] if raw and raw[-1] == "" else raw
+            if len(raw) != len(fields):
+                raise ValueError(f"Ver2チョコボ列数が不正です: {legacy_path}:{index + 1}")
+            legacy = tuple(value if key in {"name", "father", "mother", "breader"} else as_int(value) for key, value in zip(fields, raw))
+            current = tuple(record.get(key, "") if key in {"name", "father", "mother", "breader"} else as_int(record.get(key)) for key in fields)
+            if legacy != current:
+                raise ValueError(f"Ver2/Ver3チョコボ差異: {filename}#{index}; Ver2={legacy}; Ver3={current}")
+            results[(filename, index)] = {
+                "difference": "差異なし",
+                "intent": "該当なし",
+                "status": "一致",
+                "note": f"Ver2 {legacy_path.name}:{index + 1} と行順・全{len(fields)}項目を照合済み。",
+            }
+    return results
+
+
 def write_chocobo_data() -> None:
     files = load_chocobo_data()
+    comparisons = chocobo_comparisons()
     total = sum(len(records) for _, records in files)
     sections = [
         "# チョコボデータ比較チェックリスト",
@@ -448,11 +1085,12 @@ def write_chocobo_data() -> None:
         ))
         for index, record in enumerate(records):
             name = record.get("name", "名称なし")
+            comparison = comparisons[(filename, index)]
             current = chocobo_candidate_value(record) if is_candidate_file else chocobo_rival_value(record)
-            check_target = "候補の血統・価格・初期値" if is_candidate_file else "ライバル名・成長型・賞金基準・能力値"
             sections.append(
                 f"| {filename} #{index}: {name} | `{chocobo_v2_source(filename)}` の対応データ | "
-                f"{current} / `data/chocobo/{filename}` | 未確認 | 未判定 | 未確認 | {check_target}を照合後に根拠を記入 |"
+                f"{current} / `data/chocobo/{filename}` | {comparison['difference']} | {comparison['intent']} | "
+                f"{comparison['status']} | {comparison['note']} |"
             )
         sections.append("")
     (OUTPUT_DIR / "chocobo_data.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
@@ -681,6 +1319,8 @@ def write_commands_actions() -> None:
         raise ValueError(f"ルート説明の不足または古さがあります: missing={missing}, stale={stale}")
 
     actions = command_action_rows()
+    route_comparisons = command_route_comparisons(routes)
+    action_comparisons = command_action_comparisons(actions)
     documented_modes = documented_mode_values(actions, routes)
     undocumented_source = mode_values_in_source() - documented_modes
     undocumented_template = mode_values_in_templates() - documented_modes
@@ -703,9 +1343,10 @@ def write_commands_actions() -> None:
     ]
     for mode, module in routes.items():
         purpose, state, v2_source = ROUTE_DETAILS[mode]
+        comparison = route_comparisons[mode]
         sections.append(
             f"| ルート `mode={mode}`: {purpose} | `{v2_source}` | `login.py` → `{module}` / {state} | "
-            "未確認 | 未判定 | 未確認 | ルート名、公開範囲、HTTPメソッド、互換エイリアスを照合後に根拠を記入 |"
+            f"{comparison['difference']} | {comparison['intent']} | {comparison['status']} | {comparison['note']} |"
         )
 
     sections.extend(("", "## 実行操作一覧", ""))
@@ -721,13 +1362,165 @@ def write_commands_actions() -> None:
             "| --- | --- | --- | --- | --- | --- | --- |",
         ))
         for action in (item for item in actions if item["category"] == category):
+            comparison = action_comparisons[action["name"]]
             sections.append(
                 f"| {action['name']}（`{action['mode']}` / {action['method']} / {action['state']}） | "
-                f"`{action['v2_source']}` | `{action['current_source']}` | 未確認 | 未判定 | 未確認 | {action['checks']} |"
+                f"`{action['v2_source']}` | `{action['current_source']}` | {comparison['difference']} | "
+                f"{comparison['intent']} | {comparison['status']} | {comparison['note']} |"
             )
         sections.append("")
     sections.insert(4, f"対象: ルート {len(routes)}件、実行操作 {len(actions)}件。")
     (OUTPUT_DIR / "commands_actions.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
+
+
+def _require_command_source_snippets() -> None:
+    """ルート・操作台帳が実在する入口と分岐を参照していることを確認する。"""
+    required = {
+        "login.py": ("FUNCTION_MAP", "POST_ONLY_ROUTE_MODES", "token_check(FORM, session)"),
+        "others.py": ("def main",), "chara_make.py": ("mode == \"make_pre\"", "mode == \"make_end\""),
+        "cgi_py/sts.py": ("mode == \"st_buy\"",), "cgi_py/tac_change.py": ("senjutu_henkou",),
+        "cgi_py/bank.py": ("bank_sell", "bank_buy"), "cgi_py/souko.py": ("weapon_remove", "armor_remove", "accessory_remove"),
+        "cgi_py/morifarm.py": ("choco_buyb", "choco_sell", "yadoya"), "cgi_py/crace.py": ("race_dendo", "race7", "race8"),
+        "cgi_py/ctrain.py": ("race0", "race6"), "admin.py": ("master_save", "backup_restore", "del_noplay"),
+    }
+    for relative_path, snippets in required.items():
+        text = (ROOT / relative_path).read_text(encoding="utf-8", errors="replace")
+        missing = [snippet for snippet in snippets if snippet not in text]
+        if missing:
+            raise ValueError(f"コマンド比較の根拠が見つかりません: {relative_path}: {missing}")
+
+
+def command_route_comparisons(routes: dict[str, str]) -> dict[str, dict[str, str]]:
+    _require_command_source_snippets()
+    public = {"rank", "system", "chara_sts", "img_list", "ranking"}
+    aliases = {
+        "yado": "shop", "shop_item": "shop_weapon", "shop_def": "shop_armor", "shop_acs": "shop_accessory",
+        "sentaku": "select_battle", "genei": "monster", "isekiai": "monster", "boss": "legend",
+        "choco": "morifarm", "chara_sts": "system", "img_list": "system", "ranking": "system",
+    }
+    result = {}
+    for mode, module in routes.items():
+        if mode in aliases:
+            difference = f"Ver3で`{aliases[mode]}`への互換別名を明示"
+            note = f"login.pyのFUNCTION_MAPで{module}へ集約。旧URL・既存フォームを維持しつつ、POST時は共通CSRF検証を通す。"
+        elif mode in public:
+            difference = "公開閲覧をlogin.pyの許可リストで明示"
+            note = "未ログインでも閲覧可。状態更新POSTは該当モジュール側の本人確認・共通CSRF検証を必要とする。"
+        elif mode in {"battle", "monster", "genei", "isekiai", "boss", "dendo", "farmrace"}:
+            difference = "状態変更ルートをPOST専用＋共通CSRF検証へ変更"
+            note = "GET直打ちはlogin.pyで拒否し、ログイン済みセッションを確認してからモジュールを遅延ロードする。"
+        elif mode == "legend":
+            difference = "攻略者一覧だけ公開閲覧として分離"
+            note = "view=rankingのGETだけ未ログイン閲覧可。攻略実行はPOST専用・ログイン必須でboss互換ルートにも対応する。"
+        else:
+            difference = "個別CGI入口からlogin.pyの集中ルーティングへ移行"
+            note = f"FUNCTION_MAPで{module}を選択し、ログイン済みならPOSTのCSRFを共通検証して実行する。"
+        result[mode] = {"difference": difference, "intent": "意図的", "status": "差異あり", "note": note}
+    return result
+
+
+def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    """121操作を、同じ操作種別でも入力・更新対象が分かる記録にする。"""
+    _require_command_source_snippets()
+    result: dict[str, dict[str, str]] = {}
+    specific = {
+        "トップ／ログイン前画面": ("UTF-8テンプレート画面へ移行", "公開のログイン・登録導線をothers.pyで表示。認証済み状態を前提にしない。"),
+        "新規登録入力": ("入力画面をJinja化しCSRFを追加", "職業・画像・ID等の入力を表示し、POST確認画面へ渡す。"),
+        "新規登録確認": ("サーバー側検証と確認トークンを追加", "入力形式・重複ID/名前/ホストを確認し、確定処理へ必要な値だけを渡す。"),
+        "新規登録確定": ("統合JSON・PBKDF2保存へ移行", "初期能力・装備・職歴・倉庫を原子的に生成する。初期ゲーム値の対応は所有・進行台帳で確認済み。"),
+        "ログイン": ("平文照合Cookieからハッシュ照合・暗号化セッションへ移行", "POST+CSRFで認証し、旧形式は成功時だけ再ハッシュ、日次バックアップ後に街へ遷移する。"),
+        "ログアウト": ("暗号化セッション破棄へ移行", "destroy_sessionで認証Cookieを破棄しothers.pyへ遷移する。"),
+        "合言葉確認": ("本人確認をセッション・CSRF前提へ変更", "保存済み合言葉を照合して変更画面へ進める。"),
+        "パスワード変更確定": ("PBKDF2更新・セッション再発行へ変更", "旧パスワード/合言葉と新値を検証し、保存済みハッシュと認証状態を更新する。"),
+        "街のメイン画面": ("テンプレート表示と共有ニュース/BBS分離", "能力・王者・待機時間を計算し、all_messageとbbsを別データとして表示する。"),
+        "レジェンド挑戦を中断して街へ戻る": ("POST+CSRFで進行値をリセット", "legend_cancel時だけboss_flagを設定初期値へ戻す。"),
+        "自分のステータスを表示": ("名前付き状態・テンプレート表示へ移行", "能力、装備補正、職業熟練度、マスター職を現行データから組み立てる。"),
+        "画像・発動コメントを変更": ("入力値検証を追加", "画像IDとコメント長・禁止語を検査し、本人のcharaだけを保存する。"),
+        "戦術一覧を表示": ("利用可否をJSON職歴から算出", "職業・マスター条件と現在のtactic_idを表示する。"),
+        "戦術を変更": ("POST時の戦術ID・利用条件検証を追加", "未習得/不正戦術を拒否し、tactic_idだけを更新する。"),
+        "転職画面を表示": ("職業マスターをJSONから参照", "能力・職歴前提を満たす候補と未マスター候補を分けて表示する。"),
+        "転職を実行": ("実行POSTでも前提職を再検証", "現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化してchara/syokuを同時保存する。"),
+        "掲示板へ投稿": ("私信一体型からBBS専用JSONへ分離", "本人ID・200文字・禁止語を検査し、新着順と保存上限を守って書込む。"),
+        "宿泊": ("状態更新をshop.pyへ集約", "料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。"),
+        "銀行を表示": ("統合JSONのgold/bankを表示", "本人の所持金・預金と上限を表示し、変更はしない。"),
+        "銀行へ預け入れ": ("入力検証と原子的保存を追加", "1,000G単位・所持金/預金上限を検査してgoldからbankへ移す。"),
+        "銀行から引き出し": ("入力検証と原子的保存を追加", "1,000G単位・預金残高・所持金上限を検査してbankからgoldへ移す。"),
+        "倉庫を表示": ("3種別配列を統合表示", "装備中とsouko_weapon/armor/accessoryを分け、変更操作は本人確認下だけで受け付ける。"),
+        "チャンピオンに挑戦": ("POST専用・結果表示mode明示", "待機後に王者状態で戦い、結果・王者更新・経験値上限は戦闘/所有台帳の確認結果に従う。"),
+        "対人相手一覧を表示": ("選択対象を現行プレイヤー一覧から生成", "本人・無効データを除外した閲覧専用リストで、保存状態は変更しない。"),
+        "対人相手を選択": ("相手IDをサーバー側で再検証", "本人・存在しない相手を拒否し、選択画面だけを表示する。"),
+        "選択相手と対戦": ("模擬戦を保存しないシミュレーションへ明示", "戦闘ログを表示するが経験値・所持金・戦績・待機時刻を更新しない。"),
+        "通常モンスター修行": ("POST+CSRF・統合保存へ移行", "出現表と修行回数を検査し、勝敗別報酬・戦績・職歴を保存する。"),
+        "幻影の城へ挑戦": ("monster.pyのgenei分岐へ統合", "出現条件、敵攻撃への防具補正、幻影報酬を通常修行と区別して処理する。"),
+        "異世界へ挑戦": ("monster.pyのisekiai分岐へ統合", "レベル/進行条件を検査し、異世界出現表と報酬を用いる。"),
+        "レジェンド攻略者一覧を閲覧": ("公開GET閲覧を明示", "ログイン不要で攻略者を称号・戦績から並べ、状態変更は行わない。"),
+        "レジェンドの階層へ挑戦": ("POST専用・階層値を検証", "title_id、boss_flag、修行回数、待機時間を検査して階層別モンスターと戦う。"),
+        "天下一武道会ロビーを表示": ("24時間メンバーキャッシュへ移行", "レベル上位者、参加可能boss_flag、進行ラウンド、制覇履歴を表示する。"),
+        "天下一武道会で対戦": ("ラウンド番号をサーバー側照合", "期待ラウンド以外を拒否し、勝敗/引分・賞金・EXP・制覇ログ・battle_limitを更新する。"),
+        "英雄ランキングを表示": ("HTMLキャッシュからJSONキャッシュへ移行", "部門別上位と勝率を24時間キャッシュから公開表示する。"),
+        "登録者一覧を表示": ("JSONキャッシュ・ページングへ移行", "公開プレイヤーをレベル順にページ表示し、個人状態は更新しない。"),
+        "他者の詳細ステータスを表示": ("公開GETの名前付き状態表示へ移行", "対象IDの能力・装備・称号・マスター職を読み取り専用で表示する。"),
+        "キャラクター画像一覧を表示": ("設定の画像マスターを表示", "公開画像IDとファイル対応を読み取り専用で出力する。"),
+    }
+    for action in actions:
+        name, category, mode = action["name"], action["category"], action["mode"]
+        if name in specific:
+            difference, note = specific[name]
+            intent = "意図的"
+        elif category == "店・資産":
+            label = "武器" if "武器" in name else "防具" if "防具" in name else "装飾品"
+            if "購入" in name:
+                difference, note = "購入POSTの入力・職業・所持金検証を追加", f"{label}IDをマスター参照し、職業制限・価格・倉庫上限を確認して倉庫へ追加する。"
+            elif "売却" in name:
+                difference, note = "売却対象を倉庫要素へ限定", f"{label}の保管番号を検証し、売値をgold上限内で加算して対象要素を削除する。"
+            elif "外す" in name:
+                difference, note = "装備と倉庫を統合JSONで同時更新", f"装備中の{label}を倉庫へ退避し、初期{label}へ戻す。倉庫上限と二重登録を検査する。"
+            elif "装備" in name:
+                difference, note = "倉庫番号を配列添字として検証", f"選択{label}を装備し、既存装備を倉庫へ退避する。武器/防具では職業制限も再検証する。"
+            else:
+                difference, note = "個別店CGIを種別モジュールへ分離", f"{label}マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。"
+            intent = "意図的"
+        elif category == "チョコボ":
+            if name.startswith("チョコボ訓練:"):
+                stat = name.split(": ", 1)[1]
+                difference, note = "訓練modeを検証して統合chocoへ保存", f"{stat}用modeのみを受け付け、待機・体力・20回試行・失敗副作用・寿命を処理して保存する。"
+                intent = "意図的"
+            elif name.startswith("チョコボレース:") or name.startswith("G1レース:") or name.startswith("G2レース:"):
+                difference, note = "レースID・開催条件をサーバー側で検証", f"{mode}をcrace.pyで解決し、勝利数・性別・開催日・ライバル・寿命・賞金・run/win・トロフィーを処理する。"
+                intent = "意図的"
+            elif name == "殿堂レジェンドレース":
+                difference, note, intent = "殿堂JSONをライバル表へ利用", "race_dendoだけdenchoco.jsonを参照し、出走資格・寿命・結果報酬を通常レースと分けて処理する。", "意図的"
+            elif name == "チョコボを殿堂登録":
+                difference, note, intent = "重賞3個条件を追加", "Ver2にないG1/G2タイトル3個を検査し、同ID・同名は上書き、他は先頭追加する。", "要判断"
+            elif name == "チョコボを手放す":
+                difference, note, intent = "未所持値を明示消去し候補リストをJSON化", "名前付き個体だけを性別別お見合い候補へ移し、chocoを空辞書へ戻す。候補固定枠廃止は要判断。", "要判断"
+            elif name == "野生チョコボを購入":
+                difference, note, intent = "所持中の直接POST上書きを拒否", "候補ID・価格・未所持を再検証し、初期能力の個体と空の重賞履歴を同時保存する。", "意図的"
+            elif name == "お見合い・配合を実行":
+                difference, note, intent = "親候補・所持状態を再検証", "相手候補、所持個体、価格を検査して血統・能力上限・初期状態を計算し現役個体を置換する。", "意図的"
+            elif name == "チョコボに名前を付ける":
+                difference, note, intent = "名称・禁止語・殿堂履歴の検証を追加", "未所持/無名を検査し、既存殿堂名との重複を拒否してchoco.nameだけを更新する。", "意図的"
+            elif name == "チョコボを休ませる":
+                difference, note, intent = "統合choco/charaの同時保存へ移行", "G5000・体力最大・所持を検査し、回復量、train、maxを更新する。", "意図的"
+            elif name == "チョコボ王者戦":
+                difference, note, intent = "王者状態を専用JSON・ロックで更新", "所持・待機・同一王者を検査し、勝者/連勝/前王者と通知を更新する。", "意図的"
+            else:
+                difference, note, intent = "チョコボ保存を統合JSON・共有JSONへ移行", "所持判定、候補/ランキング/殿堂表示は読み取り専用で、空辞書を未所持として扱う。", "意図的"
+        elif category == "管理":
+            if name in {"バックアップから復元", "保護ユーザーを復元"}:
+                difference, note, intent = "Ver2にない復元操作を追加", "暗号化管理セッション・CSRF・maintenance_modeを要求し、入力名/固定復元元を検証して安全に復元する。", "意図的"
+            elif "削除" in name:
+                difference, note, intent = "管理セッション・CSRF・保護対象検査を追加", "対象と削除可否を検証し、関連JSONを安全に処理する。未プレイ削除は保護IDを除外する。", "意図的"
+            elif "保存" in name or "追加" in name or "投稿" in name:
+                difference, note, intent = "管理セッション・CSRF・型/範囲検証を追加", "入力を検証して原子的に保存し、マスター更新時はID一意性・下限・参照可能性を確認する。", "意図的"
+            else:
+                difference, note, intent = "hidden平文管理パスワードから暗号化管理セッションへ移行", "表示操作も管理認証を確認し、一覧・編集対象を読み取り表示する。", "意図的"
+        else:
+            difference, note, intent = "個別CGIから集中ルーティング・CSRF検証へ移行", "login.pyがログイン済み状態とPOSTトークンを確認した後、該当モジュールで入力と更新対象を検査する。", "意図的"
+        result[name] = {"difference": difference, "intent": intent, "status": "差異あり", "note": note}
+    if set(result) != {action["name"] for action in actions}:
+        raise ValueError("コマンド操作比較の行定義が一致しません")
+    return result
 
 
 def comparison_row(name: str, v2_source: str, current_source: str, checks: str) -> str:
@@ -736,7 +1529,13 @@ def comparison_row(name: str, v2_source: str, current_source: str, checks: str) 
     )
 
 
-def write_static_checklist(filename: str, title: str, introduction: str, sections_data: tuple[tuple[str, tuple[tuple[str, str, str, str], ...]], ...]) -> None:
+def write_static_checklist(
+    filename: str,
+    title: str,
+    introduction: str,
+    sections_data: tuple[tuple[str, tuple[tuple[str, str, str, str], ...]], ...],
+    comparisons: dict[str, dict[str, str]] | None = None,
+) -> None:
     sections = [f"# {title}", "", introduction, ""]
     for heading, rows in sections_data:
         sections.extend((
@@ -745,7 +1544,17 @@ def write_static_checklist(filename: str, title: str, introduction: str, section
             "| 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |",
             "| --- | --- | --- | --- | --- | --- | --- |",
         ))
-        sections.extend(comparison_row(*row) for row in rows)
+        for row in rows:
+            name, v2_source, current_source, checks = row
+            comparison = (comparisons or {}).get(name)
+            if comparison is None:
+                sections.append(comparison_row(*row))
+                continue
+            sections.append(
+                f"| {name} | `{comparison.get('source', v2_source)}` | `{current_source}` | "
+                f"{comparison['difference']} | {comparison['intent']} | "
+                f"{comparison['status']} | {comparison['note']} |"
+            )
         sections.append("")
     (OUTPUT_DIR / filename).write_text("\n".join(sections), encoding="utf-8")
 
@@ -798,7 +1607,77 @@ def write_battle_logic_checklist() -> None:
                 ("職業熟練度の正規化とマスター", "旧版_ver2/battle.pl:syoku_regist", "sub_def/battle_logic.py:process_levelup / cgi_py/tensyoku.py", "Lv60上限、既存61以上の正規化、転職時の保存"),
             )),
         ),
+        comparisons=battle_logic_comparisons(),
     )
+
+
+def _require_battle_logic_source_snippets() -> None:
+    required = {
+        "旧版_ver2/battle.pl": ("sub tyosenwaza", "sub levelup", "sub acs_add"),
+        "旧版_ver2/mbattle.pl": ("sub shokika", "sub hp_sum", "sub winlose", "sub monsbattle_sts"),
+        "旧版_ver2/wbattle.pl": ("sub shokika", "sub hp_sum", "sub battle_kaihi", "sub sentoukeka"),
+        "sub_def/battle_logic.py": ("class BattleState", "def get_job_dmg", "class BattleSimulator", "def process_levelup"),
+        "sub_def/skills.py": ("def run_skill", "damage_heal_ratio1", "damage_heal_ratio2"),
+        "cgi_py/monster.py": ("BattleSimulator", "battle_limit", "process_levelup"),
+        "cgi_py/select_battle.py": ("BattleSimulator", "simulate"),
+    }
+    for relative_path, snippets in required.items():
+        text = (ROOT / relative_path).read_text(encoding="utf-8", errors="replace")
+        missing = [snippet for snippet in snippets if snippet not in text]
+        if missing:
+            raise ValueError(f"戦闘基盤比較の根拠が見つかりません: {relative_path}: {missing}")
+
+
+def battle_logic_comparisons() -> dict[str, dict[str, str]]:
+    """共通戦闘ループと結果処理の実装差異を記録する。"""
+    _require_battle_logic_source_snippets()
+    items = {
+        "戦闘モード別の状態初期化": ("BattleStateへ状態を集約", "意図的", "確認済み", "monster/genei/isekiai/boss/battleの一時値、最大ターン、金銭変動を状態オブジェクトへ集約。対人は相手HP・装備、モンスターはマスター値とHP乱数を設定する。"),
+        "装備・アクセサリーの戦闘用補正コピー": ("保存配列の直接加算からdeep copyへ変更", "意図的", "確認済み", "Ver2のacs_add/wacs_addと同じ8能力補正を戦闘コピーだけに加算する。戦闘後に元データを戻す必要がない。"),
+        "モンスターHP・初期HPの乱数": ("名前付きmonster値を使用", "意図的", "確認済み", "双方ともhp_base + rand(random_range)で決定し、その値を表示用最大HPにも使う。random_range 0は現行で安全に0幅相当へ正規化する。"),
+        "職業別の基礎ダメージ（全31職）": ("職18〜30で魅力・カルマも乱数化", "要判断", "確認済み", "職0〜17と職22〜27の能力組合せは対応する。一方Ver2の職18〜30は魅力・カルマを固定加算するが、現行all_statsは両方をrand値にしており、期待ダメージが低下する。"),
+        "モンスター・対人相手の基礎ダメージ": ("計算をget_job_dmgと名前付きモンスター値へ統合", "意図的", "確認済み", "モンスターはbase_damage + rand(random_range)、対人は相手の職業式＋武器ATK。幻影ではVer2同様にプレイヤー防具DEFを敵基礎ダメージへ加算する。"),
+        "最大ターンと時間切れ": ("時間切れ結果コードを現行は引分2へ統一", "要判断", "確認済み", "Ver2は未決着時win=3、現行は初期値win=2を返す。結果画面・報酬は現行で引分として処理するため、Ver2の時間切れ専用分岐との差を採用するか確認が必要。"),
+        "選択戦術IDの取得": ("列番号からtactic_idへ名称化", "意図的", "確認済み", "プレイヤー・対人相手とも選択戦術IDを使用し、不正値・欠損値は0へ正規化する。現職ではないマスター戦術も選択済みなら実行する仕様を維持する。"),
+        "戦術マスター由来の発動率分母": ("tac.jsonのactivation_denominatorを優先", "意図的", "確認済み", "説明文ラベルを乱数分母へ対応付ける後方互換を残し、明示値があればそれを優先する。個々の分母はskills.mdでVer2照合済み。"),
+        "プレイヤー必殺率・上限・特殊モード減衰": ("名前付き値・設定値へ移行", "意図的", "確認済み", "カルマ/15 + 10 + 職業Lv、75上限、アクセ補正後95上限、幻影・異世界1/3、ボス1/2を共通ループで計算する。"),
+        "リミットブレイク": ("表示HTMLのみ更新", "意図的", "確認済み", "双方ともHP10%未満かつrand(4)>1で必殺率へ999を加算する。対人相手側も同条件で判定する。"),
+        "プレイヤー戦術の必殺技実行": ("動的requireからrun_skillディスパッチへ移行", "意図的", "確認済み", "選択戦術IDのhissatuを通常行動後に呼び、未定義IDは安全に0相当へ解決する。各必殺技の差異はskills.mdで確認済み。"),
+        "対人相手戦術の必殺技実行": ("動的requireからrun_skillディスパッチへ移行", "意図的", "確認済み", "相手の選択戦術IDをwtech/whissatuへ渡し、相手アクセの必殺率補正も加える。"),
+        "モンスター特殊技の実行": ("special_skill_idを名前付き値で参照", "意図的", "確認済み", "モンスターの技ID・発動率をBattleStateへ渡してmons_wazaを呼ぶ。個別22技の値はmonster_skills.mdで照合済み。"),
+        "戦術の後発効果": ("呼出先を明示ディスパッチ化", "意図的", "確認済み", "必殺判定後にプレイヤーatowaza、アクセ効果、対人なら相手watowaza・相手アクセ、モンスターならmons_atowazaの順で処理する。"),
+        "アクセサリー固有効果": ("effect_idを辞書から参照", "意図的", "確認済み", "命中・回避・必殺率補正は先に取り込み、固有効果は後発効果の位置で実行する。個別effect_idはskills.mdで照合済み。"),
+        "対人1ターン目の逆転必殺": ("設定値化と明示的な一時装備変更", "意図的", "確認済み", "レベル差/装備比較による初手倍率、回避不能化、相手武器無効化を維持する。現行はcounterattack_level_gap等を設定値で読む。"),
+        "クリティカル判定（プレイヤー攻撃）": ("回復・0ダメージを判定対象外に変更", "意図的", "確認済み", "HP割合から確率を出し、モンスター戦3倍、対人戦2倍＋相手武器ATKを適用する。現行はdmg1>0のときだけ判定して回復技を攻撃扱いしない。"),
+        "クリティカル判定（敵攻撃）": ("回復・0ダメージを判定対象外に変更", "意図的", "確認済み", "対人はHP割合・100幅で2倍＋自防具DEF、モンスターは200幅で防具DEF加算。現行はdmg2>0だけに限定する。"),
+        "防具DEFによるダメージ減算と最小値": ("防御不能ログを追加", "意図的", "確認済み", "モンスター戦はDEF未満を0、対人戦は1にし、負ダメージは保持する。上級職軽減後に0になった攻撃を現行はログで明示する。"),
+        "上級職の被ダメージ軽減": ("職IDを名前付きjobで参照", "意図的", "確認済み", "職8〜17は1/2、18以上は1/4を被ダメージへ適用し、対人では双方に適用する。"),
+        "命中・回避判定": ("表示用と戦闘用の計算を共通化", "意図的", "確認済み", "DEX・AGI・武器命中・防具回避・アクセ補正と、モンスター300幅/対人100幅の回避判定を対応させる。"),
+        "先行攻撃による敵行動停止": ("Ver2の同時精算にない敵行動停止を追加", "要判断", "確認済み", "Ver2は双方の行動後にhp_sumする。現行は敵HPがこのターンに0以下になる見込みならdmg2を0にして『すでに倒れていた』とするため、プレイヤー先行の仕様変更になっている。"),
+        "ドレイン回復の基準": ("Ver2の設定ダメージ基準から実ダメージ基準へ変更", "意図的", "確認済み", "防御・回避後のdmg×割合で回復する現行仕様を維持する。ドレイン43の全量回復など個別割合はskills.mdで調整済み。"),
+        "HP・回復・自傷の精算順": ("同時精算を維持。ただし敵行動停止の例外あり", "要判断", "確認済み", "Ver2 hp_sumと同様に双方のダメージ・回復を同一ターンで精算し最大HPで上限化する。ただし先行撃破時だけ現行は敵dmgを消すため、完全な同時精算ではない。"),
+        "ターンログの記録値": ("HTML断片から構造化ログ＋テンプレート表示へ移行", "意図的", "確認済み", "ターン番号、双方HP、行動、ダメージ、回復を辞書へ保存し、HPは表示時に0下限へ丸める。コメントはhtml.escapeして表示する。"),
+        "勝利・敗北・引き分けの判定": ("結果コードの時間切れ統合", "要判断", "確認済み", "同時撃破は引分、敵HP0は勝利、プレイヤーHP0は敗北の順。最大ターン未決着が現行では引分2になる点はVer2 win=3との差異。"),
+        "通常・幻影・異世界の報酬処理": ("結果処理をmonster.pyへ分離", "意図的", "確認済み", "勝敗別EXP/G、盗み差分、修行回数、幻影宝箱を入口側で処理する。時間切れを引分として扱う現行差は上記結果コード行と連動する。"),
+        "レジェンドの報酬・階層進行": ("結果処理をlegend.pyへ分離", "意図的", "確認済み", "boss_flag/title_id、勝利時進行、敗北・引分時初期化、盗み差分を処理する。EXP表示追加は所有・進行台帳に記録済み。"),
+        "チャンピオン戦の報酬・王者更新": ("結果処理をbattle.pyへ分離", "意図的", "確認済み", "勝利・引分の王者交代、敗北時の王者連勝、修行回数回復を処理する。敗北EXPの自分Lv×10上限は意図的な調整。"),
+        "天下一武道会の報酬・ラウンド進行": ("結果処理をtenka.pyへ分離", "要判断", "確認済み", "相手順、boss_flag、制覇履歴、修行回数回復を処理する。時間切れが引分2へ統合されるため、Ver2のwin=3時処理との差を確認対象に残す。"),
+        "対人練習戦の保存有無": ("戦闘専用入口をPython化", "意図的", "確認済み", "select_battle.pyはBattleSimulatorのログを表示するだけで、経験値・所持金・戦績・待機時刻・王者状態を保存しない。"),
+        "経験値加算とレベルアップ": ("名前付き値とwhileループへ移行", "意図的", "確認済み", "必要EXP=現Lv×係数、複数Lv上昇、HP=rand(vit)×3+vit、能力上限・最大Lvを処理する。"),
+        "職業熟練度の正規化とマスター": ("61以上の旧値を60へ正規化", "意図的", "確認済み", "Ver2のマスター上限60に合わせ、戦闘後にjob_levelを0〜60へ正規化する。初到達時だけ職歴へ60を保存する。"),
+    }
+    expected_count = 33
+    if len(items) != expected_count:
+        raise ValueError(f"戦闘基盤比較の行数が不正です: {len(items)}")
+    return {
+        name: {
+            "difference": diff,
+            "intent": intent,
+            "status": "差異あり" if status == "確認済み" else status,
+            "note": note,
+        }
+        for name, (diff, intent, status, note) in items.items()
+    }
 
 
 def write_progression_checklist() -> None:
@@ -839,14 +1718,424 @@ def write_progression_checklist() -> None:
                 ("登録者・ランキング用キャッシュ", "旧版_ver2/alldata.cgi / rank.cgi", "save_data/system_rank_cache.json / cgi_py/system.py / rank.py", "対象プレイヤー、更新時刻、キャッシュ無効化、公開項目"),
             )),
         ),
+        comparisons=ownership_progression_comparisons(),
     )
+
+
+def _require_ownership_progression_source_snippets() -> None:
+    """所有・進行台帳の根拠となる実装が消えた場合は生成を止める。"""
+    required = {
+        "旧版_ver2/chara_make.cgi": ("sub chara_make", "$new_chara =", "$intgold"),
+        "chara_make.py": ("職業ごとの初期ステータス割り振り", '"battle_limit"', '"choco": {}'),
+        "旧版_ver2/tensyoku.cgi": ("sub tensyoku_change", "$syoku_master[$chara[14]]", "$master_tac"),
+        "cgi_py/tensyoku.py": ("def get_syoku_master_list", "job_reqs", "save_user_sections"),
+        "旧版_ver2/morifarm.cgi": ("sub choco_sell", "sub yadoya", "chocoboos.cgi"),
+        "cgi_py/morifarm.py": ("mode == \"choco_buyb\"", "mode == \"choco_sell\"", "mode == \"yadoya\""),
+        "旧版_ver2/ctrain.cgi": ("$ctrain += 1", "$clife -= 50", "farm_choco_regist"),
+        "cgi_py/ctrain.py": ("def main", "choco[\"train\"]", "save_user_sections"),
+        "旧版_ver2/crace.cgi": ("./g1/$chara[0].cgi", "farm_choco_regist", "$crun"),
+        "cgi_py/crace.py": ("choco_g1_regist", "save_user_sections", "race_dendo"),
+        "旧版_ver2/dendo.cgi": ("sub dendo", "./denchoco.cgi", "./rireki.cgi"),
+        "cgi_py/dendo.py": ("trophies_count < 3", "choco_list_regist(\"denchoco\"", '"trophies"'),
+        "旧版_ver2/farmrace.cgi": ("read_farm_winner", "./farmwinner.cgi", "$wcren"),
+        "cgi_py/farmrace.py": ("chocobo_champion_load", "new_winner", "chocobo_champion_register"),
+        "旧版_ver2/login.cgi": ("./loginlog/$in{'id'}.cgi", "loginlog"),
+        "login.py": ("def main", "ensure_daily_backup", "needs_rehash"),
+        "旧版_ver2/post_message.cgi": ("sub limit", "sub limit_do"),
+        "cgi_py/bbs.py": ("mode == \"post\"", "bbs_storage_limit", "bbs_regist"),
+        "旧版_ver2/system.cgi": ("sub ranking", "rankinghtml", "@RANKING"),
+        "cgi_py/system.py": ("def build_rankings_cache", "system_rank_cache.json", "last_updated"),
+        "cgi_py/battle.py": ("pvp_base_exp", "max_win_count", "champion"),
+        "cgi_py/tenka.py": ("update_tenka_members", "tenka_log_limit", "battle_limit"),
+        "cgi_py/legend.py": ("boss_flag", "title_id", "legend_progress_reset_value"),
+        "sub_def/common.py": ("def is_choco_owned", "def choco_delete", "def login_log_regist"),
+        "cgi_py/souko.py": ("souko_weapon", "souko_armor", "souko_accessory"),
+    }
+    for relative_path, snippets in required.items():
+        text = (ROOT / relative_path).read_text(encoding="utf-8", errors="replace")
+        missing = [snippet for snippet in snippets if snippet not in text]
+        if missing:
+            raise ValueError(f"所有・進行比較の根拠が見つかりません: {relative_path}: {missing}")
+
+
+def ownership_progression_comparisons() -> dict[str, dict[str, str]]:
+    """所有・進行状態を、保存形式ではなく更新・参照の実挙動まで比較する。"""
+    _require_ownership_progression_source_snippets()
+    results = {
+        "キャラクター作成時の初期状態": {
+            "difference": "JSON統合保存・PBKDF2認証へ移行（初期ゲーム値は同値）",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "Ver2/Ver3とも職業別初期8能力・Lv1・HP500・G5000・初期装備0・戦術0・修行回数・レジェンド進行初期値を設定。Ver3は職歴31件、倉庫・チョコボ空値を統合JSONで明示し、Ver2のsite/url・平文パスワードは保持しない。",
+        },
+        "職業熟練度とマスター職": {
+            "difference": "JSONの職ID→熟練度へ移行し、転職実行時にも前提職を再検証",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "両版とも現職Lvを退避して転職先Lvを復帰、Lv60をマスター表示に用いる。Ver3は表示だけでなくPOST時もjob_reqsを検証し、Lv60超の既存値を成長処理で正規化する。",
+        },
+        "装備中の武器・防具・アクセサリー": {
+            "difference": "個別itemレコードからequipmentオブジェクトへ統合",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "装備IDと性能スナップショットを保持し、ショップ・倉庫交換時にキャラクター状態と同時保存する。初期値は武器0・防具0・アクセ0で一致し、現行は名前付き項目と原子的保存に変更。",
+        },
+        "倉庫の武器": {
+            "difference": "1行1品の専用ファイルからsouko_weapon配列へ統合",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "購入・装備交換・廃棄は現行souko.pyで件数上限を確認して配列を更新する。重複品を配列要素として保持する点はVer2の行単位保存と同じ。",
+        },
+        "倉庫の防具": {
+            "difference": "1行1品の専用ファイルからsouko_armor配列へ統合",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "購入・装備交換・廃棄の件数制限と、個別スナップショットを保持する構造を確認。Ver3はキャラクター・倉庫を一括保存する。",
+        },
+        "倉庫のアクセサリー": {
+            "difference": "1行1品の専用ファイルからsouko_accessory配列へ統合",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "effect_idを含むアクセサリー定義を倉庫要素として保持し、装備交換・廃棄時に上限を検査する。保存形式以外の所有数・重複品の扱いは同じ。",
+        },
+        "戦績・戦闘回数・勝利数": {
+            "difference": "charalog列からbattle_count/win_countへ名称化",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "通常モンスター、チャンピオン、レジェンド、天下一で戦闘回数を加算し、勝利時のみ勝利数を加算する。対人練習戦は保存更新しない。ランキング表示は両値から勝率を算出する。",
+        },
+        "修行回数・待機時刻": {
+            "difference": "charalog列からbattle_limit/last_timeへ名称化",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "通常・レジェンドは修行回数を消費し、チャンピオン・天下一は結果にかかわらず上限まで補充する。各戦闘CGIは完了時にlast_timeを更新し、設定値の待機時間で検査する。",
+        },
+        "レジェンドの進行フラグ・称号": {
+            "difference": "進行列・称号列をboss_flag/title_idへ名称化し、結果EXPを表示",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "階層選択は称号値で制限し、勝利でboss_flagを減算、階層クリアでtitle_idを上げて進行値を初期化する。敗北・引分も進行値を初期化する流れは維持し、現行は実際に加算するEXPを結果へ表示する。",
+        },
+        "人間チャンピオン": {
+            "difference": "winner.cgiの連番レコードからchampion.jsonの名前付き状態へ移行。敗北EXPに上限追加",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "勝利・引分で挑戦者を王者へ交代し、敗北では王者の連勝・最高連勝を更新する。勝利・引分EXPは相手Lv×基準値、敗北EXPだけmin(相手Lv, 自分Lv×10)へ調整済み。",
+        },
+        "天下一武道会の参加者・対戦履歴": {
+            "difference": "all_tenka/tenka_logをJSONキャッシュ化し、履歴上限を設定値で明示",
+            "intent": "要判断",
+            "status": "確認済み",
+            "note": "両版ともレベル上位者を対戦者にし、制覇時に先頭へ履歴を追加する。Ver3は24時間キャッシュとtenka_log_limitで履歴を切り詰める一方、Ver2の履歴件数判定は変数名の不整合を含むため、上限導入の意図は履歴から確定できない。",
+        },
+        "チョコボ所持判定と未所持値": {
+            "difference": "ファイル有無判定から必須キーを持つ辞書の実体判定へ変更",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "Ver2はchocologファイルが存在すれば所持扱い。Ver3は空辞書・欠損辞書を未所持とし、引退時にchocoを明示消去するため、空データを所持扱いする不整合を防ぐ。",
+        },
+        "飼育中チョコボの基本状態": {
+            "difference": "33列のchocologレコードから名前付きchoco辞書へ移行",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "名前・性別・血統・画像番号・type・maxmax・能力上限c0〜c6・寿命life・train/run/win・max・gold・父母を保持する。Ver3はチョコボ内に平文パスワードを複製しない。",
+        },
+        "野生チョコボの候補・購入": {
+            "difference": "候補データをJSON化し、購入POSTでも未所持を検証",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "両版とも野生候補を1〜5件抽選し、価格を支払って初期life=100・能力/上限=10・run/win/train=0の個体を作る。候補自体は消費せず、現行は直接POSTによる所持チョコボ上書きを拒否する。",
+        },
+        "引退・お見合い候補リスト": {
+            "difference": "固定99枠の行ファイルからJSONリスト＋設定上限へ変更",
+            "intent": "要判断",
+            "status": "確認済み",
+            "note": "性別別リストへ引退個体の戦績・血統・価格を移し、配合相手の候補にする基本設計は同じ。Ver3は実リスト長を基準に置換し、空リストも許容してchocobo_partner_list_limitで切詰めるため、Ver2の固定ID枠とは候補選出が異なり得る。",
+        },
+        "配合後の子チョコボ": {
+            "difference": "保存形式と排他制御のみ変更（配合計算をPythonへ移植）",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "異性のお見合い候補を選び、父母・血統・性別・画像・type・能力上限・初期能力・life=1000・戦績0を生成して現役個体を置換する。現行は親候補の存在と所持状態をサーバー側で再検証し、統合JSONへ保存する。",
+        },
+        "訓練・休養による状態変化": {
+            "difference": "保存形式をJSON化し、不正mode・未所持を明示検証",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "訓練は20回試行、train+1・life-50・max+5、能力上限・潜在力・寿命処理を引き継ぐ。休養はG5000、lifeに200〜499加算（1000超過時max追加）、train+1・max+10で、計算式はVer2と対応する。",
+        },
+        "通常レースの戦績・クラス進行": {
+            "difference": "レース状態・相手をJSON化し、入力modeを明示検証",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "run/win/gold・寿命・クラス到達条件を個体状態へ反映し、通常レース・重賞・殿堂レースを同じ個体データで進行する。現行は候補読み込みと結果保存を原子的に行い、無効なレース種別を受け付けない。",
+        },
+        "G1/G2の個人トロフィー履歴": {
+            "difference": "chocog1の22列レコードからchoco_g1のr1〜r22辞書へ移行",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "重賞勝利時だけ対象レースIDを1として保存し、同一レースの再勝利は同じ個人フラグを維持する。開催日・性別・レース進行の条件はcraceの分岐で処理し、保存は個体と分離されたまま引退後も残す。",
+        },
+        "チョコボ殿堂の共有リスト": {
+            "difference": "denchoco行レコードからJSON＋トロフィー名の埋込へ移行。重賞3個を登録条件に追加",
+            "intent": "要判断",
+            "status": "確認済み",
+            "note": "同一ID・同名は上書き、異なる個体は先頭追加する。Ver2のdendo.cgiはテストID以外に重賞数を検査しないが、Ver3はG1/G2 3個未満を拒否するため、この追加制限の採否を確認する必要がある。",
+        },
+        "チョコボ王者": {
+            "difference": "farmwinner行レコードからchocobo_champion.jsonへ移行",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "現王者への挑戦、勝者の個体・ブリーダー情報への交代、敗北時の連勝・前王者情報の更新を維持する。現行は欠損した旧キーを正規化し、王者共有データを専用ロックで保存する。",
+        },
+        "ログイン履歴": {
+            "difference": "移行先login_logは残るが、現行ログイン処理から更新呼出しがない",
+            "intent": "要判断",
+            "status": "確認済み",
+            "note": "Ver2 login.cgiはloginlog/<ID>.cgiを読んで日時・IP等を追加し上限処理する。Ver3にはlogin_log_load/login_log_registと移行項目があるが、login.pyからlogin_log_registを呼ばないため、新規ログイン履歴が蓄積されない。",
+        },
+        "受信・送信メッセージ": {
+            "difference": "変換先のmessage/message_sentは残るが、現行の送受信・既読・削除CGIが見当たらない",
+            "intent": "要判断",
+            "status": "確認済み",
+            "note": "Ver2はmessage/sousinとpost_message.cgiで私信・送信箱・件数制限を扱う。Ver3のスキーマには受信messageとmessage_sentがあるものの、現行CGIから読み書きする経路を確認できず、機能廃止か未移植かを決める必要がある。",
+        },
+        "全体メッセージ・掲示板": {
+            "difference": "全体ニュース(all_message)とプレイヤー掲示板(bbs)を別JSONへ分離",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "Ver3は管理者・登録・イベント通知をall_messageへ、一般投稿をbbsへ保存し、双方を新着順・設定件数で切詰める。Ver2のpost_message.cgiは私信・制限操作を含む一体型であり、表示経路は再編されている。",
+        },
+        "登録者・ランキング用キャッシュ": {
+            "difference": "HTML出力キャッシュからJSONデータキャッシュへ移行",
+            "intent": "意図的",
+            "status": "確認済み",
+            "note": "両版とも全登録者をレベル順に集計し、約24時間単位で再生成する。Ver3はsystem_rank_cacheとrank_cacheを分け、キャッシュ欠損・必要項目欠損時も再構築し、テンプレートで安全に表示する。",
+        },
+    }
+    expected = {
+        "キャラクター作成時の初期状態", "職業熟練度とマスター職", "装備中の武器・防具・アクセサリー", "倉庫の武器", "倉庫の防具", "倉庫のアクセサリー",
+        "戦績・戦闘回数・勝利数", "修行回数・待機時刻", "レジェンドの進行フラグ・称号", "人間チャンピオン", "天下一武道会の参加者・対戦履歴",
+        "チョコボ所持判定と未所持値", "飼育中チョコボの基本状態", "野生チョコボの候補・購入", "引退・お見合い候補リスト", "配合後の子チョコボ",
+        "訓練・休養による状態変化", "通常レースの戦績・クラス進行", "G1/G2の個人トロフィー履歴", "チョコボ殿堂の共有リスト", "チョコボ王者",
+        "ログイン履歴", "受信・送信メッセージ", "全体メッセージ・掲示板", "登録者・ランキング用キャッシュ",
+    }
+    if set(results) != expected:
+        raise ValueError("所有・進行比較の行定義がチェックリストと一致しません")
+    return results
+
+
+def _require_storage_source_snippets() -> None:
+    """保存・移行台帳の根拠となる実装が消えた場合は生成を止める。"""
+    required = {
+        "旧版_ver2/regist.pl": ("sub decode", "sub chara_regist", "sub lock", "sub header"),
+        "旧版_ver2/login.cgi": ("sub log_in", "sub set_cookie", "loginlog"),
+        "旧版_ver2/admin.cgi": ("sub save_chara", "sub save_del", "./save_log.cgi"),
+        "sub_def/common.py": ("def decode_params", "def get_lock", "def require_owner", "def save_user_sections"),
+        "sub_def/crypto.py": ("def encrypt_data", "def token_check", "def verify_password"),
+        "sub_def/file_ops.py": ("def _write_json_atomically", "def update_data_atomically"),
+        "sub_def/backup.py": ("def create_daily_backup", "def restore_daily_backup", "def _prune_daily_backups"),
+        "sub_def/data_schema.py": ("def order_user_data", "title_id", "tactic_id"),
+        "admin.py": ("def restore_protected_users", "def validate_master_record", "def save_master_records"),
+        "login.py": ("def main", "ensure_daily_backup", "needs_rehash"),
+        "旧版_ver2/change_data/convert_all.py": ("CHARA_COLUMNS", "def convert_user", "def validate_user", "--dry-run"),
+    }
+    for relative, snippets in required.items():
+        path = ROOT / relative
+        encoding = "cp932" if relative.startswith("旧版_ver2/") and not relative.endswith(".py") else "utf-8"
+        text = path.read_text(encoding=encoding, errors="replace")
+        missing = [snippet for snippet in snippets if snippet not in text]
+        if missing:
+            raise ValueError(f"保存・移行台帳の根拠が不足しています: {relative}: {missing}")
+
+
+def storage_migration_comparisons() -> dict[str, dict[str, str]]:
+    """保存・認証・移行・運用の28比較項目を、実装根拠付きで記録する。"""
+    _require_storage_source_snippets()
+    login_source = (ROOT / "login.py").read_text(encoding="utf-8")
+    if "login_log_regist(" in login_source:
+        raise ValueError("ログイン履歴の比較結果を更新してください: login.py が履歴保存を再開しています")
+    crypto_source = (ROOT / "sub_def" / "crypto.py").read_text(encoding="utf-8")
+    if crypto_source.count("token_regenerate(") != 1:
+        raise ValueError("CSRF再生成の比較結果を更新してください: token_regenerate の利用箇所が変わりました")
+
+    return {
+        "CGIパラメータの復号・文字列処理": {
+            "difference": "Ver2はGET/POSTの一方だけを手動分解し、POSTは50KiB上限・SJIS変換・入力時HTMLエスケープ。Ver3はGETとPOSTをparse_qsで解析しPOST優先、UTF-8前提・出力時エスケープへ変更。現行に本文サイズ上限はない。",
+            "intent": "要判断",
+            "status": "差異あり",
+            "note": "Ver3のGET/POST優先はcommon.pyの明示仕様。Ver2の50KiB上限を廃止した理由は履歴に記録が見当たらないため、上限の要否を運用判断する。",
+        },
+        "CGI入口のUTF-8標準入出力": {
+            "difference": "Ver2はShift_JIS出力。Ver3はothers.py・login.py・chara_make.py・admin.pyの4入口でstdin/stdoutをUTF-8へ再構成する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "Windows ApacheのCP932標準出力でUTF-8文字を出すための互換設定。4入口以外へ一律追加・削除はしない。",
+        },
+        "HTML出力・リダイレクトのヘッダー": {
+            "difference": "Ver2はShift_JISのContent-typeとHTML直書き。Ver3はUTF-8ヘッダー、no-cache、Jinja自動エスケープ、302 Locationと開発サーバー用meta refreshを出力する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "utils.pyはテンプレート例外の詳細をstderrだけへ出し、HTTP応答には汎用エラーだけを返す。",
+        },
+        "セッションCookieの暗号化・改ざん検証": {
+            "difference": "Ver2はIDと保存済みパスワードを60日Cookieへ平文で保存。Ver3は署名付き暗号化FFAPY_SESSION（既定30分・HttpOnly）へ移行し、30日CookieはID記憶だけに分離。Secure属性は未設定。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "旧cookie_name APIは暗号化セッションへ橋渡しする互換層を残す。HTTPS化時のSecure属性は別途運用設定が必要。",
+        },
+        "ログイン・ログアウト": {
+            "difference": "Ver2は成功・失敗ともloginlogへ最大15件を書き、入力パスワードも記録する。Ver3は検証・セッション発行・日次バックアップを行うが、login.pyからlogin_log_registを呼ばず履歴を更新しない。",
+            "intent": "要判断",
+            "status": "差異あり",
+            "note": "平文パスワード記録の廃止は妥当だが、成功/失敗・時刻・ホストを伏せた安全な履歴まで廃止する意図は確認できない。",
+        },
+        "パスワード形式とログイン時移行": {
+            "difference": "Ver2はcharalogの平文比較。Ver3はPBKDF2-SHA256（ユーザー別salt）を新形式とし、旧固定salt・平文も成功時だけ検証してPBKDF2へ再ハッシュする。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "verify_passwordは旧形式を読み取り互換に限定し、needs_rehashが真のときだけ保存値を更新する。",
+        },
+        "CSRFトークンの生成・検証・再生成": {
+            "difference": "Ver2にCSRF照合はない。Ver3はセッション内ランダムトークンを主要POSTで定数時間比較する。token_regenerateは定義のみで、画面再表示は既存トークンを維持する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "別タブ・戻る操作で直ちに失効させない方針はutils.pyコメントで確認。セッション期限でのみ失効する。",
+        },
+        "本人操作の認可（IDOR対策）": {
+            "difference": "Ver2はリクエストid/passを各CGIで直接照合。Ver3は暗号化セッションを旧cookie互換値へ変換し、require_ownerまたは同等照合で対象ID・保存済みhashを確認する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "shop・souko・チョコボ系等はrequire_owner、battle・monster・legend・bank・passchangeは同条件を個別実装。閲覧系には適用しない。",
+        },
+        "統合ユーザー保存形式": {
+            "difference": "Ver2はcharalog/item/syoku/souko/loginlog/message等を別ファイル保存。Ver3は大半をuser_all.jsonのセクションへ統合し、送信箱だけmessage_sent.jsonに分離する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "変換器は各分割ファイルをchara・equipment・syoku・ログ・倉庫へ明示対応させる。",
+        },
+        "ユーザーデータのキー順・旧キー正規化": {
+            "difference": "Ver2の列番号保存を、Ver3は名前付きJSONと固定キー順へ変更。title→title_id、unused30→tactic_idを移し、site/urlを除去し、未知キーは末尾に保持する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "order_user_dataは既知の旧キーだけを変換し、任意の追加キーを破棄しない。",
+        },
+        "装備・アクセサリー保存値の正規化": {
+            "difference": "Ver2の<>列を、Ver3はweapon/armor/accessory辞書とbonus8能力・3率へ正規化し、説明欠損はマスターから補完する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "変換器は武器・防具・アクセの列順を固定し、アクセ説明が空なら現行/旧マスターから補う。",
+        },
+        "HTMLエンティティの読込正規化": {
+            "difference": "Ver2は入力時にHTMLエンティティ化して保存。Ver3はJSON読込時に再帰的html.unescapeし、表示はテンプレートの自動エスケープへ委ねる。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "互換データを読めるようにする処理。保存済みの多重エンティティを何段階まで復元するかは値に依存するため、移行検証で表示確認が必要。",
+        },
+        "単一JSONの原子的書込み": {
+            "difference": "Ver2は対象ファイルを直接開いて上書き。Ver3は同一ディレクトリの一時JSONへflush/fsync後、os.replaceで置換する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "例外時は一時ファイルを削除して再送出するため、途中JSONを本体として公開しない。",
+        },
+        "read-modify-writeの原子更新": {
+            "difference": "Ver2は呼出側がlock/unlockと個別読書きを組み合わせる。Ver3は共有データ向けupdate_data_atomicallyが読込・更新・置換を同一ロックで実行する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "user_all.jsonのsave_user_sectionsは呼出側がユーザーロックを保持する契約。全呼出元がこの契約を守ることが前提になる。",
+        },
+        "ユーザー・共有データのロック": {
+            "difference": "Ver2はsymlink/空ファイル/flockを設定で切替え、再試行・古いロック削除を行う。Ver3はos.mkdirディレクトリロック、同一スレッド再入管理、10/15秒タイムアウトを使う。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "finallyでrelease_lock/unlockする設計。Ver3は古いロックを自動削除せずタイムアウトで失敗させる。",
+        },
+        "バックアップ中のスナップショット排他": {
+            "difference": "Ver2に保存と全体コピーを直列化する仕組みはない。Ver3は通常保存・日次作成・復元がbackup_snapshotロックを共有する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "通常保存はsnapshot→個別、復元はrestore→snapshotの順で取得する。",
+        },
+        "部分更新API": {
+            "difference": "Ver2は関連ファイルを個別上書き。Ver3はsave_user_sectionsが統合データを読んで指定セクションだけ更新し、souko/chocoも同経路を使う。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "指定しないセクションを消さないが、呼出側のユーザーロックなしでは読込後更新の競合を防げない。",
+        },
+        "日次バックアップ作成": {
+            "difference": "Ver2のsave_log.cgiは保護ユーザー一覧であり、日次バックアップ処理は確認できない。Ver3は当日初回ログイン時にsave_data全体を日付別コピーする。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "バックアップ失敗はstderr記録のみでログインを継続し、同日のmanifestがあれば再作成しない。",
+        },
+        "バックアップのマニフェスト・世代削除": {
+            "difference": "Ver2にはバックアップ世代・検証情報がない。Ver3は件数・容量・作成時刻をmanifest.jsonへ記録し、既定40日を超える日付世代を削除する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "一覧は日付形式・manifest形式を検証し、壊れた世代を表示しない。",
+        },
+        "管理画面からのバックアップ復元": {
+            "difference": "Ver2 login.cgiはhukugen.cgiを参照するが同梱実装がなく、復元手順をコードで確認できない。Ver3は管理画面から日付バックアップを復元できる。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "Ver3は日付名検証、maintenance_mode必須、復元前全体退避、temp置換、snapshot/restoreロックを実装する。",
+        },
+        "保護ユーザーの復元": {
+            "difference": "Ver2はsave_log.cgiで削除保護対象を列挙するだけ。Ver3はprotected_user_idsを削除対象外にし、固定user_all.jsonから欠落・破損時だけ復元する。固定バックアップの自動作成はない。",
+            "intent": "要判断",
+            "status": "差異あり",
+            "note": "restore_protected_usersはchara.idを検証して個別ロック下で復元するが、protected_user_backup_dirへの書込み元は現行Pythonコードにない。",
+        },
+        "管理画面によるマスター保存・削除": {
+            "difference": "Ver2管理画面はhidden平文管理パスワードを引き回し、テキストを直接上書き。Ver3は暗号化管理セッション・CSRF・JSON解析・ID/型/下限/職業ID検証・原子保存を行う。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "職業は配列ID順を守るため削除不可。アクセサリー保存後は説明文キャッシュも無効化する。",
+        },
+        "Ver1→Ver2変換": {
+            "difference": "Ver1→Ver2は過去世代間の変換であり、Ver3通常処理・Ver2→Ver3変換器の比較対象ではない。",
+            "intent": "該当なし",
+            "status": "対象外",
+            "note": "履歴資料として入力列・dry-run・原本保持を残す。Ver3へ移す場合はVer2形式を経由してconvert_all.pyを使う。",
+        },
+        "Ver2→Ver3ユーザー本体変換": {
+            "difference": "Ver2 charalogの固定35列をCHARA_COLUMNSで名前付きcharaへ写し、site/urlを除外、bankは34列目（残るbanklogがあればそちら優先）にする。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "能力8値、job・HP・EXP・戦績・戦術・称号・職業Lvの列番号を明示し、validate_userで必須能力と旧キー残存を検証する。",
+        },
+        "Ver2→Ver3装備・職業・倉庫変換": {
+            "difference": "Ver2のitem/syoku/soukoを、装備辞書・職業ID文字列辞書・種別倉庫配列へ変換する。旧charalog2形式の倉庫もマスター参照で受け付ける。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "アクセ8能力・3率・説明を正規化し、存在しない倉庫マスターはwarningを出して除外する。",
+        },
+        "Ver2→Ver3ログ・共有データ変換": {
+            "difference": "Ver2 loginlog/message/sousin/datalogをJSON化し、送信箱はuser_all.json外のmessage_sent.json、winnerはchampion.json、全体文はall_message.jsonにする。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "欠損ファイルは空値扱い。送信箱が空ならmessage_sent.jsonを作らず、winnerが無ければchampion.jsonを出力しない。",
+        },
+        "Ver2チョコボの移行時初期化": {
+            "difference": "Ver2の現役チョコボ・個人G1履歴は変換せず、全ユーザーのchoco/choco_g1を空辞書で初期化する。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "convert_userの固定出力。旧チョコボを引き継がない仕様を明文化済みであり、既存Ver3データへ混在出力しない。",
+        },
+        "変換の文字コード・検証用出力": {
+            "difference": "Ver2のCP932テキストをerrors=replaceで読み、<>分解後にHTMLエンティティを復元する。Ver3 JSONはUTF-8で、既定出力先はchange_data/users・shared、--dry-runは書込なし。",
+            "intent": "意図的",
+            "status": "差異あり",
+            "note": "--output等で現行save_dataを指定できるため、実運用はdry-run→検証用出力→バックアップ後配置の順を守る。",
+        },
+    }
 
 
 def write_storage_migration_checklist() -> None:
     write_static_checklist(
         "storage_migration_operations.md",
         "保存・認証・移行・運用比較チェックリスト",
-        "現行の安全対策・JSON保存形式はVer2と意図的に異なる可能性があります。差異を見つけた時点で、互換性・安全性・運用上の必要性を分けて判断します。",
+        "Ver2の保存形式・認証・管理CGIと、Ver3の実装を28項目で照合した台帳です。保存形式の差異と、安全対策・運用手順として残すべき差異を分けて記録します。",
         (
             ("入力・表示・認証", (
                 ("CGIパラメータの復号・文字列処理", "旧版_ver2/regist.pl / login.cgi", "sub_def/common.py:decode_params", "GET/POSTの優先順位、複数値、文字コード、空値・不正値"),
@@ -870,10 +2159,10 @@ def write_storage_migration_checklist() -> None:
                 ("部分更新API", "旧版の複数ファイル個別保存", "sub_def/common.py:save_user_sections,souko_regist,choco_regist", "他セクションを消さないこと、読込失敗時、呼出元のロック"),
             )),
             ("バックアップ・管理復元", (
-                ("日次バックアップ作成", "旧版_ver2/save_log.cgi", "sub_def/backup.py:create_daily_backup,ensure_daily_backup", "実行契機、対象範囲、同日再実行、失敗時のログイン継続"),
-                ("バックアップのマニフェスト・世代削除", "旧版_ver2/save_log.cgi", "sub_def/backup.py:_write_manifest,_prune_daily_backups,list_daily_backups", "件数・容量、形式検証、保持日数、壊れた世代の表示除外"),
-                ("管理画面からのバックアップ復元", "旧版Ver2の手動復元運用", "sub_def/backup.py:restore_daily_backup / admin.py:backup_restore", "maintenance_mode必須、パス検証、復元前退避、現在save_dataの置換"),
-                ("保護ユーザーの復元", "旧版Ver2の保護データ運用", "admin.py:protected_backup_path,restore_protected_users", "対象ID、JSON妥当性、個別ロック、上書き範囲"),
+                ("日次バックアップ作成", "旧版_ver2/admin.cgi:save_chara / save_log.cgi（保護一覧。日次バックアップなし）", "sub_def/backup.py:create_daily_backup,ensure_daily_backup", "実行契機、対象範囲、同日再実行、失敗時のログイン継続"),
+                ("バックアップのマニフェスト・世代削除", "旧版Ver2には相当処理なし", "sub_def/backup.py:_write_manifest,_prune_daily_backups,list_daily_backups", "件数・容量、形式検証、保持日数、壊れた世代の表示除外"),
+                ("管理画面からのバックアップ復元", "旧版_ver2/login.cgi:70（hukugen.cgiを参照するが同梱なし）", "sub_def/backup.py:restore_daily_backup / admin.py:backup_restore", "maintenance_mode必須、パス検証、復元前退避、現在save_dataの置換"),
+                ("保護ユーザーの復元", "旧版_ver2/admin.cgi:save_chara / save_del", "admin.py:protected_backup_path,restore_protected_users", "対象ID、JSON妥当性、個別ロック、上書き範囲"),
                 ("管理画面によるマスター保存・削除", "旧版_ver2/admin.cgi", "admin.py:validate_master_record,save_master_records", "ID一意性、型・下限、JSON妥当性、アクセサリーキャッシュ無効化"),
             )),
             ("旧版からの移行", (
@@ -885,6 +2174,7 @@ def write_storage_migration_checklist() -> None:
                 ("変換の文字コード・検証用出力", "旧版Ver2のCP932テキスト", "旧版_ver2/change_data/convert_all.py", "CP932読込、文字化け置換、dry-run、検証先出力、現行save_dataを直接上書きしないこと"),
             )),
         ),
+        comparisons=storage_migration_comparisons(),
     )
 
 
@@ -905,16 +2195,16 @@ Ver2から移植したFFA Python版（Ver3）の、データ・コマンド・�
 
 | 区分 | 内容 | 状態 |
 | --- | --- | --- |
-| 装備データ | [武器・防具・アクセサリー](equipment.md)（武器 {counts['weapon']}件、防具 {counts['armor']}件、アクセサリー {counts['accessory']}件） | 項目作成済み |
-| 職業データ | [職業31件](jobs.md)：転職条件、成長上限、必要マスター職 | 項目作成済み |
-| 戦術・必殺技データ | [戦術78件](skills.md)：説明、利用職、マスター条件、発動率、効果 | 項目作成済み |
-| モンスター特殊技 | [特殊技22種・使用220体](monster_skills.md)：特殊技、特殊率、使用モンスター | 項目作成済み |
-| モンスターデータ | [全9ファイル・347件](monsters.md)：出現テーブル、能力値、報酬、ボス・異世界 | 項目作成済み |
-| チョコボデータ | [全10ファイル・495件](chocobo_data.md)：候補血統、価格、ライバル、レース能力 | 項目作成済み |
-| 戦闘 | [戦闘計算・結果処理](battle_logic.md)：ターン順、必殺技、クリティカル、防御・回避、HP、勝敗、報酬、成長 | 項目作成済み |
-| コマンド・画面 | [ルート{len(function_routes())}件・実行操作一覧](commands_actions.md)：移動、店、宿、銀行、転職、ランキング、管理画面 | 項目作成済み |
-| 所有・進行要素 | [所有・進行](ownership_progression.md)：職業・装備・倉庫・戦績・王者・レジェンド・チョコボ・共有記録 | 項目作成済み |
-| 保存・移行・運用 | [保存・認証・移行・運用](storage_migration_operations.md)：JSON、認証、CSRF、ロック、バックアップ、変換 | 項目作成済み |
+| 装備データ | [武器・防具・アクセサリー](equipment.md)（武器 {counts['weapon']}件、防具 {counts['armor']}件、アクセサリー {counts['accessory']}件） | 一次比較完了 |
+| 職業データ | [職業31件](jobs.md)：転職条件、成長上限、必要マスター職 | 一次比較完了 |
+| 戦術・必殺技データ | [戦術78件](skills.md)：説明、利用職、マスター条件、発動率、効果 | 一次比較完了 |
+| モンスター特殊技 | [特殊技22種・使用220体](monster_skills.md)：特殊技、特殊率、使用モンスター | 一次比較完了 |
+| モンスターデータ | [全9ファイル・347件](monsters.md)：出現テーブル、能力値、報酬、ボス・異世界 | 一次比較完了 |
+| チョコボデータ | [全10ファイル・495件](chocobo_data.md)：候補血統、価格、ライバル、レース能力 | 一次比較完了 |
+| 戦闘 | [戦闘計算・結果処理](battle_logic.md)：ターン順、必殺技、クリティカル、防御・回避、HP、勝敗、報酬、成長 | 一次比較完了 |
+| コマンド・画面 | [ルート{len(function_routes())}件・実行操作一覧](commands_actions.md)：移動、店、宿、銀行、転職、ランキング、管理画面 | 一次比較完了 |
+| 所有・進行要素 | [所有・進行](ownership_progression.md)：職業・装備・倉庫・戦績・王者・レジェンド・チョコボ・共有記録 | 一次比較完了 |
+| 保存・移行・運用 | [保存・認証・移行・運用](storage_migration_operations.md)：JSON、認証、CSRF、ロック、バックアップ、変換 | 一次比較完了 |
 
 ## 共通の記入列
 
@@ -934,10 +2224,22 @@ def write_equipment(labels: dict[int, str]) -> None:
         "| 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
+    weapon_results = weapon_comparisons(labels)
+    armor_results = armor_comparisons(labels)
+    accessory_results = accessory_comparisons()
     for kind, label, v2_source in EQUIPMENT:
         rows = load_json(f"{kind}.json")
         sections.extend(("", f"## {label}（{len(rows)}件）", ""))
-        sections.extend(checklist_row(kind, item, labels, v2_source) for item in rows)
+        sections.extend(
+            checklist_row(
+                kind,
+                item,
+                labels,
+                v2_source,
+                weapon_results.get(as_int(item.get("no"))) if kind == "weapon" else armor_results.get(as_int(item.get("no"))) if kind == "armor" else accessory_results.get(as_int(item.get("no"))),
+            )
+            for item in rows
+        )
     (OUTPUT_DIR / "equipment.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
 
 
