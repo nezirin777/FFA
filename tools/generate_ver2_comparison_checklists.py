@@ -250,9 +250,9 @@ FILE_AUDITS = (
         "file": "cgi_py/legend.py / templates/monster_result.html / templates/legend_error.html",
         "v2_source": "旧版_ver2/legend.cgi / mbattle.pl:legend_sentoukeka,hp_after / data/bossmons0〜3.ini",
         "scope": "公開ランキング、階層選択、入口条件、ボス進行、勝敗報酬、称号、連戦、待機、回復、保存順",
-        "difference": "公開ランキング・CSRF/POSTルーティング・連戦導線を追加。クリア後の進行値と階層値検証がVer2と異なる",
+        "difference": "公開ランキング・CSRF/POSTルーティング・連戦導線を追加。クリア後の進行値、レジェンド入口のboss_flag検証、階層値検証がVer2と異なる",
         "intent": "階層値検証は不具合を修正済み／連戦・クリア後再挑戦は意図的",
-        "note": "各階層は両版とも11体で、boss_flag 10から1へ減らして0で階層クリアする。Ver2は0のまま終了するが、現行は7754ecaで開始値10へ戻して同階層の再挑戦と結果画面からの連戦を可能にした。勝利・引分・敗北の経験値、所持金、battle_count、battle_limit、title_id、レベルアップ後HP回復、接続元保存を照合した。実行はlogin.pyがPOST・CSRFを検証する。範囲外・数値外のboss_fileは第1階層へフォールバックしていたため拒否へ修正した。",
+        "note": "各階層は両版とも11体で、boss_flag 10から1へ減らして0で階層クリアする。Ver2の通常画面はboss_flagが10以外なら入口を隠すが、legend.cgi自体は進行値を検証しないため、直接POSTでは0番目の行を参照する不整合な再入場が可能だった。現行は7754ecaで開始値10へ戻し、同階層を正しく最初から再挑戦できる。勝利・引分・敗北の経験値、所持金、battle_count、battle_limit、title_id、レベルアップ後HP回復、接続元保存を照合した。実行はlogin.pyがPOST・CSRFを検証する。範囲外・数値外のboss_fileは第1階層へフォールバックしていたため拒否へ修正した。",
     },
     {
         "file": "sub_def/battle_logic.py",
