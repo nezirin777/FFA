@@ -22,6 +22,7 @@
 """
 FFA Python/CGI - 転職システムスクリプト (tensyoku.py)
 """
+import os
 
 # 共通モジュールと設定モジュールのインポート
 import config
@@ -179,6 +180,7 @@ def main():
                 
             # 職業熟練度とキャラクター情報を同じ更新で保存する。
             syoku_data = {str(index): syoku_master[index] for index in range(31)}
+            chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             common.save_user_sections(user_id, chara=chara, syoku=syoku_data)
             
             context = {

@@ -72,7 +72,7 @@
 | 戦術一覧を表示（`mode=tac_change` / POST / 表示） | `旧版_ver2/tac_change.cgi` | `cgi_py/tac_change.py` | 利用可否をJSON職歴から算出 | 意図的 | 差異あり | 現職の戦術と、master_tactics_enabled=1のときのLv60以上の他職戦術を表示する。これはVer2のmaster_tacと同じ独立設定で、転職時の選択戦術リセットとは分けている。 |
 | 戦術を変更（`mode=senjutu_henkou` / POST / 状態変更） | `旧版_ver2/tac_change.cgi` | `cgi_py/tac_change.py` | POST時の戦術ID・利用条件検証を追加 | 意図的 | 差異あり | 未選択・不正・未習得の戦術を拒否する。Ver2と同じくロック後に最新のchara/syokuから候補を再構築し、tactic_idと接続元ホストを保存する。 |
 | 転職画面を表示（`mode=tensyoku` / POST / 表示） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 職業マスターをJSONから参照 | 意図的 | 差異あり | 能力・職歴前提を満たす候補と未マスター候補を分けて表示する。 |
-| 転職を実行（`mode=tensyoku_change` / POST / 状態変更） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 実行POSTでも前提職を再検証 | 意図的 | 差異あり | 現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化してchara/syokuを同時保存する。 |
+| 転職を実行（`mode=tensyoku_change` / POST / 状態変更） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 実行POSTでも前提職を再検証 | 意図的 | 差異あり | 現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化する。成功時はVer2と同じく接続元ホストを更新し、chara/syokuを同時保存する。能力減少値は一致し、カルマの下限だけはVer2の0許容に対して現行は1へ戻す意図的仕様。 |
 | 掲示板へ投稿（`mode=post` / POST / 状態変更） | `旧版_ver2/post_message.cgi` | `cgi_py/bbs.py` | 私信一体型からBBS専用JSONへ分離 | 意図的 | 差異あり | 本人ID・200文字・禁止語を検査し、新着順と保存上限を守って書込む。 |
 
 ### 店・資産
