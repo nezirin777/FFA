@@ -109,7 +109,8 @@ def main():
         chara["hp"] = chara["max_hp"]
         chara["gold"] -= yado_daix
         chara["boss_flag"] = config.Config['legend_progress_reset_value']  # 伝説の戦いを挑戦可能に戻す
-        
+        chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
+
         # 7. データの保存
         common.chara_regist(user_id, chara)
     finally:

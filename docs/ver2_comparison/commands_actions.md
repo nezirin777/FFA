@@ -79,7 +79,7 @@
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 宿泊（`mode=yado` / POST / 状態変更） | `旧版_ver2/shop.cgi` | `cgi_py/shop.py` | 状態更新をshop.pyへ集約 | 意図的 | 差異あり | 料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。 |
+| 宿泊（`mode=yado` / POST / 状態変更） | `旧版_ver2/shop.cgi` | `cgi_py/shop.py` | 状態更新をshop.pyへ集約 | 意図的 | 差異あり | 料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。Ver2と同じく接続元ホストも保存する。 |
 | 銀行を表示（`mode=bank` / POST / 表示） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 統合JSONのgold/bankを表示 | 意図的 | 差異あり | 本人の所持金・預金と上限を表示し、変更はしない。 |
 | 銀行へ預け入れ（`mode=bank_sell` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 1,000G単位・所持金/預金上限を検査してgoldからbankへ移す。 |
 | 銀行から引き出し（`mode=bank_buy` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 1,000G単位・預金残高・所持金上限を検査してbankからgoldへ移す。 |
