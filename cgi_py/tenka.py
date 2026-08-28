@@ -173,6 +173,11 @@ def main(_battle_lock_held=False):
     if not chara:
         common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
 
+    # Ver2の街画面と同じく、天下一武道会は初回チャンピオン戦後に解放する。
+    # ロビー表示・戦闘実行の双方で確認し、直接POSTによる迂回を防ぐ。
+    if int(chara.get("battle_count", 0)) <= 0:
+        common.show_error("一度チャンプに挑戦してください。")
+
     # 壊れた進行値で天下一の対戦相手インデックスが範囲外にならないよう、
     # 開始値より大きい値だけを開始状態へ正規化する。
     boss_flag_normalized = normalize_tenka_boss_flag(chara)

@@ -155,6 +155,13 @@ def main():
     # 職業名の取得
     job_idx = chara["job"]
     job_name = config.Config['chara_jobs'].get(job_idx, "不明な職業")
+
+    # Ver2のclassと同じく、現職の熟練度を10刻みでクラス表示する。
+    class_marks = ("■□□□□□", "■■□□□□", "■■■□□□", "■■■■□□", "■■■■■□", "■■■■■■", "★★★★★★")
+    class_names = ("Beginner", "Charanger", "LowClass", "NormalClass", "HighClass", "TopClass", "Master")
+    class_index = min(6, max(0, int(chara.get("job_level", 0)) // 10))
+    job_class_mark = class_marks[class_index]
+    job_class_name = class_names[class_index]
     
     # HPパーセンテージ計算
     if chara["max_hp"] > 0:
@@ -221,6 +228,8 @@ def main():
         "syou": syou,
         "yado_daix": yado_daix,
         "job_name": job_name,
+        "job_class_mark": job_class_mark,
+        "job_class_name": job_class_name,
         "hp_percent": hp_percent,
         "active_characters_html": active_characters_html,
         "bbs_posts": bbs_posts,

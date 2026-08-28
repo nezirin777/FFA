@@ -86,6 +86,12 @@ def main():
             common.release_lock(user_id)
             common.show_error("パスワード認証に失敗しました。")
 
+        # チャンピオン戦が初回の戦闘導線となる。Ver2と同じく、
+        # 通常修行・幻影の城・異世界は初回チャンピオン戦後に解放する。
+        if int(chara.get("battle_count", 0)) <= 0:
+            common.release_lock(user_id)
+            common.show_error("一度チャンプに挑戦してください。")
+
         # 3. 待機時間（クールダウン）チェック
         now = int(time.time())
         ltime = now - chara["last_time"]
@@ -121,9 +127,6 @@ def main():
         elif mode == "genei":
             # 幻影の城
             is_genei = True
-            if int(chara.get("battle_count", 0)) <= 0:
-                common.release_lock(user_id)
-                common.show_error("一度チャンプに挑戦してください。")
             # 最終行動時間 (last_time) が5の倍数でなければエラー
             if chara["last_time"] % 5 != 0:
                 common.release_lock(user_id)

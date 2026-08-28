@@ -80,6 +80,11 @@ def main():
     if c_id != user_id or c_pass != chara["pass"]:
         common.show_error("パスワード認証に失敗しました。")
 
+    # Ver2の街画面と同じく、道場は初回チャンピオン戦の後に解放する。
+    # 表示側だけでなく、直接POSTされた場合も拒否する。
+    if int(chara.get("battle_count", 0)) <= 0:
+        common.show_error("一度チャンプに挑戦してください。")
+
     # 3. 各モードの実行
     if mode == "log_in":
         # 対戦選択の初期画面

@@ -138,6 +138,10 @@
                             <td><b>{{ chara.level }}</b></td>
                         </tr>
                         <tr>
+                            <th>クラス:</th>
+                            <td colspan="3">{{ job_class_mark }} <i><b>({{ job_class_name }})</b></i></td>
+                        </tr>
+                        <tr>
                             <th>HP:</th>
                             <td colspan="3">
                                 <b><span class="red">{{ chara.hp }}</span> / {{ chara.max_hp }}</b>
@@ -308,12 +312,16 @@
                                    data-facility-description="チョコボの育成、訓練、レース等が行えますクポ。">
                         </form>
                         <!-- 天下一武道会 -->
+                        {% if not chara.battle_count %}
+                        <span class="facility-btn disabled">🏆 武道会<br><small>※一度チャンプに挑戦してください</small></span>
+                        {% else %}
                         <form action="{{ config.tenka_script }}" method="POST">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="submit" class="btn facility-btn" value="🏆 武道会"
                                    data-facility-description="他の冒険者と対戦し、ランキングを競いますクポ。">
                         </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -326,6 +334,9 @@
                         <!-- モンスターと戦う -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">⚔️ モンスターと闘う</span>
+                            {% if not chara.battle_count %}
+                            <small class="red">※一度チャンプに挑戦してください</small>
+                            {% else %}
                             <div id="action-form-monster"{% if ztime > 0 %} hidden{% endif %}>
                                 <form action="{{ config.monster_script }}" method="POST" class="ff-monster-form">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
@@ -345,12 +356,16 @@
                                 <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
                             </div>
                             {% endif %}
+                            {% endif %}
                         </div>
 
                         <!-- 幻影の城 -->
                         {% if chara.last_time % 5 == 0 %}
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🏰 突然の出現</span>
+                            {% if not chara.battle_count %}
+                            <small class="red">※一度チャンプに挑戦してください</small>
+                            {% else %}
                             <div id="action-form-genei"{% if ztime > 0 %} hidden{% endif %}>
                                 <form action="{{ config.monster_script }}" method="POST">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
@@ -364,6 +379,7 @@
                             <div id="cooldown-text-genei">
                                 <small class="red"><span class="cooldown-timer">{{ ztime }}</span>秒後に挑戦可能になります</small>
                             </div>
+                            {% endif %}
                             {% endif %}
                         </div>
                         {% endif %}
@@ -405,7 +421,9 @@
                         <!-- 異世界 -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🌀 異世界への門</span>
-                            {% if chara.level < config.isekai_level %}
+                            {% if not chara.battle_count %}
+                                <small class="red">※一度チャンプに挑戦してください</small>
+                            {% elif chara.level < config.isekai_level %}
                                 <small class="red">※レベル {{ config.isekai_level }} 以上で開放されます</small>
                             {% else %}
                                 <div id="action-form-isekiai"{% if ztime > 0 %} hidden{% endif %}>
@@ -427,12 +445,16 @@
                         <!-- 道場（好きなキャラと模擬戦） -->
                         <div class="ff-battle-row">
                             <span class="ff-battle-label">🥋 道場（模擬戦）</span>
+                            {% if not chara.battle_count %}
+                            <small class="red">※一度チャンプに挑戦してください</small>
+                            {% else %}
                             <form action="{{ config.select_battle_script }}" method="POST">
                                 <input type="hidden" name="s" value="{{ csrf_token }}">
                                 <input type="hidden" name="mode" value="log_in">
                                 <input type="hidden" name="id" value="{{ chara.id }}">
                                 <input type="submit" class="btn ff-action-btn" value="相手を選ぶ">
                             </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
