@@ -39,6 +39,7 @@
 """
 FFA Python/CGI - 作戦（戦術）変更画面 (tac_change.py)
 """
+import os
 
 # 共通モジュールのインポート
 try:
@@ -85,8 +86,8 @@ def get_available_tactics(chara, syoku):
         if t["no"] != 0:
             available_tacs.append(t)
             
-    # 2. マスターした他職業の戦術を追加（転職時の戦術リセット設定が有効な場合）
-    if config.Config['reset_tactics_on_job_change'] == 1 and syoku:
+    # 2. マスターした他職業の戦術を追加。Ver2の $master_tac と同じ設定で制御する。
+    if config.Config['master_tactics_enabled'] == 1 and syoku:
         for job_idx_str, level in syoku.items():
             try:
                 job_idx = int(job_idx_str)
@@ -113,40 +114,33 @@ def main():
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
-    # キャラクターデータのロード
-    chara = common.chara_load(user_id)
-    if not chara:
-        common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
-
-    # 職業熟練度データのロード
-    syoku = common.syoku_load(user_id)
-    
-    # 使用可能な全戦術を取得
-    available_tacs = get_available_tactics(chara, syoku)
-
     if mode == "senjutu_henkou":
         # === 戦術変更処理 ===
-        senjutu_no_str = in_params.get("senjutu_no", "0")
+        senjutu_no_str = in_params.get("senjutu_no")
+        if senjutu_no_str is None:
+            common.show_error("変更する戦術を選択してください。")
         try:
             senjutu_no = int(senjutu_no_str)
         except ValueError:
-            senjutu_no = 0
+            common.show_error("戦術番号が不正です。")
 
-        # 選択された戦術が本当に使用可能か照合
-        selected_tac = None
-        for t in available_tacs:
-            if t["no"] == senjutu_no:
-                selected_tac = t
-                break
-
-        if selected_tac is None:
-            common.show_error("選択された戦術は存在しないか、使用する条件を満たしていません。")
-
-        # 変更保存
-        chara["tactic_id"] = senjutu_no # 旧版の戦術番号列に対応
-        
+        # Ver2と同じく、ロックを取得してから最新の職業・熟練度を読み込む。
+        # 表示時点の候補で判定・保存すると、転職や戦闘の更新を上書きし得る。
         common.get_lock(user_id)
         try:
+            chara = common.chara_load(user_id)
+            if not chara:
+                common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
+            syoku = common.syoku_load(user_id)
+            available_tacs = get_available_tactics(chara, syoku)
+            selected_tac = next(
+                (t for t in available_tacs if t["no"] == senjutu_no), None
+            )
+            if selected_tac is None:
+                common.show_error("選択された戦術は存在しないか、使用する条件を満たしていません。")
+
+            chara["tactic_id"] = senjutu_no
+            chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             common.chara_regist(user_id, chara)
         finally:
             common.release_lock(user_id)
@@ -162,6 +156,12 @@ def main():
 
     else:
         # === 戦術選択画面表示 (senjutu) ===
+        chara = common.chara_load(user_id)
+        if not chara:
+            common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
+        syoku = common.syoku_load(user_id)
+        available_tacs = get_available_tactics(chara, syoku)
+
         # 現在の戦術を判定
         now_tac_no = chara.get("tactic_id", 0)
         now_tac_name = "普通に戦う"

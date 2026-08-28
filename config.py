@@ -111,8 +111,10 @@ Config["monster_steal_reward_cap_multiplier"] = 2  # 通常勝利報酬の最大
 Config["counterattack_level_gap"] = 15  # 初手逆転必殺判定に必要なレベル差
 Config["counterattack_damage_multiplier"] = 100  # 初手逆転必殺時のダメージ倍率
 
-# 転職後の戦術クリア設定。1の場合、転職後に戦術を未習得へ戻す。
-Config["reset_tactics_on_job_change"] = 1  # 転職時に戦術を未習得へ戻す
+# マスター済みの別職業の戦術を選択候補へ含めるか。Ver2の $master_tac に対応。
+Config["master_tactics_enabled"] = 1
+# 転職後の選択中戦術を解除するか。戦術候補の範囲とは独立している。
+Config["reset_tactics_on_job_change"] = 1
 
 # 通常モンスターの難易度を切り替えるキャラクターレベル境界。
 Config["monster_level_threshold_lv2"] = 100  # これ未満は初級、それ以上は中級候補

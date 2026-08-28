@@ -495,7 +495,7 @@ def skill_specs() -> str:
 <div class="note">必殺技は戦術マスターのIDをそのまま <code>sub_def/skills.py</code> のクラス名に使う互換仕様です。IDを振り直さず、戦術の追加・変更時は戦術マスター、プレイヤー側・対人側の実装、資料をまとめて確認してください。</div>
 <h2>設定から戦闘までの経路</h2>
 {table(["段階", "現行処理", "管理上の確認点"], [
-    ["利用可能な戦術", "<code>cgi_py/tac_change.py</code> が現在職の <code>job_ids</code> と <code>ms</code> を検証する。現在の設定では他職も熟練度Lv60以上なら候補へ加える。", "<code>reset_tactics_on_job_change</code>={num(c['reset_tactics_on_job_change'])}。戦術変更のPOSTでも候補にないIDは拒否する。"],
+    ["利用可能な戦術", "<code>cgi_py/tac_change.py</code> が現在職の <code>job_ids</code> と <code>ms</code> を検証する。<code>master_tactics_enabled</code>が有効なら、他職も熟練度Lv60以上で候補へ加える。", f"<code>master_tactics_enabled</code>={num(c['master_tactics_enabled'])}。転職時の選択戦術リセットとは独立し、POSTでも候補にないIDは拒否する。"],
     ["選択の保存", "選択IDを <code>chara.tactic_id</code> へ保存する。0は「普通に戦う」。", "戦術IDは職業IDではない。データ移行・管理編集でも両者を混同しない。"],
     ["プレイヤー側", "各ターンで <code>tech_&lt;tactic_id&gt;.hissatu</code>、通常攻撃後に <code>tech_&lt;tactic_id&gt;.atowaza</code> を実行する。", "クラスまたはメソッドが存在しない場合、<code>run_skill()</code> は何もせず続行する。"],
     ["対人相手側", "各ターンで <code>wtech_&lt;tactic_id&gt;.whissatu</code>、後発で <code>wtech_&lt;tactic_id&gt;.watowaza</code> を実行する。", "下の対応表で実装名を確認する。クラスまたはメソッドが存在しない場合、<code>run_skill()</code> は何もせず続行する。"],
