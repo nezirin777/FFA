@@ -82,6 +82,12 @@ def main():
                    "choco_buyb", "choco_sell", "choco_name", "yadoya")
     if mode not in valid_modes:
         mode = "main"
+
+    # 表示用フォームにもトークンを出力しているため、状態変更時は必ず検証する。
+    state_modes = ("choco_buy", "choco_buyb", "choco_sell", "choco_name", "yadoya")
+    if mode in state_modes:
+        from sub_def.crypto import get_session, token_check
+        token_check(in_params, get_session())
     
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
@@ -323,6 +329,9 @@ def main():
         
         # 親チョコボ情報
         cfname = choco_raw.get("name", "")
+        if not cfname:
+            common.show_error("親となるチョコボに名前を付けてからお見合いしてください。")
+
         cfsex = choco_raw.get("sex", 0)
         cfblood = choco_raw.get("blood", 0)
         cfno = choco_raw.get("no", 0)
@@ -387,7 +396,9 @@ def main():
             
         prebirth_a = cy_fatherrank + cy_motherrank
         prebirth_b = cffblood + cfmblood
-        prebirth = (random.randrange(prebirth_a) if prebirth_a > 0 else 0) + (random.randrange(prebirth_b) if prebirth_b > 0 else 0)
+        # Ver2は各乱数を整数化する前に合算していた。個別に切り捨てると
+        # 繰り上がり分が失われ、子の血統ランク分布まで変わってしまう。
+        prebirth = int(random.random() * prebirth_a + random.random() * prebirth_b)
         if cfwin > 100:
             prebirth += 2
         if cftrain > 500:
@@ -523,13 +534,15 @@ def main():
         elif cblood == 1: cmaxmax = 2000 + random.randrange(3500)
         else: cmaxmax = random.randrange(7000)
         
-        # 性別決定 (1: オス, 0: メス)
-        csex = random.randint(0, 1)
+        # 性別決定 (1: オス, 0: メス)。Ver2の int(rand(1.9)) を再現する。
+        csex = int(random.random() * 1.9)
         
         # 画像・タイプの決定
         if random.randint(0, 18) == 1:
-            cno = random.randint(0, 7)
-            ctype = random.randint(0, 5)
+            # Ver2は int(rand(7.999)) / int(rand(5.1))。端数による
+            # 出現率差も含めて、突然変異時の分布をそのまま再現する。
+            cno = int(random.random() * 7.999)
+            ctype = int(random.random() * 5.1)
         elif random.randint(0, 1) == 1:
             cno = cy_e
             ctype = cy_waza
