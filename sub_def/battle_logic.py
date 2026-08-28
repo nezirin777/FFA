@@ -248,7 +248,7 @@ def get_job_dmg(job, chara, weapon_dmg):
         return (
             r("str") + r("int") + r("mnd") + r("vit") +
             r("dex") + r("agi") + r("cha") +
-            r("karma")
+            int(chara.get("karma", 0))
         )
 
     if job in (18, 19, 20, 21, 28, 29, 30):
@@ -258,11 +258,11 @@ def get_job_dmg(job, chara, weapon_dmg):
     elif job == 23:
         return r("str") + weapon_dmg
     elif job == 24:
-        return (r("vit") + r("dex") + r("agi") + r("cha") + r("karma")) * 2 + weapon_dmg
+        return (r("vit") + r("dex") + r("agi") + r("cha") + int(chara.get("karma", 0))) * 2 + weapon_dmg
     elif job == 25:
         return (
             r("str") + r("int") + r("mnd") + r("vit") +
-            r("dex") * 5 + r("agi") + r("cha") + r("karma")
+            r("dex") * 5 + r("agi") + r("cha") + int(chara.get("karma", 0))
         ) * 2 + weapon_dmg
     else:
         return all_stats() + weapon_dmg
@@ -307,7 +307,9 @@ class BattleSimulator:
         s.a_kaihiup = int(s.item["accessory"].get("evasion_rate", 0))
         s.a_wazaup = int(s.item["accessory"].get("special_rate", 0))
         
-        win = 2 # デフォルト引き分け
+        # モンスター戦の時間切れは引き分け(2)、対人戦の時間切れは
+        # 相打ち引き分けと区別する専用結果(3)を返す。
+        win = 3 if s.is_player_enemy else 2
         
         for turn_idx in range(1, s.turn + 1):
             s.i = turn_idx

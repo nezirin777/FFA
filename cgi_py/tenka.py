@@ -209,7 +209,7 @@ def main():
         simulator = battle_logic.BattleSimulator("battle", chara, item, winner, is_player_enemy=True)
         # 天下一の賞金を盗み技の基準額として使う。
         simulator.state.gold_base = gold_reward
-        win, battle_logs = simulator.simulate() # 1: プレイヤー勝利, 0: プレイヤー敗北, 2: 引き分け
+        win, battle_logs = simulator.simulate() # 1: 勝利, 0: 敗北, 2: 相打ち, 3: 時間切れ
         
         # 残りHP、経験値計算
         restored_hp = simulator.state.khp + random.randint(0, max(0, chara.get("vit", 10) - 1))
@@ -306,6 +306,10 @@ def main():
                 comment += f"<br><span class='green'>盗んだお金 {gold_gained} G を獲得しました。</span>"
             elif gold_gained < 0:
                 comment += f"<br><span class='red'>お金を {abs(gold_gained)} G 失いました。</span>"
+        elif win == 3:
+            # 時間切れは相打ち(2)と分け、賞金・盗み・ラウンド進行を発生させない。
+            exp_gained = opponent_level * config.Config["pvp_base_exp"]
+            comment += f"<br><span class='yellow'>時間切れ引き分けですクポ。次の対戦には進めません。</span>"
         else:
             # 敗北時のみ所持金を半分にする。
             exp_gained = opponent_level

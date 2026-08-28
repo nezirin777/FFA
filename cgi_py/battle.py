@@ -201,10 +201,10 @@ def main():
             gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
 
-            # 勝利・引き分けは相手レベル×基本値。敗北時は高レベル王者への
+            # 勝利・引き分け・時間切れは相手レベル×基本値。敗北時は高レベル王者への
             # 連続挑戦だけで経験値を稼げないよう、自分のレベル×10を上限にする。
             opponent_level = max(1, int(winner.get("level", 1)))
-            if win in (1, 2):
+            if win in (1, 2, 3):
                 exp_gained = opponent_level * config.Config["pvp_base_exp"]
             else:
                 exp_gained = min(opponent_level, max(1, int(chara.get("level", 1))) * 10)
@@ -305,6 +305,12 @@ def main():
                 
                 comment += f'<span class="green text-large">見事に勝利し、新王者になりました！</span><br>'
                 comment += f'経験値 {exp_gained} と賞金 {gold_gained} ゴールドを獲得しました。<br>'
+            elif win == 3:
+                # 時間切れは引き分け表示だが、相打ち(2)とは異なり
+                # 王者交代・賞金・防衛連勝を発生させない。
+                gold_gained = 0
+                comment += '<span class="yellow text-large">時間切れ引き分けです。王者交代はありません。</span><br>'
+                comment += f'経験値 {exp_gained} を獲得しました。<br>'
             else:
                 # 挑戦者の敗北 ➔ 王者の防衛成功
                 # 旧版の敗北時処理は挑戦者の所持金を半分にする。

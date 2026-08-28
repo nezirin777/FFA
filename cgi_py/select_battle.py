@@ -152,6 +152,8 @@ def main():
             comment = f'<span class="green text-large">{aite_chara["name"]} に勝利しました！</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         elif win == 0:
             comment = f'<span class="red text-large">{aite_chara["name"]} に敗北しました・・・</span><br>(練習戦のためステータスやゴールドの変動はありません)'
+        elif win == 3:
+            comment = f'<span class="yellow text-large">時間切れ引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
         else:
             comment = f'<span class="yellow text-large">引き分けです。</span><br>(練習戦のためステータスやゴールドの変動はありません)'
 
