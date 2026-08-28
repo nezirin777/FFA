@@ -268,6 +268,14 @@ def get_job_dmg(job, chara, weapon_dmg):
         return all_stats() + weapon_dmg
 
 
+def get_level_base_dmg(chara, is_player_enemy):
+    """Ver2のshokikaで加算する、レベル由来のターン基礎ダメージを返す。"""
+    level = max(0, int(chara.get("level", 0)))
+    # mbattle.pl は rand(5)+1、wbattle.pl は rand(3)+1。
+    random_range = 3 if is_player_enemy else 5
+    return level * (random.randrange(random_range) + 1)
+
+
 def get_tactic_id(chara):
     """戦闘で使用する戦術IDを取得する（旧版 chara[30] / winner[37] 相当）。"""
     try:
@@ -315,12 +323,18 @@ class BattleSimulator:
             s.i = turn_idx
             
             # === 1. ターン初期化 (shokika) ===
-            # プレイヤーダメージ
-            s.dmg1 = get_job_dmg(s.chara["job"], s.chara, s.item["weapon"]["atk"])
+            # Ver2のshokikaによるLv基礎ダメージへ、職業式・武器ATKを加算する。
+            s.dmg1 = (
+                get_level_base_dmg(s.chara, s.is_player_enemy)
+                + get_job_dmg(s.chara["job"], s.chara, s.item["weapon"]["atk"])
+            )
             # 敵ダメージ
             if s.is_player_enemy:
                 # 対人戦の場合、相手の職業ダメージを計算
-                s.dmg2 = get_job_dmg(s.winner["job"], s.winner, s.winner_item["weapon"]["atk"])
+                s.dmg2 = (
+                    get_level_base_dmg(s.winner, True)
+                    + get_job_dmg(s.winner["job"], s.winner, s.winner_item["weapon"]["atk"])
+                )
                 s.com2 = f"{s.mname}の攻撃！"
             else:
                 s.dmg2 = s.monster_base_damage + random.randrange(max(1, s.monster_random_range))
