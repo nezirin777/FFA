@@ -97,10 +97,7 @@ def build_rankings(players):
     rank_karma = extract_top(players, "karma")
     
     # 11. 勝率
-    # 総対人戦数が1000（Perlの1000戦以上）または100戦以上？ 
-    # 登録者が少ないテスト環境等を考慮し、対人戦数が10回以上の人を対象にします（Perlは1000戦以上）
-    # ここでは1000戦以上を基本としつつ、少なければ10戦以上に緩和するなどの処理も可能ですが、
-    # 基本の1000戦でフィルタリングします。
+    # Ver2と同じく、総戦闘数が1,000回を超えるキャラクターだけを対象にする。
     win_players = []
     for p in players:
         total_battles = p.get("battle_count", 0)
