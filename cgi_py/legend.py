@@ -250,14 +250,6 @@ def main():
         # 表示していなかった。保存値と結果表示を一致させる。
         comment += f'経験値 {exp_gained} を獲得しました。<br>'
 
-        # 戦闘後の残りHP復元
-        restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
-        if restored_hp > chara["max_hp"]:
-            restored_hp = chara["max_hp"]
-        if restored_hp <= 0:
-            restored_hp = chara["max_hp"]
-        chara["hp"] = restored_hp
-
         # 共通処理
         chara["battle_count"] += 1 # 戦闘回数カウンタ
         chara["battle_limit"] -= 1
@@ -268,6 +260,15 @@ def main():
             syoku = {}
         lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
         comment += lv_comment
+
+        # Ver2のhp_afterと同じく、レベルアップ後のvit/max_hpを使って
+        # 戦闘後HPを回復する。敗北時は現在の最大HPまで回復する。
+        restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
+        if restored_hp > chara["max_hp"]:
+            restored_hp = chara["max_hp"]
+        if restored_hp <= 0:
+            restored_hp = chara["max_hp"]
+        chara["hp"] = restored_hp
 
         # 最終行動時間
         chara["last_time"] = now

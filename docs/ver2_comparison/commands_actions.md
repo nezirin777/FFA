@@ -115,7 +115,7 @@
 | 幻影の城へ挑戦（`mode=genei` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのgenei分岐へ統合 | 意図的 | 差異あり | 出現条件、敵攻撃への防具補正、幻影報酬を通常修行と区別して処理する。 |
 | 異世界へ挑戦（`mode=isekiai` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのisekiai分岐へ統合 | 意図的 | 差異あり | レベル/進行条件を検査し、異世界出現表と報酬を用いる。 |
 | レジェンド攻略者一覧を閲覧（`mode=legend, view=ranking` / GET / 表示） | `旧版_ver2/legend.cgi` | `cgi_py/legend.py` | 公開GET閲覧を明示 | 意図的 | 差異あり | ログイン不要で攻略者を称号・戦績から並べ、状態変更は行わない。 |
-| レジェンドの階層へ挑戦（`mode=boss, boss_file=0〜3` / POST / 状態変更） | `旧版_ver2/legend.cgi / mbattle.pl` | `cgi_py/legend.py / sub_def/battle_logic.py` | POST専用・階層値を検証 | 意図的 | 差異あり | title_id、boss_flag、修行回数、待機時間を検査して階層別モンスターと戦う。 |
+| レジェンドの階層へ挑戦（`mode=boss, boss_file=0〜3` / POST / 状態変更） | `旧版_ver2/legend.cgi / mbattle.pl` | `cgi_py/legend.py / sub_def/battle_logic.py` | POST専用・階層値を検証、クリア後の再挑戦を許可 | 意図的 | 差異あり | title_id、boss_flag、修行回数、待機時間を検査して階層別モンスターと戦う。クリア後は進行値を開始値へ戻し、現行は同じ階層を再挑戦できる。戦闘後HPはレベルアップ後のvit/max_hpで回復する。 |
 | 天下一武道会ロビーを表示（`mode=tenka` / POST / 表示） | `旧版_ver2/tenka.cgi` | `cgi_py/tenka.py` | 24時間メンバーキャッシュへ移行 | 意図的 | 差異あり | レベル上位者、参加可能boss_flag、進行ラウンド、制覇履歴を表示する。 |
 | 天下一武道会で対戦（`mode=battle, no=1〜3` / POST / 状態変更） | `旧版_ver2/tenka.cgi / wbattle.pl` | `cgi_py/tenka.py / sub_def/battle_logic.py` | ラウンド番号をサーバー側照合、戦闘全体をユーザーロックで直列化 | 意図的 | 差異あり | 期待ラウンド以外を拒否する。勝敗・進行のwin分岐は現行方針を維持し、戦闘前から保存までロックする。レベルアップ後のvit/max_hpで戦闘後HPを回復し、boss_flagが開始値を超える場合は開始値へ正規化する。 |
 
