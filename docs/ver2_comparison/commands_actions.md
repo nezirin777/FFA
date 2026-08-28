@@ -2,7 +2,7 @@
 
 画面遷移だけのルートと、各ルート内の実行操作を分けて管理します。比較前に状態変更か表示かを確認し、Ver2との差分を具体的に記録します。
 
-対象: ルート 38件、実行操作 121件、二次精査 9ファイル。
+対象: ルート 38件、実行操作 122件、二次精査 10ファイル。
 ## ファイル単位の精査記録
 
 ここには一次台帳作成後に、Ver2実装と現行実装を分岐・保存値・表示まで再確認したファイルだけを記録します。未記載のファイルは未精査であり、一次比較完了を根拠に一致と扱いません。
@@ -18,6 +18,7 @@
 | `cgi_py/shop_weapon.py / templates/shop_trade.html` | `旧版_ver2/shop_item.cgi / data/item/item<N>.ini` | 職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移 | JSON・CSRF・入力再検証・トースト遷移へ移行。武器1181の販売対象だけ未判断 | 処理移行は意図的／武器1181は要判断 | 購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と武器倉庫上限8は一致する。職別品揃えは、台帳記載のシーフ武器1032〜1038価格調整を除き一致。皇帝用1181はVer2の職別リストにないが現行では販売するため、維持可否はequipment.mdの要判断項目として残す。 |
 | `cgi_py/shop_armor.py / templates/shop_trade.html` | `旧版_ver2/shop_def.cgi / data/def/def<N>.ini` | 職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移 | JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存と防具2181の販売対象が異なる | 処理移行は意図的／接続元・防具2181は要判断 | 購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と防具倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。皇帝用2181はVer2の職別リストにないが現行では販売する。2165・2183の名称記号差はequipment.mdに記録済み。 |
 | `cgi_py/shop_accessory.py / templates/shop_trade.html` | `旧版_ver2/shop_acs.cgi / data/acs/acs<N>.ini` | 職別品揃え、能力補正の保管、購入・売却額、倉庫上限、接続元ホスト、画面遷移 | JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存はVer2と異なる | 処理移行は意図的／売却時の接続元は要判断 | 購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と装飾品倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。職別品揃えと補正は一致し、85・87の率補正だけはd7105f6で記録済みのVer1準拠調整を維持する。 |
+| `cgi_py/bbs.py / templates/ffadventure.html` | `旧版_ver2に一般掲示板はなし（post_message.cgiは私信）` | 投稿者・本文・禁止語・保存上限・表示順・接続元・遷移 | 全員が書き込む掲示板をVer3で新設。Ver2の私信とは別機能 | 一般掲示板は意図的な追加／私信の未実装は要判断 | ログイン本人だけが200文字以内・禁止語なしで投稿でき、最新100件を新着順に共有JSONへ保持する。投稿後のPRGリダイレクト、CSRF、共有ロックは現行の安全化。Ver2の私信・送信箱・受信拒否・友人登録は置き換えられておらず、別の未実装項目として記録する。 |
 
 ## ルート一覧（login.py）
 
@@ -46,7 +47,7 @@
 | ルート `mode=isekiai`: 異世界（モンスター互換ルート） | `旧版_ver2/monster.cgi` | `login.py` → `cgi_py.monster` / 状態変更 | Ver3で`monster`への互換別名を明示 | 意図的 | 差異あり | login.pyのFUNCTION_MAPでcgi_py.monsterへ集約。旧URL・既存フォームを維持しつつ、POST時は共通CSRF検証を通す。 |
 | ルート `mode=legend`: レジェンドプレイス | `旧版_ver2/legend.cgi` | `login.py` → `cgi_py.legend` / 表示・状態変更 | 攻略者一覧だけ公開閲覧として分離 | 意図的 | 差異あり | view=rankingのGETだけ未ログイン閲覧可。攻略実行はPOST専用・ログイン必須でboss互換ルートにも対応する。 |
 | ルート `mode=boss`: レジェンド戦（互換ルート） | `旧版_ver2/legend.cgi` | `login.py` → `cgi_py.legend` / 状態変更 | Ver3で`legend`への互換別名を明示 | 意図的 | 差異あり | login.pyのFUNCTION_MAPでcgi_py.legendへ集約。旧URL・既存フォームを維持しつつ、POST時は共通CSRF検証を通す。 |
-| ルート `mode=bbs`: 掲示板投稿 | `旧版_ver2/post_message.cgi` | `login.py` → `cgi_py.bbs` / 状態変更 | 個別CGI入口からlogin.pyの集中ルーティングへ移行 | 意図的 | 差異あり | FUNCTION_MAPでcgi_py.bbsを選択し、ログイン済みならPOSTのCSRFを共通検証して実行する。 |
+| ルート `mode=bbs`: 掲示板投稿 | `旧版_ver2に一般掲示板はなし（post_message.cgiは私信）` | `login.py` → `cgi_py.bbs` / 状態変更 | 個別CGI入口からlogin.pyの集中ルーティングへ移行 | 意図的 | 差異あり | FUNCTION_MAPでcgi_py.bbsを選択し、ログイン済みならPOSTのCSRFを共通検証して実行する。 |
 | ルート `mode=chocofarm`: チョコボ牧場 | `旧版_ver2/chocofarm.cgi` | `login.py` → `cgi_py.chocofarm` / 表示 | 個別CGI入口からlogin.pyの集中ルーティングへ移行 | 意図的 | 差異あり | FUNCTION_MAPでcgi_py.chocofarmを選択し、ログイン済みならPOSTのCSRFを共通検証して実行する。 |
 | ルート `mode=morifarm`: チョコボの森 | `旧版_ver2/morifarm.cgi` | `login.py` → `cgi_py.morifarm` / 表示・更新 | 個別CGI入口からlogin.pyの集中ルーティングへ移行 | 意図的 | 差異あり | FUNCTION_MAPでcgi_py.morifarmを選択し、ログイン済みならPOSTのCSRFを共通検証して実行する。 |
 | ルート `mode=choco`: チョコボの森（互換ルート） | `旧版_ver2/morifarm.cgi` | `login.py` → `cgi_py.morifarm` / 表示 | Ver3で`morifarm`への互換別名を明示 | 意図的 | 差異あり | login.pyのFUNCTION_MAPでcgi_py.morifarmへ集約。旧URL・既存フォームを維持しつつ、POST時は共通CSRF検証を通す。 |
@@ -89,7 +90,8 @@
 | 戦術を変更（`mode=senjutu_henkou` / POST / 状態変更） | `旧版_ver2/tac_change.cgi` | `cgi_py/tac_change.py` | POST時の戦術ID・利用条件検証を追加 | 意図的 | 差異あり | 未選択・不正・未習得の戦術を拒否する。Ver2と同じくロック後に最新のchara/syokuから候補を再構築し、tactic_idと接続元ホストを保存する。 |
 | 転職画面を表示（`mode=tensyoku` / POST / 表示） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 職業マスターをJSONから参照 | 意図的 | 差異あり | 能力・職歴前提を満たす候補と未マスター候補を分けて表示する。 |
 | 転職を実行（`mode=tensyoku_change` / POST / 状態変更） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 実行POSTでも前提職を再検証 | 意図的 | 差異あり | 現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化する。成功時はVer2と同じく接続元ホストを更新し、chara/syokuを同時保存する。能力減少値は一致し、カルマの下限だけはVer2の0許容に対して現行は1へ戻す意図的仕様。 |
-| 掲示板へ投稿（`mode=post` / POST / 状態変更） | `旧版_ver2/post_message.cgi` | `cgi_py/bbs.py` | 私信一体型からBBS専用JSONへ分離 | 意図的 | 差異あり | 本人ID・200文字・禁止語を検査し、新着順と保存上限を守って書込む。 |
+| 掲示板へ投稿（`mode=post` / POST / 状態変更） | `旧版_ver2に一般掲示板はなし（post_message.cgiは私信）` | `cgi_py/bbs.py` | Ver2にない一般掲示板を追加 | 意図的 | 差異あり | 本人ID・200文字・禁止語を検査し、新着順で最大100件を共有JSONへ書込む。私信を置換した機能ではなく、投稿後はPRGリダイレクトとCSRFを用いる独立機能である。 |
+| 私信・受信拒否・友人登録（Ver2のみ）（`Ver2専用（message / all_list / limit / ban / friend）` / POST / Ver3未実装） | `旧版_ver2/post_message.cgi` | `該当なし` | Ver3に実行経路がない | 要判断 | 差異あり | Ver2のpost_message.cgiは私信送受信、送受信箱、全受信拒否、個別拒否、友人登録を扱う。現行スキーマには移行値が残るがCGIの読書き経路はないため、復元するか機能廃止とするか要判断。 |
 
 ### 店・資産
 
