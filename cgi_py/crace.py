@@ -70,6 +70,16 @@ except ImportError:
 _HEAVY_RACES: frozenset[str] = frozenset({"race7", "race8"})
 
 
+def _won_major_race_count(race_history):
+    """Ver2のrenzと同じく、G1/G2を合算した獲得タイトル数を返す。"""
+    if not isinstance(race_history, dict):
+        return 0
+    return sum(
+        common.to_int(race_history.get(f"r{race_id}", 0), 0) > 0
+        for race_id in range(1, 23)
+    )
+
+
 def _scheduled_major_race(total_turns, mode, sex):
     """旧版牧場画面と同じ、G1/G2の開催枠からレース番号を求める。"""
     if mode == "race7":
@@ -249,6 +259,9 @@ def main():
         scheduled_race = _scheduled_major_race(crun + ctrain, mode, csex)
         if scheduled_race != race_id:
             common.show_error("現在はその海外レースの開催日ではありません。", back_ctx)
+        # Ver2の牧場画面と同じく、G1/G2タイトル3個以上を実行側でも確認する。
+        if _won_major_race_count(common.choco_g1_load(user_id)) < 3:
+            common.show_error("海外重賞には重賞タイトルを3個以上獲得している必要があります。", back_ctx)
     elif mode == "race_dendo":
         # 殿堂レース
         win_min = 30

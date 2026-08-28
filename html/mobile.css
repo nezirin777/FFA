@@ -247,6 +247,14 @@
     align-items: center;
     text-align: center;
   }
+
+  .farm-chocobo-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-chocobo-image {
+    margin-inline: auto;
+  }
   
   .farm-action-row {
     flex-direction: column;

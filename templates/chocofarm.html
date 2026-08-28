@@ -42,42 +42,66 @@
         <div class="farm-main-col">
             {% if has_choco %}
             <!-- チョコボステータス -->
-            <div class="farm-card">
+            <div class="farm-card farm-status-card">
                 <div class="farm-card__title">📊 愛チョコボのステータス</div>
-                <table class="farm-status-table">
-                    <tr>
-                        <td class="farm-lbl-header">名前</td>
-                        <td class="farm-val-cell"><b>{{ choco_name or "（まだ名前がありません）" }}</b></td>
-                        <td class="farm-lbl-header">クラス</td>
-                        <td class="farm-val-cell"><b>{{ choco_class }}</b></td>
-                    </tr>
-                    <tr>
-                        <td class="farm-lbl-header">タイプ</td>
-                        <td class="farm-val-cell">{{ choco_type }}</td>
-                        <td class="farm-lbl-header">体調</td>
-                        <td class="farm-val-cell">{{ choco.csta }}</td>
-                    </tr>
-                    <tr>
-                        <td class="farm-lbl-header">スピード</td>
-                        <td class="farm-val-cell">{{ choco_speed }}</td>
-                        <td class="farm-lbl-header">スタミナ</td>
-                        <td class="farm-val-cell">{{ choco_stamina }}</td>
-                    </tr>
-                    <tr>
-                        <td class="farm-lbl-header">出走 / 勝数</td>
-                        <td class="farm-val-cell">{{ choco.run }} 戦 {{ choco_win }} 勝</td>
-                        <td class="farm-lbl-header">想定引取額</td>
-                        <td class="farm-val-cell">{{ choco.money }} G</td>
-                    </tr>
-                </table>
+                <div class="farm-chocobo-profile">
+                    <div class="farm-chocobo-image">
+                        {% if choco.image %}
+                        <img src="{{ config.chocobo_image_path }}/{{ choco.image }}" alt="{{ choco.name }}">
+                        {% else %}
+                        🐤
+                        {% endif %}
+                    </div>
+                    <table class="farm-status-table">
+                        <tr>
+                            <td class="farm-lbl-header">名前</td>
+                            <td class="farm-val-cell"><b>{{ choco_name or "（まだ名前がありません）" }}</b></td>
+                            <td class="farm-lbl-header">クラス</td>
+                            <td class="farm-val-cell"><b>{{ choco_class }}</b></td>
+                        </tr>
+                        <tr>
+                            <td class="farm-lbl-header">性別</td>
+                            <td class="farm-val-cell">{{ choco.sex_label }}</td>
+                            <td class="farm-lbl-header">タイプ</td>
+                            <td class="farm-val-cell">{{ choco_type }}</td>
+                        </tr>
+                        <tr>
+                            <td class="farm-lbl-header">体調</td>
+                            <td class="farm-val-cell">{{ choco.csta }}</td>
+                            <td class="farm-lbl-header">父 / 母</td>
+                            <td class="farm-val-cell">{{ choco.father }} / {{ choco.mother }}</td>
+                        </tr>
+                        <tr>
+                            <td class="farm-lbl-header">出走 / 勝数</td>
+                            <td class="farm-val-cell">{{ choco.run }} 戦 {{ choco_win }} 勝</td>
+                            <td class="farm-lbl-header">訓練数</td>
+                            <td class="farm-val-cell">{{ choco.train }} 回</td>
+                        </tr>
+                        <tr>
+                            <td class="farm-lbl-header">総合限界</td>
+                            <td class="farm-val-cell">{{ choco.max }}</td>
+                            <td class="farm-lbl-header">想定引取額</td>
+                            <td class="farm-val-cell">{{ choco.money }} G</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="farm-chocobo-abilities" aria-label="愛チョコボの能力ランク">
+                    {% for ability in choco.abilities %}
+                    <div class="farm-chocobo-ability">
+                        <span>{{ ability.label }}</span>
+                        <img src="{{ config.chocobo_image_path }}/{{ rank_imgs[ability.rank_idx] }}" alt="{{ ability.label }} {{ ability.value }}">
+                        <b>{{ ability.value }}</b>
+                    </div>
+                    {% endfor %}
+                </div>
 
                 <!-- トロフィーボード -->
                 {% if trophies %}
                 <div class="farm-card__title space-top-medium">🏆 獲得したトロフィー</div>
                 <div class="farm-trophy-grid">
                     {% for trophy in trophies %}
-                    <div class="farm-trophy-item {% if '金' in trophy or '1' in trophy %}gold{% endif %}">
-                        {{ trophy }}
+                    <div class="farm-trophy-item {% if trophy.is_g1 %}farm-trophy-item--g1{% else %}farm-trophy-item--g2{% endif %}">
+                        {{ trophy.name }}
                     </div>
                     {% endfor %}
                 </div>

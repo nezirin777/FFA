@@ -68,6 +68,8 @@ def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
     user_id = in_params.get("id", "")
+    # 牧場は本人用の施設。表示時もID差し替えを許可しない。
+    common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
 
     # キャラクターデータのロード
@@ -93,6 +95,7 @@ def main():
     rank_imgs = [
         "e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif", "a.gif", "a.gif", "s.gif", "s.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif", "ss.gif"
     ]
+    ability_labels = ("スピード", "スタミナ", "粘り", "落ち着き", "闘争心", "賢さ", "反射神経")
     # タイプ一覧
     types = config.Config["chocobo_types"]
 
@@ -190,6 +193,7 @@ def main():
             "no": choco_raw.get("no", 0),
             "name": choco_raw.get("name", "名無しのチョコボ"),
             "sex": csex,
+            "sex_label": "オス" if csex == 1 else "メス",
             "run": crun,
             "win": cwin,
             "waza": types.get(choco_raw.get("type", 0), "不明"),
@@ -201,6 +205,7 @@ def main():
             "money": choco_raw.get("gold", 0) * 100,
             "father": choco_raw.get("father", "不明"),
             "mother": choco_raw.get("mother", "不明"),
+            "image": config.Config["choco_images"].get(common.to_int(choco_raw.get("no"), 0), ""),
             # 能力値の画像ランク用
             "c0_t": min(len(rank_imgs) - 1, int(choco_raw.get("c0", 10) / 100)),
             "c1_t": min(len(rank_imgs) - 1, int(choco_raw.get("c1", 10) / 100)),
@@ -209,6 +214,17 @@ def main():
             "c4_t": min(len(rank_imgs) - 1, int(choco_raw.get("c4", 10) / 100)),
             "c5_t": min(len(rank_imgs) - 1, int(choco_raw.get("c5", 10) / 100)),
             "c6_t": min(len(rank_imgs) - 1, int(choco_raw.get("c6", 10) / 100)),
+            "abilities": [
+                {
+                    "label": label,
+                    "value": common.to_int(choco_raw.get(f"c{index}"), 10),
+                    "rank_idx": min(
+                        len(rank_imgs) - 1,
+                        max(0, common.to_int(choco_raw.get(f"c{index}"), 10) // 100),
+                    ),
+                }
+                for index, label in enumerate(ability_labels)
+            ],
         }
         
         # 一般出走クラスの決定
@@ -294,14 +310,6 @@ def main():
     winner_kyori = winner_view["distance"]
     winner_img = winner_view["image"]
 
-    trophy_names = []
-    if trophies:
-        for t in trophies:
-            if isinstance(t, dict):
-                trophy_names.append(t.get("name", ""))
-            else:
-                trophy_names.append(str(t))
-
     # アクティブキャラクター表示更新
     active_characters_html = common.update_and_get_active_characters(user_id, chara["name"])
 
@@ -314,8 +322,8 @@ def main():
         "choco": choco_info,
         "winner": winner_raw,
         "winner_view": winner_view,
-        "trophies": trophy_names,
-        "trophies_count": len(trophy_names),
+        "trophies": trophies,
+        "trophies_count": len(trophies),
         "rank_imgs": rank_imgs,
         "time_limits": time_limits,
         "is_king": is_king,

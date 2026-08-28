@@ -389,8 +389,8 @@ Config["chocobo_types"] = {
 
 # 旧版のfarm_back/crace_backに相当する牧場・レース背景。
 # 牧場系画面のデザインを変更しても、背景差し替え箇所は設定で管理する。
-Config["chocobo_farm_background"] = "images/choco/レース背景.gif"
-Config["chocobo_race_background"] = "images/choco/レース背景.gif"
+Config["chocobo_farm_background"] = ""
+Config["chocobo_race_background"] = ""
 Config["chocobo_race_announcer_image"] = (
     "images/choco/アナウンサー.gif"  # レース実況欄のアナウンサー画像
 )
