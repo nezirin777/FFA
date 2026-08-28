@@ -12,8 +12,8 @@
     <!-- 司会者モーグリ -->
     <div class="battle-msg-box battle-msg-box--yellow">
         <strong>司会者モーグリ:</strong><br>
-        「クポッ！ここは全登録冒険者の中から順位が近い5名が選抜され、自動戦闘で腕を競い合う『天下一武道会』の受付クポ！<br>
-        対戦相手を倒すとランキング順位が入れ替わり、ゴールドや経験値も獲得できるクポ！ふるって挑戦するクポ！」
+        「クポッ！ここは全登録冒険者からレベル上位 {{ tenka_su }} 名が選抜され、自動戦闘で腕を競い合う『天下一武道会』の受付クポ！<br>
+        対戦相手を倒すとゴールドや経験値も獲得できるクポ！ふるって挑戦するクポ！」
     </div>
     
     <div class="battle-header-columns">
@@ -46,7 +46,7 @@
     <div class="card">
         <div class="card__header">⚔️ 対戦相手を選択して挑戦する (自動戦闘)</div>
         <div class="card__body">
-            {% if limit_count > 0 %}
+            {% if can_challenge and limit_count > 0 %}
             <form action="login.py?mode=tenka" method="post" class="layout-stack">
                 <input type="hidden" name="s" value="{{ csrf_token }}">
                 <input type="hidden" name="mode" value="battle">
@@ -72,6 +72,10 @@
                 <button type="submit" class="btn btn--block btn--success">⚔️ 選択した相手に挑戦するクポ！</button>
                 {% endif %}
             </form>
+            {% elif not can_challenge %}
+            <div class="battle-msg-box battle-msg-box--warning text-center">
+                {{ challenge_error_msg }}
+            </div>
             {% else %}
             <div class="battle-msg-box battle-msg-box--warning text-center">
                 本日分の対戦可能回数を使い果たしましたクポ。また明日挑戦してねクポ！

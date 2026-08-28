@@ -255,6 +255,14 @@ FILE_AUDITS = (
         "note": "各階層は両版とも11体で、boss_flag 10から1へ減らして0で階層クリアする。Ver2の通常画面はboss_flagが10以外なら入口を隠すが、legend.cgi自体は進行値を検証しないため、直接POSTでは0番目の行を参照する不整合な再入場が可能だった。現行は7754ecaで開始値10へ戻し、同階層を正しく最初から再挑戦できる。勝利・引分・敗北の経験値、所持金、battle_count、battle_limit、title_id、レベルアップ後HP回復、接続元保存を照合した。実行はlogin.pyがPOST・CSRFを検証する。範囲外・数値外のboss_fileは第1階層へフォールバックしていたため拒否へ修正した。",
     },
     {
+        "file": "cgi_py/tenka.py / templates/tenka.html / templates/tenka_result.html / templates/tenka_error.html",
+        "v2_source": "旧版_ver2/tenka.cgi / wbattle.pl:sentoukeka / battle.pl:winner_data",
+        "scope": "24時間参加者キャッシュ、入口・ラウンド照合、対戦相手・装備、勝敗報酬、進行、制覇履歴、待機、回復、保存順",
+        "difference": "JSON/CSRF/ロック・履歴上限・全体通知へ移行。引分・時間切れ・敗北の進行はVer2と異なる",
+        "intent": "進行分岐は既決の現行仕様／ロビーの途中再開表示と説明文は不具合を修正済み",
+        "note": "参加者は両版とも24時間ごとにレベル上位3人を固定し、対戦時はその能力スナップショットと最新装備を組み合わせる。相手順は3位→2位→1位で一致し、ラウンド番号を現行はサーバー側でも照合する。Ver2は全勝敗でboss_flagを減らし、相打ちは勝利、時間切れは次戦へ進行、敗北後は9となる。現行は勝利だけ進行し、相打ち・時間切れは進めず、敗北も開始状態を保つ既決方針を維持する。battle_limit補充、経験値、所持金、レベルアップ後HP回復、接続元保存を確認した。Ver2の制覇履歴は変数名誤記で実質1件、現行は設定値20件を保持する。途中進行時に第1回戦を再送するロビー導線と、実装と異なる5名・順位交換の説明を修正した。",
+    },
+    {
         "file": "sub_def/battle_logic.py",
         "v2_source": "旧版_ver2/battle.pl / mbattle.pl / wbattle.pl",
         "scope": "戦闘状態、Lv・職業基礎ダメージ、装備補正、必殺・後続効果、クリティカル、命中・回避、HP精算、勝敗、レベルアップ",
