@@ -54,6 +54,9 @@ import os
 import time
 import json
 
+
+RANK_CACHE_VERSION = 2
+
 # 共通モジュールのインポート
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
@@ -78,6 +81,30 @@ def get_all_chocobos():
                 chocobos.append(choco)
     return chocobos
 
+
+def ability_rank_index(value):
+    """Ver2と同じ能力ランク画像の境界値を返します。"""
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        value = 0
+
+    # Ver2は各境界を「より大きい」で判定している。
+    if value > 1000:
+        return 10  # SS
+    if value > 800:
+        return 8   # S
+    if value > 600:
+        return 6   # A
+    if value > 400:
+        return 4   # B
+    if value > 200:
+        return 2   # C
+    if value > 100:
+        return 1   # D
+    return 0       # E
+
+
 def build_rankings(chocobos):
     """各部門のTop 10を作成します"""
     
@@ -96,14 +123,13 @@ def build_rankings(chocobos):
 
     # 能力値 Top 10抽出用（c0〜c6）
     def extract_top_ability(lst, choco_key):
-        # ランク画像に対応するインデックスも算出
-        # rank_imgs = ["e.gif", "d.gif", "c.gif", "c.gif", "b.gif", "b.gif", "a.gif", "a.gif", "s.gif", "s.gif", "ss.gif"...]
-        # 能力ランク画像のインデックス (能力値 / 100)
+        # ランク画像に対応するインデックスも算出する。
+        # Ver2の比較演算子をそのまま再現するため、単純な100割りは使わない。
         sorted_lst = sorted(lst, key=lambda x: x.get(choco_key, 10), reverse=True)
         top_10 = []
         for c in sorted_lst[:10]:
             val = c.get(choco_key, 10)
-            rank_idx = min(14, int(val / 100)) # rank_imgsの長さに合わせて制限
+            rank_idx = ability_rank_index(val)
             top_10.append({
                 "id": c.get("id", "unknown"),
                 "name": c.get("name", "名無しのチョコボ"),
@@ -139,6 +165,22 @@ def build_rankings(chocobos):
         "c6": rank_c6
     }
 
+
+def is_current_rank_cache(cache_data):
+    """現在のランキング表示形式を満たすキャッシュか確認します。"""
+    required_keys = {"win", "train", "gold", "c0", "c1", "c2", "c3", "c4", "c5", "c6"}
+    rankings = cache_data.get("rankings") if isinstance(cache_data, dict) else None
+    return (
+        isinstance(cache_data, dict)
+        and cache_data.get("version") == RANK_CACHE_VERSION
+        and isinstance(cache_data.get("last_updated"), int)
+        and isinstance(cache_data.get("total_chocobos"), int)
+        and isinstance(rankings, dict)
+        and required_keys.issubset(rankings)
+        and all(isinstance(rankings[key], list) for key in required_keys)
+    )
+
+
 def get_rank_cache():
     """キャッシュを取得、または再構築します"""
     cache_path = os.path.join(config.Config['save_dir'], "chocorank_cache.json")
@@ -153,7 +195,10 @@ def get_rank_cache():
             sys.stderr.write(f"チョコボランキングキャッシュを読み込めません: {error}\n")
             
     # 24時間キャッシュ (86400秒)
-    if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+    if (
+        not is_current_rank_cache(cache_data)
+        or now - cache_data["last_updated"] > 86400
+    ):
         common.get_lock("chocorank_cache_build")
         try:
             # 多重更新防止の再チェック
@@ -163,10 +208,14 @@ def get_rank_cache():
                         cache_data = common.decode_html_entities(json.load(f))
                 except (OSError, json.JSONDecodeError) as error:
                     sys.stderr.write(f"チョコボランキングキャッシュを再読込できません: {error}\n")
-            if not cache_data or now - cache_data.get("last_updated", 0) > 86400:
+            if (
+                not is_current_rank_cache(cache_data)
+                or now - cache_data["last_updated"] > 86400
+            ):
                 chocobos = get_all_chocobos()
                 rankings = build_rankings(chocobos)
                 cache_data = {
+                    "version": RANK_CACHE_VERSION,
                     "last_updated": now,
                     "total_chocobos": len(chocobos),
                     "rankings": rankings

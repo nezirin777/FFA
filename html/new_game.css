@@ -3616,6 +3616,17 @@ form.farm-action-form[hidden] {
   margin: 0;
 }
 
+.chocorank-history-table {
+  min-width: 1800px;
+  table-layout: auto;
+}
+
+.chocorank-history-table th,
+.chocorank-history-table td {
+  min-width: 4.5rem;
+  white-space: nowrap;
+}
+
 /* ====================================================== */
 /* 19. Battle Main Commands (冒険に出発)                   */
 /* ====================================================== */

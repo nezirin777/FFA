@@ -1,53 +1,110 @@
 {% extends "base.html" %}
 
+{% block title %}チョコボランキング - {{ config.main_title }}{% endblock %}
+
 {% block content %}
 <div class="farm-container farm-container--md">
     <div class="farm-header">
         <h1>📊 チョコボランキング</h1>
+        {% if mode == "ranking" %}
+        <p>全登録チョコボ: <b>{{ total_chocobos }}</b> 羽 / 最終更新: <b>{{ update_time }}</b></p>
+        {% else %}
+        <p>重賞を制したチョコボたちの記録です。</p>
+        {% endif %}
         <hr>
     </div>
 
+    {% if mode == "ranking" %}
+    {% macro render_rank_table(title, records, unit="", show_ability_rank=false) %}
     <div class="farm-card">
-        <div class="farm-card__title">🏆 最強の駿馬たち (TOP 20)</div>
+        <div class="farm-card__title">🏆 {{ title }} Top 10</div>
         <div class="table-wrapper">
             <table class="shop-table">
                 <thead>
                     <tr>
                         <th>順位</th>
                         <th>チョコボ名</th>
-                        <th>所有者</th>
-                        <th>スピード</th>
-                        <th>スタミナ</th>
-                        <th>クラス</th>
-                        <th>勝数</th>
+                        <th>記録</th>
+                        <th>ブリーダー</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for c in ranks %}
+                    {% for c in records %}
                     <tr>
                         <td><b>{{ loop.index }}</b></td>
                         <td class="yellow"><b>{{ c.name }}</b></td>
-                        <td>{{ c.owner }}</td>
-                        <td>{{ c.speed }}</td>
-                        <td>{{ c.stamina }}</td>
-                        <td>{{ c.class_name }}</td>
-                        <td>{{ c.win }} 勝</td>
+                        <td>
+                            {% if show_ability_rank %}
+                            <img src="{{ config.chocobo_image_path }}/{{ rank_imgs[c.rank_idx] }}" alt="能力ランク {{ c.val }}">
+                            {% endif %}
+                            {{ c.val }}{{ unit }}
+                        </td>
+                        <td>{{ c.breader }}</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="msg-empty">ランキングデータがありません。</td>
+                        <td colspan="4" class="msg-empty">ランキングデータがありません。</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+    {% endmacro %}
 
-    <!-- 戻るボタン -->
+    {{ render_rank_table("勝数", rankings.win, "勝") }}
+    {{ render_rank_table("訓練数", rankings.train, "回") }}
+    {{ render_rank_table("筋力", rankings.c0, "", true) }}
+    {{ render_rank_table("スタミナ", rankings.c1, "", true) }}
+    {{ render_rank_table("粘り", rankings.c2, "", true) }}
+    {{ render_rank_table("落ち着き", rankings.c3, "", true) }}
+    {{ render_rank_table("闘争心", rankings.c4, "", true) }}
+    {{ render_rank_table("賢さ", rankings.c5, "", true) }}
+    {{ render_rank_table("反射神経", rankings.c6, "", true) }}
+    {{ render_rank_table("獲得賞金", rankings.gold, " G") }}
+    {% else %}
+    <div class="farm-card">
+        <div class="farm-card__title">🏆 重賞制覇履歴</div>
+        <div class="table-wrapper">
+            <table class="shop-table chocorank-history-table">
+                <thead>
+                    <tr>
+                        <th>チョコボ名</th>
+                        <th>父</th>
+                        <th>母</th>
+                        <th>ブリーダー</th>
+                        {% for race_name in races_names %}
+                        <th title="{{ race_name }}">{{ race_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in rireki %}
+                    <tr>
+                        <td class="yellow"><b>{{ record.name }}</b></td>
+                        <td>{{ record.father }}</td>
+                        <td>{{ record.mother }}</td>
+                        <td>{{ record.breader }}</td>
+                        {% for status in record.races %}
+                        <td>{{ status }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="26" class="msg-empty">重賞制覇の記録はありません。</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="farm-back-actions">
         <form action="{{ config.chocofarm_script }}" method="POST">
             <input type="hidden" name="s" value="{{ csrf_token }}">
             <input type="hidden" name="id" value="{{ chara.id }}">
+            <input type="hidden" name="mydata" value="{{ chara_log }}">
             <input type="submit" class="btn" value="チョコボ牧場に戻る">
         </form>
     </div>
