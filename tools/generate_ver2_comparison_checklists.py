@@ -247,6 +247,14 @@ FILE_AUDITS = (
         "note": "Ver2の重複行数と現行weight合計は初級193・中級169・上級45・最上級121・異世界95で全て一致する。通常・幻影・異世界の回数消費、勝敗時の所持金、戦績、boss_flag復帰、レベルアップ後のHP回復、接続元保存は確認した。現行はbattle_count>0と異世界Lv300を実行側でも検査し、待機は設定値20秒、敗北EXPは0とする。Ver2は幻影・異世界でmons_atowazaを呼ばないが、現行の全モンスターIDの同フックは空実装のため、現時点で実効差はない。将来効果を追加する前に呼出し範囲を判断する。",
     },
     {
+        "file": "cgi_py/legend.py / templates/monster_result.html / templates/legend_error.html",
+        "v2_source": "旧版_ver2/legend.cgi / mbattle.pl:legend_sentoukeka,hp_after / data/bossmons0〜3.ini",
+        "scope": "公開ランキング、階層選択、入口条件、ボス進行、勝敗報酬、称号、連戦、待機、回復、保存順",
+        "difference": "公開ランキング・CSRF/POSTルーティング・連戦導線を追加。クリア後の進行値と階層値検証がVer2と異なる",
+        "intent": "階層値検証は不具合を修正済み／連戦・クリア後再挑戦は意図的",
+        "note": "各階層は両版とも11体で、boss_flag 10から1へ減らして0で階層クリアする。Ver2は0のまま終了するが、現行は7754ecaで開始値10へ戻して同階層の再挑戦と結果画面からの連戦を可能にした。勝利・引分・敗北の経験値、所持金、battle_count、battle_limit、title_id、レベルアップ後HP回復、接続元保存を照合した。実行はlogin.pyがPOST・CSRFを検証する。範囲外・数値外のboss_fileは第1階層へフォールバックしていたため拒否へ修正した。",
+    },
+    {
         "file": "sub_def/battle_logic.py",
         "v2_source": "旧版_ver2/battle.pl / mbattle.pl / wbattle.pl",
         "scope": "戦闘状態、Lv・職業基礎ダメージ、装備補正、必殺・後続効果、クリティカル、命中・回避、HP精算、勝敗、レベルアップ",

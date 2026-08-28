@@ -126,7 +126,18 @@ def main():
         try:
             boss_file_idx = int(boss_file_param)
         except ValueError:
-            boss_file_idx = 0
+            common.release_lock(user_id)
+            common.show_error("無効な階層です。")
+
+        boss_map = {
+            0: config.Config['legend_boss_lv1_file'],
+            1: config.Config['legend_boss_lv2_file'],
+            2: config.Config['legend_boss_lv3_file'],
+            3: config.Config['legend_boss_lv4_file']
+        }
+        if boss_file_idx not in boss_map:
+            common.release_lock(user_id)
+            common.show_error("無効な階層です。")
 
         # 称号レベル制限チェック
         if chara["title_id"] < boss_file_idx:
@@ -149,13 +160,7 @@ def main():
             return
 
         # ボスデータのロード
-        boss_map = {
-            0: config.Config['legend_boss_lv1_file'],
-            1: config.Config['legend_boss_lv2_file'],
-            2: config.Config['legend_boss_lv3_file'],
-            3: config.Config['legend_boss_lv4_file']
-        }
-        file_path = boss_map.get(boss_file_idx, config.Config['legend_boss_lv1_file'])
+        file_path = boss_map[boss_file_idx]
         enemy_list = load_monsters(file_path)
         if not enemy_list:
             common.release_lock(user_id)
