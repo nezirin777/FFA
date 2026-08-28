@@ -177,26 +177,12 @@ def main():
             # 対人戦の賞金は旧版 winner[50]。盗み技の基準額にする。
             simulator.state.gold_base = max(0, int(winner.get("gold", 0)))
             win, logs = simulator.simulate()
+            enemy_name = winner["name"]
 
             # 4. 戦闘結果の集計と更新
             comment = ""
             gold_gained = 0
             exp_gained = 0
-
-            # 戦闘後の残りHP復元
-            restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
-            if restored_hp > chara["max_hp"]:
-                restored_hp = chara["max_hp"]
-            if restored_hp <= 0:
-                restored_hp = chara["max_hp"] # 敗北時は全回復
-            chara["hp"] = restored_hp
-
-            restored_whp = simulator.state.mhp + random.randint(0, max(0, winner["vit"] - 1))
-            if restored_whp > winner["max_hp"]:
-                restored_whp = winner["max_hp"]
-            if restored_whp <= 0:
-                restored_whp = winner["max_hp"]
-            winner["hp"] = restored_whp
 
             gold_gained = int(winner["gold"]) + simulator.state.gold_reward_bonus
             gold_gained = max(0, gold_gained - simulator.state.gold_reward_penalty)
@@ -204,6 +190,7 @@ def main():
             # 勝利・引き分け・時間切れは相手レベル×基本値。敗北時は高レベル王者への
             # 連続挑戦だけで経験値を稼げないよう、自分のレベル×10を上限にする。
             opponent_level = max(1, int(winner.get("level", 1)))
+            challenger_level = max(1, int(chara.get("level", 1)))
             if win in (1, 2, 3):
                 exp_gained = opponent_level * config.Config["pvp_base_exp"]
             else:
@@ -223,6 +210,26 @@ def main():
             # 旧版 battle.cgi と同じく、対人戦終了後は修行回数を補充する。
             chara["battle_limit"] = config.Config["training_battle_limit"]
 
+            # Ver2は経験値・レベルアップを、新王者レコードと戦闘後HPを
+            # 確定する前に処理する。これにより新王者の保存値も本人の成長後になる。
+            syoku = common.syoku_load(user_id) or {}
+            lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
+
+            restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
+            if restored_hp > chara["max_hp"]:
+                restored_hp = chara["max_hp"]
+            if restored_hp <= 0:
+                restored_hp = chara["max_hp"] # 敗北時は全回復
+            chara["hp"] = restored_hp
+
+            restored_whp = simulator.state.mhp + random.randint(0, max(0, winner["vit"] - 1))
+            if restored_whp > winner["max_hp"]:
+                restored_whp = winner["max_hp"]
+            if restored_whp <= 0:
+                restored_whp = winner["max_hp"]
+            winner["hp"] = restored_whp
+            chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
+
             if win == 1 or win == 2:
                 # 挑戦者の勝利または引き分け ➔ 挑戦者が新しい王者になる！
                 chara["gold"] += gold_gained
@@ -234,7 +241,7 @@ def main():
                 # 旧版は新王者の賞金を、旧王者の連勝数・挑戦者レベル・賞金係数から再計算する。
                 new_winner_gold = int(
                     winner.get("win_count", 0)
-                    * chara.get("level", 1)
+                    * challenger_level
                     * config.Config["battle_reward_factor"]
                 )
 
@@ -330,7 +337,7 @@ def main():
                 # 防衛成功時は王者側の次回賞金を連勝数分だけ積み上げる。
                 winner["gold"] = int(winner.get("gold", 0)) + int(
                     winner["win_count"]
-                    * chara.get("level", 1)
+                    * challenger_level
                     * config.Config["battle_reward_factor"]
                 )
                     
@@ -350,16 +357,10 @@ def main():
         finally:
             common.release_lock("winner")
 
-        # レベルアップ処理
-        syoku = common.syoku_load(user_id)
-        if syoku is None:
-            syoku = {}
-        lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
         comment += lv_comment
 
         # 最終行動時間を更新
         chara["last_time"] = now
-        chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
 
         # セーブ
         common.save_user_sections(user_id, chara=chara, syoku=syoku)
@@ -370,7 +371,7 @@ def main():
     # 5. 結果画面のレンダリング
     context = {
         "chara": chara,
-        "enemy_name": winner["name"],
+        "enemy_name": enemy_name,
         "logs": logs,
         "win": win,
         "comment": comment,
