@@ -1210,8 +1210,8 @@ def command_action_rows() -> list[dict[str, str]]:
         action_row("街・プロフィール", "掲示板へ投稿", "mode=post", "POST", "状態変更", "旧版_ver2/post_message.cgi", "cgi_py/bbs.py", "文字数、保存上限、投稿者、CSRF"),
         action_row("店・資産", "宿泊", "mode=yado", "POST", "状態変更", "旧版_ver2/shop.cgi", "cgi_py/shop.py", "宿代、HP全快、王者HP、boss_flagリセット、接続元ホスト"),
         action_row("店・資産", "銀行を表示", "mode=bank", "POST", "表示", "旧版_ver2/bank.cgi", "cgi_py/bank.py", "所持金・預金上限、表示単位"),
-        action_row("店・資産", "銀行へ預け入れ", "mode=bank_sell", "POST", "状態変更", "旧版_ver2/bank.cgi", "cgi_py/bank.py", "1,000G単位、所持金・預金上限"),
-        action_row("店・資産", "銀行から引き出し", "mode=bank_buy", "POST", "状態変更", "旧版_ver2/bank.cgi", "cgi_py/bank.py", "1,000G単位、所持金上限"),
+        action_row("店・資産", "銀行へ預け入れ", "mode=bank_sell", "POST", "状態変更", "旧版_ver2/bank.cgi", "cgi_py/bank.py", "半角数値、1,000G単位、所持金・預金上限、接続元ホスト"),
+        action_row("店・資産", "銀行から引き出し", "mode=bank_buy", "POST", "状態変更", "旧版_ver2/bank.cgi", "cgi_py/bank.py", "半角数値、1,000G単位、預金残高、所持金上限、接続元ホスト"),
         action_row("店・資産", "倉庫を表示", "mode=souko", "POST", "表示", "旧版_ver2/souko.cgi", "cgi_py/souko.py", "装備中・保管中の区分、表示順"),
     ]
 
@@ -1443,8 +1443,8 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
         "掲示板へ投稿": ("私信一体型からBBS専用JSONへ分離", "本人ID・200文字・禁止語を検査し、新着順と保存上限を守って書込む。"),
         "宿泊": ("状態更新をshop.pyへ集約", "料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。Ver2と同じく接続元ホストも保存する。"),
         "銀行を表示": ("統合JSONのgold/bankを表示", "本人の所持金・預金と上限を表示し、変更はしない。"),
-        "銀行へ預け入れ": ("入力検証と原子的保存を追加", "1,000G単位・所持金/預金上限を検査してgoldからbankへ移す。"),
-        "銀行から引き出し": ("入力検証と原子的保存を追加", "1,000G単位・預金残高・所持金上限を検査してbankからgoldへ移す。"),
+        "銀行へ預け入れ": ("入力検証と原子的保存を追加", "半角数字の1,000G単位で、所持金を確認してgoldからbankへ移す。預金上限を超える分はVer2の画面案内どおり国への寄付としてgoldから差し引き、bankには上限までだけ加算する。成功時は接続元ホストも保存する。"),
+        "銀行から引き出し": ("入力検証と原子的保存を追加", "半角数字の1,000G単位で、預金残高・所持金上限を検査してbankからgoldへ移す。成功時は接続元ホストも保存する。"),
         "倉庫を表示": ("3種別配列を統合表示", "装備中とsouko_weapon/armor/accessoryを分け、変更操作は本人確認下だけで受け付ける。"),
         "チャンピオンに挑戦": ("POST専用・結果表示mode明示", "待機後に王者状態で戦い、結果・王者更新・経験値上限は戦闘/所有台帳の確認結果に従う。"),
         "道場の入口を表示": ("テンプレート入口とPOST+CSRFへ移行", "battle_count>0を表示・実行の双方で検査する。名前の完全一致検索または一覧選択へ進むだけで、保存状態は変更しない。"),

@@ -81,8 +81,8 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 宿泊（`mode=yado` / POST / 状態変更） | `旧版_ver2/shop.cgi` | `cgi_py/shop.py` | 状態更新をshop.pyへ集約 | 意図的 | 差異あり | 料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。Ver2と同じく接続元ホストも保存する。 |
 | 銀行を表示（`mode=bank` / POST / 表示） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 統合JSONのgold/bankを表示 | 意図的 | 差異あり | 本人の所持金・預金と上限を表示し、変更はしない。 |
-| 銀行へ預け入れ（`mode=bank_sell` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 1,000G単位・所持金/預金上限を検査してgoldからbankへ移す。 |
-| 銀行から引き出し（`mode=bank_buy` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 1,000G単位・預金残高・所持金上限を検査してbankからgoldへ移す。 |
+| 銀行へ預け入れ（`mode=bank_sell` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 半角数字の1,000G単位で、所持金を確認してgoldからbankへ移す。預金上限を超える分はVer2の画面案内どおり国への寄付としてgoldから差し引き、bankには上限までだけ加算する。成功時は接続元ホストも保存する。 |
+| 銀行から引き出し（`mode=bank_buy` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 半角数字の1,000G単位で、預金残高・所持金上限を検査してbankからgoldへ移す。成功時は接続元ホストも保存する。 |
 | 倉庫を表示（`mode=souko` / POST / 表示） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 3種別配列を統合表示 | 意図的 | 差異あり | 装備中とsouko_weapon/armor/accessoryを分け、変更操作は本人確認下だけで受け付ける。 |
 | 武器店を表示（`mode=shop_weapon` / POST / 表示） | `旧版_ver2/shop_item.cgi` | `cgi_py/shop_weapon.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 武器マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
 | 武器を購入（`mode=buy` / POST / 状態変更） | `旧版_ver2/shop_item.cgi` | `cgi_py/shop_weapon.py` | 購入POSTの入力・職業・所持金検証を追加 | 意図的 | 差異あり | 武器IDをマスター参照し、職業制限・価格・倉庫上限を確認して倉庫へ追加する。 |

@@ -91,7 +91,7 @@ def main():
             if azuke_str == "":
                 common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
                 
-            if not azuke_str.isdigit():
+            if not azuke_str.isascii() or not azuke_str.isdigit():
                 common.redirect_with_flash(bank_url, "金額は半角数値で入力してください。", "error")
                 
             azuke_val = int(azuke_str)
@@ -102,15 +102,11 @@ def main():
             if azukeru_gold > chara["gold"]:
                 common.redirect_with_flash(bank_url, "所持金を超えています。", "error")
                 
-            if azukeru_gold + chara["bank"] > config.Config['max_bank']:
-                common.redirect_with_flash(
-                    bank_url,
-                    f"銀行の最大預金上限（{config.Config['max_bank']}ゴールド）を超えてしまいます。",
-                    "error",
-                )
-                
             # ゴールド更新
-            chara["bank"] += azukeru_gold
+            remaining_capacity = max(0, config.Config['max_bank'] - chara["bank"])
+            deposited_gold = min(azukeru_gold, remaining_capacity)
+            donated_gold = azukeru_gold - deposited_gold
+            chara["bank"] += deposited_gold
             chara["gold"] -= azukeru_gold
             
             # ホスト名取得
@@ -121,11 +117,18 @@ def main():
             common.chara_regist(user_id, chara)
             
             # 結果はトーストで通知し、銀行画面へ戻す
-            common.redirect_with_flash(
-                bank_url,
-                f"{azukeru_gold}ゴールドお預かりいたしました。",
-                "success",
-            )
+            if donated_gold:
+                common.redirect_with_flash(
+                    bank_url,
+                    f"{deposited_gold}ゴールドを預かり、上限超過分の {donated_gold} ゴールドは国へ寄付されました。",
+                    "success",
+                )
+            else:
+                common.redirect_with_flash(
+                    bank_url,
+                    f"{deposited_gold}ゴールドお預かりいたしました。",
+                    "success",
+                )
             
         # 2. 引き出し (bank_buy)
         elif mode == "bank_buy":
@@ -133,7 +136,7 @@ def main():
             if dasu_str == "":
                 common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
                 
-            if not dasu_str.isdigit():
+            if not dasu_str.isascii() or not dasu_str.isdigit():
                 common.redirect_with_flash(bank_url, "金額は半角数値で入力してください。", "error")
                 
             dasu_val = int(dasu_str)
