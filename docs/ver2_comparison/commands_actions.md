@@ -2,7 +2,20 @@
 
 画面遷移だけのルートと、各ルート内の実行操作を分けて管理します。比較前に状態変更か表示かを確認し、Ver2との差分を具体的に記録します。
 
-対象: ルート 38件、実行操作 121件。
+対象: ルート 38件、実行操作 121件、二次精査 6ファイル。
+## ファイル単位の精査記録
+
+ここには一次台帳作成後に、Ver2実装と現行実装を分岐・保存値・表示まで再確認したファイルだけを記録します。未記載のファイルは未精査であり、一次比較完了を根拠に一致と扱いません。
+
+| Ver3対象ファイル | Ver2確認箇所 | 確認範囲 | Ver2との差異 | 意図的な仕様か否か | 備考・根拠 |
+| --- | --- | --- | --- | --- | --- |
+| `cgi_py/tac_change.py` | `旧版_ver2/tac_change.cgi / data/ffadventure.ini:master_tac` | 表示・変更の候補条件、マスター職、ロック後再検証、接続元ホスト | master_tacを転職時の戦術リセット設定と誤って共用していた | 不具合を修正済み | master_tactics_enabledを独立設定として追加し、Ver2と同じくLv60以上の他職戦術を候補にする。POST時は最新chara/syokuで再検証する。 |
+| `cgi_py/tensyoku.py` | `旧版_ver2/tensyoku.cgi` | 転職条件、職業Lv退避・復帰、能力減少、戦術、接続元ホスト | 転職成功時の接続元ホスト保存が欠けていた。カルマ下限はVer2と異なる | ホストは不具合を修正済み／カルマ下限1は意図的 | 成功時にREMOTE_ADDRを保存する。能力減少値と職業Lv遷移は一致。Ver2のカルマ0許容に対し、現行は0も1へ戻す既決仕様を維持する。 |
+| `cgi_py/passchange.py / chara_make.py` | `旧版_ver2/passchange.cgi / chara_make.cgi` | 合言葉設定、パスワード変更、新規登録時の入力規則、接続元ホスト | 新パスワードの許可文字と変更成功時の接続元ホスト保存が不一致 | 不具合を修正済み | 4〜8文字の半角英数字・記号を許可し、全角・空白・制御文字を拒否する。passchan成功時はREMOTE_ADDRを保存し、PBKDF2とセッション再発行は現行の意図的な安全化として維持する。 |
+| `cgi_py/shop.py` | `旧版_ver2/shop.cgi` | 宿代、HP回復、王者HP、boss_flag、接続元ホスト | 宿泊成功時の接続元ホスト保存が欠けていた | 不具合を修正済み | 宿代Lv×10、HP全快、王者HP全快、boss_flagの10への復帰は一致。成功時にREMOTE_ADDRも保存する。 |
+| `cgi_py/bank.py` | `旧版_ver2/bank.cgi / data/ffadventure.ini` | 預入・引出、半角数値、1,000G単位、所持金・預金上限、接続元ホスト | 全角数字を受理し、預金上限超過時は画面案内と異なり拒否していた | 不具合を修正済み | ASCII数字だけを受理する。預金上限超過分は画面案内どおり国への寄付として所持金から差し引き、預金へは上限までだけ加算する。 |
+| `cgi_py/souko.py` | `旧版_ver2/souko.cgi / data/ffadventure.ini:item_max,def_max,acs_max` | 武器・防具・装飾品の表示、着脱、交換、破棄、上限、接続元ホスト | 交換時の保管順、着脱時の接続元保存、破棄確認がVer2と異なる | 要判断 | 3種別の上限は8で一致。現行は選択品を配列から取り出し、旧装備を末尾へ追加する。Ver2は選択位置を旧装備で置換する。現行は着脱でREMOTE_ADDRを保存せず、破棄は二段階確認を挟まない。どちらを採るかは現行の操作性を含めて判断する。 |
+
 ## ルート一覧（login.py）
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
@@ -83,7 +96,7 @@
 | 銀行を表示（`mode=bank` / POST / 表示） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 統合JSONのgold/bankを表示 | 意図的 | 差異あり | 本人の所持金・預金と上限を表示し、変更はしない。 |
 | 銀行へ預け入れ（`mode=bank_sell` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 半角数字の1,000G単位で、所持金を確認してgoldからbankへ移す。預金上限を超える分はVer2の画面案内どおり国への寄付としてgoldから差し引き、bankには上限までだけ加算する。成功時は接続元ホストも保存する。 |
 | 銀行から引き出し（`mode=bank_buy` / POST / 状態変更） | `旧版_ver2/bank.cgi` | `cgi_py/bank.py` | 入力検証と原子的保存を追加 | 意図的 | 差異あり | 半角数字の1,000G単位で、預金残高・所持金上限を検査してbankからgoldへ移す。成功時は接続元ホストも保存する。 |
-| 倉庫を表示（`mode=souko` / POST / 表示） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 3種別配列を統合表示 | 意図的 | 差異あり | 装備中とsouko_weapon/armor/accessoryを分け、変更操作は本人確認下だけで受け付ける。 |
+| 倉庫を表示（`mode=souko` / POST / 表示） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 3種別の保管ファイルを統合JSON配列・テンプレート表示へ移行 | 意図的 | 差異あり | 装備中とsouko_weapon/armor/accessoryを分けて表示する。Ver2の削除済み空行はJSON配列へ保持せず、現行では詰めて表示する。 |
 | 武器店を表示（`mode=shop_weapon` / POST / 表示） | `旧版_ver2/shop_item.cgi` | `cgi_py/shop_weapon.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 武器マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
 | 武器を購入（`mode=buy` / POST / 状態変更） | `旧版_ver2/shop_item.cgi` | `cgi_py/shop_weapon.py` | 購入POSTの入力・職業・所持金検証を追加 | 意図的 | 差異あり | 武器IDをマスター参照し、職業制限・価格・倉庫上限を確認して倉庫へ追加する。 |
 | 武器を売却（`mode=sell` / POST / 状態変更） | `旧版_ver2/shop_item.cgi` | `cgi_py/shop_weapon.py` | 売却対象を倉庫要素へ限定 | 意図的 | 差異あり | 武器の保管番号を検証し、売値をgold上限内で加算して対象要素を削除する。 |
@@ -93,15 +106,15 @@
 | 装飾品店を表示（`mode=shop_accessory` / POST / 表示） | `旧版_ver2/shop_acs.cgi` | `cgi_py/shop_accessory.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 装飾品マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
 | 装飾品を購入（`mode=buy` / POST / 状態変更） | `旧版_ver2/shop_acs.cgi` | `cgi_py/shop_accessory.py` | 購入POSTの入力・職業・所持金検証を追加 | 意図的 | 差異あり | 装飾品IDをマスター参照し、職業制限・価格・倉庫上限を確認して倉庫へ追加する。 |
 | 装飾品を売却（`mode=sell` / POST / 状態変更） | `旧版_ver2/shop_acs.cgi` | `cgi_py/shop_accessory.py` | 売却対象を倉庫要素へ限定 | 意図的 | 差異あり | 装飾品の保管番号を検証し、売値をgold上限内で加算して対象要素を削除する。 |
-| 装備中の武器を倉庫へ外す（`mode=weapon_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 装備と倉庫を統合JSONで同時更新 | 意図的 | 差異あり | 装備中の武器を倉庫へ退避し、初期武器へ戻す。倉庫上限と二重登録を検査する。 |
-| 倉庫の武器を装備（`mode=weapon_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 倉庫番号を配列添字として検証 | 意図的 | 差異あり | 選択武器を装備し、既存装備を倉庫へ退避する。武器/防具では職業制限も再検証する。 |
-| 倉庫の武器を削除（`mode=weapon_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 武器マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
-| 装備中の防具を倉庫へ外す（`mode=armor_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 装備と倉庫を統合JSONで同時更新 | 意図的 | 差異あり | 装備中の防具を倉庫へ退避し、初期防具へ戻す。倉庫上限と二重登録を検査する。 |
-| 倉庫の防具を装備（`mode=armor_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 倉庫番号を配列添字として検証 | 意図的 | 差異あり | 選択防具を装備し、既存装備を倉庫へ退避する。武器/防具では職業制限も再検証する。 |
-| 倉庫の防具を削除（`mode=armor_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 防具マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
-| 装備中の装飾品を倉庫へ外す（`mode=accessory_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 装備と倉庫を統合JSONで同時更新 | 意図的 | 差異あり | 装備中の装飾品を倉庫へ退避し、初期装飾品へ戻す。倉庫上限と二重登録を検査する。 |
-| 倉庫の装飾品を装備（`mode=accessory_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 倉庫番号を配列添字として検証 | 意図的 | 差異あり | 選択装飾品を装備し、既存装備を倉庫へ退避する。武器/防具では職業制限も再検証する。 |
-| 倉庫の装飾品を削除（`mode=accessory_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 個別店CGIを種別モジュールへ分離 | 意図的 | 差異あり | 装飾品マスター、価格、職業制限、所持品を読み取り表示し、状態は変更しない。 |
+| 装備中の武器を倉庫へ外す（`mode=weapon_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 着脱時の接続元保存を現行は省略 | 要判断 | 差異あり | 武器倉庫8件を確認してマスター値を退避し、素手へ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。 |
+| 倉庫の武器を装備（`mode=weapon_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 現行は選択品を除去し、旧装備を末尾へ追加 | 要判断 | 差異あり | Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。職業制限はVer2・現行とも倉庫交換時に再検証しない。 |
+| 倉庫の武器を削除（`mode=weapon_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | Ver2の二段階確認を現行は省略 | 要判断 | 差異あり | Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。 |
+| 装備中の防具を倉庫へ外す（`mode=armor_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 着脱時の接続元保存を現行は省略 | 要判断 | 差異あり | 防具倉庫8件を確認してマスター値を退避し、衣服へ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。 |
+| 倉庫の防具を装備（`mode=armor_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 現行は選択品を除去し、旧装備を末尾へ追加 | 要判断 | 差異あり | Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。職業制限はVer2・現行とも倉庫交換時に再検証しない。 |
+| 倉庫の防具を削除（`mode=armor_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | Ver2の二段階確認を現行は省略 | 要判断 | 差異あり | Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。 |
+| 装備中の装飾品を倉庫へ外す（`mode=accessory_remove` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 着脱時の接続元保存を現行は省略 | 要判断 | 差異あり | 装飾品倉庫8件を確認してマスター値を退避し、補正なしへ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。 |
+| 倉庫の装飾品を装備（`mode=accessory_equip` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | 現行は選択品を除去し、旧装備を末尾へ追加 | 要判断 | 差異あり | Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。 |
+| 倉庫の装飾品を削除（`mode=accessory_delete` / POST / 状態変更） | `旧版_ver2/souko.cgi` | `cgi_py/souko.py` | Ver2の二段階確認を現行は省略 | 要判断 | 差異あり | Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。 |
 
 ### 戦闘・対戦
 

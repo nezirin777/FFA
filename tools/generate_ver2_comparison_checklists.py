@@ -122,6 +122,61 @@ ROUTE_DETAILS = {
 }
 
 
+# 一次台帳の行とは別に、実際にファイル単位で精査を完了した結果を残す。
+# 差異の修正だけを追うのではなく、確認範囲・意図的に残した差異・保留判断を
+# 次の見直しでも辿れるようにする。
+FILE_AUDITS = (
+    {
+        "file": "cgi_py/tac_change.py",
+        "v2_source": "旧版_ver2/tac_change.cgi / data/ffadventure.ini:master_tac",
+        "scope": "表示・変更の候補条件、マスター職、ロック後再検証、接続元ホスト",
+        "difference": "master_tacを転職時の戦術リセット設定と誤って共用していた",
+        "intent": "不具合を修正済み",
+        "note": "master_tactics_enabledを独立設定として追加し、Ver2と同じくLv60以上の他職戦術を候補にする。POST時は最新chara/syokuで再検証する。",
+    },
+    {
+        "file": "cgi_py/tensyoku.py",
+        "v2_source": "旧版_ver2/tensyoku.cgi",
+        "scope": "転職条件、職業Lv退避・復帰、能力減少、戦術、接続元ホスト",
+        "difference": "転職成功時の接続元ホスト保存が欠けていた。カルマ下限はVer2と異なる",
+        "intent": "ホストは不具合を修正済み／カルマ下限1は意図的",
+        "note": "成功時にREMOTE_ADDRを保存する。能力減少値と職業Lv遷移は一致。Ver2のカルマ0許容に対し、現行は0も1へ戻す既決仕様を維持する。",
+    },
+    {
+        "file": "cgi_py/passchange.py / chara_make.py",
+        "v2_source": "旧版_ver2/passchange.cgi / chara_make.cgi",
+        "scope": "合言葉設定、パスワード変更、新規登録時の入力規則、接続元ホスト",
+        "difference": "新パスワードの許可文字と変更成功時の接続元ホスト保存が不一致",
+        "intent": "不具合を修正済み",
+        "note": "4〜8文字の半角英数字・記号を許可し、全角・空白・制御文字を拒否する。passchan成功時はREMOTE_ADDRを保存し、PBKDF2とセッション再発行は現行の意図的な安全化として維持する。",
+    },
+    {
+        "file": "cgi_py/shop.py",
+        "v2_source": "旧版_ver2/shop.cgi",
+        "scope": "宿代、HP回復、王者HP、boss_flag、接続元ホスト",
+        "difference": "宿泊成功時の接続元ホスト保存が欠けていた",
+        "intent": "不具合を修正済み",
+        "note": "宿代Lv×10、HP全快、王者HP全快、boss_flagの10への復帰は一致。成功時にREMOTE_ADDRも保存する。",
+    },
+    {
+        "file": "cgi_py/bank.py",
+        "v2_source": "旧版_ver2/bank.cgi / data/ffadventure.ini",
+        "scope": "預入・引出、半角数値、1,000G単位、所持金・預金上限、接続元ホスト",
+        "difference": "全角数字を受理し、預金上限超過時は画面案内と異なり拒否していた",
+        "intent": "不具合を修正済み",
+        "note": "ASCII数字だけを受理する。預金上限超過分は画面案内どおり国への寄付として所持金から差し引き、預金へは上限までだけ加算する。",
+    },
+    {
+        "file": "cgi_py/souko.py",
+        "v2_source": "旧版_ver2/souko.cgi / data/ffadventure.ini:item_max,def_max,acs_max",
+        "scope": "武器・防具・装飾品の表示、着脱、交換、破棄、上限、接続元ホスト",
+        "difference": "交換時の保管順、着脱時の接続元保存、破棄確認がVer2と異なる",
+        "intent": "要判断",
+        "note": "3種別の上限は8で一致。現行は選択品を配列から取り出し、旧装備を末尾へ追加する。Ver2は選択位置を旧装備で置換する。現行は着脱でREMOTE_ADDRを保存せず、破棄は二段階確認を挟まない。どちらを採るかは現行の操作性を含めて判断する。",
+    },
+)
+
+
 def load_json(name: str) -> list[dict[str, Any]]:
     with (DATA_DIR / name).open(encoding="utf-8") as handle:
         data = json.load(handle)
@@ -1336,11 +1391,26 @@ def write_commands_actions() -> None:
         "画面遷移だけのルートと、各ルート内の実行操作を分けて管理します。"
         "比較前に状態変更か表示かを確認し、Ver2との差分を具体的に記録します。",
         "",
+        "## ファイル単位の精査記録",
+        "",
+        "ここには一次台帳作成後に、Ver2実装と現行実装を分岐・保存値・表示まで再確認したファイルだけを記録します。"
+        "未記載のファイルは未精査であり、一次比較完了を根拠に一致と扱いません。",
+        "",
+        "| Ver3対象ファイル | Ver2確認箇所 | 確認範囲 | Ver2との差異 | 意図的な仕様か否か | 備考・根拠 |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for audit in FILE_AUDITS:
+        sections.append(
+            f"| `{audit['file']}` | `{audit['v2_source']}` | {audit['scope']} | "
+            f"{audit['difference']} | {audit['intent']} | {audit['note']} |"
+        )
+    sections.extend((
+        "",
         "## ルート一覧（login.py）",
         "",
         "| 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |",
         "| --- | --- | --- | --- | --- | --- | --- |",
-    ]
+    ))
     for mode, module in routes.items():
         purpose, state, v2_source = ROUTE_DETAILS[mode]
         comparison = route_comparisons[mode]
@@ -1369,7 +1439,7 @@ def write_commands_actions() -> None:
                 f"{comparison['intent']} | {comparison['status']} | {comparison['note']} |"
             )
         sections.append("")
-    sections.insert(4, f"対象: ルート {len(routes)}件、実行操作 {len(actions)}件。")
+    sections.insert(4, f"対象: ルート {len(routes)}件、実行操作 {len(actions)}件、二次精査 {len(FILE_AUDITS)}ファイル。")
     (OUTPUT_DIR / "commands_actions.md").write_text("\n".join(sections) + "\n", encoding="utf-8")
 
 
@@ -1445,7 +1515,16 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
         "銀行を表示": ("統合JSONのgold/bankを表示", "本人の所持金・預金と上限を表示し、変更はしない。"),
         "銀行へ預け入れ": ("入力検証と原子的保存を追加", "半角数字の1,000G単位で、所持金を確認してgoldからbankへ移す。預金上限を超える分はVer2の画面案内どおり国への寄付としてgoldから差し引き、bankには上限までだけ加算する。成功時は接続元ホストも保存する。"),
         "銀行から引き出し": ("入力検証と原子的保存を追加", "半角数字の1,000G単位で、預金残高・所持金上限を検査してbankからgoldへ移す。成功時は接続元ホストも保存する。"),
-        "倉庫を表示": ("3種別配列を統合表示", "装備中とsouko_weapon/armor/accessoryを分け、変更操作は本人確認下だけで受け付ける。"),
+        "倉庫を表示": ("3種別の保管ファイルを統合JSON配列・テンプレート表示へ移行", "装備中とsouko_weapon/armor/accessoryを分けて表示する。Ver2の削除済み空行はJSON配列へ保持せず、現行では詰めて表示する。"),
+        "装備中の武器を倉庫へ外す": ("着脱時の接続元保存を現行は省略", "武器倉庫8件を確認してマスター値を退避し、素手へ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。", "要判断"),
+        "倉庫の武器を装備": ("現行は選択品を除去し、旧装備を末尾へ追加", "Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。職業制限はVer2・現行とも倉庫交換時に再検証しない。", "要判断"),
+        "倉庫の武器を削除": ("Ver2の二段階確認を現行は省略", "Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。", "要判断"),
+        "装備中の防具を倉庫へ外す": ("着脱時の接続元保存を現行は省略", "防具倉庫8件を確認してマスター値を退避し、衣服へ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。", "要判断"),
+        "倉庫の防具を装備": ("現行は選択品を除去し、旧装備を末尾へ追加", "Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。職業制限はVer2・現行とも倉庫交換時に再検証しない。", "要判断"),
+        "倉庫の防具を削除": ("Ver2の二段階確認を現行は省略", "Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。", "要判断"),
+        "装備中の装飾品を倉庫へ外す": ("着脱時の接続元保存を現行は省略", "装飾品倉庫8件を確認してマスター値を退避し、補正なしへ戻す。Ver2はREMOTE_ADDRを保存するが、現行は装備・倉庫だけを更新する。", "要判断"),
+        "倉庫の装飾品を装備": ("現行は選択品を除去し、旧装備を末尾へ追加", "Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。", "要判断"),
+        "倉庫の装飾品を削除": ("Ver2の二段階確認を現行は省略", "Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。", "要判断"),
         "チャンピオンに挑戦": ("POST専用・結果表示mode明示", "待機後に王者状態で戦い、結果・王者更新・経験値上限は戦闘/所有台帳の確認結果に従う。"),
         "道場の入口を表示": ("テンプレート入口とPOST+CSRFへ移行", "battle_count>0を表示・実行の双方で検査する。名前の完全一致検索または一覧選択へ進むだけで、保存状態は変更しない。"),
         "対人相手を選択": ("相手IDをサーバー側で再検証・本人選択を拒否", "battle_count>0を検査する。存在しない相手と本人を拒否して選択画面だけを表示する。Ver2の候補一覧は24時間キャッシュ済みレベル降順だが、現行は全ユーザーを直接列挙するため表示順を保証しない。"),
@@ -1465,8 +1544,9 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
     for action in actions:
         name, category, mode = action["name"], action["category"], action["mode"]
         if name in specific:
-            difference, note = specific[name]
-            intent = "意図的"
+            comparison = specific[name]
+            difference, note = comparison[:2]
+            intent = comparison[2] if len(comparison) > 2 else "意図的"
         elif category == "店・資産":
             label = "武器" if "武器" in name else "防具" if "防具" in name else "装飾品"
             if "購入" in name:
@@ -2190,6 +2270,7 @@ Ver2から移植したFFA Python版（Ver3）の、データ・コマンド・�
 - `意図的な仕様か否か` は `意図的` / `不具合` / `要判断` のいずれかを記載し、根拠を備考に残す。
 - Ver2に寄せる修正をする前に、現行側で追加された安全対策・バランス調整かを必ず確認する。
 - `照合状態` は `未確認` / `確認中` / `一致` / `差異あり` / `対象外` を使う。
+- 一次比較完了は全件の初期台帳作成済みを示すだけで、実装を再読したことは示さない。ファイル単位の精査済み結果は各台帳の「ファイル単位の精査記録」に残す。
 
 ## チェック対象一覧
 
@@ -2202,7 +2283,7 @@ Ver2から移植したFFA Python版（Ver3）の、データ・コマンド・�
 | モンスターデータ | [全9ファイル・347件](monsters.md)：出現テーブル、能力値、報酬、ボス・異世界 | 一次比較完了 |
 | チョコボデータ | [全10ファイル・495件](chocobo_data.md)：候補血統、価格、ライバル、レース能力 | 一次比較完了 |
 | 戦闘 | [戦闘計算・結果処理](battle_logic.md)：ターン順、必殺技、クリティカル、防御・回避、HP、勝敗、報酬、成長 | 一次比較完了 |
-| コマンド・画面 | [ルート{len(function_routes())}件・実行操作一覧](commands_actions.md)：移動、店、宿、銀行、転職、ランキング、管理画面 | 一次比較完了 |
+| コマンド・画面 | [ルート{len(function_routes())}件・実行操作一覧](commands_actions.md)：移動、店、宿、銀行、転職、ランキング、管理画面 | 一次比較完了／二次精査 {len(FILE_AUDITS)}ファイル |
 | 所有・進行要素 | [所有・進行](ownership_progression.md)：職業・装備・倉庫・戦績・王者・レジェンド・チョコボ・共有記録 | 一次比較完了 |
 | 保存・移行・運用 | [保存・認証・移行・運用](storage_migration_operations.md)：JSON、認証、CSRF、ロック、バックアップ、変換 | 一次比較完了 |
 
