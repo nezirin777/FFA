@@ -183,6 +183,14 @@ def calculate_stats(chara, item):
         "bw_hit": bw_hit, "bw_kaihi": bw_kaihi, "bw_waza": bw_waza
     }
 
+
+def get_job_class(job_level):
+    """本人詳細と同じ基準で、職業レベルのクラス表示を返します。"""
+    class_marks = ("■□□□□□", "■■□□□□", "■■■□□□", "■■■■□□", "■■■■■□", "■■■■■■", "★★★★★★")
+    class_names = ("Beginner", "Charanger", "LowClass", "NormalClass", "HighClass", "TopClass", "Master")
+    class_index = min(6, max(0, common.to_int(job_level, 0) // 10))
+    return class_marks[class_index], class_names[class_index]
+
 def main():
     if config.Config['maintenance_mode']:
         common.show_error("現在バージョンアップ中です。しばらくお待ちください。")
@@ -203,6 +211,7 @@ def main():
 
         # ステータス詳細計算
         stats = calculate_stats(target_chara, target_item)
+        job_class_mark, job_class_name = get_job_class(target_chara.get("job_level", 0))
 
         # 称号名
         syou_idx = target_chara.get("title_id", 0)
@@ -225,6 +234,8 @@ def main():
             "equipment": target_item,
             "syou_name": syou_name,
             "mastered_jobs": mastered_jobs,
+            "job_class_mark": job_class_mark,
+            "job_class_name": job_class_name,
             "esex": "男" if target_chara.get("sex") == 1 else "女",
             "next_ex": target_chara.get("level", 1) * config.Config['level_up_exp_coeff'],
             **stats
@@ -257,8 +268,10 @@ def main():
         total_players = cache_data["total_players"]
         update_time_str = common.get_time_str(cache_data["last_updated"])
         
-        # 1ページ20件
+        # 1ページ20件。範囲外のページ番号は有効範囲へ収める。
         items_per_page = 20
+        total_pages = (total_players + items_per_page - 1) // items_per_page
+        shtm = max(0, min(shtm, max(0, total_pages - 1)))
         ifr = shtm * items_per_page
         ito = min(total_players, ifr + items_per_page)
         
@@ -278,7 +291,6 @@ def main():
             })
 
         # ページングリンク情報
-        total_pages = (total_players + items_per_page - 1) // items_per_page
         pages_links = []
         for i in range(total_pages):
             p_start = i * items_per_page + 1
@@ -291,7 +303,7 @@ def main():
         context = {
             "players": formatted_players,
             "total_players": total_players,
-            "ifr": ifr + 1,
+            "ifr": ifr + 1 if page_players else 0,
             "ito": ito,
             "shtm": shtm,
             "total_pages": total_pages,

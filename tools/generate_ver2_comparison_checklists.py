@@ -271,6 +271,14 @@ FILE_AUDITS = (
         "note": "レベル、最大HP、力・知能・信仰心・生命力・器用さ・速さ・魅力・カルマ、勝率の11部門は全て対応し、各上位10件の値も一致する。勝率は両版ともbattle_countが1,000超だけを対象にし、win_count×10000÷battle_countを小数第2位まで切り捨てる。24時間更新・登録者数・個人詳細への公開リンクは維持する。現行は画像を追加し、Ver2の外部ホームページ列はプロフィールURLを扱わない現行スキーマに合わせて表示しない。",
     },
     {
+        "file": "cgi_py/system.py / templates/system_ranking.html / templates/system_chara_sts.html / templates/system_img_list.html",
+        "v2_source": "旧版_ver2/system.cgi:ranking_no_html,chara_sts,img_list / regist.pl:all_data_read",
+        "scope": "公開ルート、24時間登録者キャッシュ、レベル順・20件ページング、他者詳細の能力・装備・率・称号・職業、画像一覧",
+        "difference": "静的HTMLからJSONキャッシュ・テンプレート・公開GETへ移行。他者詳細の公開項目とバー上限が異なる",
+        "intent": "クラス欠落・範囲外ページ番号・性別/所持金の非公開は不具合を修正済み",
+        "note": "レベル降順、20件単位、削除期限、勝率、能力値・装備補正・命中/回避/必殺・称号・マスター職、画像ID一覧を照合した。現行はキャッシュの必須キーを検証し、負数は0・過大なshtmは最終ページへ正規化する。Ver2と同じ7段階の職業クラス、性別、所持金を他者詳細へ復元した。外部ホームページURLだけは現行スキーマから除外する。バーはCSS幅100%へ正規化する表示差で、計算値自体は一致する。",
+    },
+    {
         "file": "sub_def/battle_logic.py",
         "v2_source": "旧版_ver2/battle.pl / mbattle.pl / wbattle.pl",
         "scope": "戦闘状態、Lv・職業基礎ダメージ、装備補正、必殺・後続効果、クリティカル、命中・回避、HP精算、勝敗、レベルアップ",

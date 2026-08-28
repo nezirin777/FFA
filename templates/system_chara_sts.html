@@ -56,8 +56,15 @@
                         <th>経験値</th><td>{{ chara.exp }} / {{ next_ex }}</td>
                     </tr>
                     <tr>
+                        <th>性別</th><td>{{ esex }}</td>
+                        <th>所持金</th><td>{{ '{:,}'.format(chara.gold) }} G</td>
+                    </tr>
+                    <tr>
                         <th>職業</th><td>{{ config.chara_jobs[chara.job] }} (Lv {{ chara.job_level }})</td>
                         <th>現在HP</th><td>{{ chara.hp }} / {{ chara.max_hp }}</td>
+                    </tr>
+                    <tr>
+                        <th>クラス</th><td colspan="3">{{ job_class_mark }} <i><b>({{ job_class_name }})</b></i></td>
                     </tr>
                     <tr>
                         <th>攻撃力</th><td>{{ equipment.weapon.atk }}</td>
