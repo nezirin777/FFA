@@ -76,13 +76,11 @@ def validate_input(params):
     if len(user_id) < 4 or len(user_id) > 8:
         return "IDは4文字以上8文字以下で入力してください。"
         
-    # パスワードのバリデーション（防衛的チェック＆半角英数字）
-    from sub_def.validation import validate_password
-    pass_err = validate_password(user_pass)
+    # パスワードのバリデーション（4〜8文字の半角英数字・記号）
+    from sub_def.validation import validate_game_password
+    pass_err = validate_game_password(user_pass)
     if pass_err:
         return pass_err
-    if not user_pass.isalnum():
-        return "パスワードは半角英数字で入力してください。"
         
     # キャラクター名のバリデーション（予約語・制御文字・Shift-JIS互換性）
     from sub_def.validation import validate_username

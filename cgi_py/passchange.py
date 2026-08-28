@@ -51,6 +51,7 @@ import sys
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
 from sub_def.crypto import hash_password, verify_password
+from sub_def.validation import validate_game_password
 
 parse_cookie_user = common.parse_cookie_user
 
@@ -180,9 +181,10 @@ def main():
                 common.release_lock(user_id)
                 common.show_error("新しいパスワードと確認入力が一致しません。")
                 
-            if not npass.isalnum() or len(npass) < 4 or len(npass) > 8:
+            new_password_error = validate_game_password(npass)
+            if new_password_error:
                 common.release_lock(user_id)
-                common.show_error("新しいパスワードは4〜8文字の半角英数字で設定してください。")
+                common.show_error(new_password_error)
                 
             now = int(time.time())
             remote_addr = os.environ.get("REMOTE_ADDR", "127.0.0.1")
@@ -190,6 +192,7 @@ def main():
             # 更新 (保存・クッキーともにハッシュ値を用いる)
             hashed_npass = hash_password(npass)
             chara["pass"] = hashed_npass
+            chara["host"] = remote_addr
             common.chara_regist(user_id, chara)
 
             # パスワード変更ファイルも更新

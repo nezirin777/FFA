@@ -58,8 +58,8 @@
 | 新規登録確定（`mode=make_end` / POST / 状態変更） | `旧版_ver2/chara_make.cgi` | `chara_make.py` | 統合JSON・PBKDF2保存へ移行 | 意図的 | 差異あり | 初期能力・装備・職歴・倉庫を原子的に生成する。初期ゲーム値の対応は所有・進行台帳で確認済み。 |
 | ログイン（`mode=log_in` / POST / 状態変更） | `旧版_ver2/login.cgi` | `login.py` | 平文照合Cookieからハッシュ照合・暗号化セッションへ移行 | 意図的 | 差異あり | POST+CSRFで認証し、旧形式は成功時だけ再ハッシュ、日次バックアップ後に街へ遷移する。 |
 | ログアウト（`mode=log_out` / POST/GET / 状態変更） | `旧版_ver2/login.cgi` | `login.py` | 暗号化セッション破棄へ移行 | 意図的 | 差異あり | destroy_sessionで認証Cookieを破棄しothers.pyへ遷移する。 |
-| 合言葉確認（`mode=passset` / POST / 表示） | `旧版_ver2/passchange.cgi` | `cgi_py/passchange.py` | 本人確認をセッション・CSRF前提へ変更 | 意図的 | 差異あり | 保存済み合言葉を照合して変更画面へ進める。 |
-| パスワード変更確定（`mode=passchan` / POST / 状態変更） | `旧版_ver2/passchange.cgi` | `cgi_py/passchange.py` | PBKDF2更新・セッション再発行へ変更 | 意図的 | 差異あり | 旧パスワード/合言葉と新値を検証し、保存済みハッシュと認証状態を更新する。 |
+| 合言葉を設定（`mode=passset` / POST / 状態変更） | `旧版_ver2/passchange.cgi` | `cgi_py/passchange.py` | 本人確認をセッション・CSRF前提へ変更 | 意図的 | 差異あり | 新規登録時に未作成だった合言葉だけを設定する。現在のパスワードと未設定状態を確認し、合言葉・保存時刻・接続元ホストを保存する。 |
+| パスワード変更確定（`mode=passchan` / POST / 状態変更） | `旧版_ver2/passchange.cgi` | `cgi_py/passchange.py` | PBKDF2更新・セッション再発行へ変更 | 意図的 | 差異あり | 旧パスワード/合言葉と新値を検証する。新パスワードはVer2と同じ4〜8文字で、現行は画面の案内どおり半角英数字・記号だけを受け付ける。保存済みハッシュ・接続元ホスト・認証状態を更新する。 |
 
 ### 街・プロフィール
 

@@ -46,6 +46,17 @@ def validate_password(password: str) -> str | None:
         return "パスワードは4文字以上20文字以内で入力してください。"
     return None
 
+
+def validate_game_password(password: str, *, max_length: int = 8) -> str | None:
+    """新規登録・変更時のゲーム用パスワード形式を検証します。"""
+    if not password:
+        return "パスワードを入力してください。"
+    if len(password) < 4 or len(password) > max_length:
+        return f"パスワードは4〜{max_length}文字で入力してください。"
+    if re.fullmatch(r"[!-~]+", password) is None:
+        return "パスワードは半角英数字と記号だけで入力してください。"
+    return None
+
 def check_sjis_compatibility(text: str) -> bool:
     """テキストが Shift-JIS (cp932) に安全にエンコードできるか確認します。"""
     try:
