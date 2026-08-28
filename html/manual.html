@@ -288,23 +288,23 @@
   <section id="params" class="manual-section">
     <div class="manual-section__head"><span class="manual-section__icon">📊</span><h2>パラメータの見方</h2></div>
     <dl class="manual-def-grid">
-      <div class="def-card"><dt>職業 / クラス</dt><dd>職業ごとに買える装備・発動する必殺技が異なる。クラスが上がるとチャンピオン時の必殺技発動率が上昇。</dd></div>
-      <div class="def-card"><dt>レベル</dt><dd>上がるとHPをはじめ各パラメータが上昇。転職には職業ごとに必要カルマがある。</dd></div>
-      <div class="def-card"><dt>ジョブレベル</dt><dd>上がると現在の職をマスター。マスター後は転職しても前職のアビリティを継続使用できる。転職するとジョブLvは1に戻る。上がると必殺率も上昇。</dd></div>
+      <div class="def-card"><dt>職業 / クラス</dt><dd>職業ごとに通常攻撃で参照する能力値、装備できる武具、選べる必殺技が異なる。クラスはジョブLvを10刻みで表す到達表示。</dd></div>
+      <div class="def-card"><dt>レベル</dt><dd>上がると最大HPが増え、職業ごとの成長上限に従って各能力値も確率で上昇する。転職には職業ごとの能力値・カルマ・マスター職条件がある。</dd></div>
+      <div class="def-card"><dt>ジョブレベル</dt><dd>現在職の熟練度。Lv60でマスターとなり、マスター必殺技が使える。必殺率にも加算される。転職時は選択中の戦術が解除されるが、以前の職の熟練度は保存され、マスター済みの必殺技は再設定できる。</dd></div>
       <div class="def-card"><dt>経験値</dt><dd>次のレベルに必要な値に達するとレベルアップ。</dd></div>
       <div class="def-card"><dt>お金（ギル）</dt><dd>強力な武具の購入や訓練所での強化に使う。</dd></div>
-      <div class="def-card"><dt>HP</dt><dd>ゼロになると敗北。レベルと生命力が高いほど増加量が大きい。</dd></div>
-      <div class="def-card"><dt>力</dt><dd>戦士・モンク系で高いと攻撃力・必殺技威力が上がる。</dd></div>
-      <div class="def-card"><dt>知能</dt><dd>魔道士・ビショップ系で高いと攻撃力・必殺技威力が上がる。</dd></div>
-      <div class="def-card"><dt>信仰心</dt><dd>僧侶・ナイト系で高いと攻撃力・必殺技威力が上がる。</dd></div>
-      <div class="def-card"><dt>生命力</dt><dd>HPの増加量が増える。</dd></div>
-      <div class="def-card"><dt>器用さ</dt><dd>盗賊・忍者系で高いと攻撃力・必殺技威力が上がる。命中率にも影響。</dd></div>
-      <div class="def-card"><dt>速さ</dt><dd>回避率に大きく影響。高いと攻撃がほとんど当たらなくなる。</dd></div>
-      <div class="def-card"><dt>魅力</dt><dd>必殺技の威力に影響することがある。</dd></div>
-      <div class="def-card"><dt>カルマ</dt><dd>必殺技の発動率に影響する。</dd></div>
-      <div class="def-card"><dt>命中率</dt><dd>器用さで決まる。上がると回避率の高い相手にも当てやすい（上限なし）。</dd></div>
-      <div class="def-card"><dt>回避率</dt><dd>速さで決まる。上がると攻撃を避けやすい（最大50%）。</dd></div>
-      <div class="def-card"><dt>必殺率</dt><dd>必殺技の発動確率。ジョブLvとカルマを鍛えると上がる（最大75%）。</dd></div>
+      <div class="def-card"><dt>HP</dt><dd>ゼロになると敗北。レベルアップ時の最大HP増加量は、その時点の生命力で決まる。</dd></div>
+      <div class="def-card"><dt>力</dt><dd>ソルジャー、モンクなどの通常攻撃や、一部の必殺技の威力に使われる。</dd></div>
+      <div class="def-card"><dt>知能</dt><dd>黒魔法系を中心とした通常攻撃・必殺技の威力に使われる。</dd></div>
+      <div class="def-card"><dt>信仰心</dt><dd>白・神聖魔法系の通常攻撃・必殺技、および回復量に使われる。</dd></div>
+      <div class="def-card"><dt>生命力</dt><dd>レベルアップ時の最大HP増加量と、一部の通常攻撃・必殺技の計算に使われる。</dd></div>
+      <div class="def-card"><dt>器用さ</dt><dd>シーフ、忍者などの通常攻撃・必殺技の威力に使われ、命中率の基本値にも直接影響する。</dd></div>
+      <div class="def-card"><dt>速さ</dt><dd>一部の通常攻撃・必殺技の威力に使われ、回避率の基本値にも直接影響する。</dd></div>
+      <div class="def-card"><dt>魅力</dt><dd>バードなどの通常攻撃や、一部の必殺技・回復技の計算に使われる。</dd></div>
+      <div class="def-card"><dt>カルマ</dt><dd>必殺率の基本値に加算され、上級職の通常攻撃や一部の必殺技・回復技の計算にも使われる。</dd></div>
+      <div class="def-card"><dt>命中率</dt><dd>器用さから基本値が決まり、武器・アクセサリー補正を加える。高いほど回避率の高い相手へ命中しやすい。</dd></div>
+      <div class="def-card"><dt>回避率</dt><dd>速さから基本値が決まり、防具・アクセサリー補正を加える。実際の回避判定は相手の命中率と戦闘種別にも左右される。</dd></div>
+      <div class="def-card"><dt>必殺率</dt><dd>必殺技の発動確率。カルマ / 15 + 10 + ジョブLvを基本値とし、基本値は75%まで、アクセサリー補正込みでは95%まで上がる。幻影・異世界・レジェンドでは低下する。</dd></div>
       <div class="def-card"><dt>称号</dt><dd>特定の場所へ行くために必要になる。</dd></div>
     </dl>
   </section>

@@ -63,19 +63,6 @@ def main():
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
-    # ログインクッキーの取得（予備チェック）
-    cookie_id = common.get_cookie(config.Config['cookie_name'])
-
-    # キャラクターデータ読み込み
-    chara = common.chara_load(user_id)
-    if not chara:
-        common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
-
-    # パスワードチェック・セキュリティバリデーション (ログイン中か)
-    # 簡易的にログイン認証文字列(chara_log)が含まれるかチェック
-    # （通常、chara_logにはIDやパスワードなどの認証文字列が入る）
-    # ここでは既存の他のスクリプト(battle.pyなど)と同様のチェックを行う
-
     if mode == "st_buy":
         # === ステータス更新処理 ===
         # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
@@ -109,12 +96,16 @@ def main():
         except ValueError:
             chara_img_idx = 0
 
-        # データ更新
-        chara["img"] = chara_img_idx
-        chara["comment"] = waza  # Perl版の $chara[23] (技発動コメント) は Python では 'comment' にマッピング
-
+        # Ver2と同じく、ロック取得後に最新状態を読み込んでから保存する。
+        # 表示時の古いcharaを保存すると、同時に完了した戦闘などの更新を失う。
         common.get_lock(user_id)
         try:
+            chara = common.chara_load(user_id)
+            if not chara:
+                common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
+            chara["img"] = chara_img_idx
+            chara["comment"] = waza
+            chara["host"] = os.environ.get("REMOTE_ADDR", "127.0.0.1")
             common.chara_regist(user_id, chara)
         finally:
             common.release_lock(user_id)
@@ -129,6 +120,10 @@ def main():
 
     else:
         # === ステータス表示画面 (chara_st) ===
+        chara = common.chara_load(user_id)
+        if not chara:
+            common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
+
         item = common.equipment_load(user_id)
         if not item:
             item = common.default_equipment()
@@ -181,6 +176,9 @@ def main():
         syoku = common.syoku_load(user_id) or {}
         current_job = int(chara.get("job", 0))
         current_job_level = int(chara.get("job_level", 0))
+        class_marks = ("■□□□□□", "■■□□□□", "■■■□□□", "■■■■□□", "■■■■■□", "■■■■■■", "★★★★★★")
+        class_names = ("Beginner", "Charanger", "LowClass", "NormalClass", "HighClass", "TopClass", "Master")
+        class_index = min(6, max(0, current_job_level // 10))
 
         def get_job_level(job_idx):
             """現在職はキャラ本体、それ以外は保存済み熟練度から表示する。"""
@@ -256,6 +254,8 @@ def main():
             "syou_name": syou_name,
             "mastered_jobs": mastered_jobs,
             "all_jobs_status": all_jobs_status,
+            "job_class_mark": class_marks[class_index],
+            "job_class_name": class_names[class_index],
             "esex": "男" if chara.get("sex") == 1 else "女",
             "next_ex": chara.get("level", 1) * config.Config['level_up_exp_coeff'],
             # バー幅

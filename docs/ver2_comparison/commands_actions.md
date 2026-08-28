@@ -67,8 +67,8 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 街のメイン画面（`mode=main` / GET/POST / 表示） | `旧版_ver2/ffadventure.cgi` | `cgi_py/ffadventure.py` | テンプレート表示と共有ニュース/BBS分離 | 意図的 | 差異あり | 能力・王者・待機時間・現職クラスを計算し、all_messageとbbsを別データとして表示する。チャンピオン戦以外の戦闘導線はbattle_count>0を確認して表示する。 |
 | レジェンド挑戦を中断して街へ戻る（`mode=main, legend_cancel=1` / POST / 状態変更） | `旧版_ver2/ffadventure.cgi` | `cgi_py/ffadventure.py` | POST+CSRFで進行値をリセット | 意図的 | 差異あり | legend_cancel時だけboss_flagを設定初期値へ戻す。 |
-| 自分のステータスを表示（`mode=sts` / POST / 表示） | `旧版_ver2/sts.cgi` | `cgi_py/sts.py` | 名前付き状態・テンプレート表示へ移行 | 意図的 | 差異あり | 能力、装備補正、職業熟練度、マスター職を現行データから組み立てる。 |
-| 画像・発動コメントを変更（`mode=st_buy` / POST / 状態変更） | `旧版_ver2/sts.cgi` | `cgi_py/sts.py` | 入力値検証を追加 | 意図的 | 差異あり | 画像IDとコメント長・禁止語を検査し、本人のcharaだけを保存する。 |
+| 自分のステータスを表示（`mode=sts` / POST / 表示） | `旧版_ver2/sts.cgi` | `cgi_py/sts.py` | 名前付き状態・テンプレート表示へ移行 | 意図的 | 差異あり | 能力、アクセサリー補正、現職クラス、職業熟練度を現行データから組み立てる。ホームページ名・URLは現行スキーマから意図的に除外する。 |
+| 画像・発動コメントを変更（`mode=st_buy` / POST / 状態変更） | `旧版_ver2/sts.cgi` | `cgi_py/sts.py` | 入力値検証を追加 | 意図的 | 差異あり | 画像IDとコメント長・禁止語を検査する。Ver2と同じくロック後に最新charaを読み込み、画像・コメント・接続元ホストを保存する。 |
 | 戦術一覧を表示（`mode=tac_change` / POST / 表示） | `旧版_ver2/tac_change.cgi` | `cgi_py/tac_change.py` | 利用可否をJSON職歴から算出 | 意図的 | 差異あり | 職業・マスター条件と現在のtactic_idを表示する。 |
 | 戦術を変更（`mode=senjutu_henkou` / POST / 状態変更） | `旧版_ver2/tac_change.cgi` | `cgi_py/tac_change.py` | POST時の戦術ID・利用条件検証を追加 | 意図的 | 差異あり | 未習得/不正戦術を拒否し、tactic_idだけを更新する。 |
 | 転職画面を表示（`mode=tensyoku` / POST / 表示） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 職業マスターをJSONから参照 | 意図的 | 差異あり | 能力・職歴前提を満たす候補と未マスター候補を分けて表示する。 |
