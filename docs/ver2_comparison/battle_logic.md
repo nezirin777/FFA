@@ -47,7 +47,7 @@
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 通常・幻影・異世界の報酬処理 | `旧版_ver2/monster.cgi / mbattle.pl:sentoukeka` | `cgi_py/monster.py` | 結果処理をmonster.pyへ分離 | 意図的 | 差異あり | 勝敗別EXP/G、盗み差分、修行回数、幻影宝箱を入口側で処理する。時間切れを引分として扱う現行差は上記結果コード行と連動する。 |
+| 通常・幻影・異世界の報酬処理 | `旧版_ver2/monster.cgi / mbattle.pl:sentoukeka` | `cgi_py/monster.py` | 結果処理をmonster.pyへ分離。回復順と修行回数をVer2準拠へ修正 | 不具合修正 | 差異あり | 勝敗別EXP/G、盗み差分、修行回数、幻影宝箱を入口側で処理する。通常・幻影・異世界は残り回数0で開始できず、各戦闘で1回消費する。戦闘後HPはlevelup後のvit/max_hpで回復する。敗北EXPはVer2の1ではなく0を維持する。時間切れを引分として扱う現行差は上記結果コード行と連動する。 |
 | レジェンドの報酬・階層進行 | `旧版_ver2/legend.cgi / mbattle.pl:legend_sentoukeka` | `cgi_py/legend.py` | 結果処理をlegend.pyへ分離。クリア後の再挑戦を追加 | 意図的 | 差異あり | 勝利・引分・敗北のEXP/G・battle_count・win_count・battle_limit・進行初期化は対応する。戦闘後HPはVer2のhp_afterと同じくlevelup後のvit/max_hpで回復する。Ver2は最終ボス撃破時にboss_flag=0を保持して連戦を終えるが、現行は開始値10へ戻して同階層を再挑戦可能にする。 |
 | チャンピオン戦の報酬・王者更新 | `旧版_ver2/battle.cgi / wbattle.pl:sentoukeka` | `cgi_py/battle.py` | 時間切れ引分と新王者保存順をVer2準拠へ修正 | 不具合修正 | 差異あり | win=3の時間切れは通常EXPのみを得て、賞金・王者交代・王者連勝を発生させない。新王者はレベルアップ後の能力値・最大HP・HPで保存し、結果画面は上書き前の王者名を表示する。相打ち引分win=2は従来どおり新王者交代として扱う。敗北EXPの自分Lv×10上限は意図的な調整。 |
 | 天下一武道会の報酬・ラウンド進行 | `旧版_ver2/tenka.cgi / wbattle.pl:sentoukeka` | `cgi_py/tenka.py` | 時間切れ引分・相打ち・敗北の進行は現行方針を維持。回復順とロック範囲をVer2相当に修正 | 意図的 | 差異あり | win=1/2/3/0の賞金・盗み・boss_flag進行は現行方針を維持する。戦闘後HPはlevelup後のvit/max_hpで回復し、ユーザーロックはchara_load前からsave_user_sections完了まで保持する。boss_flagが開始値10を超える場合は10へ正規化して、相手インデックスの不整合を防ぐ。 |

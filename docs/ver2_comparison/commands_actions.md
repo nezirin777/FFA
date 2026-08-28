@@ -111,9 +111,9 @@
 | 道場の入口を表示（`mode=log_in` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | テンプレート入口とPOST+CSRFへ移行 | 意図的 | 差異あり | 名前の完全一致検索または一覧選択へ進むだけで、保存状態は変更しない。 |
 | 対人相手を選択（`mode=sentaku` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | 相手IDをサーバー側で再検証・本人選択を拒否 | 意図的 | 差異あり | 存在しない相手と本人を拒否して選択画面だけを表示する。Ver2の候補一覧は24時間キャッシュ済みレベル降順だが、現行は全ユーザーを直接列挙するため表示順を保証しない。 |
 | 選択相手と対戦（`mode=battle` / POST / 状態変更） | `旧版_ver2/select_battle.cgi / wbattle.pl` | `cgi_py/select_battle.py / sub_def/battle_logic.py` | 模擬戦を保存しないシミュレーションへ明示 | 意図的 | 差異あり | 相手の現在のキャラクター・装備で戦い、経験値・所持金・戦績・待機時刻を更新しない。時間切れwin=3は相打ちと別表示にする。 |
-| 通常モンスター修行（`mode=monster` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | POST+CSRF・統合保存へ移行 | 意図的 | 差異あり | 出現表と修行回数を検査し、勝敗別報酬・戦績・職歴を保存する。 |
-| 幻影の城へ挑戦（`mode=genei` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのgenei分岐へ統合 | 意図的 | 差異あり | 出現条件、敵攻撃への防具補正、幻影報酬を通常修行と区別して処理する。 |
-| 異世界へ挑戦（`mode=isekiai` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのisekiai分岐へ統合 | 意図的 | 差異あり | レベル/進行条件を検査し、異世界出現表と報酬を用いる。 |
+| 通常モンスター修行（`mode=monster` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | POST+CSRF・統合保存へ移行 | 意図的 | 差異あり | 出現表と修行回数を検査し、勝敗別報酬・戦績・職歴を保存する。戦闘後HPはレベルアップ後のvit/max_hpで回復する。 |
+| 幻影の城へ挑戦（`mode=genei` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのgenei分岐へ統合 | 意図的 | 差異あり | 出現条件、修行回数、敵攻撃への防具補正、幻影報酬を通常修行と区別して処理する。戦闘後HPはレベルアップ後のvit/max_hpで回復する。 |
+| 異世界へ挑戦（`mode=isekiai` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのisekiai分岐へ統合 | 意図的 | 差異あり | レベル/進行条件と修行回数を検査し、異世界出現表と報酬を用いる。戦闘後HPはレベルアップ後のvit/max_hpで回復する。 |
 | レジェンド攻略者一覧を閲覧（`mode=legend, view=ranking` / GET / 表示） | `旧版_ver2/legend.cgi` | `cgi_py/legend.py` | 公開GET閲覧を明示 | 意図的 | 差異あり | ログイン不要で攻略者を称号・戦績から並べ、状態変更は行わない。 |
 | レジェンドの階層へ挑戦（`mode=boss, boss_file=0〜3` / POST / 状態変更） | `旧版_ver2/legend.cgi / mbattle.pl` | `cgi_py/legend.py / sub_def/battle_logic.py` | POST専用・階層値を検証、クリア後の再挑戦を許可 | 意図的 | 差異あり | title_id、boss_flag、修行回数、待機時間を検査して階層別モンスターと戦う。クリア後は進行値を開始値へ戻し、現行は同じ階層を再挑戦できる。戦闘後HPはレベルアップ後のvit/max_hpで回復する。 |
 | 天下一武道会ロビーを表示（`mode=tenka` / POST / 表示） | `旧版_ver2/tenka.cgi` | `cgi_py/tenka.py` | 24時間メンバーキャッシュへ移行 | 意図的 | 差異あり | レベル上位者、参加可能boss_flag、進行ラウンド、制覇履歴を表示する。 |

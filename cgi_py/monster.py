@@ -98,12 +98,14 @@ def main():
         is_genei = False
         is_isekiai = False
 
+        # Ver2と同じく、通常修行・幻影の城・異世界はいずれも
+        # 残り修行回数がなければ開始できない。
+        if chara["battle_limit"] <= 0:
+            common.release_lock(user_id)
+            common.show_error("これ以上修行はできません（回数制限）。")
+
         if mode == "monster":
             # 修行
-            if chara["battle_limit"] <= 0:
-                common.release_lock(user_id)
-                common.show_error("これ以上修行はできません（回数制限）。")
-            
             # mons_file のマッピング
             mons_map = {
                 "monster0": config.Config['monster_lv1_file'],
@@ -186,14 +188,6 @@ def main():
         gold_gained = 0
         exp_gained = 0
 
-        # 戦闘後の残りHP復元 (hp_after)
-        restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
-        if restored_hp > chara["max_hp"]:
-            restored_hp = chara["max_hp"]
-        if restored_hp <= 0:
-            restored_hp = chara["max_hp"]
-        chara["hp"] = restored_hp
-
         # 勝敗処理
         theft_adjustment = (
             int(simulator.state.gold_reward_bonus)
@@ -265,9 +259,17 @@ def main():
         lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
         comment += lv_comment
 
-        # バトル回数を減算
-        if chara["battle_limit"] > 0:
-            chara["battle_limit"] -= 1
+        # Ver2のhp_afterと同じく、レベルアップ後のvit/max_hpを使って
+        # 戦闘後HPを回復する。敗北時は現在の最大HPまで回復する。
+        restored_hp = simulator.state.khp + random.randint(0, max(0, chara["vit"] - 1))
+        if restored_hp > chara["max_hp"]:
+            restored_hp = chara["max_hp"]
+        if restored_hp <= 0:
+            restored_hp = chara["max_hp"]
+        chara["hp"] = restored_hp
+
+        # 通常修行・幻影の城・異世界はいずれも修行回数を1回消費する。
+        chara["battle_limit"] -= 1
 
         # 最終行動時間を更新
         chara["last_time"] = now
