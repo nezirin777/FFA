@@ -139,7 +139,16 @@ def save_tenka_logs(logs):
     from sub_def.file_ops import save_data_atomically
     save_data_atomically(logs, log_path, "tenka_logs")
 
-def main():
+def normalize_tenka_boss_flag(chara):
+    """天下一の開始値を超えた進行フラグを開始値へ戻します。"""
+    reset_value = config.Config["legend_progress_reset_value"]
+    boss_flag = common.to_int(chara.get("boss_flag", reset_value), reset_value)
+    if boss_flag > reset_value:
+        chara["boss_flag"] = reset_value
+        return True
+    return False
+
+def main(_battle_lock_held=False):
     if config.Config['maintenance_mode']:
         common.show_error("現在バージョンアップ中です。しばらくお待ちください。")
         
@@ -150,10 +159,37 @@ def main():
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
+    # Ver2と同じく、天下一の戦闘はキャラクターを読み込む前から
+    # 結果を保存し終えるまでユーザー単位で直列化する。
+    if mode == "battle" and not _battle_lock_held:
+        common.get_lock(user_id)
+        try:
+            return main(_battle_lock_held=True)
+        finally:
+            common.release_lock(user_id)
+
     # ログインキャラのロード
     chara = common.chara_load(user_id)
     if not chara:
         common.show_error("キャラクターデータが見つかりません。ログインし直してください。")
+
+    # 壊れた進行値で天下一の対戦相手インデックスが範囲外にならないよう、
+    # 開始値より大きい値だけを開始状態へ正規化する。
+    boss_flag_normalized = normalize_tenka_boss_flag(chara)
+    if boss_flag_normalized and mode == "battle":
+        # この時点では外側の戦闘ロックを保持している。待機時間エラーで
+        # 戦闘が中断しても、正規化した開始値は確実に保存する。
+        common.save_user_sections(user_id, chara=chara)
+    elif boss_flag_normalized:
+        common.get_lock(user_id)
+        try:
+            # ロック待ちの間に別操作が保存している可能性があるため再読込する。
+            locked_chara = common.chara_load(user_id)
+            if locked_chara and normalize_tenka_boss_flag(locked_chara):
+                common.save_user_sections(user_id, chara=locked_chara)
+            chara = locked_chara or chara
+        finally:
+            common.release_lock(user_id)
         
     # 天下一データロード
     tenka_data = get_tenka_data()
@@ -211,14 +247,6 @@ def main():
         simulator.state.gold_base = gold_reward
         win, battle_logs = simulator.simulate() # 1: 勝利, 0: 敗北, 2: 相打ち, 3: 時間切れ
         
-        # 残りHP、経験値計算
-        restored_hp = simulator.state.khp + random.randint(0, max(0, chara.get("vit", 10) - 1))
-        if restored_hp > chara["max_hp"]:
-            restored_hp = chara["max_hp"]
-        if restored_hp <= 0:
-            restored_hp = chara["max_hp"] # 敗北時は全回復
-        chara["hp"] = restored_hp
-
         comment = ""
         gold_gained = 0
         exp_gained = 0
@@ -324,6 +352,15 @@ def main():
         syoku = common.syoku_load(user_id) or {}
         lv_comment, lvup_count = battle_logic.process_levelup(chara, exp_gained, syoku)
         comment += lv_comment
+
+        # Ver2と同じく、レベルアップで変化したvit/max_hpを使って
+        # 戦闘後HPを回復する。敗北時は現在の最大HPまで回復する。
+        restored_hp = simulator.state.khp + random.randint(0, max(0, chara.get("vit", 10) - 1))
+        if restored_hp > chara["max_hp"]:
+            restored_hp = chara["max_hp"]
+        if restored_hp <= 0:
+            restored_hp = chara["max_hp"]
+        chara["hp"] = restored_hp
 
         # 最終行動時間更新
         chara["last_time"] = now

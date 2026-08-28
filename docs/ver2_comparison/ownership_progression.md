@@ -16,7 +16,7 @@
 | 修行回数・待機時刻 | `旧版_ver2/charalog/<ID>.cgi / mbattle.pl:time_check` | `user_all.json:chara.battle_limit,last_time / 各戦闘CGI` | charalog列からbattle_limit/last_timeへ名称化 | 意図的 | 確認済み | 通常・レジェンドは修行回数を消費し、チャンピオン・天下一は結果にかかわらず上限まで補充する。各戦闘CGIは完了時にlast_timeを更新し、設定値の待機時間で検査する。 |
 | レジェンドの進行フラグ・称号 | `旧版_ver2/legend.cgi / charalog` | `user_all.json:chara.boss_flag,title_id / cgi_py/legend.py` | 進行列・称号列をboss_flag/title_idへ名称化し、結果EXPを表示 | 意図的 | 確認済み | 階層選択は称号値で制限し、勝利でboss_flagを減算、階層クリアでtitle_idを上げて進行値を初期化する。敗北・引分も進行値を初期化する流れは維持し、現行は実際に加算するEXPを結果へ表示する。 |
 | 人間チャンピオン | `旧版_ver2/datalog/winner.cgi / battle.cgi` | `save_data/champion.json / cgi_py/battle.py` | winner.cgiの連番レコードからchampion.jsonの名前付き状態へ移行。時間切れと新王者保存順を修正 | 不具合修正 | 確認済み | 通常の勝利・相打ち引分は挑戦者を王者へ交代し、敗北では王者の連勝・最高連勝を更新する。新王者は戦闘EXPのレベルアップ後に保存するため、本人とchampion.jsonの能力値・最大HP・現在HPが一致する。時間切れwin=3は引分表示として、王者交代・賞金・連勝を発生させず通常EXPのみを得る。勝利・相打ち引分EXPは相手Lv×基準値、敗北EXPだけmin(相手Lv, 自分Lv×10)へ調整済み。 |
-| 天下一武道会の参加者・対戦履歴 | `旧版_ver2/all_tenka.cgi / tenka_log.cgi` | `save_data/all_tenka.json,tenka_log.json / cgi_py/tenka.py` | all_tenka/tenka_logをJSONキャッシュ化し、履歴上限を設定値で明示 | 要判断 | 確認済み | 両版ともレベル上位者を対戦者にし、制覇時に先頭へ履歴を追加する。Ver3は24時間キャッシュとtenka_log_limitで履歴を切り詰める一方、Ver2の履歴件数判定は変数名の不整合を含むため、上限導入の意図は履歴から確定できない。 |
+| 天下一武道会の参加者・対戦履歴 | `旧版_ver2/all_tenka.cgi / tenka_log.cgi` | `save_data/all_tenka.json,tenka_log.json / cgi_py/tenka.py` | all_tenka/tenka_logをJSONキャッシュ化し、履歴上限を設定値で明示 | 要判断 | 確認済み | 両版ともレベル上位者の状態スナップショットと対戦時点の装備を組み合わせ、制覇時に履歴先頭へ追加する。Ver3は24時間キャッシュとtenka_log_limitで履歴を切り詰める一方、Ver2の履歴件数判定は変数名の不整合を含む。対戦時はキャラクターロックを取得してからロード・戦闘・保存まで保持し、重複送信による待機/進行更新の競合を防ぐ。 |
 
 ## チョコボ所有・レース進行
 

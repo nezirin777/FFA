@@ -108,16 +108,16 @@
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
 | チャンピオンに挑戦（`mode=battle` / POST / 状態変更） | `旧版_ver2/battle.cgi / wbattle.pl` | `cgi_py/battle.py / sub_def/battle_logic.py` | POST専用・結果表示mode明示 | 意図的 | 差異あり | 待機後に王者状態で戦い、結果・王者更新・経験値上限は戦闘/所有台帳の確認結果に従う。 |
-| 対人相手一覧を表示（`mode=log_in` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | 選択対象を現行プレイヤー一覧から生成 | 意図的 | 差異あり | 本人・無効データを除外した閲覧専用リストで、保存状態は変更しない。 |
-| 対人相手を選択（`mode=sentaku` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | 相手IDをサーバー側で再検証 | 意図的 | 差異あり | 本人・存在しない相手を拒否し、選択画面だけを表示する。 |
-| 選択相手と対戦（`mode=battle` / POST / 状態変更） | `旧版_ver2/select_battle.cgi / wbattle.pl` | `cgi_py/select_battle.py / sub_def/battle_logic.py` | 模擬戦を保存しないシミュレーションへ明示 | 意図的 | 差異あり | 戦闘ログを表示するが経験値・所持金・戦績・待機時刻を更新しない。 |
+| 道場の入口を表示（`mode=log_in` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | テンプレート入口とPOST+CSRFへ移行 | 意図的 | 差異あり | 名前の完全一致検索または一覧選択へ進むだけで、保存状態は変更しない。 |
+| 対人相手を選択（`mode=sentaku` / POST / 表示） | `旧版_ver2/select_battle.cgi` | `cgi_py/select_battle.py` | 相手IDをサーバー側で再検証・本人選択を拒否 | 意図的 | 差異あり | 存在しない相手と本人を拒否して選択画面だけを表示する。Ver2の候補一覧は24時間キャッシュ済みレベル降順だが、現行は全ユーザーを直接列挙するため表示順を保証しない。 |
+| 選択相手と対戦（`mode=battle` / POST / 状態変更） | `旧版_ver2/select_battle.cgi / wbattle.pl` | `cgi_py/select_battle.py / sub_def/battle_logic.py` | 模擬戦を保存しないシミュレーションへ明示 | 意図的 | 差異あり | 相手の現在のキャラクター・装備で戦い、経験値・所持金・戦績・待機時刻を更新しない。時間切れwin=3は相打ちと別表示にする。 |
 | 通常モンスター修行（`mode=monster` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | POST+CSRF・統合保存へ移行 | 意図的 | 差異あり | 出現表と修行回数を検査し、勝敗別報酬・戦績・職歴を保存する。 |
 | 幻影の城へ挑戦（`mode=genei` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのgenei分岐へ統合 | 意図的 | 差異あり | 出現条件、敵攻撃への防具補正、幻影報酬を通常修行と区別して処理する。 |
 | 異世界へ挑戦（`mode=isekiai` / POST / 状態変更） | `旧版_ver2/monster.cgi / mbattle.pl` | `cgi_py/monster.py / sub_def/battle_logic.py` | monster.pyのisekiai分岐へ統合 | 意図的 | 差異あり | レベル/進行条件を検査し、異世界出現表と報酬を用いる。 |
 | レジェンド攻略者一覧を閲覧（`mode=legend, view=ranking` / GET / 表示） | `旧版_ver2/legend.cgi` | `cgi_py/legend.py` | 公開GET閲覧を明示 | 意図的 | 差異あり | ログイン不要で攻略者を称号・戦績から並べ、状態変更は行わない。 |
 | レジェンドの階層へ挑戦（`mode=boss, boss_file=0〜3` / POST / 状態変更） | `旧版_ver2/legend.cgi / mbattle.pl` | `cgi_py/legend.py / sub_def/battle_logic.py` | POST専用・階層値を検証 | 意図的 | 差異あり | title_id、boss_flag、修行回数、待機時間を検査して階層別モンスターと戦う。 |
 | 天下一武道会ロビーを表示（`mode=tenka` / POST / 表示） | `旧版_ver2/tenka.cgi` | `cgi_py/tenka.py` | 24時間メンバーキャッシュへ移行 | 意図的 | 差異あり | レベル上位者、参加可能boss_flag、進行ラウンド、制覇履歴を表示する。 |
-| 天下一武道会で対戦（`mode=battle, no=1〜3` / POST / 状態変更） | `旧版_ver2/tenka.cgi / wbattle.pl` | `cgi_py/tenka.py / sub_def/battle_logic.py` | ラウンド番号をサーバー側照合 | 意図的 | 差異あり | 期待ラウンド以外を拒否し、勝敗/引分・賞金・EXP・制覇ログ・battle_limitを更新する。 |
+| 天下一武道会で対戦（`mode=battle, no=1〜3` / POST / 状態変更） | `旧版_ver2/tenka.cgi / wbattle.pl` | `cgi_py/tenka.py / sub_def/battle_logic.py` | ラウンド番号をサーバー側照合、戦闘全体をユーザーロックで直列化 | 意図的 | 差異あり | 期待ラウンド以外を拒否する。勝敗・進行のwin分岐は現行方針を維持し、戦闘前から保存までロックする。レベルアップ後のvit/max_hpで戦闘後HPを回復し、boss_flagが開始値を超える場合は開始値へ正規化する。 |
 
 ### 閲覧
 
