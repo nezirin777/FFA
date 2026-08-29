@@ -37,7 +37,7 @@
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
-| ログイン履歴 | `旧版_ver2/loginlog/<ID>.cgi` | `user_all.json:login_log / login.py` | 移行先login_logは残るが、現行ログイン処理から更新呼出しがない | 要判断 | 確認済み | Ver2 login.cgiはloginlog/<ID>.cgiを読んで日時・IP等を追加し上限処理する。Ver3にはlogin_log_load/login_log_registと移行項目があるが、login.pyからlogin_log_registを呼ばないため、新規ログイン履歴が蓄積されない。 |
+| ログイン履歴 | `旧版_ver2/loginlog/<ID>.cgi` | `user_all.json:login_log / login.py` | 移行先login_logは残るが、現行ログイン処理から更新呼出しがない | 意図的 | 確認済み | Ver2 login.cgiはloginlog/<ID>.cgiを読んで日時・IP等を追加し上限処理する。Ver3にはlogin_log_load/login_log_registと移行項目があるが、login.pyからlogin_log_registを呼ばないため、新規ログイン履歴が蓄積されない。平文パスワードを含むVer2の履歴機能は廃止で確定し、移行済みの過去値は互換データとして残す。 |
 | 受信・送信メッセージ | `旧版_ver2/message / sousin` | `user_all.json:message / save_data/<ID>/message_sent.json` | 変換先のmessage/message_sentは残るが、現行の送受信・既読・削除CGIが見当たらない | 要判断 | 確認済み | Ver2はmessage/sousinとpost_message.cgiで私信・送信箱・件数制限を扱う。Ver3のスキーマには受信messageとmessage_sentがあるものの、現行CGIから読み書きする経路を確認できず、機能廃止か未移植かを決める必要がある。 |
 | 全体メッセージ・掲示板 | `旧版_ver2/datalog/message.cgi / post_message.cgi` | `save_data/all_message.json / cgi_py/bbs.py / admin.py` | 全体ニュース(all_message)とプレイヤー掲示板(bbs)を別JSONへ分離 | 意図的 | 確認済み | Ver3は管理者・登録・イベント通知をall_messageへ、一般投稿をbbsへ保存し、双方を新着順・設定件数で切詰める。Ver2のpost_message.cgiは私信・制限操作を含む一体型であり、表示経路は再編されている。 |
 | 登録者・ランキング用キャッシュ | `旧版_ver2/alldata.cgi / rank.cgi` | `save_data/system_rank_cache.json / cgi_py/system.py / rank.py` | HTML出力キャッシュからJSONデータキャッシュへ移行 | 意図的 | 確認済み | 両版とも全登録者をレベル順に集計し、約24時間単位で再生成する。Ver3はsystem_rank_cacheとrank_cacheを分け、キャッシュ欠損・必要項目欠損時も再構築し、テンプレートで安全に表示する。 |
