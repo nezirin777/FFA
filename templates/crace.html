@@ -17,7 +17,28 @@
         </div>
     </div>
 
-    <!-- レース実況ログ（旧版のアナウンサー表示を再現） -->
+    <!-- Ver2のコース上でチョコボが走る演出を、現在のブラウザ向けに再現する。 -->
+    <section class="race-playback" aria-labelledby="race-playback-title">
+        <div class="race-playback__header">
+            <h2 id="race-playback-title">🏇 レース中継</h2>
+            <button type="button" class="btn race-playback__replay" data-race-replay>もう一度見る</button>
+        </div>
+        <div class="race-track" data-race-track aria-label="レースコース">
+            <span class="race-track__marker race-track__marker--start">START</span>
+            <span class="race-track__marker race-track__marker--goal">GOAL</span>
+            {% for runner in runners %}
+            <div class="race-runner" data-race-runner data-runner-index="{{ loop.index0 }}" style="--race-lane-top: {{ 30 + loop.index0 * 42 }}px; --race-progress: 0%;">
+                <img src="{{ config.chocobo_image_path }}/{{ runner.image }}" alt="{{ runner.name }}">
+                <span class="race-runner__name">{{ runner.name }}</span>
+                <span class="race-runner__rank" data-race-rank>{{ loop.index }}着</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="race-playback__status" aria-live="polite" data-race-status>まもなくスタートですクポ！</div>
+        <div class="race-playback__progress"><span data-race-progress></span></div>
+    </section>
+
+    <!-- 実況の全記録。再生後も全区間を読み返せる。 -->
     <div class="race-commentary">
         <div class="race-announcer">
             <img src="{{ config.chocobo_race_announcer_image }}" alt="レースアナウンサー">
@@ -55,4 +76,63 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+<script>
+(() => {
+    const turns = {{ turns | tojson }};
+    const track = document.querySelector('[data-race-track]');
+    const status = document.querySelector('[data-race-status]');
+    const progress = document.querySelector('[data-race-progress]');
+    const replay = document.querySelector('[data-race-replay]');
+    const runners = [...document.querySelectorAll('[data-race-runner]')];
+
+    if (!track || !status || !progress || !replay || !turns.length || runners.length !== 5) {
+        return;
+    }
+
+    // 全シミュレーション区間を均等に間引き、旧版と同程度の観戦時間にする。
+    const frameCount = Math.min(turns.length, 18);
+    const frames = Array.from({ length: frameCount }, (_, index) => (
+        turns[Math.round(index * (turns.length - 1) / Math.max(1, frameCount - 1))]
+    ));
+    let timerId = null;
+
+    function showFrame(frame, index) {
+        const order = [...frame.positions.keys()].sort((left, right) => frame.positions[left] - frame.positions[right]);
+        const ranks = Array(5);
+        order.forEach((runnerIndex, rank) => { ranks[runnerIndex] = rank + 1; });
+
+        runners.forEach((runner, runnerIndex) => {
+            const remaining = Math.max(0, Math.min(2400, Number(frame.positions[runnerIndex])));
+            const raceProgress = (2400 - remaining) / 24;
+            runner.style.setProperty('--race-progress', `${raceProgress}%`);
+            runner.querySelector('[data-race-rank]').textContent = `${ranks[runnerIndex]}着`;
+        });
+        status.innerHTML = frame.comment || '各チョコボが力走していますクポ！';
+        progress.style.width = `${((index + 1) / frames.length) * 100}%`;
+    }
+
+    function play() {
+        window.clearInterval(timerId);
+        let index = 0;
+        replay.disabled = true;
+        showFrame(frames[index], index);
+        timerId = window.setInterval(() => {
+            index += 1;
+            if (index >= frames.length) {
+                window.clearInterval(timerId);
+                replay.disabled = false;
+                return;
+            }
+            showFrame(frames[index], index);
+        }, 700);
+    }
+
+    replay.addEventListener('click', play);
+    play();
+})();
+</script>
 {% endblock %}

@@ -255,6 +255,28 @@
   .farm-chocobo-image {
     margin-inline: auto;
   }
+
+  .race-playback__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .race-playback__replay {
+    width: 100%;
+  }
+
+  .race-track {
+    min-height: 238px;
+  }
+
+  .race-runner {
+    max-width: 120px;
+    left: min(var(--race-progress), calc(100% - 128px));
+  }
+
+  .race-runner__name {
+    max-width: 60px;
+  }
   
   .farm-action-row {
     flex-direction: column;

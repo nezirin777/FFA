@@ -786,7 +786,8 @@ def main():
     for idx in range(5):
         runners_data.append({
             "name": names[idx],
-            "no": nos[idx]
+            "no": nos[idx],
+            "image": config.Config["choco_images"].get(nos[idx], config.Config["choco_images"][0]),
         })
 
     # テンプレートに渡す

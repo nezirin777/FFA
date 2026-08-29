@@ -3499,6 +3499,124 @@ img {
   margin: 0;
 }
 
+.race-playback {
+  overflow: hidden;
+  border: 1px solid var(--blue);
+  border-radius: var(--radius-m);
+  padding: var(--space-m);
+  background: rgba(0, 0, 35, 0.82);
+}
+
+.race-playback__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin-bottom: var(--space-s);
+}
+
+.race-playback__header h2 {
+  margin: 0;
+  color: var(--yellow);
+  font-size: 1.1rem;
+}
+
+.race-playback__replay {
+  white-space: nowrap;
+}
+
+.race-track {
+  position: relative;
+  min-height: 250px;
+  overflow: hidden;
+  border: 1px solid var(--sky-blue);
+  border-radius: var(--radius-s);
+  background: #152418 url("../images/choco/レース背景.gif") center / 100% 100% no-repeat;
+}
+
+.race-track__marker {
+  position: absolute;
+  z-index: 2;
+  top: var(--space-xs);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.race-track__marker--start {
+  left: var(--space-s);
+}
+
+.race-track__marker--goal {
+  right: var(--space-s);
+}
+
+.race-runner {
+  position: absolute;
+  z-index: 1;
+  left: min(var(--race-progress), calc(100% - 160px));
+  top: var(--race-lane-top);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 150px;
+  transition: left 620ms linear;
+}
+
+.race-runner img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+.race-runner__name,
+.race-runner__rank {
+  overflow: hidden;
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: bold;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.race-runner__name {
+  max-width: 78px;
+}
+
+.race-runner__rank {
+  color: var(--yellow);
+}
+
+.race-playback__status {
+  min-height: 2.8em;
+  margin-top: var(--space-s);
+  padding: var(--space-s);
+  border-left: 4px solid var(--yellow);
+  background: rgba(0, 0, 0, 0.48);
+  color: var(--white);
+}
+
+.race-playback__progress {
+  height: 5px;
+  margin-top: var(--space-s);
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.28);
+}
+
+.race-playback__progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--yellow);
+  transition: width 180ms linear;
+}
+
 .farm-status-table {
   width: 100%;
   border-collapse: collapse;
