@@ -674,9 +674,17 @@ FILE_AUDITS = (
         "file": "index.html",
         "v2_source": "旧版_ver2/index.html / 設置方法.txt",
         "scope": "公開入口、フレーム構成、主画面CGI、非対応ブラウザ時の案内、文字コード",
-        "difference": "Ver2のothers.cgiを現行はothers.pyへ置換し、UTF-8宣言を追加。1px白紙フレームと99%の主フレーム構成は一致",
-        "intent": "現行仕様を維持",
-        "note": "Ver2の設置手順でもindex.htmlを最初のアクセス先とし、サーバー構成によってothers.cgiを絶対パスへ変更する案内がある。現行は相対パスのothers.pyを主フレームffaへ読み込み、frame1.htmlを右側の1pxフレームとして維持する。フレームを使えない場合の案内も保持し、UTF-8化以外の入口構造は変更しない。",
+        "difference": "Ver2の1px白紙フレームと99%の主フレーム構成を廃止し、現行はothers.pyへ直接遷移する通常のUTF-8入口ページへ変更",
+        "intent": "フレーム廃止は意図的な現行改善",
+        "note": "Ver2の設置手順ではindex.htmlを最初のアクセス先とし、others.cgiを主フレームへ読み込む。現行は相対パスのothers.pyへmeta refreshとJavaScriptで遷移し、JavaScriptが使えない場合もリンクで開ける。フレームはモバイル表示・履歴・URL共有を不自然にし、補助用frame1.htmlも不要になるため削除する。",
+    },
+    {
+        "file": "frame1.html（削除）",
+        "v2_source": "旧版_ver2/frame1.html",
+        "scope": "index.htmlの1px右側フレーム用の空ページ、タイトル、表示内容",
+        "difference": "Ver2の1px白紙フレームを、フレーム構成の廃止に伴い削除",
+        "intent": "削除は意図的な現行改善",
+        "note": "旧index.htmlがcols=1,99%で読み込む補助フレームだったが、bodyは空でゲーム処理に関与しない。入口をothers.pyへの直接遷移へ変えたため参照先がなくなり、不要な補助ファイルとして削除する。",
     },
 )
 

@@ -57,7 +57,7 @@ python -c "import jinja2; print(jinja2.__version__)"</p>
 
   <h2>2. 現行ディレクトリ構成</h2>
   <div class="table-wrap"><table><thead><tr><th>場所</th><th>役割</th><th>公開・権限の扱い</th></tr></thead><tbody>
-    <tr><th scope="row"><code>index.html</code><br><code>frame1.html</code></th><td>公開トップと旧来フレーム入口。ログイン前ページは<code>others.py</code>から表示される。</td><td>公開可。ただしフレーム構成を変更する場合は入口URLを確認する。</td></tr>
+    <tr><th scope="row"><code>index.html</code></th><td>公開トップ。フレームを使わず、ログイン前ページの<code>others.py</code>へ直接遷移する。</td><td>公開可。入口URLを変更する場合は遷移先も確認する。</td></tr>
     <tr><th scope="row"><code>login.py</code></th><td>ログイン、セッション確認、<code>mode</code>による各コマンドへのルーティング、メイン画面表示。</td><td>CGIとして実行する。</td></tr>
     <tr><th scope="row"><code>chara_make.py</code><br><code>admin.py</code><br><code>others.py</code></th><td>キャラクター作成、管理画面、ログイン前トップの入口。</td><td>CGIとして実行する。管理画面は強いパスワードとアクセス制限を併用する。</td></tr>
     <tr><th scope="row"><code>cgi_py/</code></th><td>街、戦闘、ショップ、銀行、掲示板、チョコボなどのコマンド処理。</td><td>通常はURLから直接呼ぶ必要はないが、アプリケーションからimportされるため読み取り可能にする。</td></tr>
