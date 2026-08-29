@@ -542,6 +542,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "gold_gainedとexp_gainedは集計用コンテキストであり、表示は各呼出元がcommentへ組み立てる。通常修行・伝説・チャンピオンとも勝敗/時間切れ時の経験値文をcommentに含めることを確認した。道場は報酬0の固定文を渡す。safe出力するcommentと戦闘ログはサーバー側で組み立てた戦闘文だけで、プレイヤー入力を直接含めない。",
     },
+    {
+        "file": "templates/legend_error.html / templates/legend_ranking.html / cgi_py/legend.py",
+        "v2_source": "旧版_ver2/legend.cgi",
+        "scope": "伝説の戦いの待機時間、再挑戦、攻略中断、攻略者ランキング、戦闘開始のCSRF",
+        "difference": "Ver2の待機画面と攻略者一覧をJinjaテンプレートへ分離し、待機カウントダウン・中断確認・ランキングの整形表示を追加。戦闘開始CSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "view=rankingは保存を伴わない公開表示としてCSRF不要。通常入場mode=legendと待機/結果画面からのmode=bossではテンプレート送信のsを検証するよう修正済み。待機時間はクライアント表示だけでなく、再挑戦時にサーバー側でtraining_cooldown_secondsを再確認する。",
+    },
 )
 
 

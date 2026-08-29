@@ -48,10 +48,12 @@ try:
     import config
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def import battle_logic
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from . import config
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def import battle_logic
+    from sub_def.crypto import get_session, token_check
 
 parse_cookie_user = common.parse_cookie_user
 load_monsters = common.load_json_list
@@ -89,6 +91,9 @@ def main():
             "chara_img": config.Config["chara_images"]
         })
         return
+
+    if params.get("mode") in ("legend", "boss"):
+        token_check(params, get_session())
 
     user_id = params.get("id", "").strip()
     boss_file_param = params.get("boss_file", "0")
