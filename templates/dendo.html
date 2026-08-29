@@ -7,40 +7,77 @@
         <hr>
     </div>
 
+    {% if registered_msg %}
+    <div class="farm-msg-box">
+        <div class="farm-msg-content">{{ registered_msg }}</div>
+    </div>
+    {% endif %}
+
     <div class="farm-card">
         <div class="farm-card__title">👑 伝説の駿馬リスト</div>
-        <div class="table-wrapper">
-            <table class="shop-table dendo-table">
-                <thead>
-                    <tr>
-                        <th>殿堂No</th>
-                        <th>チョコボ名</th>
-                        <th>所有者</th>
-                        <th>スピード</th>
-                        <th>スタミナ</th>
-                        <th>最終クラス</th>
-                        <th>引退年齢</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for c in legends %}
-                    <tr>
-                        <td><b>{{ loop.index }}</b></td>
-                        <td class="yellow"><b>{{ c.name }}</b></td>
-                        <td>{{ c.owner }}</td>
-                        <td>{{ c.speed }}</td>
-                        <td>{{ c.stamina }}</td>
-                        <td>{{ c.class_name }}</td>
-                        <td>{{ c.age }} 歳</td>
-                    </tr>
+
+        {% for c in legends %}
+        <section class="farm-dendo-entry">
+            <div class="farm-dendo-entry__title">🏆 No.{{ loop.index }}　{{ c.name }}</div>
+            <div class="farm-chocobo-profile">
+                <div class="farm-chocobo-image">
+                    {% if c.image %}
+                    <img src="{{ config.chocobo_image_path }}/{{ c.image }}" alt="{{ c.name }}">
                     {% else %}
+                    🐤
+                    {% endif %}
+                </div>
+                <table class="farm-status-table">
                     <tr>
-                        <td colspan="7" class="msg-empty">殿堂入りしたチョコボはいません。</td>
+                        <td class="farm-lbl-header">所有者</td>
+                        <td class="farm-val-cell">{{ c.breader }}</td>
+                        <td class="farm-lbl-header">最終クラス</td>
+                        <td class="farm-val-cell">{{ c.class_name }}</td>
                     </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    <tr>
+                        <td class="farm-lbl-header">性別</td>
+                        <td class="farm-val-cell">{{ c.sex_label }}</td>
+                        <td class="farm-lbl-header">タイプ</td>
+                        <td class="farm-val-cell">{{ c.type_label }}</td>
+                    </tr>
+                    <tr>
+                        <td class="farm-lbl-header">父 / 母</td>
+                        <td class="farm-val-cell" colspan="3">{{ c.father }} / {{ c.mother }}</td>
+                    </tr>
+                    <tr>
+                        <td class="farm-lbl-header">出走 / 勝数</td>
+                        <td class="farm-val-cell">{{ c.run }} 戦 {{ c.win }} 勝</td>
+                        <td class="farm-lbl-header">訓練数</td>
+                        <td class="farm-val-cell">{{ c.train }} 回</td>
+                    </tr>
+                    <tr>
+                        <td class="farm-lbl-header">総合限界</td>
+                        <td class="farm-val-cell">{{ c.max }}</td>
+                        <td class="farm-lbl-header">想定引取額</td>
+                        <td class="farm-val-cell">{{ c.money }} G</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="farm-chocobo-abilities" aria-label="{{ c.name }} の能力ランク">
+                {% for ability in c.abilities %}
+                <div class="farm-chocobo-ability">
+                    <span>{{ ability.label }}</span>
+                    <img src="{{ config.chocobo_image_path }}/{{ rank_imgs[ability.rank_idx] }}" alt="{{ ability.label }} {{ ability.value }}">
+                    <b>{{ ability.value }}</b>
+                </div>
+                {% endfor %}
+            </div>
+            {% if c.trophies %}
+            <div class="farm-dendo-entry__trophies">
+                {% for trophy in c.trophies %}
+                <span class="farm-trophy-item {% if trophy.is_g1 %}farm-trophy-item--g1{% else %}farm-trophy-item--g2{% endif %}">🏆 {{ trophy.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+        {% else %}
+        <div class="msg-empty">殿堂入りしたチョコボはいません。</div>
+        {% endfor %}
     </div>
 
     <!-- 戻るボタン -->

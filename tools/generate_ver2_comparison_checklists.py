@@ -310,6 +310,14 @@ FILE_AUDITS = (
         "intent": "CSRF検証、空名の直接配合拒否、prebirth乱数、配合時の乱数分布、引退金と誤認させる表示は不具合を修正済み／候補枠は現行仕様を維持",
         "note": "野生購入時の初期値、候補数1〜5、血統表、能力上限・初期能力、休養の5,000G・200〜499回復・max加算は一致する。Ver2のprebirthはint(rand(相手祖先合計)+rand(自分祖先合計))であり、合算してから切り捨てる。配合時の性別と突然変異画像・タイプは、Ver2のint(rand(1.9))・int(rand(7.999))・int(rand(5.1))へ修正し、端数を含む分布を再現する。候補は現行の性別別・設定上限100件のJSONリストを維持する。Ver2の性別ごとの固定99枠、および同じ育て親の引退個体を25%で追加表示する挙動は採用しない。メス親時のVer2は相手決定前の父名を使う不具合があり、現行の選択相手名を使う実装を維持する。引退でキャラクター所持金は増えず、候補としての想定引取額だけを記録する。重賞履歴はVer2が世代をまたいで残すのに対し、現行は野生購入・配合時に新世代用へ空にする意図的仕様。",
     },
+    {
+        "file": "cgi_py/dendo.py / templates/dendo.html",
+        "v2_source": "旧版_ver2/dendo.cgi / crace2.cgi / rireki.cgi / denchoco.cgi",
+        "scope": "殿堂登録・同名更新、登録対象、重賞履歴、公開一覧、能力ランク、血統・戦績・トロフィー表示、本人認証・CSRF",
+        "difference": "JSON・テンプレート・本人認証へ移行。現行は一覧を認証済み利用者に限る。テンプレートは所有者の未定義参照、能力等の表示欠落、maxmaxの年齢誤表示、登録完了メッセージ未表示があった",
+        "intent": "CSRF検証と殿堂詳細表示の不備を修正済み／登録条件はVer2、一覧の公開範囲は現行仕様を維持",
+        "note": "Ver2と同じくIDとチョコボ名が一致する登録は先頭へ更新し、新規は先頭へ追加する。登録時はVer2どおり重賞数を問わず、名前付きの現役チョコボを対象とする。一覧はVer2ではログイン不要だが、現行の本人認証済み利用者限定を維持する。Ver2の殿堂一覧は画像・性別・タイプ・父母・戦績・訓練・能力ランク・重賞を表示しており、現行でも復元した。引退年齢として表示していたmaxmaxは年齢ではないため廃止し、想定引取額を表示する。現行は登録時点のトロフィーを殿堂データにスナップショットするため、世代交代後も記録が混ざらない。",
+    },
 )
 
 
@@ -1463,7 +1471,7 @@ def command_action_rows() -> list[dict[str, str]]:
         action_row("チョコボ", "チョコボを休ませる", "mode=yadoya", "POST", "状態変更", "旧版_ver2/morifarm.cgi", "cgi_py/morifarm.py", "寿命・体力の回復、費用、待機時間"),
         action_row("チョコボ", "チョコボを手放す", "mode=choco_sell", "POST", "状態変更", "旧版_ver2/morifarm.cgi", "cgi_py/morifarm.py", "引退先、売却額、取り消し不可"),
         action_row("チョコボ", "チョコボ殿堂を表示", "mode=list", "POST", "表示", "旧版_ver2/dendo.cgi", "cgi_py/dendo.py / templates/chocofarm.html", "登録済み一覧、トロフィー表示、表示用modeと登録用modeの分離"),
-        action_row("チョコボ", "チョコボを殿堂登録", "mode=dendo", "POST", "状態変更", "旧版_ver2/dendo.cgi", "cgi_py/dendo.py", "重賞3勝条件、重複登録、保存値"),
+        action_row("チョコボ", "チョコボを殿堂登録", "mode=dendo", "POST", "状態変更", "旧版_ver2/dendo.cgi", "cgi_py/dendo.py", "名前、重複登録、保存値"),
         action_row("チョコボ", "チョコボランキングを表示", "mode=ranking", "POST", "表示", "旧版_ver2/chocorank.cgi", "cgi_py/chocorank.py", "部門、ランキング対象、表示値"),
         action_row("チョコボ", "チョコボ王者戦", "mode=farmrace", "POST", "状態変更", "旧版_ver2/farmrace.cgi", "cgi_py/farmrace.py", "挑戦条件、勝敗、王者更新、待機時間"),
     ))
@@ -1718,7 +1726,7 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
             elif name == "殿堂レジェンドレース":
                 difference, note, intent = "殿堂JSONをライバル表へ利用", "race_dendoだけdenchoco.jsonを参照し、出走資格・寿命・結果報酬を通常レースと分けて処理する。", "意図的"
             elif name == "チョコボを殿堂登録":
-                difference, note, intent = "重賞3個条件を追加", "Ver2にないG1/G2タイトル3個を検査し、同ID・同名は上書き、他は先頭追加する。", "要判断"
+                difference, note, intent = "JSON・CSRF・本人認証へ移行", "Ver2と同じく名前付きの現役チョコボを登録し、同ID・同名は上書き、他は先頭追加する。", "意図的"
             elif name == "チョコボを手放す":
                 difference, note, intent = "未所持値を明示消去し候補リストをJSON化", "名前付き個体だけを性別別お見合い候補へ移し、chocoを空辞書へ戻す。候補固定枠廃止は要判断。", "要判断"
             elif name == "野生チョコボを購入":
@@ -1935,7 +1943,7 @@ def write_progression_checklist() -> None:
                 ("訓練・休養による状態変化", "旧版_ver2/ctrain.cgi / morifarm.cgi", "cgi_py/ctrain.py / cgi_py/morifarm.py", "各能力、寿命・体力、失敗、副作用、費用・待機時間"),
                 ("通常レースの戦績・クラス進行", "旧版_ver2/crace.cgi", "cgi_py/crace.py / user_all.json:choco", "run、win、gold、class条件、寿命、敗北時の変化"),
                 ("G1/G2の個人トロフィー履歴", "旧版_ver2/chocog1/<ID>.cgi", "user_all.json:choco_g1 / cgi_py/crace.py", "r1〜r22、開催日・性別条件、重複勝利、殿堂条件"),
-                ("チョコボ殿堂の共有リスト", "旧版_ver2/denchoco.cgi / dendo.cgi", "save_data/denchoco.json / cgi_py/dendo.py", "3重賞条件、同一チョコボの上書き、保存項目、一覧"),
+                ("チョコボ殿堂の共有リスト", "旧版_ver2/denchoco.cgi / dendo.cgi", "save_data/denchoco.json / cgi_py/dendo.py", "登録対象、同一チョコボの上書き、保存項目、一覧"),
                 ("チョコボ王者", "旧版_ver2/chocowinner.cgi / farmrace.cgi", "save_data/chocobo_champion.json / cgi_py/farmrace.py", "挑戦条件、勝者更新、連勝・前王者、初期値"),
             )),
             ("記録・共有状態", (
@@ -1963,7 +1971,7 @@ def _require_ownership_progression_source_snippets() -> None:
         "旧版_ver2/crace.cgi": ("./g1/$chara[0].cgi", "farm_choco_regist", "$crun"),
         "cgi_py/crace.py": ("choco_g1_regist", "save_user_sections", "race_dendo"),
         "旧版_ver2/dendo.cgi": ("sub dendo", "./denchoco.cgi", "./rireki.cgi"),
-        "cgi_py/dendo.py": ("trophies_count < 3", "choco_list_regist(\"denchoco\"", '"trophies"'),
+        "cgi_py/dendo.py": ("token_check(in_params, get_session())", "choco_list_regist(\"denchoco\"", '"trophies"'),
         "旧版_ver2/farmrace.cgi": ("read_farm_winner", "./farmwinner.cgi", "$wcren"),
         "cgi_py/farmrace.py": ("chocobo_champion_load", "new_winner", "chocobo_champion_register"),
         "旧版_ver2/login.cgi": ("./loginlog/$in{'id'}.cgi", "loginlog"),
@@ -2104,10 +2112,10 @@ def ownership_progression_comparisons() -> dict[str, dict[str, str]]:
             "note": "重賞勝利時だけ対象レースIDを1として保存し、同一レースの再勝利は同じ個人フラグを維持する。開催日・性別・レース進行の条件はcraceの分岐で処理し、保存は個体と分離されたまま引退後も残す。",
         },
         "チョコボ殿堂の共有リスト": {
-            "difference": "denchoco行レコードからJSON＋トロフィー名の埋込へ移行。重賞3個を登録条件に追加",
-            "intent": "要判断",
+            "difference": "denchoco行レコードからJSON＋トロフィー名の埋込へ移行。登録条件はVer2に合わせ、一覧はログイン済み利用者に限定",
+            "intent": "意図的",
             "status": "確認済み",
-            "note": "同一ID・同名は上書き、異なる個体は先頭追加する。Ver2のdendo.cgiはテストID以外に重賞数を検査しないが、Ver3はG1/G2 3個未満を拒否するため、この追加制限の採否を確認する必要がある。",
+            "note": "同一ID・同名は上書き、異なる個体は先頭追加する。登録時はVer2と同じく重賞数を問わず、名前付きの現役チョコボを対象とする。Ver2では公開一覧を未ログインでも閲覧できたが、現行はログイン済み利用者に限定する。",
         },
         "チョコボ王者": {
             "difference": "farmwinner行レコードからchocobo_champion.jsonへ移行",

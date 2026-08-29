@@ -69,6 +69,10 @@ def main():
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
+    if mode == "dendo":
+        from sub_def.crypto import get_session, token_check
+        token_check(in_params, get_session())
+
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
     if not chara:
@@ -100,17 +104,11 @@ def main():
             
         # 個人重賞履歴のロード
         g1_raw = common.choco_g1_load(user_id)
-        trophies_count = 0
         my_trophies = []
         if g1_raw:
             for k in RACE_NAMES.keys():
                 if g1_raw.get(k, 0) > 0:
-                    trophies_count += 1
                     my_trophies.append(RACE_NAMES[k])
-                    
-        # 3冠チェック
-        if trophies_count < 3:
-            common.show_error(f"重賞(G1/G2)タイトルを3つ以上獲得していません。(現在: {trophies_count}個)")
 
         # 殿堂リストをロード
         common.get_lock("dendo_list")
@@ -200,52 +198,45 @@ def main():
             return "グレードⅡ"
         return "グレードⅠ"
 
+    ability_labels = ("スピード", "スタミナ", "粘り", "落ち着き", "闘争心", "賢さ", "反射神経")
+    image_files = config.Config["choco_images"]
+
     for dc in dendo_list:
-        # トロフィー文字列
-        trophy_list = dc.get("trophies", [])
-        if trophy_list:
-            # G1(赤)とG2(青)を色分けして表示するための文字列生成
-            trophy_elements = []
-            for t_name in trophy_list:
-                # G1/G2の判定 (RACE_NAMES のキー r1..r11 は G1、r12..r22 は G2)
-                is_g1 = False
-                for r_key, r_name in RACE_NAMES.items():
-                    if r_name == t_name:
-                        is_g1 = int(r_key[1:]) <= 11
-                        break
-                color = "red" if is_g1 else "blue"
-                trophy_elements.append(f'<span class="{color}">● {t_name}</span>')
-            trophy_str = "  ".join(trophy_elements)
-        else:
-            trophy_str = "なし"
-            
-        win_count = int(dc.get("win", 0) or 0)
+        trophy_data = []
+        for trophy_name in dc.get("trophies", []):
+            race_key = next((key for key, name in RACE_NAMES.items() if name == trophy_name), "")
+            trophy_data.append({
+                "name": trophy_name,
+                "is_g1": bool(race_key and int(race_key[1:]) <= 11),
+            })
+
+        win_count = common.to_int(dc.get("win"), 0)
+        ability_values = [common.to_int(dc.get(f"c{index}"), 10) for index in range(7)]
+        image_id = common.to_int(dc.get("no"), 0)
         formatted_dendo.append({
             "name": dc.get("name", "名無し"),
             "breader": dc.get("breader", "不明"),
-            "no": dc.get("no", 0),
-            "sex": dc.get("sex", 0),
-            "type": dc.get("type", 0),
-            "run": dc.get("run", 0),
+            "image": image_files.get(image_id, image_files.get(0, "")),
+            "sex_label": "オス" if common.to_int(dc.get("sex"), 0) == 1 else "メス",
+            "type_label": types.get(common.to_int(dc.get("type"), 0), "不明"),
+            "run": common.to_int(dc.get("run"), 0),
             "win": win_count,
-            "train": dc.get("train", 0),
-            "max": dc.get("max", 10),
-            "maxmax": dc.get("maxmax", dc.get("max", 0)),
-            "gold": dc.get("gold", 0),
+            "train": common.to_int(dc.get("train"), 0),
+            "max": common.to_int(dc.get("max"), 10),
+            "maxmax": common.to_int(dc.get("maxmax"), common.to_int(dc.get("max"), 0)),
+            "money": common.to_int(dc.get("gold"), 0) * 100,
             "father": dc.get("father", "不明"),
             "mother": dc.get("mother", "不明"),
-            "c0_t": min(len(rank_imgs) - 1, int(dc.get("c0", 10) / 100)),
-            "c1_t": min(len(rank_imgs) - 1, int(dc.get("c1", 10) / 100)),
-            "c2_t": min(len(rank_imgs) - 1, int(dc.get("c2", 10) / 100)),
-            "c3_t": min(len(rank_imgs) - 1, int(dc.get("c3", 10) / 100)),
-            "c4_t": min(len(rank_imgs) - 1, int(dc.get("c4", 10) / 100)),
-            "c5_t": min(len(rank_imgs) - 1, int(dc.get("c5", 10) / 100)),
-            "c6_t": min(len(rank_imgs) - 1, int(dc.get("c6", 10) / 100)),
-            "speed": dc.get("c0", 10),
-            "stamina": dc.get("c1", 10),
+            "abilities": [
+                {
+                    "label": label,
+                    "value": value,
+                    "rank_idx": min(len(rank_imgs) - 1, max(0, value // 100)),
+                }
+                for label, value in zip(ability_labels, ability_values)
+            ],
             "class_name": class_name_from_wins(win_count),
-            "age": dc.get("maxmax", dc.get("max", 0)),
-            "trophy_str": trophy_str
+            "trophies": trophy_data,
         })
 
     context = {

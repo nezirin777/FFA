@@ -3580,6 +3580,29 @@ img {
   color: var(--yellow);
 }
 
+.farm-dendo-entry {
+  padding: var(--space-m) 0;
+  border-bottom: 1px dashed var(--dark);
+}
+
+.farm-dendo-entry:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.farm-dendo-entry__title {
+  margin-bottom: var(--space-s);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.farm-dendo-entry__trophies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  margin-top: var(--space-m);
+}
+
 .farm-trophy-grid {
   display: flex;
   flex-wrap: wrap;

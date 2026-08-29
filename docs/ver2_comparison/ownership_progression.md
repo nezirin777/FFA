@@ -30,7 +30,7 @@
 | 訓練・休養による状態変化 | `旧版_ver2/ctrain.cgi / morifarm.cgi` | `cgi_py/ctrain.py / cgi_py/morifarm.py` | 保存形式をJSON化し、不正mode・未所持を明示検証 | 意図的 | 確認済み | 訓練は20回試行、train+1・life-50・max+5、能力上限・潜在力・寿命処理を引き継ぐ。休養はG5000、lifeに200〜499加算（1000超過時max追加）、train+1・max+10で、計算式はVer2と対応する。 |
 | 通常レースの戦績・クラス進行 | `旧版_ver2/crace.cgi` | `cgi_py/crace.py / user_all.json:choco` | レース状態・相手をJSON化し、入力modeを明示検証 | 意図的 | 確認済み | run/win/gold・寿命・クラス到達条件を個体状態へ反映し、通常レース・重賞・殿堂レースを同じ個体データで進行する。現行は候補読み込みと結果保存を原子的に行い、無効なレース種別を受け付けない。 |
 | G1/G2の個人トロフィー履歴 | `旧版_ver2/chocog1/<ID>.cgi` | `user_all.json:choco_g1 / cgi_py/crace.py` | chocog1の22列レコードからchoco_g1のr1〜r22辞書へ移行 | 意図的 | 確認済み | 重賞勝利時だけ対象レースIDを1として保存し、同一レースの再勝利は同じ個人フラグを維持する。開催日・性別・レース進行の条件はcraceの分岐で処理し、保存は個体と分離されたまま引退後も残す。 |
-| チョコボ殿堂の共有リスト | `旧版_ver2/denchoco.cgi / dendo.cgi` | `save_data/denchoco.json / cgi_py/dendo.py` | denchoco行レコードからJSON＋トロフィー名の埋込へ移行。重賞3個を登録条件に追加 | 要判断 | 確認済み | 同一ID・同名は上書き、異なる個体は先頭追加する。Ver2のdendo.cgiはテストID以外に重賞数を検査しないが、Ver3はG1/G2 3個未満を拒否するため、この追加制限の採否を確認する必要がある。 |
+| チョコボ殿堂の共有リスト | `旧版_ver2/denchoco.cgi / dendo.cgi` | `save_data/denchoco.json / cgi_py/dendo.py` | denchoco行レコードからJSON＋トロフィー名の埋込へ移行。登録条件はVer2に合わせ、一覧はログイン済み利用者に限定 | 意図的 | 確認済み | 同一ID・同名は上書き、異なる個体は先頭追加する。登録時はVer2と同じく重賞数を問わず、名前付きの現役チョコボを対象とする。Ver2では公開一覧を未ログインでも閲覧できたが、現行はログイン済み利用者に限定する。 |
 | チョコボ王者 | `旧版_ver2/chocowinner.cgi / farmrace.cgi` | `save_data/chocobo_champion.json / cgi_py/farmrace.py` | farmwinner行レコードからchocobo_champion.jsonへ移行 | 意図的 | 確認済み | 現王者への挑戦、勝者の個体・ブリーダー情報への交代、敗北時の連勝・前王者情報の更新を維持する。現行は欠損した旧キーを正規化し、王者共有データを専用ロックで保存する。 |
 
 ## 記録・共有状態
