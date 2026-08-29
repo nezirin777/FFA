@@ -70,6 +70,10 @@ def main():
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
 
+    # 訓練は常に状態変更のため、直接実行時もCSRF検証を省略しない。
+    from sub_def.crypto import get_session, token_check
+    token_check(in_params, get_session())
+
     # キャラクターデータのロード
     chara = common.chara_load(user_id)
     if not chara:
@@ -89,6 +93,9 @@ def main():
         "back_params": {"id": user_id, "mydata": chara_log},
         "back_label": "牧場に戻る",
     }
+
+    if not cname or cname == "名無しのチョコボ":
+        common.show_error("チョコボに名前を付けてからトレーニングしてください。", back_ctx)
 
     # 体力チェック (200未満なら不可)
     if clife < 200:
@@ -342,17 +349,6 @@ def main():
             c0 -= int(lose / 2 + 1)
             agari = "すべて失敗クポ……瞬発力が低下してしまったクポ。"
 
-    # パラメータの下限チェック (マイナスなら 1 にして最大限界値を -5)
-    c_vals = [c0, c1, c2, c3, c4, c5, c6]
-    c_names = ["瞬発力", "持久力", "粘り強さ", "落ち着き", "闘争心", "知力", "切れ味"]
-    for idx in range(7):
-        if c_vals[idx] < 0:
-            genkai += f"{c_names[idx]}が低下しすぎて、チョコボがひねくれてしまったクポ！（最大能力限界 -5）<br>"
-            c_vals[idx] = 1
-            cmaxmax -= 5
-            
-    c0, c1, c2, c3, c4, c5, c6 = c_vals
-
     # 老衰チェック
     ctrain += 1
     if ctrain + crun > 1000:
@@ -389,6 +385,17 @@ def main():
     if c6 > cmax6_v:
         genkai += "切れ味の個別の限界に達したクポ！<br>"
         c6 = cmax6_v
+
+    # Ver2と同じく、老衰・個別上限を反映してから負能力の副作用を処理する。
+    c_vals = [c0, c1, c2, c3, c4, c5, c6]
+    c_names = ["瞬発力", "持久力", "粘り強さ", "落ち着き", "闘争心", "知力", "切れ味"]
+    for idx in range(7):
+        if c_vals[idx] < 0:
+            genkai += f"{c_names[idx]}が低下しすぎて、チョコボがひねくれてしまったクポ！（最大能力限界 -5）<br>"
+            c_vals[idx] = 1
+            cmaxmax -= 5
+
+    c0, c1, c2, c3, c4, c5, c6 = c_vals
 
     # 寿命・限界値の計算
     clife -= 50
