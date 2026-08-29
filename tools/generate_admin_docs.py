@@ -844,7 +844,7 @@ def security_specs() -> str:
     ["新規登録", "character_creation.lock", "確認画面を複数タブから送信した場合も、ID・名前・ホストの再確認と登録を一つの区間で行う。"],
     ["共有データ", "winner、all_message_post、bbs_post、tenka_*、rirekiなど", "チャンプ、ニュース、掲示板、履歴の取りこぼし・上書きを防ぐ。"],
     ["バックアップ", "backup_snapshot / backup_restore", "日次コピー・復元中の保存処理を待たせ、復元操作を一つに直列化する。"],
-    ["タイムアウト", "common.get_lockは10秒、file_opsのexLockは15秒が既定", "取得できない場合はTimeoutError。finallyでrelease_lock/unlockする。"],
+    ["タイムアウトと残存ロック", f"common.get_lockは10秒、file_opsのexLockは15秒が既定。{num(c['lock_stale_seconds'])}秒を超えた空ロックだけ自動解除", "異常終了で残ったロックは次回取得時に回復する。0以下で自動解除を無効化でき、通常処理や日次バックアップが閾値を超える運用では設定値を上げる。"],
     ["アトミック保存", "同じディレクトリの一時JSONへ書き、flush/fsync後にos.replace", "書き込み途中のJSONを本体として見せない。"],
 ], row_headers=True)}
 <h2>重要な運用上の注意</h2>

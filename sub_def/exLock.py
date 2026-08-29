@@ -6,9 +6,10 @@ import time
 from . import lock_state
 
 class exLock:
-    def __init__(self, lock_path: str, timeout: int = 15):
+    def __init__(self, lock_path: str, timeout: int = 15, stale_seconds: int = 300):
         self.lock_path = lock_path
         self.timeout = timeout
+        self.stale_seconds = stale_seconds
         self.locked = False
         
     def lock(self) -> bool:
@@ -26,6 +27,8 @@ class exLock:
                 return True
             except FileExistsError:
                 # すでにロックが存在する場合は一定時間スリープして再試行
+                if lock_state.remove_stale_lock_dir(self.lock_path, self.stale_seconds):
+                    continue
                 if time.time() - start_time > self.timeout:
                     # タイムアウト
                     return False

@@ -20,6 +20,10 @@ Config["save_dir"] = os.path.join(BASE_DIR, "save_data")
 Config["lock_dir"] = os.path.join(BASE_DIR, "lock")
 Config["template_dir"] = os.path.join(BASE_DIR, "templates")
 
+# 異常終了で残ったロックを自動解除するまでの秒数。通常の保存や日次バックアップが
+# この時間を超える運用では値を上げる。0以下にすると自動解除を無効化する。
+Config["lock_stale_seconds"] = 300
+
 # 日次セーブバックアップ。save_dataの外に置き、バックアップ自身を再コピーしない。
 Config["backup_dir"] = os.path.join(BASE_DIR, "backups")
 Config["backup_enabled"] = True

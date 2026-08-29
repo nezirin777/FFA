@@ -406,6 +406,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "create_daily_backupは日付名とmanifestを検証し、同日分が有効なら二重作成せず、tmpコピー後に置換する。保持日数はconfig.pyで設定し、日付形式のフォルダだけを削除する。復元はmaintenance_mode中に限り、backup_restoreとbackup_snapshotをこの順で取得して現行save_dataをpre_restoreへ退避する。protected_usersの固定バックアップはadmin.pyが手動配置済みデータを復元する仕組みであり、自動作成は未実装のまま運用資料へ明記する。",
     },
+    {
+        "file": "sub_def/exLock.py / sub_def/lock_state.py",
+        "v2_source": "旧版_ver2/regist.pl:lock,unlock / data/ffadventure.ini:lockkey=2",
+        "scope": "ファイルI/O用ディレクトリロック、取得待機、同一スレッド再入、解放時の参照数、取得不能時の扱い、異常終了後の残存ロック",
+        "difference": "Ver2の設定式symlink・空ファイル・flockロック（実設定は空ファイル、1秒間隔で最大5回）を、os.mkdirによる固定ディレクトリロックと0.2秒間隔・既定15秒待機へ移行。現行はスレッド単位の再入参照数も持つ",
+        "intent": "現行仕様を維持",
+        "note": "exLockは同一スレッドが保持中ならlock_stateの参照数だけを増やし、内側のunlockではロックディレクトリを残す。最後のunlockだけがrmdirすることを検証済み。異常終了後の残存ロックはconfig.pyのlock_stale_seconds（既定300秒）を超えた場合だけ、現プロセス内の保持者がいないことを確認して空ディレクトリを自動削除する。0以下で自動回復を止められる。",
+    },
 )
 
 
@@ -2368,10 +2376,10 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "note": "user_all.jsonのsave_user_sectionsは呼出側がユーザーロックを保持する契約。全呼出元がこの契約を守ることが前提になる。",
         },
         "ユーザー・共有データのロック": {
-            "difference": "Ver2はsymlink/空ファイル/flockを設定で切替え、再試行・古いロック削除を行う。Ver3はos.mkdirディレクトリロック、同一スレッド再入管理、10/15秒タイムアウトを使う。",
+            "difference": "Ver2はsymlink/空ファイル/flockを設定で切替え、再試行・古いロック削除を行う。Ver3はos.mkdirディレクトリロック、同一スレッド再入管理、10/15秒タイムアウトと設定式の残存ロック自動回復を使う。",
             "intent": "意図的",
             "status": "差異あり",
-            "note": "finallyでrelease_lock/unlockする設計。Ver3は古いロックを自動削除せずタイムアウトで失敗させる。",
+            "note": "finallyでrelease_lock/unlockする設計。Ver3はlock_stale_seconds（既定300秒）を超えた空ディレクトリだけを再取得時に削除し、0以下なら自動回復を無効化できる。",
         },
         "バックアップ中のスナップショット排他": {
             "difference": "Ver2に保存と全体コピーを直列化する仕組みはない。Ver3は通常保存・日次作成・復元がbackup_snapshotロックを共有する。",

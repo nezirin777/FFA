@@ -176,6 +176,7 @@ def get_lock(lock_name, timeout=10):
     """
     os.makedirs(Config['lock_dir'], exist_ok=True)
     lock_path = os.path.join(Config['lock_dir'], f"{lock_name}.lock")
+    stale_seconds = Config.get("lock_stale_seconds", 300)
 
     if lock_state.is_owned(lock_path):
         lock_state.enter(lock_path)
@@ -188,6 +189,8 @@ def get_lock(lock_name, timeout=10):
             lock_state.enter(lock_path)
             return True
         except FileExistsError:
+            if lock_state.remove_stale_lock_dir(lock_path, stale_seconds):
+                continue
             if time.time() - start_time > timeout:
                 raise TimeoutError(f"ロックタイムアウト: {lock_name}")
             time.sleep(0.2)

@@ -20,6 +20,11 @@ except ImportError:
 Config = config.Config
 
 
+def _file_lock(lock_path: str) -> exLock.exLock:
+    """保存用ロックを設定済みの残存ロック猶予時間で作成する。"""
+    return exLock.exLock(lock_path, stale_seconds=Config.get("lock_stale_seconds", 300))
+
+
 def _normalize_loaded_data(data: Any) -> Any:
     """旧データに残るHTMLエンティティを読み込み時に正規化する。"""
     def normalize(value: Any) -> Any:
@@ -65,13 +70,13 @@ def save_data_atomically(data: Any, file_path: str, lock_name: str) -> None:
     # バックアップ作成・復元中は新しい保存を待たせ、スナップショットの
     # 途中状態を避ける。通常保存側から先に取得するため、既存の個別ロック
     # と組み合わせてもデッドロックしない。
-    snapshot_lock = exLock.exLock(os.path.join(lock_dir, "backup_snapshot.lock"))
+    snapshot_lock = _file_lock(os.path.join(lock_dir, "backup_snapshot.lock"))
     if not snapshot_lock.lock():
         raise TimeoutError("排他ロックの取得に失敗しました: backup_snapshot")
 
     try:
         # exLock による排他制御 (二重書き込み、読み書き競合の完全防御)
-        lock = exLock.exLock(os.path.join(lock_dir, f"{lock_name}.lock"))
+        lock = _file_lock(os.path.join(lock_dir, f"{lock_name}.lock"))
         if not lock.lock():
             raise TimeoutError(f"排他ロックの取得に失敗しました: {lock_name}")
 
@@ -87,7 +92,7 @@ def load_data_with_lock(file_path: str, lock_name: str) -> Any:
     lock_dir = Config.get("lock_dir", "./lock")
     os.makedirs(lock_dir, exist_ok=True)
     
-    lock = exLock.exLock(os.path.join(lock_dir, f"{lock_name}.lock"))
+    lock = _file_lock(os.path.join(lock_dir, f"{lock_name}.lock"))
     if not lock.lock():
         raise TimeoutError(f"排他ロックの取得に失敗しました: {lock_name}")
         
@@ -106,11 +111,11 @@ def update_data_atomically(file_path: str, lock_name: str, updater, default: Any
     """JSONのread-modify-writeを同じロック区間で完了し、更新後の値を返す。"""
     lock_dir = Config.get("lock_dir", "./lock")
     os.makedirs(lock_dir, exist_ok=True)
-    snapshot_lock = exLock.exLock(os.path.join(lock_dir, "backup_snapshot.lock"))
+    snapshot_lock = _file_lock(os.path.join(lock_dir, "backup_snapshot.lock"))
     if not snapshot_lock.lock():
         raise TimeoutError("排他ロックの取得に失敗しました: backup_snapshot")
     try:
-        lock = exLock.exLock(os.path.join(lock_dir, f"{lock_name}.lock"))
+        lock = _file_lock(os.path.join(lock_dir, f"{lock_name}.lock"))
         if not lock.lock():
             raise TimeoutError(f"排他ロックの取得に失敗しました: {lock_name}")
         try:
