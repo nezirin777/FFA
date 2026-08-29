@@ -566,6 +566,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "全画面が閲覧専用で、CSRF対象の保存操作はない。登録者一覧は1ページ20名、要求ページを有効範囲へ収め、system_rank_cache_buildロック下でキャッシュを再構築する。公開プロフィールは既決定どおり性別と所持金を公開し、キャラクター/装備/職業熟練度を読み取り専用で表示する。",
     },
+    {
+        "file": "templates/tenka.html / templates/tenka_result.html / templates/tenka_error.html / cgi_py/tenka.py",
+        "v2_source": "旧版_ver2/tenka.cgi",
+        "scope": "天下一参加、対戦相手選択、連戦、待機、戦闘報酬/結果、挑戦回数、攻略履歴、CSRF",
+        "difference": "Ver2の画面内HTMLを参加・結果・待機テンプレートへ分離し、結果画面で経験値/所持金変動を明示。戦闘回数/待機は現行設定化し、CSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "mode=battleは初戦、次戦、待機解除のすべてで保存を伴うため、外側の戦闘ロック取得前にテンプレート送信のsを一度だけ検証するよう修正済み。待機時間・対戦回数・要求ラウンドはサーバー側でも再検証し、表示だけのロビーは状態変更しない。",
+    },
 )
 
 

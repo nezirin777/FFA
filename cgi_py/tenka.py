@@ -52,10 +52,12 @@ try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     import config
     from sub_def import battle_logic
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
     from sub_def import battle_logic
+    from sub_def.crypto import get_session, token_check
 
 def update_tenka_members():
     """天下一武道会メンバーリスト(all_tenka)を更新します"""
@@ -158,6 +160,9 @@ def main(_battle_lock_held=False):
     common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
+
+    if mode == "battle" and not _battle_lock_held:
+        token_check(in_params, get_session())
 
     # Ver2と同じく、天下一の戦闘はキャラクターを読み込む前から
     # 結果を保存し終えるまでユーザー単位で直列化する。
