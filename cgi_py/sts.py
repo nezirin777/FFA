@@ -46,9 +46,11 @@ import json
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     import config
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
+    from sub_def.crypto import get_session, token_check
 
 # Windows等で標準出力をUTF-8にする設定
 def main():
@@ -65,6 +67,7 @@ def main():
 
     if mode == "st_buy":
         # === ステータス更新処理 ===
+        token_check(in_params, get_session())
         # 戻るフォーム (error.html 側で最新のCSRFトークン付きで描画される)
         back_ctx = {
             "back_action": config.Config['status_script'],
