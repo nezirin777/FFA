@@ -61,10 +61,12 @@ try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     import config
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     from . import config
+    from sub_def.crypto import get_session, token_check
 
 # 重賞レースのモード (O(1) メンバーシップテスト用定数、線形探索を回避して高速化)
 _HEAVY_RACES: frozenset[str] = frozenset({"race7", "race8"})
@@ -172,6 +174,7 @@ def main():
     common.require_owner(user_id)
     chara_log = in_params.get("mydata", "")
     mode = in_params.get("mode", "")
+    token_check(in_params, get_session())
     race_id = common.to_int(in_params.get("race", "0"), 0)
 
     # キャラクターデータのロード

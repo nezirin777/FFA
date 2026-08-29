@@ -57,16 +57,19 @@ try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     import config
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from sub_def.race_random import legacy_rand as _legacy_rand, legacy_rand_float as _legacy_rand_float, legacy_rand_plus as _legacy_rand_plus
     from . import config
+    from sub_def.crypto import get_session, token_check
 
 
 # Windows等で標準出力をUTF-8にするための設定
 def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
+    token_check(in_params, get_session())
     user_id = in_params.get("id", "")
     # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
     common.require_owner(user_id)

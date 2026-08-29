@@ -574,6 +574,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "mode=battleは初戦、次戦、待機解除のすべてで保存を伴うため、外側の戦闘ロック取得前にテンプレート送信のsを一度だけ検証するよう修正済み。待機時間・対戦回数・要求ラウンドはサーバー側でも再検証し、表示だけのロビーは状態変更しない。",
     },
+    {
+        "file": "templates/chocofarm.html / cgi_py/chocofarm.py / cgi_py/crace.py / cgi_py/farmrace.py",
+        "v2_source": "旧版_ver2/chocofarm.cgi / crace.cgi / farmrace.cgi",
+        "scope": "チョコボ状態、訓練・一般/重賞/殿堂レース、王者決定戦、お世話・殿堂・引退への導線、開催条件、待機、CSRF",
+        "difference": "Ver2の牧場画面を情報量を保ったカード配置へ移行し、所有状態・開催枠・待機を明示。現在は各施設へPOSTで遷移し、CSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "牧場は自身で保存せず各専用処理へ中継する。訓練・お世話・殿堂は既存検証を使用し、一般/重賞/殿堂レースのcrace.pyと王者決定戦farmrace.pyはテンプレート送信のsを開始時に検証するよう修正済み。レース種別・開催枠・重賞3勝条件・寿命・待機は各実行側で再検証する。",
+    },
 )
 
 
