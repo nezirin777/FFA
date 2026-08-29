@@ -34,7 +34,8 @@ STAT_LABELS = {
 STAT_ORDER = tuple(STAT_LABELS)
 
 DOC_LINKS = (
-    ("index.html", "資料一覧"),
+    ("document_index.html", "資料一覧"),
+    ("installation_python.html", "設置・運用手順"),
     ("equipment_catalog.html", "装備カタログ"),
     ("job_catalog.html", "職業カタログ"),
     ("monster_catalog.html", "モンスターカタログ"),
@@ -339,23 +340,24 @@ def battle_specs() -> str:
     job_damage_rows = [
         ["0", "str"], ["1, 4, 5", "int"], ["2", "mnd"], ["3", "dex"],
         ["6", "mnd + cha"], ["7, 9, 10, 11, 12, 13, 14, 15, 16", "複数の基本能力値"],
-        ["8", "str + vit"], ["17", "int + mnd + cha"], ["18〜21, 28〜30", "8能力値すべて"],
-        ["22, 26, 27", "8能力値すべて ×2"], ["23", "str"], ["24", "vit + dex + agi + cha + karma ×2"],
-        ["25", "str + int + mnd + vit + dex×5 + agi + cha + karma を2倍"],
+        ["8", "str + vit"], ["17", "int + mnd + cha"], ["18〜21, 28〜30", "力〜魅力は乱数加算 + カルマは固定加算"],
+        ["22, 26, 27", "力〜魅力は乱数加算 + カルマは固定加算 を2倍"], ["23", "str"],
+        ["24", "vit + dex + agi + cha は乱数加算 + カルマは固定加算 を2倍"],
+        ["25", "str + int + mnd + vit + dex×5 + agi + cha は乱数加算 + カルマは固定加算 を2倍"],
     ]
     mode_rows = [
         ["通常戦闘", "monster", "monster0〜3を選択。battle_limit>0、20秒待機", "勝利: gold_reward + 1〜gold_reward、経験値全量 / 引き分け: 経験値半分・盗み差分 / 敗北: 所持金1%・経験値0", "battle_count+1、勝利時win_count+1、battle_limit-1"],
         ["幻影の城", "genei", "battle_count>0、last_timeが5の倍数、レベル帯でモンスター層選択", "通常戦闘と同じ。勝利時1/3で財宝を追加抽選", "通常戦闘と同じ"],
         ["異世界", "isekiai", f"レベル{num(c['isekai_level'])}以上、20秒待機", "通常戦闘と同じ", "通常戦闘と同じ"],
         ["レジェンドプレイス", "boss", "battle_count>0、title_id>=boss_file、battle_limit>0、20秒待機", "勝利: ボス報酬・経験値、boss_flag-1 / 引き分け: 経験値半分・盗み差分 / 敗北: 所持金1%・経験値1", "毎戦battle_count+1、win_countは勝利時、battle_limit-1。勝利継続時のみboss_flagを保持"],
-        ["チャンプ戦", "battle", "現チャンプと対戦、20秒待機", "勝利・相打ち引分: 新チャンプ、相手賞金・盗み差分 / 時間切れ: 王者交代・賞金なし / 敗北: 所持金半分、王者防衛", "battle_count+1、勝利時win_count+1、boss_flagを10へ戻し、battle_limitを9999へ補充"],
+        ["チャンプ戦", "battle", "現チャンプと対戦、20秒待機", "勝利・相打ち引分: 新チャンプ、相手賞金・盗み差分 / 時間切れ: 経験値のみ、王者交代・賞金・盗みなし / 敗北: 所持金半分、王者防衛", "battle_count+1、勝利時win_count+1、boss_flagを10へ戻し、battle_limitを9999へ補充"],
         ["天下一武道会", "tenka", f"登録メンバー{num(c['tenka_count'])}人、ラウンド順を検証、20秒待機", "勝利: 次ラウンドへ / 相打ち引分: 所持金半減なし・盗み差分 / 時間切れ: 賞金・進行なし / 敗北: 所持金半分", "全結果でbattle_count+1・経験値・熟練度保存、battle_limitを9999へ補充"],
         ["練習戦", "select_battle", "対戦相手を指定", "戦闘ログのみ。ステータス、所持金、経験値を保存しない", "保存処理なし"],
     ]
     result_rows = [
         ["1", "勝利", "通常報酬・経験値・勝利数を反映。通常戦闘とレジェンドではbattle_limitを1減算。"],
         ["2", "相打ち引き分け", "モンスター戦の時間切れ、または対人戦の相打ち。基礎金額は支給せず、盗みなどの戦闘中差分のみ反映する。"],
-        ["3", "対人時間切れ引き分け", "チャンプ戦・天下一・練習戦の未決着。通常EXPのみで、賞金・盗み・王者交代・ラウンド進行はない。"],
+        ["3", "対人時間切れ引き分け", "チャンプ戦・天下一・練習戦の未決着。チャンプ戦・天下一では対戦EXPのみで、賞金・盗み・王者交代・ラウンド進行はない。練習戦は保存しない。"],
         ["0", "敗北", "敗北ペナルティを反映。モンスター戦は所持金1%、レジェンドは所持金1%、対人・天下一は所持金半分。"],
     ]
     turn_rows = [
@@ -386,7 +388,7 @@ def battle_specs() -> str:
 <h2>1ターンの処理順</h2>
 {table(["順番", "処理", "内容"], turn_rows, row_headers=True)}
 <h2>職業別の基礎ダメージ参照</h2>
-<p class="small">乱数は各能力値について0以上、能力値未満から抽選し、武器ATKを加算します。正確な職業IDごとの式は <code>sub_def/battle_logic.py:get_job_dmg()</code> が正本です。</p>
+<p class="small">力〜魅力の乱数加算は各能力値について0以上、能力値未満から抽選し、武器ATKを加算します。上級職の式で使うカルマだけは乱数化せず固定加算です。正確な職業IDごとの式は <code>sub_def/battle_logic.py:get_job_dmg()</code> が正本です。</p>
 {table(["職業ID", "参照する能力値"], job_damage_rows, row_headers=True)}
 <h2>必殺技・固有効果の呼び出し規則</h2>
 <p class="small">戦術の利用条件、発動率の計算、実装メソッドとマスターの対応は <a href="skill_specs.html">必殺技仕様書</a> にまとめています。</p>
@@ -864,6 +866,7 @@ def security_specs() -> str:
 
 def index() -> str:
     cards = [
+        ("installation_python.html", "FFA Python版 設置・運用手順書", "Windows + Apache CGI環境への設置、初回確認、保存データ保護"),
         ("equipment_catalog.html", "装備マスター 職業別カタログ", "武器・防具・アクセサリーの性能、価格、説明、購入可能職業"),
         ("job_catalog.html", "職業マスター 職業別カタログ", "職業名、転職条件、能力上限、熟練度条件、関連装備・戦術"),
         ("monster_catalog.html", "モンスター・ボスマスター一覧", "通常戦闘、異世界、レジェンドの全モンスターと各キーの意味"),
@@ -891,7 +894,7 @@ python tools/generate_equipment_catalog.py</p>
 def write(output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = {
-        "index.html": index(),
+        "document_index.html": index(),
         "job_catalog.html": job_catalog(),
         "monster_catalog.html": monster_catalog(),
         "status_reference.html": status_reference(),
