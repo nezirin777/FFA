@@ -550,6 +550,22 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "view=rankingは保存を伴わない公開表示としてCSRF不要。通常入場mode=legendと待機/結果画面からのmode=bossではテンプレート送信のsを検証するよう修正済み。待機時間はクライアント表示だけでなく、再挑戦時にサーバー側でtraining_cooldown_secondsを再確認する。",
     },
+    {
+        "file": "templates/rank.html / cgi_py/rank.py",
+        "v2_source": "旧版_ver2/rank.cgi",
+        "scope": "能力別上位者、勝率部門、登録者数、更新日時、プロフィール遷移、ランキングキャッシュ",
+        "difference": "Ver2のリクエストごとの集計を、現行は24時間JSONキャッシュ・排他更新・アイコン付きカード表示へ移行",
+        "intent": "現行仕様を維持",
+        "note": "レベル、HP、各能力、カルマは上位10名を降順表示する。勝率はVer2どおり戦闘回数が1,000回を超える者だけを対象とし、小数第3位以下を切り捨てる。閲覧専用画面のためCSRF検証は不要で、キャッシュ再構築はrank_cache_buildロック下で二重確認する。",
+    },
+    {
+        "file": "templates/system_ranking.html / templates/system_chara_sts.html / templates/system_img_list.html / cgi_py/system.py",
+        "v2_source": "旧版_ver2/system.cgi:ranking_no_html,chara_sts,img_list",
+        "scope": "登録者一覧、ページング、公開プロフィール、画像一覧、公開項目、能力/戦闘表示、一覧キャッシュ",
+        "difference": "Ver2の簡易表を現行はカード・能力バー・ページングへ移行し、24時間JSONキャッシュと画像ID辞書を追加。公開プロフィールは性別・所持金を表示する現行仕様",
+        "intent": "現行仕様を維持",
+        "note": "全画面が閲覧専用で、CSRF対象の保存操作はない。登録者一覧は1ページ20名、要求ページを有効範囲へ収め、system_rank_cache_buildロック下でキャッシュを再構築する。公開プロフィールは既決定どおり性別と所持金を公開し、キャラクター/装備/職業熟練度を読み取り専用で表示する。",
+    },
 )
 
 
