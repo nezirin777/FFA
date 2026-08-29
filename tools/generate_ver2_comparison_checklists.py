@@ -526,6 +526,22 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "buy/sellは各店でマスターID・職業条件・所持金・倉庫容量を再検証する。共有テンプレートが送るsは、3店舗すべてのbuy/sell入口で検証するよう修正済み。shop_msgは各処理が定数として構築する店主文だけをsafe出力する。",
     },
+    {
+        "file": "templates/select_battle.html / cgi_py/select_battle.py",
+        "v2_source": "旧版_ver2/select_battle.cgi",
+        "scope": "名前検索、登録者一覧からの相手選択、道場模擬戦、解放条件、待機時間、結果画面への引継ぎ",
+        "difference": "Ver2の個別HTMLをJinjaテンプレートとmonster_result.html再利用へ移行。初回チャンプ戦後の解放条件と20秒待機を現行設定で適用",
+        "intent": "現行仕様を維持",
+        "note": "battleはBattleSimulatorをメモリ上で実行するだけで、経験値・所持金・戦績・HP・last_timeを保存しない。従って検索、一覧表示、模擬戦開始はいずれも状態変更ではなくCSRF検証対象にしない。直接battleを送ってもチャンプ挑戦前のキャラクター、自分自身、存在しない相手はサーバー側で拒否する。",
+    },
+    {
+        "file": "templates/monster_result.html",
+        "v2_source": "旧版_ver2/monster.cgi / legend.cgi / battle.cgi の戦闘結果出力",
+        "scope": "通常/幻影/異世界/伝説/チャンピオン/道場の結果見出し、勝敗・報酬・レベルアップ文、ターンログ、レジェンド継続/中断導線と待機表示",
+        "difference": "Ver2の各CGI内HTMLを共通Jinjaテンプレートへ統合し、モード名・HPバー・レジェンド待機ボタンを追加",
+        "intent": "現行仕様を維持",
+        "note": "gold_gainedとexp_gainedは集計用コンテキストであり、表示は各呼出元がcommentへ組み立てる。通常修行・伝説・チャンピオンとも勝敗/時間切れ時の経験値文をcommentに含めることを確認した。道場は報酬0の固定文を渡す。safe出力するcommentと戦闘ログはサーバー側で組み立てた戦闘文だけで、プレイヤー入力を直接含めない。",
+    },
 )
 
 
