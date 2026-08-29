@@ -370,6 +370,15 @@ def main():
     else:
         csrf_token = token_generate(session)
         cookie_header = save_session(session)
+
+        # 確認画面の「修正する」から戻った場合は、パスワード以外の入力を
+        # 再表示する。パスワードはHTMLへ戻さず、利用者に再入力させる。
+        selected_sex = params.get("sex", "1").strip()
+        if selected_sex not in ("0", "1"):
+            selected_sex = "1"
+        selected_job = params.get("syoku", "0").strip()
+        if selected_job not in {str(job_id) for job_id in Config["initial_job_ids"]}:
+            selected_job = "0"
         
         context = {
             "csrf_token": csrf_token,
@@ -382,7 +391,15 @@ def main():
                 for job_id in Config['initial_job_ids']
             ],
             "character_image_list_url": Config['character_image_list_script'],
-            "character_image_list_label": Config['character_image_list_label']
+            "character_image_list_label": Config['character_image_list_label'],
+            "form_values": {
+                "id": params.get("id", "").strip(),
+                "passchange": params.get("passchange", "").strip(),
+                "c_name": params.get("c_name", "").strip(),
+                "sex": selected_sex,
+                "chara": params.get("chara", "").strip(),
+                "syoku": selected_job,
+            },
         }
         common.render_template("chara_make.html", context, extra_headers=[cookie_header])
 

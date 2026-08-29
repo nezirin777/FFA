@@ -34,7 +34,7 @@
                 <!-- ユーザーID -->
                 <div class="layout-stack layout-stack--sm">
                     <label><b>ユーザーID:</b></label>
-                    <input class="form-control chara-make-input-short" type="text" name="id" maxlength="8" required>
+                    <input class="form-control chara-make-input-short" type="text" name="id" maxlength="8" value="{{ form_values.id }}" required>
                     <div class="note-text">※4〜8文字の半角英数字（ログイン時に使用します）</div>
                 </div>
 
@@ -48,14 +48,14 @@
                 <!-- パスワード変更用単語 -->
                 <div class="layout-stack layout-stack--sm">
                     <label><b>パスワード変更用単語:</b></label>
-                    <input class="form-control" type="text" name="passchange" required>
+                    <input class="form-control" type="text" name="passchange" value="{{ form_values.passchange }}" required>
                     <div class="note-text note-text--danger">※パスワードを紛失・変更する際に必要になります。必ずメモしてください。</div>
                 </div>
 
                 <!-- キャラクターの名前 -->
                 <div class="layout-stack layout-stack--sm">
                     <label><b>キャラクターの名前:</b></label>
-                    <input class="form-control" type="text" name="c_name" required>
+                    <input class="form-control" type="text" name="c_name" value="{{ form_values.c_name }}" required>
                     <div class="note-text">※ゲーム内で表示されるあなたの名前です。重複はできません。</div>
                 </div>
 
@@ -63,9 +63,9 @@
                 <div class="layout-stack layout-stack--sm">
                     <label><b>性別:</b></label>
                     <div class="layout-cluster layout-cluster--start">
-                        <label><input type="radio" name="sex" value="1" checked> 男</label>
+                        <label><input type="radio" name="sex" value="1" {% if form_values.sex == '1' %}checked{% endif %}> 男</label>
                         &nbsp;&nbsp;
-                        <label><input type="radio" name="sex" value="0"> 女</label>
+                        <label><input type="radio" name="sex" value="0" {% if form_values.sex == '0' %}checked{% endif %}> 女</label>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                 <div class="layout-stack layout-stack--sm">
                     <label><b>キャラクター外見 (番号):</b></label>
                     <div class="layout-cluster layout-cluster--start">
-                        <input class="form-control chara-make-input-short" type="text" name="chara">
+                        <input class="form-control chara-make-input-short" type="text" name="chara" value="{{ form_values.chara }}">
                         <a class="btn btn--sm" href="{{ character_image_list_url }}" target="_blank" rel="noopener noreferrer">{{ character_image_list_label }}を開く</a>
                     </div>
                     <div class="note-text">※希望の画像番号を入力してください。空欄、または無効な番号の場合はランダムに決定します。</div>
@@ -84,7 +84,7 @@
                     <label><b>初期職業:</b></label>
                     <select class="form-control" name="syoku">
                         {% for syoku in chara_syoku_list %}
-                        <option value="{{ syoku.id }}">{{ syoku.name }}</option>
+                        <option value="{{ syoku.id }}" {% if form_values.syoku == syoku.id|string %}selected{% endif %}>{{ syoku.name }}</option>
                         {% endfor %}
                     </select>
                     <div class="note-text">※職業ごとに初期能力値（力、知能、信仰心など）の割り振りが異なります。</div>

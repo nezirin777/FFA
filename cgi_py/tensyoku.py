@@ -27,6 +27,7 @@ import os
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import get_session, token_check
 
 parse_cookie_user = common.parse_cookie_user
 
@@ -107,6 +108,7 @@ def main():
         
         # 1. 転職実行処理 (tensyoku_change)
         if mode == "tensyoku_change":
+            token_check(params, get_session())
             syoku_target_str = params.get("syoku", "").strip()
             if syoku_target_str == "no" or not syoku_target_str:
                 common.release_lock(user_id)

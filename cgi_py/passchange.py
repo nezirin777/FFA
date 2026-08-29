@@ -50,7 +50,7 @@ import sys
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
-from sub_def.crypto import hash_password, verify_password
+from sub_def.crypto import get_session, hash_password, token_check, verify_password
 from sub_def.validation import validate_game_password
 
 parse_cookie_user = common.parse_cookie_user
@@ -85,6 +85,11 @@ def main():
     params = common.decode_params()
     mode = params.get("mode", "").strip()
     user_id = params.get("id", "").strip()
+
+    # テンプレートの変更フォームが送るCSRFトークンを、状態変更前に検証する。
+    # 表示だけの初期画面ではセッション生成を伴う検証を行わない。
+    if mode in ("passset", "passchan"):
+        token_check(params, get_session())
     
     # ユーザー認証
     cookie_str = common.get_cookie(config.Config['cookie_name'])

@@ -45,9 +45,11 @@ import os
 try:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     import config
+    from sub_def.crypto import get_session, token_check
 except ImportError:
     from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
     from . import config
+    from sub_def.crypto import get_session, token_check
 
 # Windows等で標準出力をUTF-8にする設定
 def load_job_tactics(job_id, job_level):
@@ -116,6 +118,7 @@ def main():
 
     if mode == "senjutu_henkou":
         # === 戦術変更処理 ===
+        token_check(in_params, get_session())
         senjutu_no_str = in_params.get("senjutu_no")
         if senjutu_no_str is None:
             common.show_error("変更する戦術を選択してください。")

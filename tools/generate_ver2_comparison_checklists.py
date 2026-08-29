@@ -462,6 +462,38 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "どちらも説明コメントだけで、import時の設定変更・I/O・登録処理を行わない。CGIの直接実行経路を変更せず、開発時のモジュール解決だけを補助する。",
     },
+    {
+        "file": "templates/chara_make.html / templates/chara_make_pre.html",
+        "v2_source": "旧版_ver2/chara_make.cgi:chara_make,make_pre",
+        "scope": "新規登録入力、確認画面、確定・修正フォーム、ID/職業/画像選択、確認表示、hidden引継ぎ、CSRF",
+        "difference": "Ver2のsite/url入力・公開確認を廃止し、現行は番号付き画像辞書・初期職業辞書、Jinja自動エスケープ、CSRF、パスワード記号許可を追加。現行の修正フォームはmodeを指定せず初期表示へ戻るが、入力値を再表示しない",
+        "intent": "現行仕様を維持",
+        "note": "作成確定はmode=make_endと全登録値・CSRFをPOSTし、サーバー側の再検証と排他登録へ渡す。Ver2の修正フォームもmodeなしで初期画面へ戻るが、旧画面は受信値をvalue属性へ再表示していた。現行も修正フォームからID・名前・変更用単語・性別・画像・職業を再表示するよう補正した。一方、パスワードはHTMLへ再出力せず再入力を求めるため、Ver2の平文再表示より安全な現行仕様とする。",
+    },
+    {
+        "file": "templates/passchange.html / templates/passchange_set_done.html / templates/passchange_done.html / cgi_py/passchange.py",
+        "v2_source": "旧版_ver2/passchange.cgi:passchange,passchan",
+        "scope": "変更用単語の初回設定、現在のパスワード・変更用単語による変更、新パスワード確認、完了画面、街へ戻る導線、CSRF",
+        "difference": "Ver2の平文照合・ファイル追記履歴・ステータス画面復帰を、現行はハッシュ検証・JSON原子的保存・ログインセッション維持・専用完了画面へ移行。パスワードの記号許可とCSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "has_wordsで初回単語登録と変更フォームを分け、いずれもPOSTのid/mode/入力値を送る。テンプレートが送るsはpassset/passchanの入口で検証するよう修正済みで、表示だけの画面遷移には検証を要求しない。変更用単語は初回設定後に変更不可というVer2の運用を維持し、完了画面で単語を一度だけ表示する。",
+    },
+    {
+        "file": "templates/tac_change.html / templates/tac_result.html / cgi_py/tac_change.py",
+        "v2_source": "旧版_ver2/tac_change.cgi:senjutu,senjutu_henkou",
+        "scope": "現在戦術、使用可能戦術一覧、選択・確定、結果表示、画面復帰、CSRF",
+        "difference": "Ver2の職業別戦術一覧を、現行はJSONマスター・職業熟練度・他職業マスター設定から生成し、結果画面を分離。本人確認とCSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "選択画面はtactic_idに一致するラジオを初期選択し、mode=senjutu_henkou、senjutu_no、CSRFをPOSTする。確定時はロック後に最新の職業/熟練度で候補を再構築して再検証する。テンプレートが送るsをsenjutu_henkou入口で検証するよう修正済みで、結果画面からの表示遷移は状態変更しない。",
+    },
+    {
+        "file": "templates/tensyoku.html / templates/tensyoku_result.html / cgi_py/tensyoku.py",
+        "v2_source": "旧版_ver2/tensyoku.cgi",
+        "scope": "転職可能職の一覧、選択・確定、能力低下の結果表示、神殿/街への復帰、CSRF",
+        "difference": "Ver2の職業データ配列を現行JSONとID辞書へ移行し、条件を満たす未マスター職を別表示。結果画面を分離し、本人認証とCSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "転職フォームは利用可能職だけを選択肢に表示するが、確定時にも職業条件と熟練度条件を再検証する。mode=tensyoku_changeではテンプレート送信のsを検証するよう修正済み。結果画面の神殿・街へのPOSTは表示遷移だけで状態変更しない。",
+    },
 )
 
 
