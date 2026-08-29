@@ -2,7 +2,7 @@
 
 画面遷移だけのルートと、各ルート内の実行操作を分けて管理します。比較前に状態変更か表示かを確認し、Ver2との差分を具体的に記録します。
 
-対象: ルート 38件、実行操作 122件、二次精査 36ファイル。
+対象: ルート 38件、実行操作 122件、二次精査 37ファイル。
 ## ファイル単位の精査記録
 
 ここには一次台帳作成後に、Ver2実装と現行実装を分岐・保存値・表示まで再確認したファイルだけを記録します。未記載のファイルは未精査であり、一次比較完了を根拠に一致と扱いません。
@@ -45,6 +45,7 @@
 | `sub_def/utils.py / templates/base.html / templates/error.html` | `旧版_ver2/regist.pl:header,footer,error` | テンプレート描画、UTF-8/キャッシュ制御ヘッダー、セッションCookie/CSRF注入、例外時の応答、エラー終了、302リダイレクト、トースト通知 | Ver2のShift_JIS直書きheader/footer/errorを、Jinja2の自動エスケープ付きUTF-8テンプレートへ移行。セッション内の一回限りトーストと開発CGI向けmeta refreshを追加 | 現行仕様を維持 | render_templateは既存セッションのCSRFトークンを維持してフォームへ注入し、呼出元の重複Set-Cookieを除いて1本だけ発行する。テンプレート例外の詳細はstderrだけへ記録し、HTTP応答は汎用文に留める。redirect/show_error/redirect_with_flashはいずれも出力後に終了し、戻る操作や別タブでフォームを直ちに失効させない。 |
 | `sub_def/backup.py` | `旧版_ver2/admin.cgi:save_chara,save_del,del_noplay / save_log.cgi` | 日次バックアップ作成、manifest検証、世代削除、一覧、復元前退避、選択復元、メンテナンス要求、バックアップ排他、保護ユーザー用固定バックアップとの役割分担 | Ver2の放置削除除外用save_logと手動復元運用に対し、現行はsave_data全体の日次スナップショット・世代管理・検証済み選択復元を追加 | 現行仕様を維持 | create_daily_backupは日付名とmanifestを検証し、同日分が有効なら二重作成せず、tmpコピー後に置換する。保持日数はconfig.pyで設定し、日付形式のフォルダだけを削除する。復元はmaintenance_mode中に限り、backup_restoreとbackup_snapshotをこの順で取得して現行save_dataをpre_restoreへ退避する。protected_usersの固定バックアップはadmin.pyが手動配置済みデータを復元する仕組みであり、自動作成は未実装のまま運用資料へ明記する。 |
 | `sub_def/exLock.py / sub_def/lock_state.py` | `旧版_ver2/regist.pl:lock,unlock / data/ffadventure.ini:lockkey=2` | ファイルI/O用ディレクトリロック、取得待機、同一スレッド再入、解放時の参照数、取得不能時の扱い、異常終了後の残存ロック | Ver2の設定式symlink・空ファイル・flockロック（実設定は空ファイル、1秒間隔で最大5回）を、os.mkdirによる固定ディレクトリロックと0.2秒間隔・既定15秒待機へ移行。現行はスレッド単位の再入参照数も持つ | 現行仕様を維持 | exLockは同一スレッドが保持中ならlock_stateの参照数だけを増やし、内側のunlockではロックディレクトリを残す。最後のunlockだけがrmdirすることを検証済み。異常終了後の残存ロックはconfig.pyのlock_stale_seconds（既定300秒）を超えた場合だけ、現プロセス内の保持者がいないことを確認して空ディレクトリを自動削除する。0以下で自動回復を止められる。 |
+| `sub_def/validation.py / chara_make.py / login.py / cgi_py/passchange.py / cgi_py/morifarm.py` | `旧版_ver2/chara_make.cgi:make_pre,make_end / passchange.cgi:passchan / morifarm.cgi:choco_name` | 保存先になるID、キャラクター名、ゲーム用パスワード、変更用単語、チョコボ名の形式・長さ・制御文字・文字コード検証と各入口での適用範囲 | Ver2のID・パスワード半角英数字4〜8文字と名前の空値中心の検査を、現行はIDの共通形式検証、記号を含むASCIIパスワード、cp932互換・制御文字・長さを確認する表示名検証へ拡張 | 現行仕様を維持 | validate_user_idを新規登録とログインで共用し、保存先探索へ形式外IDを渡さない。IDはVer2どおり4〜8文字の半角英数字。ゲーム用パスワードは過去判断どおり4〜8文字のASCII記号を許可し、Ver2の英数字限定へ戻さない。キャラクター名は2〜16文字・cp932互換、チョコボ名は20文字以内・cp932互換と制御文字拒否を現行の表示/保存保護として維持する。変更用単語はVer2同様に空値だけを拒否する。 |
 
 ## ルート一覧（login.py）
 

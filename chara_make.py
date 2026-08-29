@@ -71,10 +71,10 @@ def validate_input(params):
     syoku_str = params.get("syoku", "").strip()
     
     # IDのバリデーション（半角英数字、4〜8文字）
-    if not user_id.isalnum():
-        return "IDは半角英数字で入力してください。"
-    if len(user_id) < 4 or len(user_id) > 8:
-        return "IDは4文字以上8文字以下で入力してください。"
+    from sub_def.validation import validate_user_id
+    id_err = validate_user_id(user_id)
+    if id_err:
+        return id_err
         
     # パスワードのバリデーション（4〜8文字の半角英数字・記号）
     from sub_def.validation import validate_game_password

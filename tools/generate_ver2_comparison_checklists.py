@@ -414,6 +414,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "exLockは同一スレッドが保持中ならlock_stateの参照数だけを増やし、内側のunlockではロックディレクトリを残す。最後のunlockだけがrmdirすることを検証済み。異常終了後の残存ロックはconfig.pyのlock_stale_seconds（既定300秒）を超えた場合だけ、現プロセス内の保持者がいないことを確認して空ディレクトリを自動削除する。0以下で自動回復を止められる。",
     },
+    {
+        "file": "sub_def/validation.py / chara_make.py / login.py / cgi_py/passchange.py / cgi_py/morifarm.py",
+        "v2_source": "旧版_ver2/chara_make.cgi:make_pre,make_end / passchange.cgi:passchan / morifarm.cgi:choco_name",
+        "scope": "保存先になるID、キャラクター名、ゲーム用パスワード、変更用単語、チョコボ名の形式・長さ・制御文字・文字コード検証と各入口での適用範囲",
+        "difference": "Ver2のID・パスワード半角英数字4〜8文字と名前の空値中心の検査を、現行はIDの共通形式検証、記号を含むASCIIパスワード、cp932互換・制御文字・長さを確認する表示名検証へ拡張",
+        "intent": "現行仕様を維持",
+        "note": "validate_user_idを新規登録とログインで共用し、保存先探索へ形式外IDを渡さない。IDはVer2どおり4〜8文字の半角英数字。ゲーム用パスワードは過去判断どおり4〜8文字のASCII記号を許可し、Ver2の英数字限定へ戻さない。キャラクター名は2〜16文字・cp932互換、チョコボ名は20文字以内・cp932互換と制御文字拒否を現行の表示/保存保護として維持する。変更用単語はVer2同様に空値だけを拒否する。",
+    },
 )
 
 

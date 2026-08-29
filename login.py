@@ -128,8 +128,8 @@ def main():
         password = FORM.get("pass", "").strip()
         
         # 入力値バリデーション (セキュリティ防衛ライン)
-        from sub_def.validation import validate_username, validate_password
-        err = validate_username(user_id) or validate_password(password)
+        from sub_def.validation import validate_game_password, validate_user_id
+        err = validate_user_id(user_id) or validate_game_password(password)
         if err:
             show_error(err)
             

@@ -10,6 +10,16 @@ _RESERVED_FILENAMES: frozenset[str] = frozenset({
     "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
 })
 
+
+def validate_user_id(user_id: str) -> str | None:
+    """保存先ディレクトリ名になるゲームIDをVer2互換の形式で検証する。"""
+    if not user_id:
+        return "IDを入力してください。"
+    if re.fullmatch(r"[0-9A-Za-z]{4,8}", user_id) is None:
+        return "IDは4文字以上8文字以下の半角英数字で入力してください。"
+    return None
+
+
 def validate_username(username: str) -> str | None:
     """
     ユーザー名を検証します。
