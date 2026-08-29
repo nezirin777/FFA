@@ -236,6 +236,9 @@ def main():
     user_id = in_params.get("id", "")
     chara_log = in_params.get("mydata", "")
 
+    # ランキング・重賞履歴はログイン中の本人だけが閲覧できる現行仕様。
+    common.require_owner(user_id)
+
     # 戻るフォーム用のキャラクターデータ
     chara = common.chara_load(user_id) if user_id else None
     if not chara:

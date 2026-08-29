@@ -598,6 +598,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "一覧は読み取り専用でCSRF不要。mode=dendoだけが殿堂リストを更新するためCSRF検証を行い、本人の命名済みチョコボと重賞履歴を読み込んで同一ID/名前なら更新、未登録なら先頭追加する。登録条件はVer2どおり命名済みの現在のチョコボであり、重賞3勝は要求しない。",
     },
+    {
+        "file": "templates/chocorank.html / cgi_py/chocorank.py",
+        "v2_source": "旧版_ver2/chocorank.cgi",
+        "scope": "能力別チョコボランキング、重賞制覇履歴、王者情報、キャッシュ、閲覧権限",
+        "difference": "Ver2の一覧を能力別Top 10・能力ランク・24時間JSONキャッシュへ移行。閲覧はログイン中の本人に限定する現行仕様",
+        "intent": "現行仕様を維持",
+        "note": "ランキング/履歴は保存を伴わずCSRF不要だが、現行仕様どおりログイン中の本人だけが閲覧できるようrequire_ownerを追加した。能力ランク境界はVer2の比較演算子を再現し、キャッシュはchocorank_cache_buildロック下で二重確認して更新する。",
+    },
 )
 
 
