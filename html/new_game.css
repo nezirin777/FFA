@@ -3534,6 +3534,10 @@ img {
   background: #152418 url("../images/choco/レース背景.gif") center / 100% 100% no-repeat;
 }
 
+.race-track--duel {
+  min-height: 250px;
+}
+
 .race-track__marker {
   position: absolute;
   z-index: 2;

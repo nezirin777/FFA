@@ -586,6 +586,16 @@ def main():
         "chara_log": chara_log,
         "choco": choco,
         "winner": winner,
+        "runners": [
+            {
+                "name": cname,
+                "image": config.Config["choco_images"].get(choco.get("no", 0), config.Config["choco_images"][0]),
+            },
+            {
+                "name": wcname,
+                "image": config.Config["choco_images"].get(winner.get("no", 0), config.Config["choco_images"][0]),
+            },
+        ],
         "turns": turns_data,
         "turns_json": json.dumps(turns_data),
         "comment": comment + f"<br>{player_name_html}は <b>{gold}</b> ギルを獲得しました！",

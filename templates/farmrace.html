@@ -3,9 +3,30 @@
 {% block content %}
 <div class="farm-container farm-container--md">
     <div class="farm-header">
-        <h1>🏁 レース結果レポート</h1>
+        <h1>🏆 チョコボ王者決定戦</h1>
         <hr>
     </div>
+
+    <!-- Ver2の王者戦アニメーションを、現在のブラウザ向けに再現する。 -->
+    <section class="race-playback" aria-labelledby="farmrace-playback-title">
+        <div class="race-playback__header">
+            <h2 id="farmrace-playback-title">🏇 挑戦者 vs 王者 — レース中継</h2>
+            <button type="button" class="btn race-playback__replay" data-farmrace-replay>もう一度見る</button>
+        </div>
+        <div class="race-track race-track--duel" data-farmrace-track aria-label="チョコボ王者決定戦コース">
+            <span class="race-track__marker race-track__marker--start">START</span>
+            <span class="race-track__marker race-track__marker--goal">GOAL</span>
+            {% for runner in runners %}
+            <div class="race-runner" data-farmrace-runner style="--race-lane-top: {{ 58 + loop.index0 * 100 }}px; --race-progress: 0%;">
+                <img src="{{ config.chocobo_image_path }}/{{ runner.image }}" alt="{{ runner.name }}">
+                <span class="race-runner__name">{{ runner.name }}</span>
+                <span class="race-runner__rank" data-farmrace-rank>{{ "挑戦者" if loop.index0 == 0 else "王者" }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="race-playback__status" aria-live="polite" data-farmrace-status>王者決定戦、まもなくスタートですクポ！</div>
+        <div class="race-playback__progress"><span data-farmrace-progress></span></div>
+    </section>
 
     <!-- レース概要 -->
     <div class="battle-summary">
@@ -38,4 +59,62 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+<script>
+(() => {
+    const turns = {{ turns | tojson }};
+    const track = document.querySelector('[data-farmrace-track]');
+    const status = document.querySelector('[data-farmrace-status]');
+    const progress = document.querySelector('[data-farmrace-progress]');
+    const replay = document.querySelector('[data-farmrace-replay]');
+    const runners = [...document.querySelectorAll('[data-farmrace-runner]')];
+
+    if (!track || !status || !progress || !replay || !turns.length || runners.length !== 2) {
+        return;
+    }
+
+    const frameCount = Math.min(turns.length, 18);
+    const frames = Array.from({ length: frameCount }, (_, index) => (
+        turns[Math.round(index * (turns.length - 1) / Math.max(1, frameCount - 1))]
+    ));
+    let timerId = null;
+
+    function showFrame(frame, index) {
+        const positions = [Number(frame.pos0), Number(frame.pos1)];
+        const order = [...positions.keys()].sort((left, right) => positions[left] - positions[right]);
+        const ranks = Array(2);
+        order.forEach((runnerIndex, rank) => { ranks[runnerIndex] = rank + 1; });
+
+        runners.forEach((runner, runnerIndex) => {
+            const remaining = Math.max(0, Math.min(2400, positions[runnerIndex]));
+            runner.style.setProperty('--race-progress', `${(2400 - remaining) / 24}%`);
+            runner.querySelector('[data-farmrace-rank]').textContent = `${ranks[runnerIndex]}着`;
+        });
+        status.innerHTML = frame.comment || '2頭が並んで力走していますクポ！';
+        progress.style.width = `${((index + 1) / frames.length) * 100}%`;
+    }
+
+    function play() {
+        window.clearInterval(timerId);
+        let index = 0;
+        replay.disabled = true;
+        showFrame(frames[index], index);
+        timerId = window.setInterval(() => {
+            index += 1;
+            if (index >= frames.length) {
+                window.clearInterval(timerId);
+                replay.disabled = false;
+                return;
+            }
+            showFrame(frames[index], index);
+        }, 700);
+    }
+
+    replay.addEventListener('click', play);
+    play();
+})();
+</script>
 {% endblock %}
