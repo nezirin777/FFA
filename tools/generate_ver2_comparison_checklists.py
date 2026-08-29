@@ -422,6 +422,46 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "validate_user_idを新規登録とログインで共用し、保存先探索へ形式外IDを渡さない。IDはVer2どおり4〜8文字の半角英数字。ゲーム用パスワードは過去判断どおり4〜8文字のASCII記号を許可し、Ver2の英数字限定へ戻さない。キャラクター名は2〜16文字・cp932互換、チョコボ名は20文字以内・cp932互換と制御文字拒否を現行の表示/保存保護として維持する。変更用単語はVer2同様に空値だけを拒否する。",
     },
+    {
+        "file": "sub_def/race_random.py",
+        "v2_source": "旧版_ver2/crace.cgi / farmrace.cgi:rand",
+        "scope": "一般レース・王者決定戦の整数乱数、浮動小数乱数、下限加算乱数、非正数入力、各レース式での呼出し分布",
+        "difference": "Perl組込みrandをPython randomへ置換するため、現行は3種のPerl式を明示的な補助関数へ分離",
+        "intent": "現行仕様を維持",
+        "note": "legacy_randはint(rand(x))、legacy_rand_floatはrand(x)、legacy_rand_plusはint(rand(x)+x)を再現し、上限を含めない。crace.pyとfarmrace.pyの出遅れ・好スタート・中盤・終盤・写真判定・勝利成長を全件照合した。farmrace.pyの好スタート2箇所は同じ式を直接記述しているが、正数範囲ではlegacy_rand_plusと同じ分布である。",
+    },
+    {
+        "file": "sub_def/skills.py",
+        "v2_source": "旧版_ver2/tech/*.pl / wtech/*.pl / mons/*.pl / acstech/*.pl / wacstech/*.pl / battle.pl,mbattle.pl,wbattle.pl",
+        "scope": "戦術必殺・後続技、対人相手技、モンスター特殊技、双方のアクセサリー固有効果、発動率、動的ディスパッチ、回復・盗み・即死・反射の状態更新と実行順",
+        "difference": "Ver2の個別Perlファイル群を1モジュールのID付きクラスとrun_skillへ集約。戦術マスターの明示発動率、モンスター戦の盗み上限、実ダメージ基準の吸収回復、例外時の戦闘継続を追加",
+        "intent": "現行仕様を維持",
+        "note": "Ver2側79 tech・81 wtech・23 mons・各25 acstech/wacstechについて、全ファイルのクラス・必殺/後続メソッド対応を検証済み。battle_logic.pyはプレイヤー技→敵技→後続技→アクセ→敵後続のVer2順で呼ぶ。技10のモンスター戦盗み上限、技11/43/44の防御・回避後実ダメージからの回復、技43の全量回復、mons_13/19の回復分岐で被ダメージ0は既決定どおり維持する。未定義ID/メソッドは無処理、個別技の例外は戦闘全体を止めず表示ログへ残す現行の保護仕様とする。",
+    },
+    {
+        "file": "config.py",
+        "v2_source": "旧版_ver2/data/ffadventure.ini / 各CGIの設定参照",
+        "scope": "保存先・ロック・バックアップ、管理/セッション、キャラクター自動削除、戦闘上限・報酬・待機時間、職業戦術・モンスター難易度、CGIルーティング、マスターファイル、番号付き画像/職業/称号、掲示板・お見合い候補の保持件数、起動時設定検証",
+        "difference": "Ver2のPerlグローバル設定と個別CGI URLを、現行はConfig辞書とlogin.pyのmodeルーティングへ集約。JSON保存・日次バックアップ・暗号化セッション・残存ロック回復を追加し、戦闘/レース/訓練の待機時間は30秒から20秒へ変更",
+        "intent": "現行仕様を維持",
+        "note": "$turn=150、$sentou_limit=9999、$yado_dai=10、$lv_up=300、$master_tac=1、各装備所持上限8、$boss=10、メッセージ保存20件は対応する現行値を維持する。待機時間20秒は既決定どおりで、対人/レース/天下一はpvp_race_cooldown_seconds、モンスター/伝説/チョコボ訓練はtraining_cooldown_secondsを各実行画面が参照する。盗み上限、異世界/モンスター段階、JSONマスター、画像/職業ID辞書、バックアップ・セッション・自動ロック回復、チョコボお見合い候補の性別ごと100件は現行固有の仕様として維持する。番号付きマスターと初期職業IDは起動時に整合性を検証する。",
+    },
+    {
+        "file": "dev_server.py",
+        "v2_source": "該当なし（Ver2はWebサーバー上でPerl CGIを直接実行）",
+        "scope": "ローカル開発用HTTPサーバー、静的ファイル配信、.py CGI判定、作業ディレクトリ、待受ポート、終了処理",
+        "difference": "現行専用のPython標準ライブラリによるローカルCGI確認サーバーを追加",
+        "intent": "現行仕様を維持",
+        "note": "起動時にリポジトリ直下へ移動し、既定8000番で待ち受ける。クエリを除いた要求パスが.pyで終わる場合だけCGIとして処理し、root直下とサブディレクトリを対象にする。これはApacheの権限・設定・Windows CGI実行環境を再現しない開発補助であり、外部公開用途には使わない。",
+    },
+    {
+        "file": "cgi_py/__init__.py / sub_def/__init__.py",
+        "v2_source": "該当なし（Ver2のPerl CGIはパッケージ初期化を持たない）",
+        "scope": "Pythonパッケージとしての認識とimport時副作用",
+        "difference": "現行はCGI画面群と共通処理群をPythonパッケージとして区切る空の初期化ファイルを追加",
+        "intent": "現行仕様を維持",
+        "note": "どちらも説明コメントだけで、import時の設定変更・I/O・登録処理を行わない。CGIの直接実行経路を変更せず、開発時のモジュール解決だけを補助する。",
+    },
 )
 
 
