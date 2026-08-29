@@ -22,6 +22,8 @@
     <div class="battle-log">
         {% for turn in turns %}
         <div class="battle-log-line">
+            <strong>ターン {{ turn.step }}</strong><br>
+            {{ choco.name }}：残り {{ turn.pos0 }} / 2400　vs　{{ winner.name }}：残り {{ turn.pos1 }} / 2400<br>
             {{ turn.comment | safe }}
         </div>
         {% endfor %}

@@ -281,44 +281,43 @@ def main():
         # 3. 終盤の移動
         else:
             # プレイヤーの移動力
-            kdmg = (_legacy_rand(c0) + _legacy_rand(c6) + _legacy_rand(c6) + _legacy_rand(c6)) / lastspart
-            ksyoumou = heri * kdmg * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
+            kraw_dmg = (_legacy_rand(c0) + _legacy_rand(c6) + _legacy_rand(c6) + _legacy_rand(c6)) / lastspart
+            kdmg = kraw_dmg
             
             if khp_flg <= 0:
                 if _legacy_rand_float(nebari) < _legacy_rand_float(c2):
                     kdmg = kdmg * 1.5
-                    ksyoumou = ksyoumou * 0.5
                 else:
                     kdmg = kdmg / 3
                     if step % 4 == 0:
                         step_comment += f'<span class="red">{cname_html}はバテています...</span> '
-            elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4)) or (khp_flg / max(1, c1) >= 0.4):
-                ksyoumou = ksyoumou * 2
+            elif (_legacy_rand_float(seriai) < _legacy_rand_float(c4 * 1.5)) or (khp_flg / max(1, c1) >= 0.4):
                 kdmg = kdmg * 2.5
                 if step % 4 == 0:
                     step_comment += f'<span class="green">{cname_html}のラストスパート！</span> '
                     
             kdmg = int(kdmg)
+            # Ver2は補正前の移動量からスタミナ消費を再計算していた。
+            ksyoumou = heri * kraw_dmg * (kisyou / max(1, c3)) * (c2 / max(1, nebari))
             
             # 王者の移動力
-            wdmg = (_legacy_rand(wc0) + _legacy_rand(wc6) + _legacy_rand(wc6) + _legacy_rand(wc6)) / lastspart
-            wsyoumou = heri * wdmg * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
+            wraw_dmg = (_legacy_rand(wc0) + _legacy_rand(wc6) + _legacy_rand(wc6) + _legacy_rand(wc6)) / lastspart
+            wdmg = wraw_dmg
             
             if whp_flg <= 0:
                 if _legacy_rand_float(nebari) < _legacy_rand_float(wc2):
                     wdmg = wdmg * 1.5
-                    wsyoumou = wsyoumou * 0.5
                 else:
                     wdmg = wdmg / 3
                     if step % 4 == 0:
                         step_comment += f'<span class="red-light">王者{wcname_html}がバテてきたクポ！</span> '
-            elif (_legacy_rand_float(seriai) < _legacy_rand_float(wc4)) or (whp_flg / max(1, wc1) > 0.5):
-                wsyoumou = wsyoumou * 2
+            elif (_legacy_rand_float(seriai) < _legacy_rand_float(wc4 * 1.5)) or (whp_flg / max(1, wc1) > 0.5):
                 wdmg = wdmg * 2.5
                 if step % 4 == 0:
                     step_comment += f'<span class="yellow">王者{wcname_html}のラストスパート！</span> '
                     
             wdmg = int(wdmg)
+            wsyoumou = heri * wraw_dmg * (kisyou / max(1, wc3)) * (wc2 / max(1, nebari))
             
             knokori -= kdmg
             wnokori -= wdmg
