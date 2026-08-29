@@ -43,6 +43,7 @@ FFA Python/CGI - 倉庫管理スクリプト (souko.py)
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import get_session, token_check
 
 def get_item_master(item_id, item_type):
     """種別に対応する装備マスターを共通読込処理で検索します。"""
@@ -62,6 +63,13 @@ def main():
         
     params = common.decode_params()
     mode = params.get("mode", "")
+    state_changing_modes = {
+        "weapon_remove", "weapon_equip", "weapon_delete",
+        "armor_remove", "armor_equip", "armor_delete",
+        "accessory_remove", "accessory_equip", "accessory_delete",
+    }
+    if mode in state_changing_modes:
+        token_check(params, get_session())
     user_id = params.get("id", "").strip()
     # IDOR対策: 状態変更は本人のみ許可(ロック取得前にチェック)
     common.require_owner(user_id)
