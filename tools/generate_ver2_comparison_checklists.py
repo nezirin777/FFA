@@ -582,6 +582,22 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "牧場は自身で保存せず各専用処理へ中継する。訓練・お世話・殿堂は既存検証を使用し、一般/重賞/殿堂レースのcrace.pyと王者決定戦farmrace.pyはテンプレート送信のsを開始時に検証するよう修正済み。レース種別・開催枠・重賞3勝条件・寿命・待機は各実行側で再検証する。",
     },
+    {
+        "file": "templates/morifarm.html / cgi_py/morifarm.py",
+        "v2_source": "旧版_ver2/morifarm.cgi",
+        "scope": "野生チョコボ探索・購入、お見合い候補・配合、子の命名、引退、宿屋、結果表示、CSRF",
+        "difference": "Ver2の画面内HTMLをモード別Jinja表示へ移行し、所有状態判定、候補情報、想定引取額、配合/引退確認を明確化。入力検証とCSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "choco_shop/choco_shopbは候補の表示だけで保存せず、choco_buy/choco_buyb/choco_sell/choco_name/yadoyaだけを状態変更としてCSRF検証する。配合は現在のチョコボが引退する確認を表示し、引退後の金額は現金支給ではなくお見合い掲載時の想定引取額として表示する既決定の現行仕様を維持する。",
+    },
+    {
+        "file": "templates/dendo.html / cgi_py/dendo.py",
+        "v2_source": "旧版_ver2/dendo.cgi",
+        "scope": "殿堂チョコボ一覧、能力・戦績・血統・トロフィー表示、殿堂登録、更新、CSRF",
+        "difference": "Ver2の簡易一覧をカード・能力ランク・重賞表示へ移行し、殿堂データをJSON化。登録対象の詳細情報をスナップショットとして保持",
+        "intent": "現行仕様を維持",
+        "note": "一覧は読み取り専用でCSRF不要。mode=dendoだけが殿堂リストを更新するためCSRF検証を行い、本人の命名済みチョコボと重賞履歴を読み込んで同一ID/名前なら更新、未登録なら先頭追加する。登録条件はVer2どおり命名済みの現在のチョコボであり、重賞3勝は要求しない。",
+    },
 )
 
 
