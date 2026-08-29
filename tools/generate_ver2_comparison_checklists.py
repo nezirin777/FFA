@@ -518,6 +518,14 @@ FILE_AUDITS = (
         "intent": "現行仕様を維持",
         "note": "weapon/armor/accessoryのremove・equip・delete全9モードは、テンプレート送信のsを状態変更前に検証するよう修正済み。装備交換時は現在装備を倉庫へ戻し、容量上限は取り外し時に確認する。破棄は対象の保管枠だけを削除し、現行の確認なし即時破棄仕様を維持する。",
     },
+    {
+        "file": "templates/shop_trade.html / cgi_py/shop_weapon.py / cgi_py/shop_armor.py / cgi_py/shop_accessory.py",
+        "v2_source": "旧版_ver2/shop_item.cgi / shop_def.cgi / shop_acs.cgi",
+        "scope": "武器・防具・装飾品の店頭一覧、購入、装備中品の売却、所持金表示、倉庫/街への復帰、CSRF",
+        "difference": "Ver2の3個別HTMLを現行は共有テンプレートとJSONマスターへ集約し、購入可否・性能表示を種別ごとのコンテキストで表示。本人確認・倉庫保存・CSRFを追加",
+        "intent": "現行仕様を維持",
+        "note": "buy/sellは各店でマスターID・職業条件・所持金・倉庫容量を再検証する。共有テンプレートが送るsは、3店舗すべてのbuy/sell入口で検証するよう修正済み。shop_msgは各処理が定数として構築する店主文だけをsafe出力する。",
+    },
 )
 
 

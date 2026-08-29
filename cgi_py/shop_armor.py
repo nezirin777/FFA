@@ -46,6 +46,7 @@ import os
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import get_session, token_check
 
 def load_available_armors(job_idx):
     """共通防具マスターから、現在の職業が購入可能な商品を抽出します。"""
@@ -78,6 +79,7 @@ def main():
         
         # 1. 購入処理
         if mode == "buy":
+            token_check(params, get_session())
             item_no = params.get("item_no", "").strip()
             if not item_no:
                 common.release_lock(user_id)
@@ -129,6 +131,7 @@ def main():
             
         # 2. 売却（下取り）処理
         elif mode == "sell":
+            token_check(params, get_session())
             equipped_id = chara.get("armor_id", 0)
             if not equipped_id or equipped_id == 0:
                 common.release_lock(user_id)
