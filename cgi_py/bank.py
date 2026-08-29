@@ -44,6 +44,7 @@ import os
 # 共通モジュールと設定モジュールのインポート
 import config
 from sub_def import common  # common.pyのsub_defへの移動に伴うインポート修正
+from sub_def.crypto import get_session, token_check
 
 parse_cookie_user = common.parse_cookie_user
 
@@ -87,6 +88,7 @@ def main():
             
         # 1. 預け入れ (bank_sell)
         if mode == "bank_sell":
+            token_check(params, get_session())
             azuke_str = params.get("azuke", "").strip()
             if azuke_str == "":
                 common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
@@ -132,6 +134,7 @@ def main():
             
         # 2. 引き出し (bank_buy)
         elif mode == "bank_buy":
+            token_check(params, get_session())
             dasu_str = params.get("dasu", "").strip()
             if dasu_str == "":
                 common.redirect_with_flash(bank_url, "金額を入力してください。", "error")
