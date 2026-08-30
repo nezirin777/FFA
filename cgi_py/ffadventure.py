@@ -103,21 +103,24 @@ def main():
     if c_id != user_id or c_pass != chara["pass"]:
         common.show_error("認証に失敗しました。再度ログインしてください。")
 
-    # レジェンド攻略結果・待機画面から街へ戻る場合の中断処理。
-    # 旧版では攻略中の進行値を街の通常画面から利用できない状態に戻していたため、
-    # 明示的に中断した場合も保存データを新しい攻略開始状態へ戻す。
+    # レジェンド攻略結果・待機画面からの明示中断はCSRFを検証する。
     if params.get("legend_cancel") == "1":
         if os.environ.get("REQUEST_METHOD", "GET").upper() != "POST":
             common.show_error("不正な中断リクエストです。画面のボタンから操作してください。")
         from sub_def.crypto import get_session, token_check
         token_check(params, get_session())
 
+    # Ver2と同様、街へ戻った時点でレジェンドの途中進行は破棄する。
+    # 戦闘結果画面からの連戦は街を経由しないため、同じ階層内では継続できる。
+    legend_reset_value = config.Config["legend_progress_reset_value"]
+    if common.to_int(chara.get("boss_flag", legend_reset_value), legend_reset_value) != legend_reset_value:
         common.get_lock(user_id)
         try:
             latest_chara = common.chara_load(user_id)
             if latest_chara:
-                latest_chara["boss_flag"] = config.Config["legend_progress_reset_value"]
-                common.chara_regist(user_id, latest_chara)
+                if common.to_int(latest_chara.get("boss_flag", legend_reset_value), legend_reset_value) != legend_reset_value:
+                    latest_chara["boss_flag"] = legend_reset_value
+                    common.chara_regist(user_id, latest_chara)
                 chara = latest_chara
         finally:
             common.release_lock(user_id)

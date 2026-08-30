@@ -121,7 +121,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form action="login.py?mode=souko" method="POST">
+                                <form action="login.py?mode=souko" method="POST" data-confirm="{{ w.name }} を破棄します。この操作は取り消せません。よろしいですか？">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="id" value="{{ chara.id }}">
                                     <input type="hidden" name="item_no" value="{{ loop.index0 }}">
@@ -168,7 +168,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form action="login.py?mode=souko" method="POST">
+                                <form action="login.py?mode=souko" method="POST" data-confirm="{{ d.name }} を破棄します。この操作は取り消せません。よろしいですか？">
                                     <input type="hidden" name="s" value="{{ csrf_token }}">
                                     <input type="hidden" name="id" value="{{ chara.id }}">
                                     <input type="hidden" name="item_no" value="{{ loop.index0 }}">
@@ -203,7 +203,7 @@
                             <input type="hidden" name="mode" value="accessory_equip">
                             <input type="submit" class="btn btn--sm" value="装備">
                         </form>
-                        <form action="login.py?mode=souko" method="POST">
+                        <form action="login.py?mode=souko" method="POST" data-confirm="{{ a.name }} を破棄します。この操作は取り消せません。よろしいですか？">
                             <input type="hidden" name="s" value="{{ csrf_token }}">
                             <input type="hidden" name="id" value="{{ chara.id }}">
                             <input type="hidden" name="item_no" value="{{ loop.index0 }}">
