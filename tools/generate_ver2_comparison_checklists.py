@@ -266,9 +266,9 @@ FILE_AUDITS = (
         "file": "cgi_py/rank.py / templates/rank.html",
         "v2_source": "旧版_ver2/rank.cgi / regist.pl:all_data_read",
         "scope": "公開表示、24時間キャッシュ、全登録者数、11部門の集計・上位10件、勝率対象・端数処理、プロフィール導線",
-        "difference": "静的HTMLキャッシュからJSONキャッシュとテンプレート表示へ移行。外部ホームページ欄を廃止",
-        "intent": "JSON・表示刷新・URL除外は意図的／勝率条件コメントは実装どおりに整理済み",
-        "note": "レベル、最大HP、力・知能・信仰心・生命力・器用さ・速さ・魅力・カルマ、勝率の11部門は全て対応し、各上位10件の値も一致する。勝率は両版ともbattle_countが1,000超だけを対象にし、win_count×10000÷battle_countを小数第2位まで切り捨てる。24時間更新・登録者数・個人詳細への公開リンクは維持する。現行は画像を追加し、Ver2の外部ホームページ列はプロフィールURLを扱わない現行スキーマに合わせて表示しない。",
+        "difference": "静的HTMLキャッシュからJSONキャッシュとテンプレート表示へ移行。外部ホームページ欄を廃止。同値順位が保存データ列挙順へ依存していた",
+        "intent": "JSON・表示刷新・URL除外は意図的／同値順位は不具合を修正済み",
+        "note": "レベル、最大HP、力・知能・信仰心・生命力・器用さ・速さ・魅力・カルマ、勝率の11部門は全て対応し、各上位10件の値も一致する。勝率は両版ともbattle_countが1,000超だけを対象にし、win_count×10000÷battle_countを小数第2位まで切り捨てる。同じ記録値はVer2と同じくレベルが高い冒険者を上位にする。24時間更新・登録者数・個人詳細への公開リンクは維持する。現行は画像を追加し、Ver2の外部ホームページ列はプロフィールURLを扱わない現行スキーマに合わせて表示しない。",
     },
     {
         "file": "cgi_py/system.py / templates/system_ranking.html / templates/system_chara_sts.html / templates/system_img_list.html",

@@ -54,7 +54,12 @@ def build_rankings(players):
     
     def extract_top(lst, sort_key, val_key=None):
         # 指定キーでソートして上位10名を取得
-        sorted_lst = sorted(lst, key=lambda x: x.get(sort_key, 0), reverse=True)
+        # Ver2は先にレベル順へ整列してから各部門を並べ替えていたため、
+        # 同じ記録値ならレベルが高い冒険者を上位にする。
+        sorted_lst = sorted(
+            lst,
+            key=lambda x: (-int(x.get(sort_key, 0)), -int(x.get("level", 0))),
+        )
         top_10 = []
         for p in sorted_lst[:10]:
             val = p.get(val_key or sort_key, 0)
@@ -111,9 +116,10 @@ def build_rankings(players):
                 "name": p["name"],
                 "img": p.get("img", 0),
                 "val": ratio,
-                "total_battles": total_battles
+                "total_battles": total_battles,
+                "level": p.get("level", 0),
             })
-    win_players.sort(key=lambda x: x["val"], reverse=True)
+    win_players.sort(key=lambda x: (-x["val"], -int(x["level"])))
     rank_win_ratio = win_players[:10]
 
     return {
