@@ -179,16 +179,16 @@ FILE_AUDITS = (
         "v2_source": "旧版_ver2/shop_item.cgi / data/item/item<N>.ini",
         "scope": "職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移",
         "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。武器1181を皇帝向けに販売可能化",
-        "intent": "意図的",
-        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と武器倉庫上限8は一致する。職別品揃えは、台帳記載のシーフ武器1032〜1038価格調整を除き一致。皇帝用1181はVer2の職別リストにないが、72ab67dで未使用状態から皇帝向け販売品へ明示変更されているため現行仕様を維持する。",
+        "intent": "現行仕様を維持（明示決定）",
+        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と武器倉庫上限8は一致する。職別品揃えは、台帳記載のシーフ武器1032〜1038価格調整を除き一致。1032〜1038の性能順価格と、皇帝用1181の販売追加は再照合後に現行維持を明示決定した。",
     },
     {
         "file": "cgi_py/shop_armor.py / templates/shop_trade.html",
         "v2_source": "旧版_ver2/shop_def.cgi / data/def/def<N>.ini",
         "scope": "職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移",
         "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存が異なる。防具2181を皇帝向けに販売可能化",
-        "intent": "処理移行・防具2181は意図的／接続元は要判断",
-        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と防具倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。皇帝用2181はVer2の職別リストにないが、72ab67dで未使用状態から皇帝向け販売品へ明示変更されている。2165・2183の名称は通常の長音符へ統一する現行仕様とする。",
+        "intent": "処理移行・防具2181は現行維持（明示決定）／接続元は要判断",
+        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と防具倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。2165・2183の通常長音符への統一と、皇帝用2181の販売追加は再照合後に現行維持を明示決定した。",
     },
     {
         "file": "cgi_py/shop_accessory.py / templates/shop_trade.html",
@@ -196,7 +196,7 @@ FILE_AUDITS = (
         "scope": "職別品揃え、能力補正の保管、購入・売却額、倉庫上限、接続元ホスト、画面遷移",
         "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存はVer2と異なる",
         "intent": "処理移行は意図的／売却時の接続元は要判断",
-        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と装飾品倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。職別品揃えと補正は一致し、85・87の率補正だけはd7105f6で記録済みのVer1準拠調整を維持する。",
+        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と装飾品倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。職別品揃えと補正は一致し、85・87の率補正はd7105f6のVer1準拠調整として、再照合後に現行維持を明示決定した。",
     },
     {
         "file": "cgi_py/bbs.py / templates/ffadventure.html",
@@ -849,7 +849,6 @@ ARMOR_INTENTIONAL_DIFFERENCES = {
     2183: "名称: Ver2の全角ハイフン（－）→ Ver3の長音符（ー）。表示名を通常の長音符へ統一。",
 }
 
-
 ACCESSORY_INTENTIONAL_DIFFERENCES = {
     85: "命中・回避・必殺補正: 各0 → 各350。Ver1準拠へ復元（d7105f6）。",
     87: "命中・回避・必殺補正: 各0 → 999 / 999 / 9,999。Ver1準拠へ復元（d7105f6）。",
@@ -915,9 +914,9 @@ def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
             results[item_id] = {
                 "source": source,
                 "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
-                "intent": "意図的",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "ATK・命中・対象職はVer2と一致。コミットの目的と差異が一致する。",
+                "note": "ATK・命中・対象職はVer2と一致。過去コミットの目的を確認し、再照合後に現行維持を明示決定した。",
             }
         elif old_values == new_values and old_jobs == new_jobs:
             results[item_id] = {
@@ -931,9 +930,9 @@ def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
             results[item_id] = {
                 "source": source,
                 "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
-                "intent": "意図的",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "名称・ATK・価格・命中はVer2と一致。コミットの目的と差異が一致する。",
+                "note": "名称・ATK・価格・命中はVer2と一致。過去コミットの目的を確認し、再照合後に現行維持を明示決定した。",
             }
         else:
             unclassified.append(item_id)
@@ -997,17 +996,17 @@ def armor_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
             results[item_id] = {
                 "source": source,
                 "difference": ARMOR_INTENTIONAL_DIFFERENCES[item_id],
-                "intent": "意図的",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "DEF・価格・回避・対象職はVer2と一致。現行の表示名統一として記録する。",
+                "note": "DEF・価格・回避・対象職はVer2と一致。再照合後に通常の長音符表記を現行維持と明示決定した。",
             }
         elif item_id == 2181 and old_values == new_values and old_jobs == [] and new_jobs == [18]:
             results[item_id] = {
                 "source": source,
                 "difference": ARMOR_INTENTIONAL_DIFFERENCES[item_id],
-                "intent": "意図的",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "名称・DEF・価格・回避はVer2と一致。コミットの目的と差異が一致する。",
+                "note": "名称・DEF・価格・回避はVer2と一致。過去コミットの目的を確認し、再照合後に皇帝販売を現行維持と明示決定した。",
             }
         else:
             unclassified.append(item_id)
@@ -1074,9 +1073,9 @@ def accessory_comparisons() -> dict[int, dict[str, str]]:
             results[item_id] = {
                 "source": source,
                 "difference": ACCESSORY_INTENTIONAL_DIFFERENCES[item_id],
-                "intent": "意図的",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "名称・価格・効果ID・能力補正・対象職はVer2と一致。コミットの目的と差異が一致する。",
+                "note": "名称・価格・効果ID・能力補正・対象職はVer2と一致。d7105f6のVer1準拠補正として、再照合後に現行維持を明示決定した。",
             }
         elif item_id in ACCESSORY_CURRENT_POLICY_DIFFERENCES:
             results[item_id] = {
@@ -1154,15 +1153,14 @@ JOB_VALUE_KEYS = (
     "limit_str", "limit_int", "limit_mnd", "limit_vit", "limit_dex", "limit_agi", "limit_cha", "limit_karma",
 )
 
-# Ver2側の職業名には「ソ\ルジャー」という表示用の誤記が残っている。
-# Ver3では表示名を自然な「ソルジャー」へ補正しているため、値比較の
-# 未分類差異としては扱わない。
+# Ver2側の「ソ\ルジャー」は、Perl/文字コード処理で「ソ」を正しく
+# 表示するための表記。UTF-8のVer3では不要なため、現行表記を維持する。
 JOB_INTENTIONAL_DIFFERENCES: dict[int, dict[str, str]] = {
     0: {
         "difference": "名称: ソ\\ルジャー → ソルジャー",
-        "intent": "意図的（表示名の誤記修正）",
+        "intent": "現行仕様を維持（明示決定）",
         "status": "差異あり",
-        "note": "Ver2名に混入しているバックスラッシュを除去。転職条件8項目、成長上限8項目、必要マスター職31項目は一致。",
+        "note": "Ver2のバックスラッシュはPerl/文字コード処理で「ソ」を正しく表示するための表記。UTF-8の現行では不要なため、再照合後に現行表記を維持と明示決定した。転職条件8項目、成長上限8項目、必要マスター職31項目は一致。",
     },
 }
 
@@ -1297,9 +1295,9 @@ def tactic_comparisons() -> dict[int, dict[str, str]]:
             results[tactic_id] = {
                 "source": source,
                 "difference": " / ".join(details),
-                "intent": "意図的（実装・説明整合または現行仕様の維持）",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": verified + " 根拠: 7754eca、fce2828、0667c42。",
+                "note": verified + " 根拠: 7754eca、fce2828、0667c42。再照合後に現行仕様を維持と明示決定した。",
             }
         elif master_matches:
             results[tactic_id] = {
@@ -1527,9 +1525,9 @@ def monster_skill_comparisons() -> dict[int, dict[str, str]]:
         if skill_id == 14:
             results[skill_id] = {
                 "difference": "盗み額を所持金以下へ制限し、負数化しない安全処理を追加",
-                "intent": "意図的（現行の所持金整合性維持）",
+                "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "Ver2の所持金÷7抽選を基礎にしつつ、available_gold と penalize_reward で保存値の下限を保証。",
+                "note": "Ver2の所持金÷7抽選を基礎にしつつ、available_gold と penalize_reward で保存値の下限を保証。盗みの上限設定を含む現行仕様を維持と明示決定した。",
             }
         else:
             results[skill_id] = {
@@ -2148,7 +2146,7 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
         "防具を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・防具倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと倉庫を保存する。商品2181の皇帝販売は、装備台帳に根拠を記録した現行仕様である。"),
         "防具を売却": ("装備・所持金を統合JSONで同時保存し、結果をトースト表示", "装備中だけをマスター価格の2/3で下取りし、gold上限で打ち止めにして衣服へ戻す。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しないため維持可否は要判断。", "要判断"),
         "装飾品店を表示": ("職別販売ファイルをJSON抽出・共通テンプレートへ移行", "装備中装飾品の価格は両版ともマスター価格の2/3で表示する。現行は説明をdescriptionまたは能力補正から組み立て、CSRF付きフォーム・倉庫・街への導線を追加する。"),
-        "装飾品を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・装飾品倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと能力補正を含む倉庫要素を保存する。85・87の率補正は意図的なVer1準拠調整を維持する。"),
+        "装飾品を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・装飾品倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと能力補正を含む倉庫要素を保存する。85・87の率補正は、Ver1準拠調整を現行維持する明示判断として台帳に記録する。"),
         "装飾品を売却": ("装備・所持金を統合JSONで同時保存し、結果をトースト表示", "装備中だけをマスター価格の2/3で下取りし、gold上限で打ち止めにして補正なしへ戻す。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しないため維持可否は要判断。", "要判断"),
         "チャンピオンに挑戦": ("POST専用・結果表示mode明示", "待機後に王者状態で戦い、結果・王者更新・経験値上限は戦闘/所有台帳の確認結果に従う。"),
         "道場の入口を表示": ("テンプレート入口とPOST+CSRFへ移行", "battle_count>0を表示・実行の双方で検査する。名前の完全一致検索または一覧選択へ進むだけで、保存状態は変更しない。"),
@@ -2198,7 +2196,7 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
             elif name == "チョコボを殿堂登録":
                 difference, note, intent = "JSON・CSRF・本人認証へ移行", "Ver2と同じく名前付きの現役チョコボを登録し、同ID・同名は上書き、他は先頭追加する。", "意図的"
             elif name == "チョコボを手放す":
-                difference, note, intent = "未所持値を明示消去し候補リストをJSON化", "名前付き個体だけを性別別お見合い候補へ移し、chocoを空辞書へ戻す。候補固定枠廃止は要判断。", "要判断"
+                difference, note, intent = "未所持値を明示消去し候補リストをJSON化", "名前付き個体だけを性別別お見合い候補へ移し、chocoを空辞書へ戻す。候補は現行の性別ごと設定上限100件を維持する。", "現行仕様を維持（明示決定）"
             elif name == "野生チョコボを購入":
                 difference, note, intent = "所持中の直接POST上書きを拒否", "候補ID・価格・未所持を再検証し、初期能力の個体と空の重賞履歴を同時保存する。", "意図的"
             elif name == "お見合い・配合を実行":
@@ -2553,9 +2551,9 @@ def ownership_progression_comparisons() -> dict[str, dict[str, str]]:
         },
         "引退・お見合い候補リスト": {
             "difference": "固定99枠の行ファイルからJSONリスト＋設定上限へ変更",
-            "intent": "要判断",
+            "intent": "現行仕様を維持（明示決定）",
             "status": "確認済み",
-            "note": "性別別リストへ引退個体の戦績・血統・価格を移し、配合相手の候補にする基本設計は同じ。Ver3は実リスト長を基準に置換し、空リストも許容してchocobo_partner_list_limitで切詰めるため、Ver2の固定ID枠とは候補選出が異なり得る。",
+            "note": "性別別リストへ引退個体の戦績・血統・価格を移し、配合相手の候補にする基本設計は同じ。Ver3は実リスト長を基準に置換し、空リストも許容してchocobo_partner_list_limit（性別ごと100件）で切り詰める。Ver2の固定99枠および同じ育て親の引退個体を25%で追加表示する挙動は採用せず、現行仕様を維持する。",
         },
         "配合後の子チョコボ": {
             "difference": "保存形式と排他制御のみ変更（配合計算をPythonへ移植）",
