@@ -531,15 +531,37 @@ class BattleSimulator:
                 s.is_player_enemy and raw_dmg1 > 0 and s.dmg1 == 0
             )
 
+            # Ver2 wbattle.pl の長期戦用の瀕死逆転補正。
+            # 相手が自身の最大HP・こちらの現在HPの双方に対して10%未満なら、
+            # 16ターン目以降は通常の回避判定に代えて攻撃を10倍にする。
+            winner_desperate_counter = (
+                s.is_player_enemy
+                and s.mhp < s.winner["max_hp"] / 10
+                and s.mhp < s.khp / 10
+                and s.i > 15
+            )
+            player_desperate_counter = (
+                s.is_player_enemy
+                and s.khp < s.chara["max_hp"] / 10
+                and s.khp < s.mhp / 10
+                and s.i > 15
+            )
+
             # プレイヤー回避判定
             evade_roll_max = 100 if s.is_player_enemy else 300
-            if s.dmg2 > 0 and sake1 > random.randrange(evade_roll_max):
+            if winner_desperate_counter:
+                s.dmg2 = s.dmg2 * 10
+                s.com2 += "<br><span class=\"red text-medium\"><b>窮地を振り絞った！！</b></span>"
+            elif s.dmg2 > 0 and sake1 > random.randrange(evade_roll_max):
                 s.dmg2 = 0
                 player_evaded = True
                 s.com2 += f"<br><span class=\"red text-small\"><b>{s.chara['name']}は攻撃をかわした！</b></span>"
                 
             # 敵回避判定
-            if s.dmg1 > 0 and sake2 > random.randrange(100):
+            if player_desperate_counter:
+                s.dmg1 = s.dmg1 * 10
+                s.com1 += "<br><span class=\"red text-medium\"><b>窮地を振り絞った！！</b></span>"
+            elif s.dmg1 > 0 and sake2 > random.randrange(100):
                 s.dmg1 = 0
                 enemy_evaded = True
                 s.com1 += f"<br><span class=\"red text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"

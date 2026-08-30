@@ -17,7 +17,7 @@
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 選択戦術IDの取得 | `旧版_ver2/battle.pl:chara[30] / wbattle.pl:winner[37]` | `sub_def/battle_logic.py:get_tactic_id` | 列番号からtactic_idへ名称化 | 意図的 | 差異あり | プレイヤー・対人相手とも選択戦術IDを使用し、不正値・欠損値は0へ正規化する。現職ではないマスター戦術も選択済みなら実行する仕様を維持する。 |
+| 選択戦術IDの取得 | `旧版_ver2/battle.pl:chara[30] / wbattle.pl:winner[37]` | `sub_def/battle_logic.py:get_tactic_id` | 列番号からtactic_idへ名称化 | 意図的 | 差異あり | プレイヤー・対人相手とも選択戦術IDを使用する。欠損・変換不能・負値は0へ正規化し、存在しない正のIDは未定義メソッドとして無処理になる。現職ではないマスター戦術も選択済みなら実行する仕様を維持する。 |
 | 戦術マスター由来の発動率分母 | `旧版_ver2/tac.ini / battle.pl:tyosenwaza` | `sub_def/battle_logic.py:_load_tactic_activation_denominators / skills.py:skill_check` | tac.jsonのactivation_denominatorを優先 | 意図的 | 差異あり | 説明文ラベルを乱数分母へ対応付ける後方互換を残し、明示値があればそれを優先する。個々の分母はskills.mdでVer2照合済み。 |
 | プレイヤー必殺率・上限・特殊モード減衰 | `旧版_ver2/battle.pl:tyosenwaza` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 名前付き値・設定値へ移行 | 意図的 | 差異あり | カルマ/15 + 10 + 職業Lv、75上限、アクセ補正後95上限、幻影・異世界1/3、ボス1/2を共通ループで計算する。 |
 | リミットブレイク | `旧版_ver2/battle.pl:tyosenwaza / wbattle.pl:winwaza` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 表示HTMLのみ更新 | 意図的 | 差異あり | 双方ともHP10%未満かつrand(4)>1で必殺率へ999を加算する。対人相手側も同条件で判定する。 |
@@ -37,6 +37,7 @@
 | 防具DEFによるダメージ減算と最小値 | `旧版_ver2/mbattle.pl:monsbattle_sts / wbattle.pl:battle_sts` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 防御不能ログを追加 | 意図的 | 差異あり | モンスター戦はDEF未満を0、対人戦は1にし、負ダメージは保持する。上級職軽減後に0になった攻撃を現行はログで明示する。 |
 | 上級職の被ダメージ軽減 | `旧版_ver2/mbattle.pl:monsbattle_sts / wbattle.pl:battle_sts` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 職IDを名前付きjobで参照 | 意図的 | 差異あり | 職8〜17は1/2、18以上は1/4を被ダメージへ適用し、対人では双方に適用する。 |
 | 命中・回避判定 | `旧版_ver2/mbattle.pl:mons_kaihi / wbattle.pl:battle_kaihi` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 表示用と戦闘用の計算を共通化 | 意図的 | 差異あり | DEX・AGI・武器命中・防具回避・アクセ補正と、モンスター300幅/対人100幅の回避判定を対応させる。 |
+| 対人長期戦の瀕死時10倍補正 | `旧版_ver2/wbattle.pl:battle_kaihi` | `sub_def/battle_logic.py:BattleSimulator.simulate` | Ver2の瀕死時10倍補正を復元 | 不具合修正（明示決定） | 差異あり | 対人戦で相手HPが相手最大HPの10%未満、かつ自分の現在HPの10%未満、かつ16ターン目以降の場合に相手攻撃を10倍にする。双方に対称の判定があり、成立時は通常の回避判定を行わない。Ver2のwbattle.pl:battle_kaihiと同じく、防御・上級職軽減の後に適用する。 |
 | 先行攻撃による敵行動停止 | `旧版_ver2の行動・勝敗処理` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 部分的な敵行動停止を撤廃して同時精算へ復帰 | 不具合修正（明示決定） | 差異あり | Ver2と同様、双方の行動後にHPを同時精算する。敵がこのターンに倒れても、同ターンに成立した敵ダメージは受ける。速度・先攻後攻は導入しない。 |
 | ドレイン回復の基準 | `旧版_ver2/tech/43.pl ほか` | `sub_def/battle_logic.py:BattleSimulator.simulate / skills.py` | Ver2の設定ダメージ基準から実ダメージ基準へ変更 | 意図的 | 差異あり | 防御・回避後のdmg×割合で回復する現行仕様を維持する。ドレイン43の全量回復など個別割合はskills.mdで調整済み。 |
 | HP・回復・自傷の精算順 | `旧版_ver2/mbattle.pl:hp_sum / wbattle.pl:hp_sum` | `sub_def/battle_logic.py:BattleSimulator.simulate` | 回復を最大HPまでに制限してから同時精算 | 現行仕様を維持（明示決定） | 差異あり | 双方が同時に行動し、各回復は現在HPから最大HPまでで打ち止めてから被ダメージ・自傷を差し引く。過剰回復を致死ダメージの緩衝材にしない。 |
