@@ -47,8 +47,6 @@ USER_DATA_KEY_ORDER = (
     "item",  # 旧形式の装備データ。現行データに残っている場合も順序だけ整える。
     "syoku",
     "login_log",
-    "message",
-    "message_sent",
     "souko_weapon",
     "souko_armor",
     "souko_accessory",
@@ -98,6 +96,9 @@ def order_user_data(data: dict[str, Any]) -> dict[str, Any]:
         return data
 
     ordered = _ordered_dict(data, USER_DATA_KEY_ORDER)
+    # 私信機能は廃止済み。旧変換データを含めて以後の保存で残さない。
+    ordered.pop("message", None)
+    ordered.pop("message_sent", None)
     chara = ordered.get("chara")
     if isinstance(chara, dict):
         # 旧キーが残るデータを読み込んだ場合も、現行名へ一度だけ移行する。

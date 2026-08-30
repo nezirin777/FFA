@@ -440,7 +440,6 @@ def initial_guest_user_data():
         },
         "syoku": {str(job_id): 0 for job_id in config.Config["chara_jobs"]},
         "login_log": [],
-        "message": [],
         "souko_weapon": [],
         "souko_armor": [],
         "souko_accessory": [],

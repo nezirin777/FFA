@@ -355,7 +355,7 @@ def convert_login_log(path: Path) -> list[dict[str, Any]]:
 
 
 def convert_message_log(path: Path) -> list[dict[str, Any]]:
-    """受信箱・送信箱・全体告知の共通<>形式をJSON形式へ変換する。"""
+    """全体告知の<>形式をJSON形式へ変換する。"""
     if not path.exists():
         return []
     result = []
@@ -616,16 +616,11 @@ def convert_user(
         "equipment": item,
         "syoku": convert_syoku(syoku_path),
         "login_log": convert_login_log(old_root / "loginlog" / f"{user_id}.cgi"),
-        "message": convert_message_log(old_root / "message" / f"{user_id}.cgi"),
         "souko_weapon": warehouse["weapon"],
         "souko_armor": warehouse["armor"],
         "souko_accessory": warehouse["accessory"],
         "choco": {},
         "choco_g1": {},
-        # main()でuser_all.jsonとは別のmessage_sent.jsonへ保存する。
-        "_message_sent": convert_message_log(
-            old_root / "sousin" / f"{user_id}.cgi"
-        ),
     }
     validate_user(user, chara_path)
     return user
@@ -714,7 +709,6 @@ def main() -> int:
     converted = 0
     for chara_path in sorted(chara_dir.glob("*.cgi")):
         user = convert_user(chara_path, old_root, masters, legacy_masters)
-        message_sent = user.pop("_message_sent", [])
         user = order_user_data(user)
         converted += 1
         if not args.dry_run:
@@ -722,11 +716,10 @@ def main() -> int:
             user_dir.mkdir(parents=True, exist_ok=True)
             with (user_dir / "user_all.json").open("w", encoding="utf-8") as handle:
                 json.dump(user, handle, ensure_ascii=False, indent=2)
-            # Ver3の送信済み箱はuser_all.jsonではなく、ユーザー別の
-            # message_sent.jsonとして管理される。
-            if message_sent:
-                with (user_dir / "message_sent.json").open("w", encoding="utf-8") as handle:
-                    json.dump(message_sent, handle, ensure_ascii=False, indent=2)
+            # 私信機能は廃止済み。以前の変換出力が残っていても削除する。
+            message_sent_path = user_dir / "message_sent.json"
+            if message_sent_path.exists():
+                message_sent_path.unlink()
         print(f"変換: {chara_path.stem}")
 
     winner = convert_winner(old_root / "datalog" / "winner.cgi", masters, legacy_masters)

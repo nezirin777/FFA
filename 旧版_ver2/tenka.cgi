@@ -424,7 +424,7 @@ sub battle {
 		@tenka_log = <IN>;
 		close(IN);
 		$log_num =@tenka_log;
-		if ($tenaka_su < $log_num) {
+		if ($tenka_su < $log_num) {
 			pop(@tenka_log);
 		}
 

@@ -2124,7 +2124,7 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
         "転職画面を表示": ("職業マスターをJSONから参照", "能力・職歴前提を満たす候補と未マスター候補を分けて表示する。"),
         "転職を実行": ("実行POSTでも前提職を再検証", "現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化する。成功時はVer2と同じく接続元ホストを更新し、chara/syokuを同時保存する。能力減少値は一致し、カルマの下限だけはVer2の0許容に対して現行は1へ戻す意図的仕様。"),
         "掲示板へ投稿": ("Ver2にない一般掲示板を追加", "本人ID・200文字・禁止語を検査し、新着順で最大100件を共有JSONへ書込む。私信を置換した機能ではなく、投稿後はPRGリダイレクトとCSRFを用いる独立機能である。"),
-        "私信・受信拒否・友人登録（Ver2のみ）": ("Ver3に実行経路がない", "Ver2のpost_message.cgiは私信送受信、送受信箱、全受信拒否、個別拒否、友人登録を扱う。現行スキーマには移行値が残るがCGIの読書き経路はないため、復元するか機能廃止とするか要判断。", "要判断"),
+        "私信・受信拒否・友人登録（Ver2のみ）": ("Ver3に実行経路がなく、移行済み私信データも保持しない", "Ver2のpost_message.cgiは私信送受信、送受信箱、全受信拒否、個別拒否、友人登録を扱う。現行は機能を廃止し、変換器・user_all.json・ユーザー別message_sent.jsonから私信データを除外する。", "機能廃止（明示決定）"),
         "宿泊": ("状態更新をshop.pyへ集約", "料金確認後にHPを回復し、王者表示用状態とレジェンド進行の宿屋処理を更新する。Ver2と同じく接続元ホストも保存する。"),
         "銀行を表示": ("統合JSONのgold/bankを表示", "本人の所持金・預金と上限を表示し、変更はしない。"),
         "銀行へ預け入れ": ("入力検証と原子的保存を追加", "半角数字の1,000G単位で、所持金を確認してgoldからbankへ移す。預金上限を超える分はVer2の画面案内どおり国への寄付としてgoldから差し引き、bankには上限までだけ加算する。成功時は接続元ホストも保存する。"),
@@ -2526,10 +2526,10 @@ def ownership_progression_comparisons() -> dict[str, dict[str, str]]:
             "note": "通常の勝利・相打ち引分は挑戦者を王者へ交代し、敗北では王者の連勝・最高連勝を更新する。新王者は戦闘EXPのレベルアップ後に保存するため、本人とchampion.jsonの能力値・最大HP・現在HPが一致する。時間切れwin=3は引分表示として、王者交代・賞金・連勝を発生させず通常EXPのみを得る。勝利・相打ち引分EXPは相手Lv×基準値、敗北EXPだけmin(相手Lv, 自分Lv×10)へ調整済み。",
         },
         "天下一武道会の参加者・対戦履歴": {
-            "difference": "all_tenka/tenka_logをJSONキャッシュ化し、履歴上限を設定値で明示",
-            "intent": "要判断",
+            "difference": "all_tenka/tenka_logをJSONキャッシュ化。履歴保持数はVer2のtenka_su=3と現行tenka_log_limit=20で異なる",
+            "intent": "履歴変数名は不具合修正（明示決定）／20件保持は現行仕様を維持（明示決定）",
             "status": "確認済み",
-            "note": "両版ともレベル上位者の状態スナップショットと対戦時点の装備を組み合わせ、制覇時に履歴先頭へ追加する。Ver3は24時間キャッシュとtenka_log_limitで履歴を切り詰める一方、Ver2の履歴件数判定は変数名の不整合を含む。対戦時はキャラクターロックを取得してからロード・戦闘・保存まで保持し、重複送信による待機/進行更新の競合を防ぐ。",
+            "note": "両版ともレベル上位者の状態スナップショットと対戦時点の装備を組み合わせ、制覇時に履歴先頭へ追加する。Ver2の履歴件数判定の変数名をtenka_suへ修正した。Ver2はtenka_su=3で追加前に末尾を1件だけ削除するため通常4件、現行はtenka_log_limit=20で追加後に20件へ切り詰める。20件保持は現行仕様を維持する。対戦時はキャラクターロックを取得してからロード・戦闘・保存まで保持し、重複送信による待機/進行更新の競合を防ぐ。",
         },
         "チョコボ所持判定と未所持値": {
             "difference": "ファイル有無判定から必須キーを持つ辞書の実体判定へ変更",
@@ -2598,10 +2598,10 @@ def ownership_progression_comparisons() -> dict[str, dict[str, str]]:
             "note": "Ver2 login.cgiはloginlog/<ID>.cgiを読んで日時・IP等を追加し上限処理する。Ver3にはlogin_log_load/login_log_registと移行項目があるが、login.pyからlogin_log_registを呼ばないため、新規ログイン履歴が蓄積されない。平文パスワードを含むVer2の履歴機能は廃止で確定し、移行済みの過去値は互換データとして残す。",
         },
         "受信・送信メッセージ": {
-            "difference": "変換先のmessage/message_sentは残るが、現行の送受信・既読・削除CGIが見当たらない",
-            "intent": "要判断",
+            "difference": "Ver3は私信機能を実装せず、移行済みmessage/message_sentデータも削除",
+            "intent": "機能廃止（明示決定）",
             "status": "確認済み",
-            "note": "Ver2はmessage/sousinとpost_message.cgiで私信・送信箱・件数制限を扱う。Ver3のスキーマには受信messageとmessage_sentがあるものの、現行CGIから読み書きする経路を確認できず、機能廃止か未移植かを決める必要がある。",
+            "note": "Ver2はmessage/sousinとpost_message.cgiで私信・送信箱・件数制限を扱う。Ver3では機能を廃止し、変換器は私信を移行せず、user_all.jsonとユーザー別message_sent.jsonの既存値も削除する。",
         },
         "全体メッセージ・掲示板": {
             "difference": "全体ニュース(all_message)とプレイヤー掲示板(bbs)を別JSONへ分離",
@@ -2712,10 +2712,10 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "note": "shop・souko・チョコボ系等はrequire_owner、battle・monster・legend・bank・passchangeは同条件を個別実装。閲覧系には適用しない。",
         },
         "統合ユーザー保存形式": {
-            "difference": "Ver2はcharalog/item/syoku/souko/loginlog/message等を別ファイル保存。Ver3は大半をuser_all.jsonのセクションへ統合し、送信箱だけmessage_sent.jsonに分離する。",
+            "difference": "Ver2はcharalog/item/syoku/souko/loginlog/message等を別ファイル保存。Ver3は私信を廃止し、それ以外の大半をuser_all.jsonのセクションへ統合する。",
             "intent": "意図的",
             "status": "差異あり",
-            "note": "変換器は各分割ファイルをchara・equipment・syoku・ログ・倉庫へ明示対応させる。",
+            "note": "変換器は私信以外の分割ファイルをchara・equipment・syoku・ログ・倉庫へ明示対応させる。order_user_dataは旧message/message_sentキーを除去して再保存する。",
         },
         "ユーザーデータのキー順・旧キー正規化": {
             "difference": "Ver2の列番号保存を、Ver3は名前付きJSONと固定キー順へ変更。title→title_id、unused30→tactic_idを移し、site/urlを除去し、未知キーは末尾に保持する。",
@@ -2814,10 +2814,10 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "note": "アクセ8能力・3率・説明を正規化し、存在しない倉庫マスターはwarningを出して除外する。",
         },
         "Ver2→Ver3ログ・共有データ変換": {
-            "difference": "Ver2 loginlog/message/sousin/datalogをJSON化し、送信箱はuser_all.json外のmessage_sent.json、winnerはchampion.json、全体文はall_message.jsonにする。",
-            "intent": "意図的",
+            "difference": "Ver2 loginlog/datalogだけをJSON化し、私信message/sousinは移行しない。winnerはchampion.json、全体文はall_message.jsonにする。",
+            "intent": "機能廃止（明示決定）",
             "status": "差異あり",
-            "note": "欠損ファイルは空値扱い。送信箱が空ならmessage_sent.jsonを作らず、winnerが無ければchampion.jsonを出力しない。",
+            "note": "欠損ファイルは空値扱い。私信の受信箱・送信箱は出力せず、winnerが無ければchampion.jsonを出力しない。",
         },
         "Ver2チョコボの移行時初期化": {
             "difference": "Ver2の現役チョコボ・個人G1履歴は変換せず、全ユーザーのchoco/choco_g1を空辞書で初期化する。",
@@ -2872,7 +2872,7 @@ def write_storage_migration_checklist() -> None:
                 ("Ver1→Ver2変換", "旧版_ver1/セーブデータ移行用ファイル/convert_to_ver2.py", "docs/migration_specs.html（履歴資料）", "入力・出力の列対応、原本保持、dry-run、Ver3比較対象外であること"),
                 ("Ver2→Ver3ユーザー本体変換", "旧版_ver2/charalog/<ID>.cgi", "旧版_ver2/change_data/convert_all.py / sub_def/data_schema.py", "列番号→charaキー、能力値順、パスワード、戦績、戦術・称号"),
                 ("Ver2→Ver3装備・職業・倉庫変換", "旧版_ver2/item,syoku,souko", "旧版_ver2/change_data/convert_all.py", "マスター参照、装備性能、職業熟練度、倉庫件数、旧形式の残存"),
-                ("Ver2→Ver3ログ・共有データ変換", "旧版_ver2/loginlog,message,sousin,datalog", "旧版_ver2/change_data/convert_all.py", "message_sentの別保存、champion.json、all_message.json、欠損時"),
+                ("Ver2→Ver3ログ・共有データ変換", "旧版_ver2/loginlog,message,sousin,datalog", "旧版_ver2/change_data/convert_all.py", "私信の非移行、champion.json、all_message.json、欠損時"),
                 ("Ver2チョコボの移行時初期化", "旧版_ver2のチョコボ保存データ", "旧版_ver2/change_data/convert_all.py / docs/migration_specs.html", "現役チョコボを移さずchoco/choco_g1を空辞書にする意図、既存データとの衝突"),
                 ("変換の文字コード・検証用出力", "旧版Ver2のCP932テキスト", "旧版_ver2/change_data/convert_all.py", "CP932読込、文字化け置換、dry-run、検証先出力、現行save_dataを直接上書きしないこと"),
             )),

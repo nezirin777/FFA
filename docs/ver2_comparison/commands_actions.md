@@ -162,7 +162,7 @@
 | 転職画面を表示（`mode=tensyoku` / POST / 表示） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 職業マスターをJSONから参照 | 意図的 | 差異あり | 能力・職歴前提を満たす候補と未マスター候補を分けて表示する。 |
 | 転職を実行（`mode=tensyoku_change` / POST / 状態変更） | `旧版_ver2/tensyoku.cgi` | `cgi_py/tensyoku.py` | 実行POSTでも前提職を再検証 | 意図的 | 差異あり | 現職Lvを退避、転職先Lvを復帰し、必要なら戦術を初期化する。成功時はVer2と同じく接続元ホストを更新し、chara/syokuを同時保存する。能力減少値は一致し、カルマの下限だけはVer2の0許容に対して現行は1へ戻す意図的仕様。 |
 | 掲示板へ投稿（`mode=post` / POST / 状態変更） | `旧版_ver2に一般掲示板はなし（post_message.cgiは私信）` | `cgi_py/bbs.py` | Ver2にない一般掲示板を追加 | 意図的 | 差異あり | 本人ID・200文字・禁止語を検査し、新着順で最大100件を共有JSONへ書込む。私信を置換した機能ではなく、投稿後はPRGリダイレクトとCSRFを用いる独立機能である。 |
-| 私信・受信拒否・友人登録（Ver2のみ）（`Ver2専用（message / all_list / limit / ban / friend）` / POST / Ver3未実装） | `旧版_ver2/post_message.cgi` | `該当なし` | Ver3に実行経路がない | 要判断 | 差異あり | Ver2のpost_message.cgiは私信送受信、送受信箱、全受信拒否、個別拒否、友人登録を扱う。現行スキーマには移行値が残るがCGIの読書き経路はないため、復元するか機能廃止とするか要判断。 |
+| 私信・受信拒否・友人登録（Ver2のみ）（`Ver2専用（message / all_list / limit / ban / friend）` / POST / Ver3未実装） | `旧版_ver2/post_message.cgi` | `該当なし` | Ver3に実行経路がなく、移行済み私信データも保持しない | 機能廃止（明示決定） | 差異あり | Ver2のpost_message.cgiは私信送受信、送受信箱、全受信拒否、個別拒否、友人登録を扱う。現行は機能を廃止し、変換器・user_all.json・ユーザー別message_sent.jsonから私信データを除外する。 |
 
 ### 店・資産
 
