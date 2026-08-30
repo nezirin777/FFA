@@ -178,17 +178,17 @@ FILE_AUDITS = (
         "file": "cgi_py/shop_weapon.py / templates/shop_trade.html",
         "v2_source": "旧版_ver2/shop_item.cgi / data/item/item<N>.ini",
         "scope": "職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移",
-        "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。武器1181の販売対象だけ未判断",
-        "intent": "処理移行は意図的／武器1181は要判断",
-        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と武器倉庫上限8は一致する。職別品揃えは、台帳記載のシーフ武器1032〜1038価格調整を除き一致。皇帝用1181はVer2の職別リストにないが現行では販売するため、維持可否はequipment.mdの要判断項目として残す。",
+        "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。武器1181を皇帝向けに販売可能化",
+        "intent": "意図的",
+        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と武器倉庫上限8は一致する。職別品揃えは、台帳記載のシーフ武器1032〜1038価格調整を除き一致。皇帝用1181はVer2の職別リストにないが、72ab67dで未使用状態から皇帝向け販売品へ明示変更されているため現行仕様を維持する。",
     },
     {
         "file": "cgi_py/shop_armor.py / templates/shop_trade.html",
         "v2_source": "旧版_ver2/shop_def.cgi / data/def/def<N>.ini",
         "scope": "職別品揃え、購入・売却額、倉庫上限、接続元ホスト、画面遷移",
-        "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存と防具2181の販売対象が異なる",
-        "intent": "処理移行は意図的／接続元・防具2181は要判断",
-        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と防具倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。皇帝用2181はVer2の職別リストにないが現行では販売する。2165・2183の名称記号差はequipment.mdに記録済み。",
+        "difference": "JSON・CSRF・入力再検証・トースト遷移へ移行。売却時の接続元保存が異なる。防具2181を皇帝向けに販売可能化",
+        "intent": "処理移行・防具2181は意図的／接続元は要判断",
+        "note": "購入・売却額は両版とも価格の2/3、購入時のREMOTE_ADDR保存と防具倉庫上限8は一致する。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しない。皇帝用2181はVer2の職別リストにないが、72ab67dで未使用状態から皇帝向け販売品へ明示変更されている。2165・2183の名称は通常の長音符へ統一する現行仕様とする。",
     },
     {
         "file": "cgi_py/shop_accessory.py / templates/shop_trade.html",
@@ -839,19 +839,25 @@ WEAPON_INTENTIONAL_DIFFERENCES = {
     1036: "価格 2,550,000G → 12,500,000G。職業3の武器価格を性能順に調整（d7105f6）。",
     1037: "価格 12,500,000G → 75,000,000G。職業3の武器価格を性能順に調整（d7105f6）。",
     1038: "価格 25,000,000G → 98,000,000G。職業3の武器価格を性能順に調整（d7105f6）。",
+    1181: "対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:皇帝。未使用状態から皇帝向け販売品へ変更（72ab67d）。",
 }
 
 
-ARMOR_REVIEW_DIFFERENCES = {
-    2165: "名称: Ver2の全角ハイフン（－）→ Ver3のマイナス記号（−）。表示名のみの文字種差異。",
-    2181: "対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:皇帝。",
-    2183: "名称: Ver2の全角ハイフン（－）→ Ver3のマイナス記号（−）。表示名のみの文字種差異。",
+ARMOR_INTENTIONAL_DIFFERENCES = {
+    2165: "名称: Ver2の全角ハイフン（－）→ Ver3の長音符（ー）。表示名を通常の長音符へ統一。",
+    2181: "対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:皇帝。未使用状態から皇帝向け販売品へ変更（72ab67d）。",
+    2183: "名称: Ver2の全角ハイフン（－）→ Ver3の長音符（ー）。表示名を通常の長音符へ統一。",
 }
 
 
 ACCESSORY_INTENTIONAL_DIFFERENCES = {
     85: "命中・回避・必殺補正: 各0 → 各350。Ver1準拠へ復元（d7105f6）。",
     87: "命中・回避・必殺補正: 各0 → 999 / 999 / 9,999。Ver1準拠へ復元（d7105f6）。",
+}
+
+
+ACCESSORY_CURRENT_POLICY_DIFFERENCES = {
+    999: "説明: Ver2は空文字 → Ver3は「効果なし」。効果がないことを示す補足表記を維持。",
 }
 
 
@@ -905,7 +911,7 @@ def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
         else:
             source += " / 職業別販売リストには未掲載"
 
-        if item_id in WEAPON_INTENTIONAL_DIFFERENCES:
+        if item_id in WEAPON_INTENTIONAL_DIFFERENCES and old_jobs == new_jobs:
             results[item_id] = {
                 "source": source,
                 "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
@@ -924,10 +930,10 @@ def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
         elif item_id == 1181 and old_values == new_values and old_jobs == [] and new_jobs == [18]:
             results[item_id] = {
                 "source": source,
-                "difference": f"対象職: Ver2は職業別販売リスト未掲載 → Ver3は 18:{labels.get(18, '不明')}",
-                "intent": "要判断",
+                "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
+                "intent": "意図的",
                 "status": "差異あり",
-                "note": "名称・ATK・価格・命中は一致。販売対象職を追加した根拠は履歴から確認できない。",
+                "note": "名称・ATK・価格・命中はVer2と一致。コミットの目的と差異が一致する。",
             }
         else:
             unclassified.append(item_id)
@@ -987,13 +993,21 @@ def armor_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
                 "status": "一致",
                 "note": "名称・DEF・価格・回避・対象職をVer2総覧と職業別販売リストで照合済み。",
             }
-        elif item_id in ARMOR_REVIEW_DIFFERENCES:
+        elif item_id in (2165, 2183) and old_jobs == new_jobs:
             results[item_id] = {
                 "source": source,
-                "difference": ARMOR_REVIEW_DIFFERENCES[item_id],
-                "intent": "要判断",
+                "difference": ARMOR_INTENTIONAL_DIFFERENCES[item_id],
+                "intent": "意図的",
                 "status": "差異あり",
-                "note": "数値または対象職以外の項目はVer2と一致。変更根拠は履歴から確認できない。",
+                "note": "DEF・価格・回避・対象職はVer2と一致。現行の表示名統一として記録する。",
+            }
+        elif item_id == 2181 and old_values == new_values and old_jobs == [] and new_jobs == [18]:
+            results[item_id] = {
+                "source": source,
+                "difference": ARMOR_INTENTIONAL_DIFFERENCES[item_id],
+                "intent": "意図的",
+                "status": "差異あり",
+                "note": "名称・DEF・価格・回避はVer2と一致。コミットの目的と差異が一致する。",
             }
         else:
             unclassified.append(item_id)
@@ -1064,6 +1078,14 @@ def accessory_comparisons() -> dict[int, dict[str, str]]:
                 "status": "差異あり",
                 "note": "名称・価格・効果ID・能力補正・対象職はVer2と一致。コミットの目的と差異が一致する。",
             }
+        elif item_id in ACCESSORY_CURRENT_POLICY_DIFFERENCES:
+            results[item_id] = {
+                "source": source,
+                "difference": ACCESSORY_CURRENT_POLICY_DIFFERENCES[item_id],
+                "intent": "現行維持（明示決定）",
+                "status": "差異あり",
+                "note": "ゲーム効果と対象職はVer2と一致。購入・装備対象外のマスター項目を、カタログなどで分かるようにする表示仕様として維持する。",
+            }
         elif old_values == new_values and old_jobs == new_jobs:
             results[item_id] = {
                 "source": source,
@@ -1071,14 +1093,6 @@ def accessory_comparisons() -> dict[int, dict[str, str]]:
                 "intent": "該当なし",
                 "status": "一致",
                 "note": "名称・価格・効果ID・8能力補正・3率補正・説明・対象職をVer2総覧と職業別販売リストで照合済み。",
-            }
-        elif item_id == 999 and old_values[:-1] == new_values[:-1] and old_jobs == new_jobs:
-            results[item_id] = {
-                "source": source,
-                "difference": "説明: Ver2は空文字 → Ver3は「効果なし」。",
-                "intent": "要判断",
-                "status": "差異あり",
-                "note": "ゲーム効果と対象職は一致。表示専用の文言差であり、変更根拠は履歴から確認できない。",
             }
         else:
             unclassified.append(item_id)
@@ -2128,10 +2142,10 @@ def command_action_comparisons(actions: list[dict[str, str]]) -> dict[str, dict[
         "倉庫の装飾品を装備": ("現行は選択品を除去し、旧装備を末尾へ追加", "Ver2は選択した保管位置を旧装備で置換する。現行の並び替えを伴う方式を維持するかは要判断。", "要判断"),
         "倉庫の装飾品を削除": ("Ver2の二段階確認を現行は省略", "Ver2は確認画面を挟んでから削除するが、現行はCSRF付きの1回のPOSTで削除する。復元不能な操作のため確認を復元するか要判断。", "要判断"),
         "武器店を表示": ("職別販売ファイルをJSON抽出・共通テンプレートへ移行", "装備中武器の価格は両版ともマスター価格の2/3で表示する。現行はCSRF付きフォーム、未選択を防ぐrequired、倉庫・街への導線を追加する。"),
-        "武器を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・武器倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと倉庫を保存する。商品1032〜1038の価格調整と1181の皇帝販売は装備台帳の判断に従う。"),
+        "武器を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・武器倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと倉庫を保存する。商品1032〜1038の価格調整と1181の皇帝販売は、装備台帳に根拠を記録した現行仕様である。"),
         "武器を売却": ("装備・所持金を統合JSONで同時保存し、結果をトースト表示", "装備中だけをマスター価格の2/3で下取りし、gold上限で打ち止めにして素手へ戻す。売却時に接続元を保存しない点はVer2と同じ。"),
         "防具店を表示": ("職別販売ファイルをJSON抽出・共通テンプレートへ移行", "装備中防具の価格は両版ともマスター価格の2/3で表示する。現行はCSRF付きフォーム、未選択を防ぐrequired、倉庫・街への導線を追加する。"),
-        "防具を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・防具倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと倉庫を保存する。商品2181の皇帝販売は装備台帳の判断に従う。"),
+        "防具を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・防具倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと倉庫を保存する。商品2181の皇帝販売は、装備台帳に根拠を記録した現行仕様である。"),
         "防具を売却": ("装備・所持金を統合JSONで同時保存し、結果をトースト表示", "装備中だけをマスター価格の2/3で下取りし、gold上限で打ち止めにして衣服へ戻す。Ver2は売却時にもREMOTE_ADDRを保存するが、現行は保存しないため維持可否は要判断。", "要判断"),
         "装飾品店を表示": ("職別販売ファイルをJSON抽出・共通テンプレートへ移行", "装備中装飾品の価格は両版ともマスター価格の2/3で表示する。現行は説明をdescriptionまたは能力補正から組み立て、CSRF付きフォーム・倉庫・街への導線を追加する。"),
         "装飾品を購入": ("販売候補をJSONから再取得し、統合倉庫へ原子的に保存", "職業別商品・所持金・装飾品倉庫8件・商品番号をサーバー側で確認し、価格を差し引いてREMOTE_ADDRと能力補正を含む倉庫要素を保存する。85・87の率補正は意図的なVer1準拠調整を維持する。"),
