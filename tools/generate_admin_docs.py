@@ -769,14 +769,14 @@ python 旧版_ver2/change_data/convert_all.py --output &lt;検証用出力&gt; -
 def operations_specs() -> str:
     c = config.Config
     body = f"""
-<div class="note">この資料は現行コードの管理画面と保存処理を基準にしています。通常データはログインを契機に1日1回バックアップされ、最大{num(c['backup_retention_days'])}日分を保持します。保護ユーザー用の固定バックアップ自動作成は別途未実装です。</div>
+<div class="note">この資料は現行コードの管理画面と保存処理を基準にしています。通常データはログインを契機に1日1回バックアップされ、最大{num(c['backup_retention_days'])}日分を保持します。保護ユーザー用の固定バックアップ自動作成は行いませんが、公開ゲスト test は固定バックアップが無い場合でも初期状態で再作成できます。</div>
 <h2>管理画面の機能</h2>
 {table(["機能", "操作", "保存・削除対象", "備考"], [
     ["登録者一覧", "kanri_all", "save_data/&lt;ID&gt;を一覧表示", "最終行動日時、ホスト、所持金などを確認する。"],
     ["キャラクター編集", "data / save", "user_all.jsonのchara", "名前、レベル、能力、職業、所持金、HP、コメントなどを直接変更する。"],
     ["個別削除", "del_chara", "対象ユーザーのディレクトリ全体", "protected_user_idsのユーザーは削除不可。削除前バックアップは作成しない。"],
     ["放置キャラ一括削除", "del_noplay", "最終行動から一定日数を超えたユーザー", f"{num(c['character_delete_after_days'])}日を基準に管理者が手動実行。自動スケジューラではない。"],
-    ["保護ユーザー復元", "restore_protected", "protected_users/&lt;ID&gt;/user_all.json → save_data/&lt;ID&gt;/user_all.json", "復元元が存在し、chara.idが一致する場合だけ復元する。"],
+    ["保護ユーザー復元", "restore_protected", "protected_users/&lt;ID&gt;/user_all.json → save_data/&lt;ID&gt;/user_all.json", "固定復元元が存在し、chara.idが一致する場合だけ復元する。testだけは復元元が無くても初期状態で再作成する。"],
     ["日次バックアップ復元", "backup_restore", "backups/YYYY-MM-DD → save_data", "メンテナンスモード中のみ実行。復元前の現行データはpre_restore_日時へ退避する。"],
     ["全体ニュース投稿", "post_all_message", "save_data/all_message.json", f"管理人名義で投稿し、最大{num(c['all_message_storage_limit'])}件に切り詰める。"],
     ["マスター管理", "master_list / master_save / master_delete", "data/syoku.json等", "職業、戦術、武器、防具、装飾品を検証付きで編集する。"],
@@ -793,7 +793,7 @@ def operations_specs() -> str:
 {table(["対象", "実装状況", "確認内容"], [
     ["通常セーブの定期バックアップ", "実装済み", f"ログイン処理からensure_daily_backup()を呼び、backups/YYYY-MM-DDへ{num(c['backup_retention_days'])}日分を保持する。同日中は二重作成しない。"],
     ["保護ユーザーの自動バックアップ", "未実装", "protected_user_backup_dirの設定と復元処理はあるが、そこへuser_all.jsonをコピーする作成処理はない。"],
-    ["保護ユーザーの復元", "実装済み", "admin.pyのrestore_protected。復元元が事前に手動配置されている場合だけ機能する。"],
+    ["保護ユーザーの復元", "実装済み", "admin.pyのrestore_protected。固定復元元が事前に手動配置されていればそれを使い、無い場合は公開ゲストtestだけを初期状態で再作成する。"],
     ["アトミック保存", "実装済み", "一時JSONへ書き込み、flush/fsync後にos.replaceする。バックアップ作成・復元とbackup_snapshotロックで直列化する。"],
     ["Git履歴", "運用バックアップではない", "過去コミットに保存データが含まれると漏えい・復元リスクになるため、.gitignoreと履歴管理を別途確認する。"],
 ], row_headers=True)}
@@ -803,7 +803,7 @@ def operations_specs() -> str:
     ["2", f"{num(c['backup_retention_days'])}日を超えた日付フォルダを自動削除する。"],
     ["3", "管理画面で復元対象日を選び、config.pyのmaintenance_modeを1にしてから復元する。"],
     ["4", "復元前の状態はbackups/pre_restore_YYYYMMDD_HHMMSSへ退避される。"],
-    ["5", "保護ユーザー復元を使う場合は、save_data/protected_users/&lt;ID&gt;/user_all.jsonとしてchara.idが一致するファイルを別途手動配置する。"],
+    ["5", "保護ユーザー復元は、save_data/protected_users/&lt;ID&gt;/user_all.jsonとしてchara.idが一致する固定データを優先する。固定データが無い場合でも公開ゲストtestは初期状態で再作成する。その他の保護ユーザーは固定データを手動配置する。"],
     ["6", "バックアップにはパスワードハッシュや個人データが含まれるため、Web公開ディレクトリ外・アクセス制限下で保管する。"],
 ], row_headers=True)}
 <h2>関連設定・ソース</h2>

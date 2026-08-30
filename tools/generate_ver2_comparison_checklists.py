@@ -354,9 +354,9 @@ FILE_AUDITS = (
         "file": "admin.py / templates/admin.html",
         "v2_source": "旧版_ver2/admin.cgi / alldata.cgi / save_log.cgi",
         "scope": "管理認証・ログアウト、全体ニュース、全登録者/個別データ、個別/放置削除、保護ユーザー、マスター編集・削除、倉庫追加、日次バックアップ復元、管理ログ",
-        "difference": "hidden平文管理パスワードとPerlの動的マスター生成を、暗号化管理セッション・CSRF・検証済みJSON編集へ移行。Ver2のsave_log保護リストと管理ログを、設定済み保護ID/固定バックアップとログイン履歴廃止へ置換し、日次バックアップ復元を追加",
+        "difference": "hidden平文管理パスワードとPerlの動的マスター生成を、暗号化管理セッション・CSRF・検証済みJSON編集へ移行。Ver2のsave_log保護リストと管理ログを、設定済み保護ID・固定バックアップ優先の復元・ゲスト初期化とログイン履歴廃止へ置換し、日次バックアップ復元を追加",
         "intent": "現行仕様を維持",
-        "note": "認証は初回POSTだけで定数時間比較し、以後はセッションのis_adminで認可する。状態変更はCSRF検証し、マスターはID一意性・職業参照・数値型、倉庫追加はマスター実在・種別上限を確認する。個別/放置削除はprotected_user_idsを除外し、固定バックアップから保護ユーザーを復元できる。日次バックアップ復元はmaintenance_modeを必須にし、復元前のセーブを退避する。Ver2の管理パスワード・管理ログ・外部サイト情報・動的コード生成は復元しない。",
+        "note": "認証は初回POSTだけで定数時間比較し、以後はセッションのis_adminで認可する。状態変更はCSRF検証し、マスターはID一意性・職業参照・数値型、倉庫追加はマスター実在・種別上限を確認する。個別/放置削除はprotected_user_idsを除外し、固定バックアップを優先して保護ユーザーを復元する。固定バックアップが無いtestだけは初期データを再作成する。日次バックアップ復元はmaintenance_modeを必須にし、復元前のセーブを退避する。Ver2の管理パスワード・管理ログ・外部サイト情報・動的コード生成は復元しない。",
     },
     {
         "file": "sub_def/common.py",
@@ -2786,10 +2786,10 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "note": "Ver3は日付名検証、maintenance_mode必須、復元前全体退避、temp置換、snapshot/restoreロックを実装する。",
         },
         "保護ユーザーの復元": {
-            "difference": "Ver2はsave_log.cgiで削除保護対象を列挙するだけ。Ver3はprotected_user_idsを削除対象外にし、固定user_all.jsonから欠落・破損時だけ復元する。固定バックアップの自動作成はない。",
-            "intent": "要判断",
+            "difference": "Ver2はsave_log.cgiで削除保護対象を列挙するだけ。Ver3はprotected_user_idsを削除対象外にし、固定user_all.jsonを優先して欠落・破損時だけ復元する。固定バックアップが無いtestは初期状態で再作成する。",
+            "intent": "意図的",
             "status": "差異あり",
-            "note": "restore_protected_usersはchara.idを検証して個別ロック下で復元するが、protected_user_backup_dirへの書込み元は現行Pythonコードにない。",
+            "note": "restore_protected_usersはchara.idを検証して個別ロック下で復元する。protected_user_backup_dirへの自動書込みは行わず、固定バックアップが無い場合の初期化対象は公開ゲストID test に限定する。",
         },
         "管理画面によるマスター保存・削除": {
             "difference": "Ver2管理画面はhidden平文管理パスワードを引き回し、テキストを直接上書き。Ver3は暗号化管理セッション・CSRF・JSON解析・ID/型/下限/職業ID検証・原子保存を行う。",

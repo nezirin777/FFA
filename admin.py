@@ -84,6 +84,8 @@ MASTER_DEFINITIONS = {
 }
 
 STAT_KEYS = ("str", "int", "mnd", "vit", "dex", "agi", "cha", "karma")
+GUEST_USER_ID = "test"
+GUEST_USER_PASSWORD = "test"
 
 
 def get_master_definition(master_type):
@@ -381,14 +383,93 @@ def is_valid_user_file(file_path, user_id):
         return False
 
 
+def initial_guest_user_data():
+    """固定バックアップがないゲスト用アカウントの初期データを返す。"""
+    from sub_def.crypto import hash_password
+
+    hashed_pass = hash_password(GUEST_USER_PASSWORD)
+    return {
+        "chara": {
+            "id": GUEST_USER_ID,
+            "pass": hashed_pass,
+            "name": "テストキャラ",
+            "img": 0,
+            "sex": 1,
+            "level": 1,
+            "max_hp": 500,
+            "hp": 500,
+            "str": 13,
+            "int": 8,
+            "mnd": 8,
+            "vit": 13,
+            "dex": 11,
+            "agi": 10,
+            "cha": 8,
+            "karma": 5,
+            "job": 0,
+            "job_level": 1,
+            "exp": 0,
+            "gold": 5000,
+            "bank": 0,
+            "weapon_id": 0,
+            "armor_id": 0,
+            "accessory_id": 0,
+            "battle_count": 0,
+            "win_count": 0,
+            "battle_limit": config.Config["training_battle_limit"],
+            "boss_flag": config.Config["legend_progress_reset_value"],
+            "comment": "よろしくお願いします！",
+            "host": "",
+            # 復元直後からテストプレイを開始できるよう、利用中判定は付けない。
+            "last_time": 0,
+            "title_id": 0,
+            "tactic_id": 0,
+        },
+        "equipment": {
+            "weapon": {"name": "素手", "atk": 0, "hit_rate": 0},
+            "armor": {"name": "衣服", "defense": 0, "evasion_rate": 0},
+            "accessory": {
+                "name": "なし",
+                "effect_id": 0,
+                "bonus": {stat: 0 for stat in STAT_KEYS},
+                "hit_rate": 0,
+                "evasion_rate": 0,
+                "special_rate": 0,
+                "description": "",
+            },
+        },
+        "syoku": {str(job_id): 0 for job_id in config.Config["chara_jobs"]},
+        "login_log": [],
+        "message": [],
+        "souko_weapon": [],
+        "souko_armor": [],
+        "souko_accessory": [],
+        "choco": {},
+        "choco_g1": {},
+    }
+
+
 def restore_protected_users():
     """欠落・破損した保護ユーザーを、固定バックアップから復元します。"""
     restored = []
+    initialized = []
     unavailable = []
 
     for user_id in sorted(get_protected_user_ids()):
         source = protected_backup_path(user_id)
         if not is_valid_user_file(source, user_id):
+            if user_id == GUEST_USER_ID:
+                target = os.path.join(config.Config["save_dir"], user_id, "user_all.json")
+                common.get_lock(user_id)
+                try:
+                    if not is_valid_user_file(target, user_id):
+                        from sub_def.file_ops import save_user_all
+
+                        save_user_all(user_id, initial_guest_user_data())
+                        initialized.append(user_id)
+                finally:
+                    common.release_lock(user_id)
+                continue
             unavailable.append(user_id)
             continue
 
@@ -406,7 +487,7 @@ def restore_protected_users():
         finally:
             common.release_lock(user_id)
 
-    return restored, unavailable
+    return restored, initialized, unavailable
 
 def main():
     # パラメータの取得
@@ -672,7 +753,7 @@ def main():
 
     # 1.6 保護ユーザー復元
     elif mode == "restore_protected":
-        restored, unavailable = restore_protected_users()
+        restored, initialized, unavailable = restore_protected_users()
         players = common.get_all_players()
         for p in players:
             p["last_time_str"] = common.get_time_str(p.get("last_time", 0))
@@ -680,6 +761,10 @@ def main():
         message_parts = []
         if restored:
             message_parts.append(f"保護ユーザーを復元しました: {', '.join(restored)}")
+        if initialized:
+            message_parts.append(
+                f"ゲスト用データを初期状態で再作成しました: {', '.join(initialized)}"
+            )
         if unavailable:
             message_parts.append(f"復元元が見つかりません: {', '.join(unavailable)}")
         if not message_parts:
