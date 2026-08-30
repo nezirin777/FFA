@@ -133,32 +133,48 @@ def main():
         if err:
             show_error(err)
             
-        user_data = load_user_all(user_id)
-        if not user_data or not user_data.get("chara"):
-            show_error("登録されていないか、データが見つかりません。")
-            
-        chara = user_data["chara"]
-        
-        # === テストプレイアカウント (test) 用の 10分排他ロック制御 ===
-        if user_id == "test":
-            import time
-            last_time = chara.get("last_time", 0)
-            if time.time() - last_time < 600:
-                show_error("現在他のプレイヤーがテストプレイ中です。終了（ロック解除）までしばらくお待ちください。")
-        
-        # パスワード検証 (新形式salted・旧形式固定ソルト・平文レガシーの全てに対応)
-        from sub_def.crypto import verify_password, needs_rehash
-        stored_pass = chara.get("pass")
-        if not verify_password(password, stored_pass):
-            show_error("パスワードが一致しません。")
+        # 認証後にuser_all.jsonを書き戻す場合があるため、読込・確認・更新を
+        # 同一ユーザーロック内で完結させる。ロック外で読んだ古い全データを
+        # 保存すると、並行中の戦闘などの進行結果を上書きし得る。
+        common.get_lock(user_id)
+        try:
+            user_data = load_user_all(user_id)
+            if not user_data or not user_data.get("chara"):
+                show_error("登録されていないか、データが見つかりません。")
 
-        # 旧形式のパスワードはこの機会にユーザー毎ソルトの新形式へ透過的に移行する
-        if needs_rehash(stored_pass):
-            new_hash = hash_password(password)
-            chara["pass"] = new_hash
-            stored_pass = new_hash
-            from sub_def.file_ops import save_user_all
-            save_user_all(user_id, user_data)
+            chara = user_data["chara"]
+
+            # === テストプレイアカウント (test) 用の 10分排他ロック制御 ===
+            if user_id == "test":
+                import time
+                last_time = chara.get("last_time", 0)
+                if time.time() - last_time < 600:
+                    show_error("現在他のプレイヤーがテストプレイ中です。終了（ロック解除）までしばらくお待ちください。")
+
+            # パスワード検証 (新形式salted・旧形式固定ソルト・平文レガシーの全てに対応)
+            from sub_def.crypto import verify_password, needs_rehash
+            stored_pass = chara.get("pass")
+            needs_save = False
+            if not verify_password(password, stored_pass):
+                show_error("パスワードが一致しません。")
+
+            # 旧形式のパスワードはこの機会にユーザー毎ソルトの新形式へ透過的に移行する
+            if needs_rehash(stored_pass):
+                new_hash = hash_password(password)
+                chara["pass"] = new_hash
+                stored_pass = new_hash
+                needs_save = True
+
+            # テストプレイアカウントの利用開始時刻も同じ保存へまとめる。
+            if user_id == "test":
+                chara["last_time"] = int(time.time())
+                needs_save = True
+
+            if needs_save:
+                from sub_def.file_ops import save_user_all
+                save_user_all(user_id, user_data)
+        finally:
+            common.release_lock(user_id)
 
         # ログイン成功、暗号化クッキーセッションデータ生成
         session_data = {
@@ -168,12 +184,6 @@ def main():
         }
         cookie_header = save_session(session_data)
         
-        # テストプレイアカウント (test) のロック開始 (last_timeを現在時刻に更新して保存)
-        if user_id == "test":
-            from sub_def.file_ops import save_user_all
-            chara["last_time"] = int(time.time())
-            save_user_all(user_id, user_data)
-
         # その日の最初のログインを契機に日次バックアップを作成する。
         # バックアップ失敗でゲームへのログインを止めない処理になっている。
         from sub_def.backup import ensure_daily_backup

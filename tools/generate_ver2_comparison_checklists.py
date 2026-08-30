@@ -340,7 +340,7 @@ FILE_AUDITS = (
         "scope": "ログイン・ログアウト、ルーティング、公開画面、本人セッション、CSRF、ログイン履歴、テスト用ロック、日次バックアップ、Cookie・UTF-8出力",
         "difference": "Ver2の平文Cookie・ID/pass照合・成功画面・loginlogを、暗号化セッション・CSRF・メイン画面へのリダイレクトへ移行。Ver3は移行済みlogin_logを新規ログインで更新していない",
         "intent": "暗号化セッション、認可、CSRF、公開範囲、テスト用ロック、日次バックアップ、ログイン後リダイレクト、ログイン履歴の廃止は現行仕様を維持",
-        "note": "Ver2は成功・失敗とも最大15件をloginlogへ保存し、失敗時は入力パスワードまで記録する。現行の変換器はlogin_logへpass・host・time・failedを移すが、login.pyはlogin_log_registを呼ばないため以後更新されない。平文パスワードを含むVer2の履歴機能は廃止で確定し、移行済みの過去値は互換データとして残す。",
+        "note": "Ver2は成功・失敗とも最大15件をloginlogへ保存し、失敗時は入力パスワードまで記録する。現行の変換器はlogin_logへpass・host・time・failedを移すが、login.pyはlogin_log_registを呼ばないため以後更新されない。平文パスワードを含むVer2の履歴機能は廃止で確定し、移行済みの過去値は互換データとして残す。ログイン時の再ハッシュとtestのlast_time更新は、ユーザーロック内で再読込・認証・一括保存する。",
     },
     {
         "file": "others.py / templates/others.html",
@@ -372,7 +372,7 @@ FILE_AUDITS = (
         "scope": "JSON読込正規化、共有データの読込/保存/更新、バックアップ排他、一時ファイルと原子的置換、統合ユーザー読込/保存、キー順正規化",
         "difference": "Ver2の分割テキストを直接上書きする保存から、user_all.jsonと共有JSONのUTF-8原子的保存へ移行。保存は日次バックアップのスナップショット排他を取り、読込時にHTMLエンティティと旧site/urlを正規化する",
         "intent": "現行仕様を維持",
-        "note": "_write_json_atomicallyは同一ディレクトリの一時JSONをflush/fsync後にos.replaceし、例外時には一時ファイルを削除する。save_data_atomicallyとupdate_data_atomicallyはbackup_snapshotを先に取得して復元/バックアップ中の途中状態を防ぐ。load_user_all/save_user_allはdata_schemaのキー順を適用し、旧site/urlを保存しない。",
+        "note": "_write_json_atomicallyは同一ディレクトリの一時JSONをflush/fsync後にos.replaceし、例外時には一時ファイルを削除する。save_data_atomicallyとupdate_data_atomicallyはbackup_snapshotを先に取得して復元/バックアップ中の途中状態を防ぐ。load_user_all/save_user_allの個別呼出しは読込と保存を一体化しないため、read-modify-writeにはupdate_data_atomicallyまたは呼出側の同一ユーザーロックが必要である。load_user_all/save_user_allはdata_schemaのキー順を適用し、旧site/urlを保存しない。",
     },
     {
         "file": "sub_def/data_schema.py",
@@ -2699,7 +2699,7 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "difference": "Ver2はcharalogの平文比較。Ver3はPBKDF2-SHA256（ユーザー別salt）を新形式とし、旧固定salt・平文も成功時だけ検証してPBKDF2へ再ハッシュする。",
             "intent": "意図的",
             "status": "差異あり",
-            "note": "verify_passwordは旧形式を読み取り互換に限定し、needs_rehashが真のときだけ保存値を更新する。",
+            "note": "verify_passwordは旧形式を読み取り互換に限定し、needs_rehashが真のときだけ保存値を更新する。再ハッシュはユーザーロック内で最新のuser_all.jsonを再読込・認証してから保存し、同時進行の保存を上書きしない。",
         },
         "CSRFトークンの生成・検証・再生成": {
             "difference": "Ver2にCSRF照合はない。Ver3はセッション内ランダムトークンを主要POSTで定数時間比較する。token_regenerateは定義のみで、画面再表示は既存トークンを維持する。",
@@ -2747,7 +2747,7 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "difference": "Ver2は呼出側がlock/unlockと個別読書きを組み合わせる。Ver3は共有データ向けupdate_data_atomicallyが読込・更新・置換を同一ロックで実行する。",
             "intent": "意図的",
             "status": "差異あり",
-            "note": "user_all.jsonのsave_user_sectionsは呼出側がユーザーロックを保持する契約。全呼出元がこの契約を守ることが前提になる。",
+            "note": "user_all.jsonのsave_user_sectionsは呼出側がユーザーロックを保持する契約。login.pyの再ハッシュとtestのlast_time更新も同じロック内へ修正済みであり、全呼出元がこの契約を守ることが前提になる。",
         },
         "ユーザー・共有データのロック": {
             "difference": "Ver2はsymlink/空ファイル/flockを設定で切替え、再試行・古いロック削除を行う。Ver3はos.mkdirディレクトリロック、同一スレッド再入管理、10/15秒タイムアウトと設定式の残存ロック自動回復を使う。",
