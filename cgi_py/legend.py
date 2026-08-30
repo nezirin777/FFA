@@ -209,26 +209,27 @@ def main():
             chara["boss_flag"] -= 1
             if chara["boss_flag"] <= 0:
                 # 階層クリア！
-                comment += f'<b><span class="yellow text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
-                
-                # 全体メッセージに投稿。管理投稿や他イベントとの上書きを防ぐ。
-                common.get_lock("all_message_post")
-                try:
-                    all_msgs = common.all_message_load()
-                    new_msg = {
-                        "id": "sys",
-                        "name": "【天の声】",
-                        "time": common.get_time_str(),
-                        "message": f"{chara['name']}さんが新たにレジェンドプレイスを攻略され、称号が上がりました！",
-                        "host": "system"
-                    }
-                    all_msgs.insert(0, new_msg)
-                    common.all_message_regist(all_msgs[:config.Config['all_message_storage_limit']])
-                finally:
-                    common.release_lock("all_message_post")
-                
                 if chara["title_id"] < boss_file_idx + 1:
+                    comment += f'<b><span class="yellow text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！新しい称号が与えられます！！</span></b><br>'
                     chara["title_id"] = boss_file_idx + 1
+                    # 全体メッセージは称号が実際に上がる初回攻略時だけ投稿する。
+                    # 再挑戦の周回クリアで同じ通知を繰り返さない。
+                    common.get_lock("all_message_post")
+                    try:
+                        all_msgs = common.all_message_load()
+                        new_msg = {
+                            "id": "sys",
+                            "name": "【天の声】",
+                            "time": common.get_time_str(),
+                            "message": f"{chara['name']}さんが新たにレジェンドプレイスを攻略され、称号が上がりました！",
+                            "host": "system"
+                        }
+                        all_msgs.insert(0, new_msg)
+                        common.all_message_regist(all_msgs[:config.Config['all_message_storage_limit']])
+                    finally:
+                        common.release_lock("all_message_post")
+                else:
+                    comment += f'<b><span class="yellow text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！</span></b><br>'
                 chara["boss_flag"] = config.Config['legend_progress_reset_value']
             else:
                 comment += f'<b><font size=5>{chara["name"]} は、戦闘に勝利した！！HPが少し回復した♪ 残り {chara["boss_flag"]} 体・・・</font></b><br>'

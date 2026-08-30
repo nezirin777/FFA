@@ -550,16 +550,7 @@ class BattleSimulator:
                     f"{s.chara['name']}は {s.mname} にダメージを与えることができなかった！"
                     f"</b></span>"
                 )
-            # 先制攻撃で敵が倒れた場合は、敵の攻撃を不発として明示する。
-            enemy_will_be_defeated = s.mhp - s.dmg1 + s.hpplus2 <= 0
-            if enemy_will_be_defeated and not enemy_evaded:
-                s.dmg2 = 0
-                s.com2 = (
-                    f"<span class=\"yellow text-small\"><b>"
-                    f"{s.mname}はすでに倒れていた！"
-                    f"</b></span>"
-                )
-            elif defense_blocked2 and not player_evaded:
+            if defense_blocked2 and not player_evaded:
                 s.com2 += (
                     f"<br><span class=\"yellow text-small\"><b>"
                     f"{s.mname}は {s.chara['name']} にダメージを与えることができなかった！"
@@ -579,16 +570,13 @@ class BattleSimulator:
                 if damage_heal2:
                     s.kaihuku2 += f"{s.winner['name']} のＨＰが {damage_heal2} 回復した！♪"
                 
-            # === 7. HPの減算処理 (hp_sum) ===
-            # 現行・Ver2互換の同時精算。先攻・後攻を導入する場合は、
-            # モンスター側を含む行動順の仕様を別途定義してから行う。
-            s.khp = s.khp - s.dmg2 - s.dmgme1 + s.hpplus1
-            if s.khp > s.chara["max_hp"]:
-                s.khp = s.chara["max_hp"]
-
-            s.mhp = s.mhp - s.dmg1 + s.hpplus2
-            if s.mhp > s.mhp_flg:
-                s.mhp = s.mhp_flg
+            # === 7. HPの同時精算 (hp_sum) ===
+            # 回復は各HPを最大値までにとどめてから、同ターンの被ダメージ・
+            # 自傷を差し引く。過剰回復を致死ダメージの緩衝材にしない。
+            player_hp_after_heal = min(s.chara["max_hp"], s.khp + s.hpplus1)
+            monster_hp_after_heal = min(s.mhp_flg, s.mhp + s.hpplus2)
+            s.khp = player_hp_after_heal - s.dmg2 - s.dmgme1
+            s.mhp = monster_hp_after_heal - s.dmg1
                 
             # === 8. ログの追記 ===
             # ターンログを構築
