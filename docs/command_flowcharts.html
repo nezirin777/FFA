@@ -309,7 +309,7 @@ FLOW("choco","チョコボ牧場・森","チョコボ",["chocofarm","morifarm","
     S("cgi_py/morifarm.py","main() / mode=main or choco","entry","チョコボの森を表示"),
     S("cgi_py/morifarm.py","mode=choco_shop / choco_shopb","logic","親チョコボ選択・相手選択"),
     S("cgi_py/morifarm.py","mode=choco_buy / choco_buyb","check","所持状態・親・名前・お見合い条件を確認","NG → show_error()"),
-    S("sub_def.common.py","choco_regist() / choco_g1_regist()","data","新しいチョコボと記録を保存"),
+    S("sub_def.common.py","save_user_sections()","data","新しいチョコボと重賞記録を同じユーザーロックで保存"),
     S("cgi_py/morifarm.py","mode=choco_sell","logic","名前付きチョコボを引退・削除"),
     S("cgi_py/morifarm.py","mode=choco_name","check","禁止語・殿堂名重複・名前未入力を確認"),
     S("sub_def.common.py","choco_regist() / chara_regist()","data","チョコボ名や宿屋回復による所持金を保存"),
@@ -333,7 +333,7 @@ FLOW("races","チョコボレース","チョコボ",["crace","farmrace"],[
     S("cgi_py/crace.py","レース選択・名前・体力・勝利数・開催日チェック","check","出走条件を検証","NG → back_ctx付きshow_error()"),
     S("cgi_py/crace.py","load_rivals() / _scheduled_major_race()","data","ライバルと開催条件を取得"),
     S("cgi_py/crace.py","レース結果・賞金・能力値・G1記録を計算","logic"),
-    S("sub_def.common.py","chara_regist() / choco_regist() / choco_g1_regist()","data","体力、成績、勝利数、記録を保存"),
+    S("sub_def.common.py","save_user_sections()","data","体力、成績、勝利数、重賞記録を同じユーザーロックで保存"),
     S("sub_def.utils.py","render_template('crace.html')","out")
   ]),
   SEC("チャンプ挑戦レース: cgi_py/farmrace.py",[

@@ -88,6 +88,8 @@ def decode_params():
             content_length = int(os.environ.get("CONTENT_LENGTH", 0))
         except ValueError:
             content_length = 0
+        if content_length > Config["max_post_body_bytes"]:
+            show_error("送信内容が大きすぎます。")
         if content_length > 0:
             body = sys.stdin.read(content_length)
 

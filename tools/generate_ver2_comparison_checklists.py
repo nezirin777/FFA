@@ -364,7 +364,7 @@ FILE_AUDITS = (
         "scope": "CGIパラメータ、Cookie互換、ロック、統合ユーザー保存、マスター参照、本人認可、共有メッセージ、アクティブ一覧、時刻、チョコボ所有/王者/候補/重賞データ",
         "difference": "Ver2のCGIグローバル・mydata照合・分割ファイル・flock系ロックを、UTF-8パラメータ・暗号化セッションの互換Cookie・require_owner・統合JSON・原子的書込み・再入可能なディレクトリロックへ移行",
         "intent": "現行仕様を維持",
-        "note": "旧cookie_nameの取得/設定はFFAPY_SESSIONへの橋渡しだけを残す。状態変更はrequire_ownerでセッションIDと保存済みハッシュを照合し、呼出元がユーザー単位ロックを保持したうえでsave_user_sectionsを使う。全体メッセージは現行の保存上限へ切詰め、空辞書や必須能力を欠くchocoは未所持として扱う。チョコボ王者・候補・重賞履歴は専用JSONとロックで保存する。",
+        "note": "decode_paramsはVer2と同じ50KiBのPOST本文上限をconfig.pyで適用する。旧cookie_nameの取得/設定はFFAPY_SESSIONへの橋渡しだけを残す。状態変更はrequire_ownerでセッションIDと保存済みハッシュを照合し、呼出元がユーザー単位ロックを保持したうえでsave_user_sectionsを使う。全体メッセージは現行の保存上限へ切詰め、空辞書や必須能力を欠くchocoは未所持として扱う。重賞履歴はレース結果のchara/chocoと同じユーザーロック内で再読込・マージして保存する。チョコボ王者・候補・重賞履歴は専用JSONとロックで保存する。",
     },
     {
         "file": "sub_def/file_ops.py",
@@ -620,7 +620,7 @@ FILE_AUDITS = (
         "scope": "一般/重賞/殿堂レースの出走者、実況、勝敗・報酬・能力変動、重賞通知、牧場復帰、CSRF",
         "difference": "Ver2のブラウザ内アニメーション実況を、現行は計算済み区間データを使う現代ブラウザ対応のコース再生と結果レポートへ移行。JSON保存・本人確認・CSRFを追加",
         "intent": "現行仕様を維持",
-        "note": "出走5頭、実況文、勝敗文、所持金、能力/寿命/上限、訓練・出走回数、重賞のタイトル記録と通知は実行処理で照合済み。テンプレートは各区間の5頭の残距離から位置・順位を自動再生し、再生後も全実況ログを読み返せる。出走名は自動エスケープし、サーバー組立ての実況/結果文だけをsafe表示する。レース実行は常に保存を伴うため、開始時に送信sを検証し、一般/重賞/殿堂の開催・性別・戦績条件もサーバー側で再検証する。",
+        "note": "出走5頭、実況文、勝敗文、所持金、能力/寿命/上限、訓練・出走回数、重賞のタイトル記録と通知は実行処理で照合済み。テンプレートは各区間の5頭の残距離から位置・順位を自動再生し、再生後も全実況ログを読み返せる。出走名は自動エスケープし、サーバー組立ての実況/結果文だけをsafe表示する。レース実行は常に保存を伴うため、開始時に送信sを検証し、一般/重賞/殿堂の開催・性別・戦績条件もサーバー側で再検証する。重賞履歴も最終ユーザーロック内で既存値とマージして保存する。",
     },
     {
         "file": "templates/farmrace.html / cgi_py/farmrace.py",
@@ -2439,7 +2439,7 @@ def _require_ownership_progression_source_snippets() -> None:
         "旧版_ver2/ctrain.cgi": ("$ctrain += 1", "$clife -= 50", "farm_choco_regist"),
         "cgi_py/ctrain.py": ("def main", "choco[\"train\"]", "save_user_sections"),
         "旧版_ver2/crace.cgi": ("./g1/$chara[0].cgi", "farm_choco_regist", "$crun"),
-        "cgi_py/crace.py": ("choco_g1_regist", "save_user_sections", "race_dendo"),
+        "cgi_py/crace.py": ("latest_g1_data", "save_user_sections", "race_dendo"),
         "旧版_ver2/dendo.cgi": ("sub dendo", "./denchoco.cgi", "./rireki.cgi"),
         "cgi_py/dendo.py": ("token_check(in_params, get_session())", "choco_list_regist(\"denchoco\"", '"trophies"'),
         "旧版_ver2/farmrace.cgi": ("read_farm_winner", "./farmwinner.cgi", "$wcren"),
@@ -2666,10 +2666,10 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
 
     return {
         "CGIパラメータの復号・文字列処理": {
-            "difference": "Ver2はGET/POSTの一方だけを手動分解し、POSTは50KiB上限・SJIS変換・入力時HTMLエスケープ。Ver3はGETとPOSTをparse_qsで解析しPOST優先、UTF-8前提・出力時エスケープへ変更。現行に本文サイズ上限はない。",
-            "intent": "要判断",
+            "difference": "Ver2はGET/POSTの一方だけを手動分解し、POSTは50KiB上限・SJIS変換・入力時HTMLエスケープ。Ver3はGETとPOSTをparse_qsで解析しPOST優先、UTF-8前提・出力時エスケープへ変更。POST本文の上限はVer2と同じ50KiBを設定値で適用する。",
+            "intent": "意図的",
             "status": "差異あり",
-            "note": "Ver3のGET/POST優先はcommon.pyの明示仕様。Ver2の50KiB上限を廃止した理由は履歴に記録が見当たらないため、上限の要否を運用判断する。",
+            "note": "Ver3のGET/POST優先はcommon.pyの明示仕様。max_post_body_bytesで50KiB上限を設定し、CGIが大きな本文を読み込む前に拒否する。同一キーが重複した場合はVer2の末尾値ではなくparse_qsの先頭値を採用し、空値は未指定と同じ扱いにする。通常フォームに重複入力経路はないため現行仕様を維持する。",
         },
         "CGI入口のUTF-8標準入出力": {
             "difference": "Ver2はShift_JIS出力。Ver3はothers.py・login.py・chara_make.py・admin.pyの4入口でstdin/stdoutをUTF-8へ再構成する。",
@@ -2765,7 +2765,7 @@ def storage_migration_comparisons() -> dict[str, dict[str, str]]:
             "difference": "Ver2は関連ファイルを個別上書き。Ver3はsave_user_sectionsが統合データを読んで指定セクションだけ更新し、souko/chocoも同経路を使う。",
             "intent": "意図的",
             "status": "差異あり",
-            "note": "指定しないセクションを消さないが、呼出側のユーザーロックなしでは読込後更新の競合を防げない。",
+            "note": "指定しないセクションを消さない。呼出側はユーザー単位ロックを保持し、craceの重賞履歴も同じロック内で再読込・マージする。",
         },
         "日次バックアップ作成": {
             "difference": "Ver2のsave_log.cgiは保護ユーザー一覧であり、日次バックアップ処理は確認できない。Ver3は当日初回ログイン時にsave_data全体を日付別コピーする。",

@@ -20,6 +20,10 @@ Config["save_dir"] = os.path.join(BASE_DIR, "save_data")
 Config["lock_dir"] = os.path.join(BASE_DIR, "lock")
 Config["template_dir"] = os.path.join(BASE_DIR, "templates")
 
+# CGIが受け取るPOST本文の上限。旧版と同じ50KiBに制限し、意図しない
+# 大きなリクエストをアプリケーション側でも受け取らない。
+Config["max_post_body_bytes"] = 50 * 1024
+
 # 異常終了で残ったロックを自動解除するまでの秒数。通常の保存や日次バックアップが
 # この時間を超える運用では値を上げる。0以下にすると自動解除を無効化する。
 Config["lock_stale_seconds"] = 300

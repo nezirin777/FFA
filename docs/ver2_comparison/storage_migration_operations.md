@@ -6,7 +6,7 @@ Ver2の保存形式・認証・管理CGIと、Ver3の実装を28項目で照合�
 
 | 項目名 | Ver2確認箇所 | Ver3現行値・確認箇所 | Ver2との差異 | 意図的な仕様か否か | 照合状態 | 備考・根拠 |
 | --- | --- | --- | --- | --- | --- | --- |
-| CGIパラメータの復号・文字列処理 | `旧版_ver2/regist.pl / login.cgi` | `sub_def/common.py:decode_params` | Ver2はGET/POSTの一方だけを手動分解し、POSTは50KiB上限・SJIS変換・入力時HTMLエスケープ。Ver3はGETとPOSTをparse_qsで解析しPOST優先、UTF-8前提・出力時エスケープへ変更。現行に本文サイズ上限はない。 | 要判断 | 差異あり | Ver3のGET/POST優先はcommon.pyの明示仕様。Ver2の50KiB上限を廃止した理由は履歴に記録が見当たらないため、上限の要否を運用判断する。 |
+| CGIパラメータの復号・文字列処理 | `旧版_ver2/regist.pl / login.cgi` | `sub_def/common.py:decode_params` | Ver2はGET/POSTの一方だけを手動分解し、POSTは50KiB上限・SJIS変換・入力時HTMLエスケープ。Ver3はGETとPOSTをparse_qsで解析しPOST優先、UTF-8前提・出力時エスケープへ変更。POST本文の上限はVer2と同じ50KiBを設定値で適用する。 | 意図的 | 差異あり | Ver3のGET/POST優先はcommon.pyの明示仕様。max_post_body_bytesで50KiB上限を設定し、CGIが大きな本文を読み込む前に拒否する。同一キーが重複した場合はVer2の末尾値ではなくparse_qsの先頭値を採用し、空値は未指定と同じ扱いにする。通常フォームに重複入力経路はないため現行仕様を維持する。 |
 | CGI入口のUTF-8標準入出力 | `旧版Ver2 CGIの出力設定` | `others.py,login.py,chara_make.py,admin.py:reconfigure` | Ver2はShift_JIS出力。Ver3はothers.py・login.py・chara_make.py・admin.pyの4入口でstdin/stdoutをUTF-8へ再構成する。 | 意図的 | 差異あり | Windows ApacheのCP932標準出力でUTF-8文字を出すための互換設定。4入口以外へ一律追加・削除はしない。 |
 | HTML出力・リダイレクトのヘッダー | `旧版_ver2/regist.pl:header / footer` | `sub_def/utils.py:render_template,redirect` | Ver2はShift_JISのContent-typeとHTML直書き。Ver3はUTF-8ヘッダー、no-cache、Jinja自動エスケープ、302 Locationと開発サーバー用meta refreshを出力する。 | 意図的 | 差異あり | utils.pyはテンプレート例外の詳細をstderrだけへ出し、HTTP応答には汎用エラーだけを返す。 |
 | セッションCookieの暗号化・改ざん検証 | `旧版_ver2/login.cgi:set_cookie` | `sub_def/crypto.py:encrypt_data,decrypt_data,get_session,save_session` | Ver2はIDと保存済みパスワードを60日Cookieへ平文で保存。Ver3は署名付き暗号化FFAPY_SESSION（既定30分・HttpOnly）へ移行し、30日CookieはID記憶だけに分離。Secure属性は未設定。 | 意図的 | 差異あり | 旧cookie_name APIは暗号化セッションへ橋渡しする互換層を残す。HTTPS化時のSecure属性は別途運用設定が必要。 |
@@ -27,7 +27,7 @@ Ver2の保存形式・認証・管理CGIと、Ver3の実装を28項目で照合�
 | read-modify-writeの原子更新 | `旧版_ver2/regist.pl:lock / unlock` | `sub_def/file_ops.py:update_data_atomically` | Ver2は呼出側がlock/unlockと個別読書きを組み合わせる。Ver3は共有データ向けupdate_data_atomicallyが読込・更新・置換を同一ロックで実行する。 | 意図的 | 差異あり | user_all.jsonのsave_user_sectionsは呼出側がユーザーロックを保持する契約。全呼出元がこの契約を守ることが前提になる。 |
 | ユーザー・共有データのロック | `旧版_ver2/regist.pl:lock / unlock` | `sub_def/common.py:get_lock,release_lock / sub_def/lock_state.py` | Ver2はsymlink/空ファイル/flockを設定で切替え、再試行・古いロック削除を行う。Ver3はos.mkdirディレクトリロック、同一スレッド再入管理、10/15秒タイムアウトと設定式の残存ロック自動回復を使う。 | 意図的 | 差異あり | finallyでrelease_lock/unlockする設計。Ver3はlock_stale_seconds（既定300秒）を超えた空ディレクトリだけを再取得時に削除し、0以下なら自動回復を無効化できる。 |
 | バックアップ中のスナップショット排他 | `旧版には相当処理なし` | `sub_def/file_ops.py:backup_snapshot.lock / sub_def/backup.py` | Ver2に保存と全体コピーを直列化する仕組みはない。Ver3は通常保存・日次作成・復元がbackup_snapshotロックを共有する。 | 意図的 | 差異あり | 通常保存はsnapshot→個別、復元はrestore→snapshotの順で取得する。 |
-| 部分更新API | `旧版の複数ファイル個別保存` | `sub_def/common.py:save_user_sections,souko_regist,choco_regist` | Ver2は関連ファイルを個別上書き。Ver3はsave_user_sectionsが統合データを読んで指定セクションだけ更新し、souko/chocoも同経路を使う。 | 意図的 | 差異あり | 指定しないセクションを消さないが、呼出側のユーザーロックなしでは読込後更新の競合を防げない。 |
+| 部分更新API | `旧版の複数ファイル個別保存` | `sub_def/common.py:save_user_sections,souko_regist,choco_regist` | Ver2は関連ファイルを個別上書き。Ver3はsave_user_sectionsが統合データを読んで指定セクションだけ更新し、souko/chocoも同経路を使う。 | 意図的 | 差異あり | 指定しないセクションを消さない。呼出側はユーザー単位ロックを保持し、craceの重賞履歴も同じロック内で再読込・マージする。 |
 
 ## バックアップ・管理復元
 

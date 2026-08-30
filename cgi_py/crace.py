@@ -529,6 +529,7 @@ def main():
     genkai = ""
     rousui = ""
     comment = ""
+    g1_data = None
     
     # 現在のチョコボステータスの限界・現在値を取得
     choco_c0 = choco.get("c0", 10)
@@ -585,12 +586,6 @@ def main():
                     "breader": chara["name"]
                 }
             g1_data[f"r{race_id}"] = 1
-            
-            common.get_lock(f"g1_{user_id}")
-            try:
-                common.choco_g1_regist(user_id, g1_data)
-            finally:
-                common.release_lock(f"g1_{user_id}")
                 
             # 全体重賞勝利履歴 (rireki.json) の更新
             rireki_path = os.path.join(config.Config['save_dir'], "rireki.json")
@@ -777,7 +772,19 @@ def main():
     # 同一ユーザーの更新を1回の保存で確定する。
     common.get_lock(user_id)
     try:
-        common.save_user_sections(user_id, chara=chara, choco=choco)
+        sections = {"chara": chara, "choco": choco}
+        if g1_data is not None:
+            # 重賞記録も同じユーザーロックで再読込してマージする。別ロックで
+            # 先に保存すると、並行したユーザー更新で記録が上書きされ得る。
+            latest_g1_data = common.choco_g1_load(user_id) or {}
+            for key, value in g1_data.items():
+                if key.startswith("r") and key[1:].isdigit():
+                    if int(value or 0) > 0:
+                        latest_g1_data[key] = value
+                elif key not in latest_g1_data:
+                    latest_g1_data[key] = value
+            sections["choco_g1"] = latest_g1_data
+        common.save_user_sections(user_id, **sections)
     finally:
         common.release_lock(user_id)
 
