@@ -66,6 +66,15 @@ _TACTIC_ACTIVATION_DENOMINATORS = {
 }
 
 
+def _format_actual_recovery(name, requested, actual):
+    """HP上限を反映した、ターン結果用の回復ログを返す。"""
+    if requested <= 0:
+        return ""
+    if actual <= 0:
+        return f"{name} は、ＨＰが最大のため、回復効果がなかった。"
+    return f"{name} のＨＰが {actual} 回復した！♪"
+
+
 def _load_tactic_activation_denominators():
     """戦術説明の発動率表記を、判定に使う乱数幅へ変換する。"""
     result = {}
@@ -595,8 +604,25 @@ class BattleSimulator:
             # === 7. HPの同時精算 (hp_sum) ===
             # 回復は各HPを最大値までにとどめてから、同ターンの被ダメージ・
             # 自傷を差し引く。過剰回復を致死ダメージの緩衝材にしない。
+            requested_heal1 = max(0, s.hpplus1)
+            requested_heal2 = max(0, s.hpplus2)
+            # hpplus の負数は一部の技が使う自傷値なので、精算式は従来どおり
+            # 符号を保つ。requested_heal はあくまで表示用の値である。
             player_hp_after_heal = min(s.chara["max_hp"], s.khp + s.hpplus1)
             monster_hp_after_heal = min(s.mhp_flg, s.mhp + s.hpplus2)
+            actual_heal1 = max(0, player_hp_after_heal - s.khp)
+            actual_heal2 = max(0, monster_hp_after_heal - s.mhp)
+
+            # スキル側で作られた予定回復量の文言を、HP上限を反映した実回復量へ
+            # 統一する。これによりドレイン・通常回復・アクセサリー効果も同じ表示になる。
+            s.kaihuku1 = _format_actual_recovery(
+                s.chara["name"], requested_heal1, actual_heal1
+            )
+            s.kaihuku2 = _format_actual_recovery(
+                s.winner["name"] if s.is_player_enemy else s.mname,
+                requested_heal2,
+                actual_heal2,
+            )
             s.khp = player_hp_after_heal - s.dmg2 - s.dmgme1
             s.mhp = monster_hp_after_heal - s.dmg1
                 

@@ -2487,19 +2487,19 @@ class acstech_0:
 class acstech_1:
     def acskouka(s):
         s.hpplus1 += int(s.chara['karma'] * (random.random() * 10))
-        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！</font><br>"
 
 
 class acstech_2:
     def acskouka(s):
         s.hpplus1 += int(s.chara['karma'] * (random.random() * 50))
-        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！</font><br>"
 
 
 class acstech_3:
     def acskouka(s):
         s.hpplus1 += int(s.chara['karma'] * (random.random() * 200))
-        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！{s.chara['name']} のＨＰが {s.hpplus1} 回復♪</font><br>"
+        s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！</font><br>"
 
 
 class acstech_4:
@@ -2543,7 +2543,7 @@ class acstech_11:
     def acskouka(s):
         if (random.randrange(int(5))==0):
             s.hpplus1 = s.chara['mnd'] * random.randrange(int(s.chara['karma']))
-            s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！ケアルガの効果！！{s.chara['name']} のＨＰが {s.hpplus1} 回復した！♪</font><br>"
+            s.com1 += f"<font class='white' size='5'>{s.item['accessory']['name']}が光を放つ！！ケアルガの効果！！</font><br>"
 
 
 class acstech_12:
@@ -2662,19 +2662,19 @@ class wacstech_0:
 class wacstech_1:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['karma'] * (random.random() * 10))
-        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！{s.winner['name']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！</FONT><br>"
 
 
 class wacstech_2:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['karma'] * (random.random() * 50))
-        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！{s.winner['name']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！</FONT><br>"
 
 
 class wacstech_3:
     def wacskouka(s):
         s.hpplus2 += int(s.winner['karma'] * (random.random() * 200))
-        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！{s.winner['name']} のＨＰが {s.hpplus2} 回復♪</FONT><br>"
+        s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！</FONT><br>"
 
 
 class wacstech_4:
@@ -2719,7 +2719,7 @@ class wacstech_11:
     def wacskouka(s):
         if (random.randrange(int(15))==0):
             s.hpplus2 = s.winner['mnd'] * random.randrange(int(s.winner['karma']))
-            s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！ケアルガの効果！！{s.winner['name']} のＨＰが {s.hpplus2} 回復した！♪</FONT><br>"
+            s.com2 += f"<font class='yellow' size='3'>{s.winner_item['accessory']['name']}が光を放つ！！ケアルガの効果！！</FONT><br>"
 
 
 class wacstech_12:
