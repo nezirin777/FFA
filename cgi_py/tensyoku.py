@@ -72,6 +72,24 @@ def get_job_requirements(target_data):
 def meets_job_requirements(chara, requirements):
     return all(int(chara.get(key, 0)) >= int(value) for key, value in requirements.items())
 
+def has_job_history(syoku_master, job_id):
+    """一度でも就いた職業かを、保存済みの熟練度から判定する。"""
+    return 0 <= job_id < len(syoku_master) and syoku_master[job_id] > 0
+
+def meets_job_master_requirements(syoku_master, target_data):
+    """未経験職へ転職するための、必要マスター職条件を判定する。"""
+    for job_id, required_level in enumerate(target_data["job_reqs"]):
+        if job_id < len(syoku_master) and required_level > syoku_master[job_id]:
+            return False
+    return True
+
+def can_change_to_job(chara, syoku_master, target_job, target_data):
+    """経験済み職は前提を免除し、未経験職には従来の前提を適用する。"""
+    return has_job_history(syoku_master, target_job) or (
+        meets_job_requirements(chara, get_job_requirements(target_data))
+        and meets_job_master_requirements(syoku_master, target_data)
+    )
+
 def main():
     if config.Config['maintenance_mode']:
         common.show_error("現在メンテナンス中です。しばらくお待ちください。")
@@ -123,6 +141,9 @@ def main():
                 common.release_lock(user_id)
                 common.show_error("指定された職業は存在しません。")
                 
+            # 現在職を退避する前の職歴で、再転職かどうかを確定する。
+            is_return_job = has_job_history(syoku_master, target_syoku)
+
             # 転職前の現在の職業の熟練度を保存する
             # chara["job_level"] (インデックス33) には現在の職業の熟練度が入っています
             current_job = chara["job"]
@@ -130,19 +151,18 @@ def main():
             
             # 転職先職業の必要条件チェック
             target_data = syoku_ini[target_syoku]
-            requirements = get_job_requirements(target_data)
-            
-            # 特性値の条件確認
-            if not meets_job_requirements(chara, requirements):
-                common.release_lock(user_id)
-                common.show_error("まだ転職条件（能力値・カルマ）を満たしていません。")
-                
-            # 熟練度要件の確認
-            syoku_require = target_data["job_reqs"]
-            for idx, req_val in enumerate(syoku_require):
-                if idx < len(syoku_master) and req_val > syoku_master[idx]:
+            if not is_return_job:
+                requirements = get_job_requirements(target_data)
+
+                # 未経験職だけは、従来どおり能力値・カルマの前提を確認する。
+                if not meets_job_requirements(chara, requirements):
                     common.release_lock(user_id)
-                    common.show_error(f"まだ転職条件（他の職業の熟練度要求）を満たしていません。")
+                    common.show_error("まだ転職条件（能力値・カルマ）を満たしていません。")
+
+                # 未経験職だけは、必要マスター職も確認する。
+                if not meets_job_master_requirements(syoku_master, target_data):
+                    common.release_lock(user_id)
+                    common.show_error("まだ転職条件（他の職業の熟練度要求）を満たしていません。")
                     
             # 転職実行
             chara["job"] = target_syoku
@@ -203,28 +223,16 @@ def main():
                 if i == chara["job"]:
                     continue # 現在の職業は除外
                     
-                requirements = get_job_requirements(target_data)
-                
-                # 条件チェック
-                if meets_job_requirements(chara, requirements):
-                    
-                    # 熟練度要件のチェック
-                    syoku_require = target_data["job_reqs"]
-                    req_ok = True
-                    for idx, req_val in enumerate(syoku_require):
-                        if idx < len(syoku_master) and req_val > syoku_master[idx]:
-                            req_ok = False
-                            break
-                            
-                    if req_ok:
-                        job_info = {
-                            "id": i,
-                            "name": config.Config['chara_jobs'].get(i, "不明な職業"),
-                            "master_level": syoku_master[i]
-                        }
-                        available_jobs.append(job_info)
-                        if syoku_master[i] < 60:
-                            available_unmastered_jobs.append(job_info)
+                if can_change_to_job(chara, syoku_master, i, target_data):
+                    job_info = {
+                        "id": i,
+                        "name": config.Config['chara_jobs'].get(i, "不明な職業"),
+                        "master_level": syoku_master[i],
+                        "is_return_job": has_job_history(syoku_master, i),
+                    }
+                    available_jobs.append(job_info)
+                    if syoku_master[i] < 60:
+                        available_unmastered_jobs.append(job_info)
                             
             context = {
                 "chara": chara,

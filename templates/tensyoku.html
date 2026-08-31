@@ -15,6 +15,7 @@
         <div class="card__header">🗣️ 大司教の言葉</div>
         <div class="card__body">
             「ようこそ、{{ chara.name }}。ここでは己の能力が一定以上に達した時、他の職業への道を開くことができる。<br>
+            ただし、一度就いたことがある職業へ戻る場合は、現在の能力値や必要マスター職の条件を問わない。<br>
             ただし、新たな職業に慣れるまでは一時的に能力値が減少する（※転職する職業の熟練度レベルが20以上の場合は、能力値は減少しない）。<br>
             覚悟が決まったら、新たな職業を選択するが良い。」
         </div>
@@ -30,6 +31,7 @@
                     {% for job in available_jobs %}
                     <span class="job-badge">
                         {{ job.name }} <span class="job-badge__level">(Lv.{{ job.master_level }})</span>
+                        {% if job.is_return_job %}<span class="job-badge__level">（再転職・前提免除）</span>{% endif %}
                     </span>
                     {% else %}
                     <span class="empty-msg">現在、新しく転職できる条件を満たした職業はありません。</span>
@@ -47,6 +49,7 @@
                     {% for job in available_unmastered_jobs %}
                     <span class="job-badge job-badge--unmastered">
                         {{ job.name }} <span class="job-badge__level">(Lv.{{ job.master_level }})</span>
+                        {% if job.is_return_job %}<span class="job-badge__level">（再転職・前提免除）</span>{% endif %}
                     </span>
                     {% else %}
                     <span class="empty-msg">マスターしていない転職可能な職業はありません。</span>
@@ -71,7 +74,7 @@
                     <select class="form-control" name="syoku">
                         <option value="no">-- 職業を選択してください --</option>
                         {% for job in available_jobs %}
-                        <option value="{{ job.id }}">{{ job.name }} (熟練度: Lv.{{ job.master_level }})</option>
+                        <option value="{{ job.id }}">{{ job.name }} (熟練度: Lv.{{ job.master_level }}){% if job.is_return_job %} - 再転職・前提免除{% endif %}</option>
                         {% endfor %}
                     </select>
                 </div>
