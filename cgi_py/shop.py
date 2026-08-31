@@ -85,6 +85,10 @@ def main():
     
     if mode != "yado" or not user_id:
         common.show_error("不正なパラメータです。")
+
+    # 宿泊は本人のキャラクターだけに許可する。ルータ側のログイン済み判定だけでは
+    # URLの id を差し替えた操作を防げないため、ロック取得前に照合する。
+    common.require_owner(user_id)
         
     # 3. キャラクター情報のロード(排他制御ロック付)
     common.get_lock(user_id)

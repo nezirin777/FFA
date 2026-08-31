@@ -223,6 +223,19 @@ def main():
         if choco_list:
             for _ in range(hakken):
                 selected_chocos.append(random.choice(choco_list))
+
+            # Ver2は通常候補とは別に、同じ育て親が引退させた相手を
+            # 25%の確率で追加表示していた。保存候補の上限・抽選は変えず、
+            # 表示用の印だけをコピーへ付ける。
+            same_breader = next(
+                (candidate for candidate in choco_list
+                 if candidate.get("breader") == chara.get("name")),
+                None,
+            )
+            if same_breader is not None and random.randrange(4) == 0:
+                familiar_candidate = dict(same_breader)
+                familiar_candidate["same_breader"] = True
+                selected_chocos.append(familiar_candidate)
                 
         # 自身のチョコボ情報
         cno = choco_raw.get("no", 0)

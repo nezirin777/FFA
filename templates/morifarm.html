@@ -117,6 +117,9 @@
     {% for cy in choco_list %}
     <div class="farm-card">
         <div class="farm-card__title">💕 {{ cy.name }}</div>
+        {% if cy.same_breader %}
+        <div class="farm-msg-content">{{ cy.name }} は、あなたが以前に育てたチョコボのようですクポ！</div>
+        {% endif %}
         <table class="farm-status-table">
             <tr>
                 <td class="farm-lbl-header">タイプ</td>

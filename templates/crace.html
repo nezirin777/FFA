@@ -23,7 +23,7 @@
             <h2 id="race-playback-title">🏇 レース中継</h2>
             <button type="button" class="btn race-playback__replay" data-race-replay>もう一度見る</button>
         </div>
-        <div class="race-track" data-race-track aria-label="レースコース">
+        <div class="race-track" data-race-track aria-label="レースコース" style="min-height: {{ 40 + runners|length * 42 }}px;">
             <span class="race-track__marker race-track__marker--start">START</span>
             <span class="race-track__marker race-track__marker--goal">GOAL</span>
             {% for runner in runners %}
@@ -89,7 +89,7 @@
     const replay = document.querySelector('[data-race-replay]');
     const runners = [...document.querySelectorAll('[data-race-runner]')];
 
-    if (!track || !status || !progress || !replay || !turns.length || runners.length !== 5) {
+    if (!track || !status || !progress || !replay || !turns.length || !runners.length) {
         return;
     }
 
@@ -102,7 +102,7 @@
 
     function showFrame(frame, index) {
         const order = [...frame.positions.keys()].sort((left, right) => frame.positions[left] - frame.positions[right]);
-        const ranks = Array(5);
+        const ranks = Array(runners.length);
         order.forEach((runnerIndex, rank) => { ranks[runnerIndex] = rank + 1; });
 
         runners.forEach((runner, runnerIndex) => {

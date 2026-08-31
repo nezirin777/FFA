@@ -98,7 +98,7 @@ FUNCTION_MAP = {
 # URLのルーティングだけで状態を更新するアクション。これらはフォームを経由しない
 # GET直打ちを許可しない。legend は攻略者一覧だけが公開の閲覧画面であるため別扱いにする。
 POST_ONLY_ROUTE_MODES = {
-    "battle", "monster", "genei", "isekiai", "boss", "dendo", "farmrace",
+    "shop", "battle", "monster", "genei", "isekiai", "boss", "dendo", "farmrace",
 }
 
 def main():

@@ -294,7 +294,10 @@ def main():
     else:
         ribal_path = os.path.join(config.Config['save_dir'], ribal_file)
         
-    rivals = load_rivals(ribal_path, count=4)
+    # 通常レースは自チョコボを含む5頭立てを維持する。殿堂レースは、
+    # Ver2の5頭枠に合わせて5頭の殿堂チョコボをランダムに加える。
+    rival_count = 5 if mode == "race_dendo" else 4
+    rivals = load_rivals(ribal_path, count=rival_count)
     # 旧版の賞金計算は、抽選された1頭目のライバルの限界値を参照する。
     rival_reward_max = rivals[0].get("max", 0) if rivals else 0
 
@@ -327,6 +330,8 @@ def main():
         c5.append(r["c5"])
         c6.append(r["c6"])
 
+    runner_count = len(names)
+
     # 実況・結果コメントはテンプレートで装飾HTMLとして出力する。
     # 保存値をそのまま差し込まず、表示用の値だけを必ずエスケープする。
     display_names = [common.escape_html_text(name) for name in names]
@@ -340,13 +345,13 @@ def main():
     c6_sum = sum(c6)
     
     heri = c2_sum / 10000
-    nebari = int(c2_sum / 5)
-    kisyou = int(c3_sum / 5)
-    seriai = int(c4_sum / 5)
-    tiryoku = int(c5_sum / 5)
+    nebari = int(c2_sum / runner_count)
+    kisyou = int(c3_sum / runner_count)
+    seriai = int(c4_sum / runner_count)
+    tiryoku = int(c5_sum / runner_count)
     
     tyousei = 5000 / c0_sum
-    kinryoku = int(c0_sum / 5)
+    kinryoku = int(c0_sum / runner_count)
     
     # ラストスパート減衰係数
     lastspart = int(((c0_sum / 3) + c6_sum) / 150)
@@ -355,7 +360,7 @@ def main():
 
     # === レース進行シミュレーション ===
     total_dist = 2400
-    positions = [total_dist] * 5
+    positions = [total_dist] * runner_count
     hp_flg = [val for val in c1] # 現在スタミナ
     
     turns_data = []
@@ -369,7 +374,7 @@ def main():
     step = 0
     winner_idx = -1
     photo_rival_idx = None
-    start_move = [0] * 5
+    start_move = [0] * runner_count
     
     # 旧版は 1..5000 のループで、能力が低い場合も途中で処理を打ち切らない。
     while step < 5000:
@@ -377,12 +382,12 @@ def main():
         step_comment = ""
         
         # 1. 毎ターンの移動量(dmg)を算出
-        dmg = [0] * 5
-        syoumou = [0] * 5
+        dmg = [0] * runner_count
+        syoumou = [0] * runner_count
         
         if step == 1:
             # === スタートダッシュ ===
-            for n in range(5):
+            for n in range(runner_count):
                 # 出遅れ判定
                 if _legacy_rand_float(kisyou) <= _legacy_rand_float(c3[n] * 2 / 3):
                     start_move[n] = _legacy_rand_plus(c0[n] / (tyousei * 4))
@@ -408,15 +413,15 @@ def main():
                 hp_flg[n] -= syoumou[n]
                 
             # スタート後の順位
-            sorted_runners = sorted(range(5), key=lambda x: positions[x])
+            sorted_runners = sorted(range(runner_count), key=lambda x: positions[x])
             step_comment += f"<br>スタート！先頭は {display_names[sorted_runners[0]]} クポ！"
         elif step == 2:
             # === 中盤区間 ===
             # 旧版ではスタート後に1000m区間へ切り替え、脚力とスタート差を
             # 合成して残距離を再計算していた。この区間を省くと旧版より
             # 終盤へ早く到達し、スタミナ・能力値の影響が変わってしまう。
-            middle_remaining = [0] * 5
-            for n in range(5):
+            middle_remaining = [0] * runner_count
+            for n in range(runner_count):
                 middle_move = (
                     _legacy_rand(c0[n] / 4)
                     + int(c0[n] * 3 / 4)
@@ -453,11 +458,11 @@ def main():
                 positions[n] = middle_remaining[n]
                 hp_flg[n] -= syoumou[n]
 
-            sorted_runners = sorted(range(5), key=lambda x: positions[x])
+            sorted_runners = sorted(range(runner_count), key=lambda x: positions[x])
             step_comment += f"<br>中盤を通過、先頭は {display_names[sorted_runners[0]]} クポ！"
         else:
             # === 中盤・終盤の移動 ===
-            for n in range(5):
+            for n in range(runner_count):
                 # 基礎移動力
                 base_dmg = (_legacy_rand(c0[n]) + _legacy_rand(c6[n]) + _legacy_rand(c6[n]) + _legacy_rand(c6[n])) / lastspart
                 syoumou_base = heri * base_dmg * (kisyou / max(1, c3[n])) * (c2[n] / max(1, nebari))
@@ -484,7 +489,7 @@ def main():
                 hp_flg[n] -= syoumou_base
 
             # 順位ソート
-            sorted_runners = sorted(range(5), key=lambda x: positions[x])
+            sorted_runners = sorted(range(runner_count), key=lambda x: positions[x])
             
             # 実況メッセージの作成
             lead_dist = positions[sorted_runners[1]] - positions[sorted_runners[0]]
@@ -508,7 +513,7 @@ def main():
         # ゴール判定
         if any(pos <= 0 for pos in positions):
             # 旧版はプレイヤーとライバルが同時にゴールした場合だけ写真判定。
-            crossed_rivals = [idx for idx in range(1, 5) if positions[idx] <= 0]
+            crossed_rivals = [idx for idx in range(1, runner_count) if positions[idx] <= 0]
             if positions[0] <= 0 and crossed_rivals:
                 photo_rival_idx = crossed_rivals[0]
             elif positions[0] <= 0:
@@ -790,7 +795,7 @@ def main():
 
     # フロントエンド用出走者データ
     runners_data = []
-    for idx in range(5):
+    for idx in range(runner_count):
         runners_data.append({
             "name": names[idx],
             "no": nos[idx],

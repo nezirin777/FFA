@@ -222,9 +222,11 @@ def main():
             comment += f'<span class="green text-large">戦闘に勝利しました！</span><br>'
             comment += f'経験値 {exp_gained} と {gold_gained} ゴールドを獲得しました。<br>'
         elif win == 0:
-            # 旧版の敗北時処理は所持金を1%にする。
+            # Ver2の敗北時処理は所持金を1%にし、経験値を1与える。
             chara["gold"] = int(chara["gold"] / 100)
+            exp_gained = 1
             comment += f'<span class="red text-large">戦闘に敗北しました・・・</span><br>'
+            comment += f'経験値 {exp_gained} を獲得しました。<br>'
         else:
             # 引き分けは基礎報酬を支給せず、戦闘中に発生した盗み分だけ反映する。
             # 経験値は旧版 mbattle.pl と同じく通常報酬の半分。
