@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 import re
 from collections import Counter, defaultdict
@@ -849,9 +850,24 @@ ARMOR_INTENTIONAL_DIFFERENCES = {
     2183: "名称: Ver2の全角ハイフン（－）→ Ver3の長音符（ー）。表示名を通常の長音符へ統一。",
 }
 
+WEAPON_INTENTIONAL_PRICE_OVERRIDES = {
+    1032: (70_000, 18_000),
+    1033: (18_000, 75_000),
+    1034: (75_000, 580_000),
+    1035: (580_000, 2_550_000),
+    1036: (2_550_000, 12_500_000),
+    1037: (12_500_000, 75_000_000),
+    1038: (25_000_000, 98_000_000),
+}
+
 ACCESSORY_INTENTIONAL_DIFFERENCES = {
     85: "命中・回避・必殺補正: 各0 → 各350。Ver1準拠へ復元（d7105f6）。",
     87: "命中・回避・必殺補正: 各0 → 999 / 999 / 9,999。Ver1準拠へ復元（d7105f6）。",
+}
+
+ACCESSORY_INTENTIONAL_RATE_OVERRIDES = {
+    85: (350, 350, 350),
+    87: (999, 999, 9_999),
 }
 
 
@@ -910,7 +926,13 @@ def weapon_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
         else:
             source += " / 職業別販売リストには未掲載"
 
-        if item_id in WEAPON_INTENTIONAL_DIFFERENCES and old_jobs == new_jobs:
+        if (
+            item_id in WEAPON_INTENTIONAL_DIFFERENCES
+            and old_values[:2] == new_values[:2]
+            and old_values[3] == new_values[3]
+            and old_jobs == new_jobs
+            and (old_values[2], new_values[2]) == WEAPON_INTENTIONAL_PRICE_OVERRIDES[item_id]
+        ):
             results[item_id] = {
                 "source": source,
                 "difference": WEAPON_INTENTIONAL_DIFFERENCES[item_id],
@@ -992,7 +1014,12 @@ def armor_comparisons(labels: dict[int, str]) -> dict[int, dict[str, str]]:
                 "status": "一致",
                 "note": "名称・DEF・価格・回避・対象職をVer2総覧と職業別販売リストで照合済み。",
             }
-        elif item_id in (2165, 2183) and old_jobs == new_jobs:
+        elif (
+            item_id in (2165, 2183)
+            and old_values[0].replace("－", "ー") == new_values[0]
+            and old_values[1:] == new_values[1:]
+            and old_jobs == new_jobs
+        ):
             results[item_id] = {
                 "source": source,
                 "difference": ARMOR_INTENTIONAL_DIFFERENCES[item_id],
@@ -1069,7 +1096,14 @@ def accessory_comparisons() -> dict[int, dict[str, str]]:
         else:
             source += " / 職業別販売リストには未掲載"
 
-        if item_id in ACCESSORY_INTENTIONAL_DIFFERENCES:
+        if (
+            item_id in ACCESSORY_INTENTIONAL_DIFFERENCES
+            and old_values[:4] == new_values[:4]
+            and old_values[7] == new_values[7]
+            and old_jobs == new_jobs
+            and old_values[4:7] == (0, 0, 0)
+            and new_values[4:7] == ACCESSORY_INTENTIONAL_RATE_OVERRIDES[item_id]
+        ):
             results[item_id] = {
                 "source": source,
                 "difference": ACCESSORY_INTENTIONAL_DIFFERENCES[item_id],
@@ -1077,7 +1111,13 @@ def accessory_comparisons() -> dict[int, dict[str, str]]:
                 "status": "差異あり",
                 "note": "名称・価格・効果ID・能力補正・対象職はVer2と一致。d7105f6のVer1準拠補正として、再照合後に現行維持を明示決定した。",
             }
-        elif item_id in ACCESSORY_CURRENT_POLICY_DIFFERENCES:
+        elif (
+            item_id in ACCESSORY_CURRENT_POLICY_DIFFERENCES
+            and old_values[:7] == new_values[:7]
+            and old_values[7] == ""
+            and new_values[7] == "効果なし"
+            and old_jobs == new_jobs
+        ):
             results[item_id] = {
                 "source": source,
                 "difference": ACCESSORY_CURRENT_POLICY_DIFFERENCES[item_id],
@@ -1164,6 +1204,12 @@ JOB_INTENTIONAL_DIFFERENCES: dict[int, dict[str, str]] = {
     },
 }
 
+# 意図的差異として扱う名称の旧版・現行表記を厳密に固定する。単に職業IDが
+# 一致するだけでは、未記録の名称差異を見逃さないようにする。
+JOB_INTENTIONAL_NAME_OVERRIDES: dict[int, tuple[str, str]] = {
+    0: (r"ソ\ルジャー", "ソルジャー"),
+}
+
 # Ver2の戦術総覧に残る説明文の誤記・旧チーム戦向けの説明は、実装に合わせて
 # Ver3で整理している。各IDの実装値は旧版 tech / wtech も参照して確認する。
 TACTIC_DESCRIPTION_CORRECTIONS = {
@@ -1183,14 +1229,55 @@ TACTIC_DESCRIPTION_CORRECTIONS = {
     59: "説明文の最大16回を、Ver2実装のrand(15)+1と同じ最大15回へ補正",
 }
 
+# 説明文の補正は、対象IDだけでなくVer2・現行それぞれの本文を固定して照合する。
+# 意図的差異のIDに別の説明差異が混入しても通さない。
+TACTIC_DESCRIPTION_FINGERPRINTS: dict[int, tuple[str, str]] = {
+    2: ("a6924d9464147ef67d3a98029f22aec74d16a87fa81637d43194e2c6615540ca", "6ad8887b189e0fc4a089b5e649a4bb162b7a18cac210d088ad0ee39477367bb1"),
+    5: ("a2522158b21857e0400c2997bf372c48240752c034f59f9b1029175a498b76b3", "f43cfaf9f114d3bff65202d734396b3d24c1b3d59e0a2445e2c3e5492b2eecae"),
+    6: ("7c1fa834cda9f5ff53efe34c4cbed5522435f0740bb1feaa2f5c6d74d307854b", "da5d6d558e0d523ce130d23399d50e973dbb057f11aa8e6433b240031eab0f96"),
+    11: ("788a18a545aee8bed88950ead2f6969626f9ee129e9fdafb4076e912ed682526", "8dada02dea491a8ae6d366ba835bc3a5922793f9a6911b815b2d71e33cc2dfa1"),
+    20: ("82b495c1f3bd39ac22235d7b37085b6f23c387a571e8243cbfae717fd7ad2ad0", "aae7209c419099f4dc40482ae69ec10c1b2ab73eb59bfb72bac58237f11571dc"),
+    22: ("a8058efd82c7fafbae1808384c8a56da1c9f064d588d414ed6b0f57e75a47f42", "3e7cd46aac751cb5230a4840789f950533c7c029236a9b7e30b2f6504375cbfe"),
+    30: ("f1e306c461c9f66a3b3d780258445a2717b12b29a7757c6e8e95e84290fff45d", "ec3086970ea9b5b18df70cd57493f8744c82faf01023c51048e73d48fed904e5"),
+    37: ("09e12ab3f37e87f1091d557e3d3bd9d219f20d5c3c56f2d7a42e1069243c2cbd", "09f3abe628913539cac27914170a0856790b274079161a9e4e409479e02523d4"),
+    40: ("b7ca6b6dd543d1eefa262291b10cee0599a3883e400aabdce4b4033dd7b2bb89", "76615d1700f3c2a878b993056ab754604605940485bc6ca85582f964191c258c"),
+    43: ("157407120f602b2a36a4bd8a028e31e6e06d18ef31d91515c72f8136c9cb59e1", "5e56bade25e6a4ddd2ff454b9cd3e0f845a1e799f590b8150b9e970a8cabc1b2"),
+    49: ("c790831f52038b84c79f6fb58eebaefc5863a323ed2985e80af0db9a62379545", "e56ce834852da4a90564ee3f3a3878e0945da04cb8615fb78e40c569285cb999"),
+    53: ("fa66ce416118c2caf31b02827356691d2e1eb7c537686d064755e325c68740ce", "d77286aba4582cbf8fde266b93cb693fbd45964ca99f4c615f548c0487bf4a11"),
+    55: ("a3191a54a98519d314030a6ddcc3f6cf68c495dbaa873b9d7aab698400bf9182", "f2be3cc14ffbf45033d1f718e3343df422d57f4b189230035598292669feffc4"),
+    59: ("b01c3dd4329b01e24ee7945579d55fdb2db2bd092d61fbcd0943c0f818aee79d", "31bb18adc82f0155286c71c35a23317962ec1054613ac20355c539ea48339819"),
+}
+
+# 発動率を現行側の説明文値へ統一した戦術。 (現行値, Ver2プレイヤー側, Ver2対人相手側)
+TACTIC_RATE_OVERRIDES: dict[int, tuple[int, int | None, int | None]] = {
+    1: (100, 80, 80), 2: (120, 120, 150), 9: (120, 80, 80), 10: (100, 120, 120),
+    13: (80, 120, 120), 15: (100, 80, 80), 18: (80, 80, 200), 21: (100, 80, 80),
+    22: (100, 120, 120), 23: (100, 120, 120), 24: (120, 80, 80), 29: (100, 150, 150),
+    31: (120, None, 80), 33: (80, 120, 120), 34: (120, 80, 80), 35: (180, 120, 120),
+    36: (100, 80, 80), 37: (100, 120, 120), 47: (80, 120, 120), 49: (100, 120, 120),
+    50: (200, 120, 120), 54: (120, 80, 80),
+}
+
 # ここはVer2との挙動差を残す判断が既に行われた項目。実装との差分を隠さず、
 # 台帳では意図と適用範囲を明記する。
 TACTIC_BEHAVIOR_INTENTIONAL_DIFFERENCES = {
     9: "異世界モードの正式値 isekiai と旧表記 isekai の両方を受理する互換処理を追加",
-    10: "モンスター戦だけ盗み回数・獲得額の上限を設け、対人戦のVer2相当処理は維持",
+    10: "モンスター戦だけ盗み回数・獲得額の上限を設け、対人相手側はVer2で実質0だった減算を所持金の1/25へ変更する現行仕様を維持",
     11: "回復量はVer2と同じ1/5だが、防御・回避後の実ダメージから回復する現行仕様を維持",
     43: "回復量はVer2と同じ全量だが、防御・回避後の実ダメージから回復する現行仕様を維持",
     44: "回復量はVer2と同じ1/10だが、防御・回避後の実ダメージから回復する現行仕様を維持",
+}
+
+# 現行維持とした挙動差は、対象クラスに必要な処理が残っていることまで検証する。
+TACTIC_BEHAVIOR_SIGNATURES: dict[int, dict[str, tuple[str, ...]]] = {
+    9: {"tech_9": ("_is_isekai_mode(s.mode)",)},
+    10: {
+        "tech_10": ("if not s.is_player_enemy", "s.steal_success_count", "s.steal_reward_cap"),
+        "wtech_10": ("s.penalize_reward(s.available_gold() // 25)",),
+    },
+    11: {"tech_11": ("s.damage_heal_ratio1 = 0.2",), "wtech_11": ("s.damage_heal_ratio2 = 0.2",)},
+    43: {"tech_43": ("s.damage_heal_ratio1 = 1.0",), "wtech_43": ("s.damage_heal_ratio2 = 1.0",)},
+    44: {"tech_44": ("s.damage_heal_ratio1 = 0.1",), "wtech_44": ("s.damage_heal_ratio2 = 0.1",)},
 }
 
 
@@ -1263,22 +1350,49 @@ def tactic_comparisons() -> dict[int, dict[str, str]]:
             if not methods.issubset(actual):
                 raise ValueError(f"Ver3戦術実装が不足しています: {class_name} ({sorted(methods - actual)})")
 
+        for class_name, signatures in TACTIC_BEHAVIOR_SIGNATURES.get(tactic_id, {}).items():
+            node = skill_classes.get(class_name)
+            source = ast.get_source_segment((ROOT / "sub_def" / "skills.py").read_text(encoding="utf-8"), node) if node else None
+            if source is None or any(signature not in source for signature in signatures):
+                raise ValueError(f"現行維持した戦術差異の実装が不足しています: {class_name}")
+
         rate_differences: list[str] = []
         configured_rate = current.get("activation_denominator")
+        legacy_rate_by_side: dict[str, int | None] = {"player": None, "winner": None}
         if configured_rate is not None:
             configured_rate = as_int(configured_rate)
-            for directory, variable, label in (("tech", "waza_ritu", "プレイヤー側"), ("wtech", "wwaza_ritu", "対人相手側")):
+            for directory, variable, label, side in (
+                ("tech", "waza_ritu", "プレイヤー側", "player"),
+                ("wtech", "wwaza_ritu", "対人相手側", "winner"),
+            ):
                 source = (legacy_root / directory / f"{tactic_id}.pl").read_text(encoding="cp932")
                 legacy_rates = tactic_rate_denominators(source, variable)
+                legacy_rate_by_side[side] = legacy_rates[0] if legacy_rates else None
                 if legacy_rates and any(rate != configured_rate for rate in legacy_rates[:1]):
                     rate_differences.append(
                         f"{label}のVer2乱数幅 {legacy_rates[0]} を説明文対応の {configured_rate} へ統一"
                     )
 
+        expected_rate = TACTIC_RATE_OVERRIDES.get(tactic_id)
+        actual_rate = (
+            configured_rate,
+            legacy_rate_by_side["player"],
+            legacy_rate_by_side["winner"],
+        )
+        if expected_rate is not None and actual_rate != expected_rate:
+            unclassified.append(tactic_id)
+        elif rate_differences and expected_rate is None:
+            unclassified.append(tactic_id)
+
         details: list[str] = []
         if legacy["desc"] != str(current.get("desc")):
             detail = TACTIC_DESCRIPTION_CORRECTIONS.get(tactic_id)
-            if detail is None:
+            expected_fingerprints = TACTIC_DESCRIPTION_FINGERPRINTS.get(tactic_id)
+            actual_fingerprints = (
+                hashlib.sha256(legacy["desc"].encode("utf-8")).hexdigest(),
+                hashlib.sha256(str(current.get("desc")).encode("utf-8")).hexdigest(),
+            )
+            if detail is None or actual_fingerprints != expected_fingerprints:
                 unclassified.append(tactic_id)
             else:
                 details.append(detail)
@@ -1359,7 +1473,11 @@ def job_comparisons() -> dict[int, dict[str, str]]:
                 "status": "一致",
                 "note": "職業名、転職条件8項目、成長上限8項目、必要マスター職31項目の全47値を照合済み。tensyoku.cgi・battle.plの参照順とも一致。",
             }
-        elif job_id in JOB_INTENTIONAL_DIFFERENCES and legacy_values == current_values:
+        elif (
+            job_id in JOB_INTENTIONAL_DIFFERENCES
+            and (legacy_name, str(item.get("name"))) == JOB_INTENTIONAL_NAME_OVERRIDES[job_id]
+            and legacy_values == current_values
+        ):
             difference = JOB_INTENTIONAL_DIFFERENCES[job_id]
             results[job_id] = {
                 "source": f"旧版_ver2/data/syoku.ini:{syoku_line} / 旧版_ver2/data/ffadventure.ini:{name_line}",
@@ -1474,6 +1592,14 @@ def legacy_monster_definition_values(path: Path) -> list[tuple[str, int, int, in
 
 def monster_master_comparisons() -> dict[tuple[str, int], dict[str, str]]:
     """全モンスターマスターを、Ver2の重複出現枠まで含めて比較する。"""
+    current_files = {path.name for path in MONSTER_DATA_DIR.glob("*.json")}
+    expected_files = set(V2_MONSTER_MASTERS)
+    if current_files != expected_files:
+        raise ValueError(
+            "Ver2比較対象外のモンスターマスターがあります: "
+            f"未対応={sorted(current_files - expected_files)}, 欠落={sorted(expected_files - current_files)}"
+        )
+
     results: dict[tuple[str, int], dict[str, str]] = {}
     for current_name, source in V2_MONSTER_MASTERS.items():
         current_path = MONSTER_DATA_DIR / current_name
@@ -1486,7 +1612,10 @@ def monster_master_comparisons() -> dict[tuple[str, int], dict[str, str]]:
         for record in current_records:
             if not isinstance(record, dict):
                 raise ValueError(f"Ver3モンスターマスターにオブジェクト以外があります: {current_path}")
-            current_counter[monster_definition_values(record)] += max(1, as_int(record.get("weight", 1)))
+            weight = as_int(record.get("weight", 1))
+            if weight < 1:
+                raise ValueError(f"Ver3モンスターマスターの出現重みが不正です: {current_path}")
+            current_counter[monster_definition_values(record)] += weight
         if legacy_counter != current_counter:
             missing = list((legacy_counter - current_counter).items())[:3]
             extra = list((current_counter - legacy_counter).items())[:3]
@@ -1494,7 +1623,7 @@ def monster_master_comparisons() -> dict[tuple[str, int], dict[str, str]]:
 
         for index, record in enumerate(current_records):
             values = monster_definition_values(record)
-            weight = max(1, as_int(record.get("weight", 1)))
+            weight = as_int(record.get("weight", 1))
             source_count = legacy_counter[values]
             results[(current_name, index)] = {
                 "source": f"{source}（同一9項目のVer2出現枠 {source_count}件）",
@@ -1524,10 +1653,10 @@ def monster_skill_comparisons() -> dict[int, dict[str, str]]:
 
         if skill_id == 14:
             results[skill_id] = {
-                "difference": "盗み額を所持金以下へ制限し、負数化しない安全処理を追加",
+                "difference": "盗み額を所持金以下へ制限し、所持金÷7の抽選上限は端数を切り捨て、負数化しない安全処理を追加",
                 "intent": "現行仕様を維持（明示決定）",
                 "status": "差異あり",
-                "note": "Ver2の所持金÷7抽選を基礎にしつつ、available_gold と penalize_reward で保存値の下限を保証。盗みの上限設定を含む現行仕様を維持と明示決定した。",
+                "note": "Ver2は int(rand(所持金÷7))、現行は randrange(所持金//7) で、所持金が7の倍数なら同一。端数時だけVer2にある上限側の低確率分を除くが、概ね同じ抽選として現行維持を明示決定した。available_gold と penalize_reward で保存値の下限も保証する。",
             }
         else:
             results[skill_id] = {
@@ -2438,7 +2567,7 @@ def _require_ownership_progression_source_snippets() -> None:
         "旧版_ver2/tensyoku.cgi": ("sub tensyoku_change", "$syoku_master[$chara[14]]", "$master_tac"),
         "cgi_py/tensyoku.py": ("def get_syoku_master_list", "job_reqs", "save_user_sections"),
         "旧版_ver2/morifarm.cgi": ("sub choco_sell", "sub yadoya", "chocoboos.cgi"),
-        "cgi_py/morifarm.py": ("mode == \"choco_buyb\"", "mode == \"choco_sell\"", "mode == \"yadoya\"", "random.randrange(4)", '"same_breader"'),
+        "cgi_py/morifarm.py": ("mode == \"choco_buyb\"", "mode == \"choco_sell\"", "mode == \"yadoya\"", "random.randrange(4) == 0", '"same_breader"'),
         "旧版_ver2/ctrain.cgi": ("$ctrain += 1", "$clife -= 50", "farm_choco_regist"),
         "cgi_py/ctrain.py": ("def main", "choco[\"train\"]", "save_user_sections"),
         "旧版_ver2/crace.cgi": ("./g1/$chara[0].cgi", "farm_choco_regist", "$crun"),
@@ -2456,6 +2585,13 @@ def _require_ownership_progression_source_snippets() -> None:
         "cgi_py/battle.py": ("pvp_base_exp", "max_win_count", "champion"),
         "cgi_py/tenka.py": ("update_tenka_members", "tenka_log_limit", "battle_limit"),
         "cgi_py/legend.py": ("boss_flag", "title_id", "legend_progress_reset_value"),
+        "config.py": (
+            'Config["pvp_race_cooldown_seconds"] = 20',
+            'Config["training_cooldown_seconds"] = 20',
+            'Config["legend_progress_reset_value"] = 10',
+            'Config["tenka_log_limit"] = 20',
+            'Config["chocobo_partner_list_limit"] = 100',
+        ),
         "sub_def/common.py": ("def is_choco_owned", "def choco_delete", "def login_log_regist"),
         "cgi_py/souko.py": ("souko_weapon", "souko_armor", "souko_accessory"),
     }
@@ -2644,6 +2780,13 @@ def _require_storage_source_snippets() -> None:
         "sub_def/file_ops.py": ("def _write_json_atomically", "def update_data_atomically"),
         "sub_def/backup.py": ("def create_daily_backup", "def restore_daily_backup", "def _prune_daily_backups"),
         "sub_def/data_schema.py": ("def order_user_data", "title_id", "tactic_id"),
+        "config.py": (
+            'Config["max_post_body_bytes"] = 50 * 1024',
+            'Config["session_expiry"] = 1800',
+            'Config["lock_stale_seconds"] = 300',
+            'Config["backup_retention_days"] = 40',
+            'Config["maintenance_mode"] = 0',
+        ),
         "admin.py": ("def restore_protected_users", "def validate_master_record", "def save_master_records"),
         "login.py": ("def main", "ensure_daily_backup", "needs_rehash"),
         "旧版_ver2/change_data/convert_all.py": ("CHARA_COLUMNS", "def convert_user", "def validate_user", "--dry-run"),
