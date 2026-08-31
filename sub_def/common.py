@@ -48,6 +48,7 @@ import json
 import time
 import urllib.parse
 import html
+from functools import wraps
 from typing import NoReturn
 from http import cookies
 
@@ -209,6 +210,21 @@ def release_lock(lock_name):
             os.rmdir(lock_path)
     except FileNotFoundError:
         pass
+
+
+def owner_locked_action(main_func):
+    """本人操作の状態変更を、読込から表示完了まで利用者単位で直列化する。"""
+    @wraps(main_func)
+    def wrapped(*args, **kwargs):
+        params = decode_params()
+        user_id = params.get("id", "")
+        require_owner(user_id)
+        get_lock(user_id)
+        try:
+            return main_func(*args, **kwargs)
+        finally:
+            release_lock(user_id)
+    return wrapped
 
 # === 4. セーブデータのロード・セーブ ===
 # sub_def のアトミック I/O モジュールを読み込み、データの整合性を一元保証 (ガイドライン2.1に準拠)
@@ -396,6 +412,44 @@ def souko_regist(user_id, item_type, data):
     save_user_sections(user_id, **{f"souko_{item_type}": data})
 
 
+def sort_warehouse_entries(item_type, entries):
+    """倉庫装備を主性能の高い順に並べ、同値時も安定した順序にする。"""
+    if item_type == "weapon":
+        key = lambda entry: (
+            -to_int(entry.get("atk")),
+            -to_int(entry.get("hit_rate")),
+            str(entry.get("name", "")),
+            to_int(entry.get("id")),
+        )
+    elif item_type == "armor":
+        key = lambda entry: (
+            -to_int(entry.get("defense")),
+            -to_int(entry.get("evasion_rate")),
+            str(entry.get("name", "")),
+            to_int(entry.get("id")),
+        )
+    elif item_type == "accessory":
+        def key(entry):
+            bonus = entry.get("bonus")
+            bonus_total = sum(to_int(value) for value in bonus.values()) if isinstance(bonus, dict) else 0
+            rate_total = sum(
+                to_int(entry.get(rate_key))
+                for rate_key in ("hit_rate", "evasion_rate", "special_rate")
+            )
+            return (
+                -(bonus_total + rate_total),
+                -bonus_total,
+                -to_int(entry.get("special_rate")),
+                -to_int(entry.get("hit_rate")),
+                -to_int(entry.get("evasion_rate")),
+                str(entry.get("name", "")),
+                to_int(entry.get("id")),
+            )
+    else:
+        raise ValueError(f"未対応の倉庫種別です: {item_type}")
+    return sorted(entries, key=key)
+
+
 # === 5. アクティブキャラクター更新・表示 ===
 def escape_html_text(value) -> str:
     """HTML文字列を組み立てる必要がある互換表示向けの最小エスケープ。"""
@@ -580,6 +634,7 @@ def choco_delete(user_id, reset_g1=True):
     """飼育中チョコボを未所持状態へ戻します。"""
     data = load_user_all(user_id) or {}
     data["choco"] = {}
+    data["choco_race_history"] = []
     if reset_g1:
         data["choco_g1"] = {}
     save_user_unified(user_id, data)
@@ -717,3 +772,21 @@ def choco_g1_regist(user_id, g1_data):
     data = load_user_all(user_id) or {}
     data["choco_g1"] = g1_data
     save_user_unified(user_id, data)
+
+
+_CHOCO_RACE_HISTORY_LIMIT = 10
+
+
+def choco_race_history_load(user_id):
+    """現在飼育中のチョコボの直近レース履歴を新しい順で返す。"""
+    data = load_user_all(user_id) or {}
+    history = data.get("choco_race_history", [])
+    if not isinstance(history, list):
+        return []
+    return [dict(entry) for entry in history if isinstance(entry, dict)]
+
+
+def choco_race_history_prepend(history, entry):
+    """レース結果を先頭へ追加し、保存件数を直近10件に制限する。"""
+    existing = [dict(item) for item in history if isinstance(item, dict)]
+    return [dict(entry), *existing][:_CHOCO_RACE_HISTORY_LIMIT]

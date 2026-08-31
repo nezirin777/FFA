@@ -55,6 +55,7 @@ USER_DATA_KEY_ORDER = (
     "souko_acs",
     "choco",
     "choco_g1",
+    "choco_race_history",
 )
 
 EQUIPMENT_KEY_ORDER = ("weapon", "armor", "accessory")

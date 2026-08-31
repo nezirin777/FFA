@@ -373,6 +373,26 @@
 
         <!-- 右サイドカラム -->
         <div class="farm-side-col">
+            {% if has_choco %}
+            <div class="farm-card">
+                <div class="farm-card__title">🏇 直近のレース履歴</div>
+                {% if recent_race_history %}
+                <div class="farm-race-history">
+                    {% for race in recent_race_history %}
+                    <div class="farm-race-history__entry">
+                        <span>{{ race.time }}</span>
+                        <strong>{{ race.race_name }}</strong>
+                        <b>{{ race.result }}</b>
+                        <span>{{ race.reward }} G</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="farm-msg-box">まだレースに出走していません。</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <!-- 受付モーグリ -->
             <div class="farm-card">
                 <div class="farm-card__title">💬 モーグリのアドバイス</div>

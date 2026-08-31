@@ -166,6 +166,7 @@ def load_rivals(ribal_path, count=4):
             
     return selected
 
+@common.owner_locked_action
 def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
@@ -529,6 +530,13 @@ def main():
         winner_idx = 0 if win else photo_rival_idx
     else:
         win = (winner_idx == 0)
+    if win:
+        finish = "1着"
+    elif photo_rival_idx is not None:
+        finish = "2着"
+    else:
+        finish_order = sorted(range(runner_count), key=lambda index: (positions[index], index))
+        finish = f"{finish_order.index(0) + 1}着"
     agari = ""
     senzai = ""
     genkai = ""
@@ -778,6 +786,15 @@ def main():
     common.get_lock(user_id)
     try:
         sections = {"chara": chara, "choco": choco}
+        sections["choco_race_history"] = common.choco_race_history_prepend(
+            common.choco_race_history_load(user_id),
+            {
+                "time": common.get_time_str(now),
+                "race_name": racename,
+                "result": finish,
+                "reward": gold,
+            },
+        )
         if g1_data is not None:
             # 重賞記録も同じユーザーロックで再読込してマージする。別ロックで
             # 先に保存すると、並行したユーザー更新で記録が上書きされ得る。

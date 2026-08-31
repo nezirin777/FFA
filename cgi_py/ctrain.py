@@ -61,6 +61,7 @@ except ImportError:
     from . import config
 
 # Windows等で標準出力をUTF-8にするための設定
+@common.owner_locked_action
 def main():
     # CGIパラメータ解析
     in_params = common.decode_params()

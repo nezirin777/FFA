@@ -307,7 +307,7 @@ def main():
         # 排他ロックをかけて登録
         common.get_lock(user_id)
         try:
-            common.save_user_sections(user_id, choco=choco_data, choco_g1={})
+            common.save_user_sections(user_id, choco=choco_data, choco_g1={}, choco_race_history=[])
         finally:
             common.release_lock(user_id)
             
@@ -638,7 +638,7 @@ def main():
         
         common.get_lock(user_id)
         try:
-            common.save_user_sections(user_id, choco=new_choco, choco_g1={})
+            common.save_user_sections(user_id, choco=new_choco, choco_g1={}, choco_race_history=[])
         finally:
             common.release_lock(user_id)
             

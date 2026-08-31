@@ -118,6 +118,7 @@ def main():
                 "hit_rate": selected_weapon["hit_rate"]
             }
             souko.append(new_weapon)
+            souko = common.sort_warehouse_entries("weapon", souko)
             
             # 保存
             common.save_user_sections(user_id, chara=chara, souko_weapon=souko)

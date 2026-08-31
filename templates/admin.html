@@ -319,7 +319,11 @@
 
     <div class="admin-footer-nav">
         <a href="admin.py?mode=kanri_top" class="btn admin-footer-btn">管理メインへ</a>
-        <a href="admin.py?mode=admin_log_out" class="btn btn--danger admin-footer-btn">管理者ログアウト</a>
+        <form action="admin.py" method="POST" class="admin-inline-form">
+            <input type="hidden" name="mode" value="admin_log_out">
+            <input type="hidden" name="s" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn--danger admin-footer-btn">管理者ログアウト</button>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -86,6 +86,7 @@ def main():
 
     # 重賞履歴のロード
     g1_raw = common.choco_g1_load(user_id) if has_choco else None
+    recent_race_history = common.choco_race_history_load(user_id) if has_choco else []
     
     # 歴代王者データのロード
     winner_view = common.chocobo_champion_view()
@@ -324,6 +325,7 @@ def main():
         "winner_view": winner_view,
         "trophies": trophies,
         "trophies_count": len(trophies),
+        "recent_race_history": recent_race_history,
         "rank_imgs": rank_imgs,
         "time_limits": time_limits,
         "is_king": is_king,

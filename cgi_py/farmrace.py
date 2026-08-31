@@ -66,6 +66,7 @@ except ImportError:
 
 
 # Windows等で標準出力をUTF-8にするための設定
+@common.owner_locked_action
 def main():
     # CGIパラメータ解析
     in_params = common.decode_params()
@@ -568,7 +569,16 @@ def main():
     # 同一ユーザーの更新を1回の保存で確定する。
     common.get_lock(user_id)
     try:
-        common.save_user_sections(user_id, chara=chara, choco=choco)
+        history = common.choco_race_history_prepend(
+            common.choco_race_history_load(user_id),
+            {
+                "time": common.get_time_str(now),
+                "race_name": "農場王者決定戦",
+                "result": "1着" if win else "2着",
+                "reward": gold,
+            },
+        )
+        common.save_user_sections(user_id, chara=chara, choco=choco, choco_race_history=history)
     finally:
         common.release_lock(user_id)
 

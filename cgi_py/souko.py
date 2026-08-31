@@ -276,6 +276,9 @@ def main():
                 
         # 4. データ保存
         if modified:
+            souko_weapon = common.sort_warehouse_entries("weapon", souko_weapon)
+            souko_armor = common.sort_warehouse_entries("armor", souko_armor)
+            souko_accessory = common.sort_warehouse_entries("accessory", souko_accessory)
             common.save_user_sections(
                 user_id,
                 chara=chara,

@@ -95,10 +95,35 @@ FUNCTION_MAP = {
     "chocorank": "cgi_py.chocorank"
 }
 
-# URLのルーティングだけで状態を更新するアクション。これらはフォームを経由しない
-# GET直打ちを許可しない。legend は攻略者一覧だけが公開の閲覧画面であるため別扱いにする。
+# ルート全体が状態変更となる操作。GET直打ちを許可しない。
+# legend は攻略者一覧だけが公開の閲覧画面であるため別扱いにする。
 POST_ONLY_ROUTE_MODES = {
-    "shop", "battle", "monster", "genei", "isekiai", "boss", "dendo", "farmrace",
+    "shop", "yado", "battle", "monster", "genei", "isekiai", "boss", "dendo",
+    "farmrace", "ctrain", "crace",
+}
+
+# 表示画面も持つ施設は、実際にデータを変更するサブモードだけをPOST限定にする。
+POST_ONLY_ACTIONS_BY_ROUTE = {
+    "bank": {"bank_sell", "bank_buy"},
+    "shop_weapon": {"buy", "sell"},
+    "shop_item": {"buy", "sell"},
+    "shop_armor": {"buy", "sell"},
+    "shop_def": {"buy", "sell"},
+    "shop_accessory": {"buy", "sell"},
+    "shop_acs": {"buy", "sell"},
+    "souko": {
+        "weapon_remove", "weapon_equip", "weapon_delete",
+        "armor_remove", "armor_equip", "armor_delete",
+        "accessory_remove", "accessory_equip", "accessory_delete",
+    },
+    "sts": {"st_buy"},
+    "tac_change": {"senjutu_henkou"},
+    "tensyoku": {"tensyoku_change"},
+    "passchange": {"passset", "passchan"},
+    "bbs": {"post"},
+    "morifarm": {"choco_buy", "choco_buyb", "choco_sell", "choco_name", "yadoya"},
+    "choco": {"choco_buy", "choco_buyb", "choco_sell", "choco_name", "yadoya"},
+    "tenka": {"battle"},
 }
 
 def main():
@@ -234,7 +259,12 @@ def main():
         # フォームの method を書き換えたりURLを直接開いたりしても、戦闘・レース・
         # 殿堂登録などの状態変更は実行させない。CSRF検証と組み合わせて二重に守る。
         is_legend_ranking = mode == "legend" and FORM.get("view") == "ranking"
-        if method != "POST" and (mode in POST_ONLY_ROUTE_MODES or (mode == "legend" and not is_legend_ranking)):
+        is_route_action = FORM.get("mode", "") in POST_ONLY_ACTIONS_BY_ROUTE.get(mode, set())
+        if method != "POST" and (
+            mode in POST_ONLY_ROUTE_MODES
+            or is_route_action
+            or (mode == "legend" and not is_legend_ranking)
+        ):
             show_error("この操作は画面のフォームから実行してください。")
             
         # POST メソッド時のみ CSRF トークン検証を行い、不正アクセスを排除

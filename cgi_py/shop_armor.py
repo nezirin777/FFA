@@ -116,6 +116,7 @@ def main():
                 "evasion_rate": selected_armor["evasion_rate"]
             }
             souko.append(new_armor)
+            souko = common.sort_warehouse_entries("armor", souko)
             
             # 保存
             common.save_user_sections(user_id, chara=chara, souko_armor=souko)

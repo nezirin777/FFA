@@ -3816,6 +3816,38 @@ form.farm-action-form[hidden] {
   font-size: 0.85rem;
 }
 
+.farm-race-history {
+  display: grid;
+  gap: var(--space-s);
+}
+
+.farm-race-history__entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px var(--space-s);
+  padding-bottom: var(--space-s);
+  border-bottom: 1px solid rgba(136, 85, 34, 0.45);
+  font-size: 0.85rem;
+}
+
+.farm-race-history__entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.farm-race-history__entry strong {
+  color: var(--white);
+}
+
+.farm-race-history__entry b {
+  color: var(--yellow);
+  text-align: right;
+}
+
+.farm-race-history__entry span:last-child {
+  text-align: right;
+}
+
 .farm-back-actions {
   display: flex;
   justify-content: center;

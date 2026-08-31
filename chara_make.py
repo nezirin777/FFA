@@ -314,7 +314,8 @@ def main():
             "souko_armor": [],
             "souko_accessory": [],
             "choco": {},
-            "choco_g1": {}
+            "choco_g1": {},
+            "choco_race_history": [],
         }
         # 確認画面を複数タブで送信された場合でも、チェック直後の登録まで
         # 直列化して同一ID・同一名・同一ホストの競合登録を防ぐ。

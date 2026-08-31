@@ -445,6 +445,7 @@ def initial_guest_user_data():
         "souko_accessory": [],
         "choco": {},
         "choco_g1": {},
+        "choco_race_history": [],
     }
 
 
@@ -498,6 +499,9 @@ def main():
 
     session = get_session()
     if mode == "admin_log_out":
+        if method != "POST":
+            common.show_error("管理者ログアウトは画面のフォームから実行してください。")
+        token_check(params, session)
         session.pop("is_admin", None)
         redirect("others.py", extra_headers=[save_session(session)])
 
@@ -512,8 +516,8 @@ def main():
         session["is_admin"] = True
         redirect("admin.py?mode=kanri_top", extra_headers=[save_session(session)])
 
-    # データ改変・削除を伴う操作はCSRFトークン検証を必須とする
-    if method == "POST" and mode in (
+    # データ改変・削除を伴う操作はフォームPOST以外から実行させない。
+    state_changing_modes = {
         "save",
         "del_chara",
         "del_noplay",
@@ -523,7 +527,10 @@ def main():
         "master_save",
         "master_delete",
         "player_item_add",
-    ):
+    }
+    if mode in state_changing_modes:
+        if method != "POST":
+            common.show_error("この操作は管理画面のフォームから実行してください。")
         token_check(params, session)
 
     # 1. 管理画面トップ
@@ -713,7 +720,7 @@ def main():
             if len(warehouse) >= config.Config[limit_key]:
                 raise ValueError(f"{item_type}倉庫がいっぱいです。")
             warehouse.append(warehouse_entry_from_master(item_type, record))
-            data[warehouse_key] = warehouse
+            data[warehouse_key] = common.sort_warehouse_entries(item_type, warehouse)
             common.save_user_unified(target_id, data)
         except ValueError as error:
             context = player_item_context(target_id, f"追加できません: {error}")

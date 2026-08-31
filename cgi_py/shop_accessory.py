@@ -126,6 +126,7 @@ def main():
                 "description": selected_accessory.get("description", "")
             }
             souko.append(new_accessory)
+            souko = common.sort_warehouse_entries("accessory", souko)
             
             # 保存
             common.save_user_sections(user_id, chara=chara, souko_accessory=souko)
