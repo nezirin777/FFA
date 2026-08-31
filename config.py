@@ -104,6 +104,10 @@ Config["training_cooldown_seconds"] = 20  # モンスター修行・チョコボ
 # 伝説の戦いの進行フラグを「挑戦可能」に戻す保存値。時間ではない。
 Config["legend_progress_reset_value"] = 10
 
+# 同じ日のレジェンドプレイス再撃破時の経験値・ゴールド報酬の分母。
+# 攻略失敗後の通過戦は残しつつ、固定敵だけを周回する稼ぎを抑える。
+Config["legend_repeat_reward_divisor"] = 5
+
 # 戦闘回数と戦闘処理の上限。
 Config["training_battle_limit"] = 9999  # モンスター修行・伝説戦の残り回数初期値／補充値
 Config["max_turns"] = 150  # 1戦闘の最大ターン数

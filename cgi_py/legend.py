@@ -58,6 +58,22 @@ except ImportError:
 parse_cookie_user = common.parse_cookie_user
 load_monsters = common.load_json_list
 
+
+def daily_legend_reward_state(chara, now):
+    """当日中に通常報酬を受け取ったレジェンド固定敵の一覧を正規化する。"""
+    today = time.strftime("%Y-%m-%d", time.localtime(now))
+    raw_state = chara.get("legend_reward_history")
+    if not isinstance(raw_state, dict) or raw_state.get("date") != today:
+        return {"date": today, "rewarded_enemy_keys": []}
+    rewarded_keys = raw_state.get("rewarded_enemy_keys", [])
+    if not isinstance(rewarded_keys, list):
+        rewarded_keys = []
+    return {
+        "date": today,
+        "rewarded_enemy_keys": [str(key) for key in rewarded_keys if isinstance(key, str)],
+    }
+
+
 def get_legend_players():
     """レジェンドプレイスを1階層以上攻略したキャラクターを取得する。"""
     players = []
@@ -178,6 +194,9 @@ def main():
             chara["boss_flag"] = boss_flag
             
         enemy_data = enemy_list[boss_flag]
+        reward_key = f"{boss_file_idx}:{boss_flag}"
+        daily_reward_state = daily_legend_reward_state(chara, now)
+        is_repeat_reward = reward_key in daily_reward_state["rewarded_enemy_keys"]
 
         item = common.equipment_load(user_id)
         if not item:
@@ -200,8 +219,20 @@ def main():
         if win == 1:
             chara["win_count"] += 1
             base_reward = enemy_data["gold_reward"] + random.randrange(max(1, int(enemy_data["gold_reward"]))) + 1
-            # 盗み分は勝利報酬へ一度だけ合算する。
-            gold_gained = max(0, base_reward + theft_adjustment)
+            if is_repeat_reward:
+                divisor = max(1, int(config.Config["legend_repeat_reward_divisor"]))
+                exp_gained = max(1, int(exp_gained / divisor))
+                gold_gained = max(0, int((base_reward + theft_adjustment) / divisor))
+                comment += (
+                    f'<span class="yellow">この敵の本日2回目以降の撃破です。'
+                    f'経験値・ゴールド報酬は 1/{divisor} になります。</span><br>'
+                )
+            else:
+                # 初回撃破の通常報酬を記録し、同日の再撃破だけを減額する。
+                daily_reward_state["rewarded_enemy_keys"].append(reward_key)
+                chara["legend_reward_history"] = daily_reward_state
+                # 盗み分は勝利報酬へ一度だけ合算する。
+                gold_gained = max(0, base_reward + theft_adjustment)
             chara["gold"] += gold_gained
             if chara["gold"] > config.Config['max_gold']:
                 chara["gold"] = config.Config['max_gold']
@@ -230,7 +261,8 @@ def main():
                         common.release_lock("all_message_post")
                 else:
                     comment += f'<b><span class="yellow text-large">{chara["name"]} は、レジェンドプレイスを攻略した！！</span></b><br>'
-                chara["boss_flag"] = config.Config['legend_progress_reset_value']
+                # 完走直後は0を保持する。これにより結果画面では同じ階層へ
+                # 連戦するボタンを出さず、街へ戻る操作で次回挑戦用にリセットする。
             else:
                 comment += f'<b><font size=5>{chara["name"]} は、戦闘に勝利した！！HPが少し回復した♪ 残り {chara["boss_flag"]} 体・・・</font></b><br>'
         elif win == 2:

@@ -34,6 +34,7 @@ CHARA_KEY_ORDER = (
     "win_count",
     "battle_limit",
     "boss_flag",
+    "legend_reward_history",
     "comment",
     "host",
     "last_time",

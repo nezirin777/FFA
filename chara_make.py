@@ -260,6 +260,7 @@ def main():
             "win_count": 0,
             "battle_limit": Config['training_battle_limit'],
             "boss_flag": Config['legend_progress_reset_value'],
+            "legend_reward_history": {"date": "", "rewarded_enemy_keys": []},
             "comment": "よろしくお願いします！",
             "host": remote_addr,
             "last_time": now,

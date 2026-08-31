@@ -418,6 +418,7 @@ def initial_guest_user_data():
             "win_count": 0,
             "battle_limit": config.Config["training_battle_limit"],
             "boss_flag": config.Config["legend_progress_reset_value"],
+            "legend_reward_history": {"date": "", "rewarded_enemy_keys": []},
             "comment": "よろしくお願いします！",
             "host": "",
             # 復元直後からテストプレイを開始できるよう、利用中判定は付けない。
