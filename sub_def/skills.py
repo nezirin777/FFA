@@ -2576,7 +2576,8 @@ class acstech_15:
             s.com1 += f"<font class='dark' size='3'>{s.item['accessory']['name']}が光を放つ！！デジョンの効果！！</font><br>"
             if (random.randrange(int(3)) == 0):
                 s.sake2 -= 999999
-                s.dmg1 = s.winner['max_hp'] + s.mhp_flg
+                target_max_hp = s.winner.get('max_hp', s.mhp_flg)
+                s.dmg1 = target_max_hp + s.mhp_flg
                 s.com1 += "<font class='yellow' size='5'>時空魔法デジョン！！！</font><br>"
             else:
                 s.com1 += "<font class='red' size='5'>時空魔法デジョン！！！失敗した。。</font><br>"
