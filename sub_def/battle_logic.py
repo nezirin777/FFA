@@ -449,10 +449,12 @@ class BattleSimulator:
             # 回復・補助技は dmg1/dmg2 を 0 にするため、実ダメージがある攻撃だけ判定する。
             # これを無条件で行うと、ケアルガ等にもクリティカル表示が付き、
             # 0 ダメージへ補正値が加算されて攻撃扱いになる。
+            player_critical = False
+            enemy_critical = False
             if s.dmg1 > 0:
                 kclt_ritu = 100 - int(s.khp / s.chara["max_hp"] * 100) if s.chara["max_hp"] > 0 else 0
                 if kclt_ritu > random.randrange(100):
-                    s.com1 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
+                    player_critical = True
                     if s.is_player_enemy:
                         # 旧版 wbattle.pl: 挑戦者の攻撃は2倍し、王者の武器攻撃力を加算。
                         s.dmg1 = s.dmg1 * 2 + s.winner_item["weapon"]["atk"]
@@ -463,13 +465,13 @@ class BattleSimulator:
                 if s.dmg2 > 0:
                     mclt_ritu = 100 - int(s.mhp / s.winner["max_hp"] * 100) if s.winner["max_hp"] > 0 else 0
                     if mclt_ritu > random.randrange(100):
-                        s.com2 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
+                        enemy_critical = True
                         # 旧版 wbattle.pl: 王者の攻撃は2倍し、挑戦者の防具防御力を加算。
                         s.dmg2 = s.dmg2 * 2 + s.item["armor"]["defense"]
             elif s.dmg2 > 0:
                 mclt_ritu = 100 - int(s.mhp / s.mhp_flg * 100) if s.mhp_flg > 0 else 0
                 if mclt_ritu > random.randrange(200):
-                    s.com2 += f"<br><span class=\"red\"><b>クリティカルヒット！！</b></span>"
+                    enemy_critical = True
                     s.dmg2 = s.dmg2 + s.item["armor"]["defense"] # 防御無視相当の加算
                     
             # === 6. 防御力による減算・回避判定 ===
@@ -574,6 +576,16 @@ class BattleSimulator:
                 s.dmg1 = 0
                 enemy_evaded = True
                 s.com1 += f"<br><span class=\"red text-small\"><b>{s.mname}は攻撃をかわした！</b></span>"
+
+            # クリティカルの倍率は回避判定前に適用済み。表示だけは、実際に
+            # 命中した攻撃へ限定して、回避時に矛盾した表示を残さない。
+            if player_critical and not enemy_evaded:
+                s.com1 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.chara.get('comment', '')))}」</span>"
+            if enemy_critical and not player_evaded:
+                if s.is_player_enemy:
+                    s.com2 += f"<br><span class=\"red text-medium\"><b>クリティカルヒット！！</b>「{html.escape(str(s.winner.get('comment', '')))}」</span>"
+                else:
+                    s.com2 += "<br><span class=\"red\"><b>クリティカルヒット！！</b></span>"
 
             if defense_blocked1 and not enemy_evaded:
                 s.com1 += (
